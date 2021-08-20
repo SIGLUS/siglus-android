@@ -214,13 +214,7 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     PHYSICAL_INVENTORY() {
       @Override
       public MovementType toMovementType(int movementQuantity) {
-        if (movementQuantity == 0) {
-          return MovementType.PHYSICAL_INVENTORY;
-        } else if (movementQuantity > 0) {
-          return MovementType.POSITIVE_ADJUST;
-        } else {
-          return MovementType.NEGATIVE_ADJUST;
-        }
+        return MovementType.PHYSICAL_INVENTORY;
       }
     },
     RECEIVE() {

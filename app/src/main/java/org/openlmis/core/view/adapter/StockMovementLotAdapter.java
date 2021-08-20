@@ -32,7 +32,7 @@ public class StockMovementLotAdapter extends BaseQuickAdapter<LotMovementHistory
 
   @Override
   protected void convert(@NonNull BaseViewHolder holder, LotMovementHistoryViewModel model) {
-    holder.setText(R.id.tv_reason, model.getReason().getDescription());
+    holder.setText(R.id.tv_reason, model.getMovementDesc());
     holder.setText(R.id.tv_lot_code, model.getLotCode());
     holder.setText(R.id.tv_document_number, model.getDocumentNo());
     holder.setText(R.id.tv_received, model.getReceived());

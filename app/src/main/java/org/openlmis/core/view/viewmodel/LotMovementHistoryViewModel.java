@@ -18,13 +18,14 @@
 
 package org.openlmis.core.view.viewmodel;
 
-import java.util.EnumMap;
+import java.util.Map;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.LotMovementItem;
+import org.openlmis.core.model.helper.MovementQuantityHelper;
 
 @Data
 @NoArgsConstructor
@@ -35,8 +36,7 @@ public class LotMovementHistoryViewModel implements Comparable<LotMovementHistor
   private String lotCode;
   private LotMovementItem lotMovementItem;
   private MovementType stockCardMovementType;
-  private MovementReasonManager.MovementReason reason;
-  private EnumMap<MovementType, String> typeQuantityMap = new EnumMap<>(MovementType.class);
+  private Map<MovementType, String> typeQuantityMap;
 
   public LotMovementHistoryViewModel(MovementType type, LotMovementItem item) {
     lotMovementItem = item;
@@ -44,12 +44,18 @@ public class LotMovementHistoryViewModel implements Comparable<LotMovementHistor
     documentNo = item.getDocumentNumber();
     lotCode = item.getLot().getLotNumber();
     stockOnHand = String.valueOf(item.getStockOnHand());
+    typeQuantityMap = MovementQuantityHelper
+        .generateTypeQuantityMap(type, item.getReason(), Math.abs(item.getMovementQuantity()));
+  }
+
+  public String getMovementDesc() {
     try {
-      reason = MovementReasonManager.getInstance().queryByCode(item.getReason());
+      return MovementReasonManager.getInstance()
+          .queryByCode(stockCardMovementType, lotMovementItem.getReason())
+          .getDescription();
     } catch (MovementReasonNotFoundException e) {
-      throw new IllegalArgumentException("MovementReason Cannot be find " + e.getMessage(), e);
+      return "";
     }
-    typeQuantityMap.put(type, String.valueOf(Math.abs(item.getMovementQuantity())));
   }
 
   public String getReceived() {
@@ -69,12 +75,7 @@ public class LotMovementHistoryViewModel implements Comparable<LotMovementHistor
   }
 
   public boolean needShowRed() {
-    String movementReason = reason.getCode();
-    return stockCardMovementType == MovementType.INITIAL_INVENTORY
-        || stockCardMovementType == MovementType.PHYSICAL_INVENTORY
-        || stockCardMovementType == MovementType.RECEIVE
-        || (stockCardMovementType == MovementType.ISSUE && MovementReasonManager.UNPACK_KIT
-        .equalsIgnoreCase(movementReason));
+    return stockCardMovementType.needShowRed(lotMovementItem.getReason());
   }
 
   @Override

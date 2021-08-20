@@ -143,8 +143,8 @@ public class StockCardsResponseAdapterTest {
 
     // then
     assertEquals(MovementType.PHYSICAL_INVENTORY, physicalInventory);
-    assertEquals(MovementType.POSITIVE_ADJUST, positiveAdjustWithInventory);
-    assertEquals(MovementType.NEGATIVE_ADJUST, negativeAdjustWithInventory);
+    assertEquals(MovementType.PHYSICAL_INVENTORY, positiveAdjustWithInventory);
+    assertEquals(MovementType.PHYSICAL_INVENTORY, negativeAdjustWithInventory);
     assertEquals(MovementType.RECEIVE, receive);
     assertEquals(MovementType.ISSUE, issueWithIssue);
     assertEquals(MovementType.ISSUE, issueWithUnpackKit);

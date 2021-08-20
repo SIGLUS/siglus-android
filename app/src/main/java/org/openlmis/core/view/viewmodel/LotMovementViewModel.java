@@ -18,6 +18,11 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import static org.openlmis.core.manager.MovementReasonManager.INVENTORY_NEGATIVE;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.NEGATIVE_ADJUST;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
+
 import java.util.Calendar;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -67,7 +72,8 @@ public class LotMovementViewModel {
   }
 
   public boolean validateQuantityNotGreaterThanSOH() {
-    if (movementType.isNegative()) {
+    if (movementType == ISSUE || movementType == NEGATIVE_ADJUST
+        || (movementType == PHYSICAL_INVENTORY && INVENTORY_NEGATIVE.equalsIgnoreCase(movementReason))) {
       quantityLessThanSoh = StringUtils.isBlank(quantity) || Long.parseLong(quantity) <= Long.parseLong(lotSoh);
     }
     return quantityLessThanSoh;
@@ -133,7 +139,7 @@ public class LotMovementViewModel {
         && !StringUtils.isBlank(expiryDate)
         && !StringUtils.isBlank(quantity)
         && Long.parseLong(quantity) > 0;
-    return valid || (getMovementType() == MovementReasonManager.MovementType.ISSUE
+    return valid || (getMovementType() == ISSUE
         && !isExpiredLot());
   }
 
@@ -142,7 +148,7 @@ public class LotMovementViewModel {
         && !StringUtils.isBlank(lotNumber)
         && !StringUtils.isBlank(expiryDate)
         && !StringUtils.isBlank(quantity);
-    return valid || (getMovementType() == MovementReasonManager.MovementType.ISSUE
+    return valid || (getMovementType() == ISSUE
         && !isExpiredLot());
   }
 

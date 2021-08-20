@@ -25,7 +25,6 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.openlmis.core.manager.MovementReasonManager.MovementType;
 
 @Getter
 @Setter
@@ -61,19 +60,13 @@ public class LotMovementItem extends BaseModel {
   }
 
   public void updateMovementQuantity() {
-    MovementType type = stockMovementItem.getMovementType();
-    boolean issueOrNegativeAdjust = type.equals(MovementType.ISSUE) || type.equals(MovementType.NEGATIVE_ADJUST);
-    if (movementQuantity != null && issueOrNegativeAdjust) {
+    if (movementQuantity != null && stockMovementItem.isNegativeMovement()) {
       movementQuantity *= -1;
     }
   }
 
   public boolean isUselessMovement() {
-    MovementType type = stockMovementItem.getMovementType();
-    boolean isAdjustmentType = type.equals(MovementType.ISSUE)
-        || type.equals(MovementType.RECEIVE)
-        || type.equals(MovementType.NEGATIVE_ADJUST)
-        || type.equals(MovementType.POSITIVE_ADJUST);
+    boolean isAdjustmentType = stockMovementItem.isPositiveMovement() || stockMovementItem.isNegativeMovement();
     return isAdjustmentType && (movementQuantity == null || movementQuantity == 0);
   }
 }

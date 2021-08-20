@@ -93,10 +93,8 @@ public final class MovementReasonManager {
     }
     MovementType.ISSUE.description = getResourceByLocal(locale).getString(R.string.ISSUE);
     MovementType.RECEIVE.description = getResourceByLocal(locale).getString(R.string.RECEIVE);
-    MovementType.POSITIVE_ADJUST.description = getResourceByLocal(locale)
-        .getString(R.string.POSITIVE_ADJUST);
-    MovementType.NEGATIVE_ADJUST.description = getResourceByLocal(locale)
-        .getString(R.string.NEGATIVE_ADJUST);
+    MovementType.POSITIVE_ADJUST.description = getResourceByLocal(locale).getString(R.string.POSITIVE_ADJUST);
+    MovementType.NEGATIVE_ADJUST.description = getResourceByLocal(locale).getString(R.string.NEGATIVE_ADJUST);
 
     ArrayList<MovementType> typeArrayList = new ArrayList<>();
     typeArrayList.add(MovementType.ISSUE);
@@ -105,7 +103,6 @@ public final class MovementReasonManager {
     typeArrayList.add(MovementType.POSITIVE_ADJUST);
 
     typeCache.put(locale.getLanguage(), typeArrayList);
-
     return typeArrayList;
   }
 
@@ -138,23 +135,29 @@ public final class MovementReasonManager {
     return reasonList;
   }
 
-
   public List<MovementReason> buildReasonListForMovementType(final MovementType type) {
-    return FluentIterable.from(currentReasonList).filter(
-        movementReason -> movementReason.getMovementType() == type && movementReason
-            .canBeDisplayOnMovementMenu()).toList();
+    return FluentIterable.from(currentReasonList)
+        .filter(movementReason -> movementReason.getMovementType() == type
+            && movementReason.canBeDisplayOnMovementMenu())
+        .toList();
   }
 
-  public MovementReason queryByDesc(final String reason) throws MovementReasonNotFoundException {
-    return queryByDesc(reason, context.getResources().getConfiguration().locale);
+  public MovementReason queryByDesc(MovementType movementType, String reason) throws MovementReasonNotFoundException {
+    return queryByDesc(movementType, reason, context.getResources().getConfiguration().locale);
   }
 
-  public MovementReason queryByDesc(final String desc, Locale locale)
+  public MovementReason queryByDesc(MovementType movementType, String desc, Locale locale)
       throws MovementReasonNotFoundException {
     ArrayList<MovementReason> reasonList = initReasonList(locale);
-
     Optional<MovementReason> matched = FluentIterable.from(reasonList)
-        .firstMatch(movementReason -> movementReason.getDescription().equalsIgnoreCase(desc));
+        .firstMatch(movementReason -> {
+          if (movementReason == null) {
+            return false;
+          }
+          boolean isReasonMatch = movementReason.getDescription().equalsIgnoreCase(desc);
+          boolean isTypeMatch = movementReason.getMovementType() == movementType;
+          return isReasonMatch && isTypeMatch;
+        });
 
     if (!matched.isPresent()) {
       throw new MovementReasonNotFoundException(desc);
@@ -162,11 +165,16 @@ public final class MovementReasonManager {
     return matched.get();
   }
 
-
-  public MovementReason queryByCode(final String code) throws MovementReasonNotFoundException {
+  public MovementReason queryByCode(MovementType movementType, String code) throws MovementReasonNotFoundException {
     Optional<MovementReason> matched = FluentIterable.from(currentReasonList)
-        .firstMatch(movementReason -> movementReason.getCode().equalsIgnoreCase(code));
-
+        .firstMatch(movementReason -> {
+          if (movementReason == null) {
+            return false;
+          }
+          boolean isCodeMatch = movementReason.getCode().equalsIgnoreCase(code);
+          boolean isTypeMatch = movementReason.getMovementType() == movementType;
+          return isCodeMatch && isTypeMatch;
+        });
     if (!matched.isPresent()) {
       throw new MovementReasonNotFoundException(code);
     }
@@ -213,11 +221,15 @@ public final class MovementReasonManager {
       return value;
     }
 
-    public boolean isNegative() {
-      return this == ISSUE || this == NEGATIVE_ADJUST;
+    public boolean needShowRed(String movementReason) {
+      boolean isPhysicalInventory = this == MovementType.PHYSICAL_INVENTORY
+          && MovementReasonManager.INVENTORY.equalsIgnoreCase(movementReason);
+      return isPhysicalInventory
+          || this == MovementType.INITIAL_INVENTORY
+          || this == MovementType.RECEIVE
+          || (this == MovementType.ISSUE && MovementReasonManager.UNPACK_KIT.equalsIgnoreCase(movementReason));
     }
   }
-
 
   @Data
   public static class MovementReason {
@@ -236,20 +248,11 @@ public final class MovementReasonManager {
       return INVENTORY_NEGATIVE.equalsIgnoreCase(code) || INVENTORY_POSITIVE.equalsIgnoreCase(code);
     }
 
-    public boolean isPhysicalInventory() {
-      return MovementType.PHYSICAL_INVENTORY == movementType;
-    }
-
     protected boolean canBeDisplayOnMovementMenu() {
       return !(code.startsWith(DEFAULT_PREFIX)
           || code.equalsIgnoreCase(INVENTORY)
           || MovementReasonManager.UNPACK_KIT.equals(code)
           || MovementReasonManager.DONATION.equals(code));
-
-    }
-
-    public boolean isIssueAdjustment() {
-      return MovementType.ISSUE == movementType;
     }
   }
 }

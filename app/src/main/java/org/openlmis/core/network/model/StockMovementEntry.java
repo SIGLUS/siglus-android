@@ -18,8 +18,6 @@
 
 package org.openlmis.core.network.model;
 
-import static org.openlmis.core.manager.MovementReasonManager.INVENTORY_NEGATIVE;
-import static org.openlmis.core.manager.MovementReasonManager.INVENTORY_POSITIVE;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.ADJUSTMENT;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.NEGATIVE_ADJUST;
@@ -32,6 +30,7 @@ import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -67,33 +66,28 @@ public class StockMovementEntry {
       this.setReasonName(this.type.equals(UNPACK_KIT) ? "" : stockMovementItem.getReason());
     } else {
       lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper())
-          .transform(lotMovementItem -> new LotMovementEntry(lotMovementItem)).toList());
+          .transform(LotMovementEntry::new)
+          .toList());
     }
   }
 
   private long getQuantityWithSign(StockMovementItem stockMovementItem) {
     if (stockMovementItem.isNegativeMovement()) {
-      return  - stockMovementItem.getMovementQuantity();
+      return -stockMovementItem.getMovementQuantity();
     }
     return stockMovementItem.getMovementQuantity();
   }
 
   private String getMovementType(StockMovementItem stockMovementItem) {
-    if (isPhysicalInventory(stockMovementItem)) {
+    MovementType movementType = stockMovementItem.getMovementType();
+    if (movementType == PHYSICAL_INVENTORY) {
       return PHYSICAL_INVENTORY.toString();
-    } else if (stockMovementItem.getMovementType() == NEGATIVE_ADJUST
-        || stockMovementItem.getMovementType() == POSITIVE_ADJUST) {
+    } else if (movementType == NEGATIVE_ADJUST || movementType == POSITIVE_ADJUST) {
       return ADJUSTMENT.toString();
     } else if (isUnpack(stockMovementItem)) {
       return UNPACK_KIT;
     }
     return stockMovementItem.getMovementType().toString();
-  }
-
-  private boolean isPhysicalInventory(StockMovementItem stockMovementItem) {
-    return stockMovementItem.getMovementType() == PHYSICAL_INVENTORY
-        || stockMovementItem.getReason().equalsIgnoreCase(INVENTORY_POSITIVE)
-        || stockMovementItem.getReason().equalsIgnoreCase(INVENTORY_NEGATIVE);
   }
 
   private boolean isUnpack(StockMovementItem stockMovementItem) {

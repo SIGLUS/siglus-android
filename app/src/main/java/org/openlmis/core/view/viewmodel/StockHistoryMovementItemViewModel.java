@@ -18,33 +18,29 @@
 
 package org.openlmis.core.view.viewmodel;
 
-import java.util.HashMap;
+import java.util.Map;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.helper.MovementQuantityHelper;
 import org.openlmis.core.utils.DateUtil;
 
 @Data
 public class StockHistoryMovementItemViewModel {
 
-  private MovementReasonManager.MovementReason reason;
   StockMovementItem stockMovementItem;
   private String movementDate;
   private static String EMPTY_FIELD = "-";
 
-  private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
+  private Map<MovementType, String> typeQuantityMap;
 
-  public StockHistoryMovementItemViewModel(StockMovementItem stockMovementItem) {
-    this.stockMovementItem = stockMovementItem;
-    typeQuantityMap.put(stockMovementItem.getMovementType(), String.valueOf(stockMovementItem.getMovementQuantity()));
-    try {
-      reason = MovementReasonManager.getInstance().queryByCode(stockMovementItem.getReason());
-    } catch (MovementReasonNotFoundException e) {
-      new LMISException(e, "MovementReason Cannot be find ," + e.getMsg()).reportToFabric();
-    }
+  public StockHistoryMovementItemViewModel(StockMovementItem item) {
+    this.stockMovementItem = item;
+    typeQuantityMap = MovementQuantityHelper
+        .generateTypeQuantityMap(item.getMovementType(), item.getReason(), item.getMovementQuantity());
   }
 
   public String getMovementDate() {
@@ -52,7 +48,13 @@ public class StockHistoryMovementItemViewModel {
   }
 
   public String getMovementReason() {
-    return reason.getDescription();
+    try {
+      return MovementReasonManager.getInstance()
+          .queryByCode(stockMovementItem.getMovementType(), stockMovementItem.getReason())
+          .getDescription();
+    } catch (MovementReasonNotFoundException e) {
+      return "";
+    }
   }
 
   public String getDocumentNumber() {

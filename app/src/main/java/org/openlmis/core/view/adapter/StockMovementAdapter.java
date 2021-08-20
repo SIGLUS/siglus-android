@@ -55,8 +55,7 @@ public class StockMovementAdapter extends BaseQuickAdapter<StockMovementHistoryV
   private void covertByProduct(@NonNull BaseViewHolder holder, StockMovementHistoryViewModel model) {
     holder.setText(R.id.tv_date, model.getMovementDate());
     holder.setText(R.id.tv_reason,
-        model.isNoStock() ? holder.itemView.getContext().getString(R.string.label_inventory)
-            : model.getReason().getDescription());
+        model.isNoStock() ? holder.itemView.getContext().getString(R.string.label_inventory) : model.getMovementDesc());
     holder.getView(R.id.tv_lot_code).setVisibility(View.GONE);
     holder.setText(R.id.tv_document_number, model.getDocumentNumber());
     holder.setText(R.id.tv_received, model.getReceived());

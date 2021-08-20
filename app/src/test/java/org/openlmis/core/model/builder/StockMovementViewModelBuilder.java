@@ -23,7 +23,8 @@ public class StockMovementViewModelBuilder {
     viewModel.setMovementDate(movementDate);
     viewModel.setDocumentNo(documentNo);
     viewModel.setStockExistence(stockExistence);
-    viewModel.setReason(movementReason);
+    viewModel.setMovementType(movementReason.getMovementType());
+    viewModel.setMovementReason(movementReason.getCode());
     viewModel.setIssued(issued);
     viewModel.setReceived(received);
     viewModel.setNegativeAdjustment(negativeAdjustment);

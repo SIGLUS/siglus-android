@@ -54,12 +54,14 @@ public class LotMovementHistoryViewModelTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenGivenUnknownReason() {
+  public void shouldShowEmptyWhenGivenUnknownReason() {
+    // given
     lotMovementItem.setMovementQuantity(100L);
     lotMovementItem.setReason("unknown");
     lotMovementItem.setDocumentNumber("aaa");
-    Assert.assertThrows(IllegalArgumentException.class,
-        () -> new LotMovementHistoryViewModel(MovementType.RECEIVE, lotMovementItem));
+    LotMovementHistoryViewModel viewModel = new LotMovementHistoryViewModel(MovementType.RECEIVE, lotMovementItem);
+    // then
+    Assert.assertEquals("",viewModel.getMovementDesc());
   }
 
   @Test
@@ -128,22 +130,28 @@ public class LotMovementHistoryViewModelTest {
     LotMovementHistoryViewModel initialInventoryViewModel = new LotMovementHistoryViewModel(
         MovementType.INITIAL_INVENTORY, lotMovementItem);
 
+    // then
+    Assert.assertTrue(initialInventoryViewModel.needShowRed());
+
     lotMovementItem.setReason(MovementReasonManager.INVENTORY);
     LotMovementHistoryViewModel physicalInventoryViewModel = new LotMovementHistoryViewModel(
         MovementType.PHYSICAL_INVENTORY, lotMovementItem);
+
+    // then
+    Assert.assertTrue(physicalInventoryViewModel.needShowRed());
 
     lotMovementItem.setReason(MovementReasonManager.DEFAULT_RECEIVE);
     LotMovementHistoryViewModel receiveViewModel = new LotMovementHistoryViewModel(
         MovementType.RECEIVE, lotMovementItem);
 
+    // then
+    Assert.assertTrue(receiveViewModel.needShowRed());
+
+
     lotMovementItem.setReason(MovementReasonManager.UNPACK_KIT);
     LotMovementHistoryViewModel unpackKitViewModel = new LotMovementHistoryViewModel(
         MovementType.ISSUE, lotMovementItem);
-
-    // when & then
-    Assert.assertTrue(initialInventoryViewModel.needShowRed());
-    Assert.assertTrue(physicalInventoryViewModel.needShowRed());
-    Assert.assertTrue(receiveViewModel.needShowRed());
+    // then
     Assert.assertTrue(unpackKitViewModel.needShowRed());
   }
 

@@ -75,9 +75,8 @@ public class NewStockMovementPresenterTest {
     newStockMovementPresenter.loadData(1L, MovementReasonManager.MovementType.RECEIVE, false);
     stockMovementViewModel.getTypeQuantityMap()
         .put(MovementReasonManager.MovementType.RECEIVE, "10");
-    stockMovementViewModel.setReason(
-        new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "code",
-            "desc"));
+    stockMovementViewModel.setMovementType(MovementReasonManager.MovementType.RECEIVE);
+    stockMovementViewModel.setMovementReason("code");
     stockMovementViewModel.setMovementDate("10/02/2016");
     LotMovementViewModel lotMovementViewModel = new LotMovementViewModelBuilder()
         .setExpiryDate("Jan 2016").setQuantity("50").build();
@@ -105,11 +104,9 @@ public class NewStockMovementPresenterTest {
 
     StockMovementViewModel stockMovementViewModel = newStockMovementPresenter.getViewModel();
     newStockMovementPresenter.loadData(1L, MovementReasonManager.MovementType.RECEIVE, false);
-    stockMovementViewModel.getTypeQuantityMap()
-        .put(MovementReasonManager.MovementType.RECEIVE, "0");
-    stockMovementViewModel.setReason(
-        new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "code",
-            "desc"));
+    stockMovementViewModel.getTypeQuantityMap().put(MovementReasonManager.MovementType.RECEIVE, "0");
+    stockMovementViewModel.setMovementType(MovementReasonManager.MovementType.RECEIVE);
+    stockMovementViewModel.setMovementReason("code");
     stockMovementViewModel.setMovementDate("10/02/2016");
     TestSubscriber<StockMovementViewModel> subscriber = new TestSubscriber<>();
     newStockMovementPresenter.getSaveMovementObservable().subscribe(subscriber);

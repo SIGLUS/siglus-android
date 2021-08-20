@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -209,7 +210,9 @@ public class NewStockMovementActivity extends BaseActivity implements
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
       movementDetailsView
           .setMovementReasonText(presenter.getMovementReasonDescriptionList()[position]);
-      presenter.getViewModel().setReason(presenter.getMovementReasons().get(position));
+      MovementReason reason = presenter.getMovementReasons().get(position);
+      presenter.getViewModel().setMovementReason(reason.getCode());
+      presenter.getViewModel().setMovementType(reason.getMovementType());
       reasonsDialog.dismiss();
     }
   }

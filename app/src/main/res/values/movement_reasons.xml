@@ -33,6 +33,8 @@
 
     <!-- Do not change -->
     <item>PHYSICAL_INVENTORY|INVENTORY|Inventory</item>
+    <item>PHYSICAL_INVENTORY|INVENTORY_NEGATIVE|Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)</item>
+    <item>PHYSICAL_INVENTORY|INVENTORY_POSITIVE|Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)</item>
 
     <!-- Default Code , Do not change -->
     <item>ISSUE|DEFAULT_ISSUE|Issued</item>

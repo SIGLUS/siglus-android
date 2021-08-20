@@ -141,16 +141,13 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     item.setMovementQuantity(Math.abs(inventory - stockOnHand));
     item.setStockOnHand(inventory);
     item.setStockCard(stockCard);
-
+    item.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
     if (inventory > stockOnHand) {
       item.setReason(MovementReasonManager.INVENTORY_POSITIVE);
-      item.setMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST);
     } else if (inventory < stockOnHand) {
       item.setReason(MovementReasonManager.INVENTORY_NEGATIVE);
-      item.setMovementType(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
     } else {
       item.setReason(MovementReasonManager.INVENTORY);
-      item.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
     }
     setLotMovementReason(model);
     item.populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(

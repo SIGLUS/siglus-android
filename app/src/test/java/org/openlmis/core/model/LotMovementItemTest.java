@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 
 public class LotMovementItemTest {
@@ -33,7 +32,7 @@ public class LotMovementItemTest {
   public void testIsUselessMovement() {
     // given
     StockMovementItem stockMovementItem = Mockito.mock(StockMovementItem.class);
-    Mockito.when(stockMovementItem.getMovementType()).thenReturn(MovementType.NEGATIVE_ADJUST);
+    Mockito.when(stockMovementItem.isNegativeMovement()).thenReturn(true);
     LotMovementItem lotMovementItem = new LotMovementItem();
     lotMovementItem.setStockMovementItem(stockMovementItem);
     lotMovementItem.setMovementQuantity(0L);

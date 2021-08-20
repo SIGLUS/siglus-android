@@ -7,16 +7,19 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.Map.Entry;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonData;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.robolectric.annotation.Config;
@@ -25,68 +28,12 @@ import org.robolectric.annotation.Config;
 public class ChangeMovementReasonToCodeTest extends LMISRepositoryUnitTest {
 
   ChangeMovementReasonToCode migrate;
-  private ArrayList<String> reasonDescListPT;
-  private ArrayList<String> reasonDescListEN;
 
   @Before
   public void setUp() throws Exception {
     migrate = new ChangeMovementReasonToCode();
     migrate.stockItemGenericDao = spy(migrate.stockItemGenericDao);
     migrate.dbUtil = mock(DbUtil.class);
-
-    reasonDescListPT = newArrayList("Inventario",
-        "Distrito (DDM)",
-        "Província (DPM)",
-        "Farmácia Pública",
-        "Maternidade-SMI",
-        "Enfermaria",
-        "Banco de Socorro-BIS",
-        "Brigada móvel",
-        "Laboratório",
-        "UATS",
-        "PNCTL",
-        "PAV",
-        "Estomatologia",
-        "Devolução de Expirados Quarentena (ou Depósito fornecedor)",
-        "Danificados no Depósito",
-        "Empréstimo (de todos os Níveis) que dão saída do Depósito",
-        "Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)",
-        "Saída para Quarentena no Caso de Problemas relativos as Qualidade",
-        "Devolução dos seus dependentes (US e Depósitos Beneficiários)",
-        "Devolução de Expirados (US e Depósitos Beneficiários)",
-        "Doação ao Depósito",
-        "Empréstimo (de todos os Níveis) que dão entrada no Depósito",
-        "Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)",
-        "Retorno da Quarentena no caso de se confirmar a qualidade do produto",
-        "physicalInventoryPositive",
-        "physicalInventoryNegative");
-
-    reasonDescListEN = newArrayList("Inventory",
-        "District( DDM)",
-        "Province ( DPM)",
-        "Public pharmacy",
-        "Maternity",
-        "General Ward",
-        "Accident & Emergency",
-        "Mobile unit",
-        "Laboratory",
-        "UATS",
-        "PNCTL",
-        "PAV",
-        "Dental ward",
-        "Drugs in quarantine have expired, returned to Supplier",
-        "Damaged on arrival",
-        "Loans made from a health facility deposit",
-        "Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)",
-        "Product defective, moved to quarantine",
-        "Returns from Customers(HF and dependent wards)",
-        "Returns of expired drugs (HF and dependent wards)",
-        "Donations to Deposit",
-        "Loans received at the health facility deposit",
-        "Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)",
-        "Returns from Quarantine, in the case of quarantined product being fit for use",
-        "physicalInventoryPositive",
-        "physicalInventoryNegative");
   }
 
 
@@ -143,7 +90,7 @@ public class ChangeMovementReasonToCodeTest extends LMISRepositoryUnitTest {
   @Config(qualifiers = "pt-port")
   public void shouldReplaceLegacyReasonDataToReasonCodePT() throws LMISException {
     MovementReasonManager.getInstance().refresh();
-    testMigrate(reasonDescListPT);
+    testMigrate(MovementReasonData.PT_TYPE_TO_DESC_LIST);
   }
 
 
@@ -151,21 +98,22 @@ public class ChangeMovementReasonToCodeTest extends LMISRepositoryUnitTest {
   @Config(qualifiers = "en-port")
   public void shouldReplaceLegacyReasonDataToReasonCodeEN() throws LMISException {
     MovementReasonManager.getInstance().refresh();
-    testMigrate(reasonDescListEN);
+    testMigrate(MovementReasonData.PT_TYPE_TO_DESC_LIST);
   }
 
-  private void testMigrate(ArrayList<String> reasonDescList) throws LMISException {
+  private void testMigrate(EnumMap<MovementType, ArrayList<String>> movementTypeToDescList) throws LMISException {
     ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
 
-    for (String reason : reasonDescList) {
-      StockMovementItem item = new StockMovementItem();
-      item.setReason(reason);
-      stockMovementItems.add(item);
+    for (Entry<MovementType, ArrayList<String>> entry : movementTypeToDescList.entrySet()) {
+      for (String desc : entry.getValue()) {
+        StockMovementItem item = new StockMovementItem();
+        item.setMovementType(entry.getKey());
+        item.setReason(desc);
+        stockMovementItems.add(item);
+      }
     }
     doReturn(stockMovementItems).when(migrate.stockItemGenericDao).queryForAll();
-
     migrate.up();
-
     for (StockMovementItem newItem : stockMovementItems) {
       assertThat(newItem.getReason().isEmpty(), is(false));
     }

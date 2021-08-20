@@ -34,6 +34,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.openlmis.core.view.activity.BulkEntriesActivity;
@@ -123,13 +124,15 @@ public class StockMovementItem extends BaseModel {
   }
 
   public boolean isPositiveMovement() {
-    return movementType.equals(MovementReasonManager.MovementType.RECEIVE)
-        || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST);
+    return MovementType.RECEIVE.equals(movementType)
+        || MovementType.POSITIVE_ADJUST.equals(movementType)
+        || MovementReasonManager.INVENTORY_POSITIVE.equals(reason);
   }
 
   public boolean isNegativeMovement() {
-    return movementType.equals(MovementReasonManager.MovementType.ISSUE)
-        || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
+    return MovementType.ISSUE.equals(movementType)
+        || MovementType.NEGATIVE_ADJUST.equals(movementType)
+        || MovementReasonManager.INVENTORY_NEGATIVE.equals(reason);
   }
 
   public Period getMovementPeriod() {

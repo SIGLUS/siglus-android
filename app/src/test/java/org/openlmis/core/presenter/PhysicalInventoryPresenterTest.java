@@ -27,6 +27,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.DraftLotItem;
@@ -177,7 +178,8 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     stockCardWithIdNine.setStockOnHand(model.getLotListQuantityTotalAmount());
 
     StockMovementItem item = presenter.calculateAdjustment(model, stockCardWithIdNine);
-    assertThat(item.getMovementType(), is(MovementReasonManager.MovementType.POSITIVE_ADJUST));
+    assertThat(item.getMovementType(), is(MovementType.PHYSICAL_INVENTORY));
+    assertThat(item.getReason(), is(MovementReasonManager.INVENTORY_POSITIVE));
     assertThat(item.getMovementQuantity(), is(20L));
     assertThat(item.getStockOnHand(), is(120L));
     assertThat(item.getStockCard(), is(stockCardWithIdNine));
@@ -191,7 +193,8 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     stockCardWithIdNine.setStockOnHand(model.getLotListQuantityTotalAmount());
 
     StockMovementItem item = presenter.calculateAdjustment(model, stockCardWithIdNine);
-    assertThat(item.getMovementType(), is(MovementReasonManager.MovementType.NEGATIVE_ADJUST));
+    assertThat(item.getMovementType(), is(MovementType.PHYSICAL_INVENTORY));
+    assertThat(item.getReason(), is(MovementReasonManager.INVENTORY_NEGATIVE));
     assertThat(item.getMovementQuantity(), is(20L));
     assertThat(item.getStockOnHand(), is(80L));
     assertThat(item.getStockCard(), is(stockCardWithIdNine));

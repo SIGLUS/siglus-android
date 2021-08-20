@@ -19,15 +19,17 @@
 package org.openlmis.core.view.viewmodel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.helper.MovementQuantityHelper;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.widget.NewMovementLotListView.LotStatus;
 
@@ -35,8 +37,6 @@ import org.openlmis.core.view.widget.NewMovementLotListView.LotStatus;
 @NoArgsConstructor
 @SuppressWarnings("PMD")
 public class StockMovementViewModel extends BaseStockMovementViewModel {
-
-  MovementReasonManager.MovementReason reason;
 
   String movementDate;
   String documentNo;
@@ -49,7 +49,7 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
   boolean isDraft = true;
 
   //new
-  private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
+  private Map<MovementType, String> typeQuantityMap = new EnumMap<>(MovementType.class);
 
   public StockMovementViewModel(StockMovementItem item) {
     product = item.getStockCard().getProduct();
@@ -59,14 +59,10 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
     signature = item.getSignature();
     requested = item.getRequested() == null ? "" : String.valueOf(item.getRequested());
     isDraft = false;
-    try {
-      reason = MovementReasonManager.getInstance().queryByCode(item.getReason());
-    } catch (MovementReasonNotFoundException e) {
-      throw new IllegalArgumentException("MovementReason Cannot be find " + e.getMessage());
-    }
-    movementType = reason.getMovementType();
+    movementType = item.getMovementType();
     movementReason = item.getReason();
-    typeQuantityMap.put(item.getMovementType(), String.valueOf(item.getMovementQuantity()));
+    typeQuantityMap = MovementQuantityHelper
+        .generateTypeQuantityMap(movementType, movementReason, item.getMovementQuantity());
   }
 
   public String getReceived() {
@@ -104,11 +100,11 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
   public StockMovementItem convertViewToModel(StockCard stockCard) {
     StockMovementItem stockMovementItem = new StockMovementItem();
     stockMovementItem.setStockOnHand(Long.parseLong(getStockExistence()));
-    stockMovementItem.setReason(reason.getCode());
+    stockMovementItem.setReason(movementReason);
     stockMovementItem.setDocumentNumber(getDocumentNo());
-    stockMovementItem.setMovementType(reason.getMovementType());
+    stockMovementItem.setMovementType(movementType);
     if (isKit) {
-      stockMovementItem.setMovementQuantity(Long.parseLong(typeQuantityMap.get(reason.getMovementType())));
+      stockMovementItem.setMovementQuantity(Long.parseLong(typeQuantityMap.get(movementType)));
     }
     stockMovementItem.setRequested((null == requested || requested.isEmpty()) ? null : Long.valueOf(requested));
     stockMovementItem.setSignature(signature);
@@ -124,7 +120,10 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
   }
 
   public boolean validateEmpty() {
-    return reason != null && StringUtils.isNoneEmpty(movementDate) && !allQuantitiesEmpty();
+    return movementType != null
+        && movementReason != null
+        && StringUtils.isNoneEmpty(movementDate)
+        && !allQuantitiesEmpty();
   }
 
   public boolean validateInputValid() {
@@ -145,7 +144,7 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
   }
 
   public boolean isIssuedReason() {
-    return getReason() != null && getReason().isIssueAdjustment();
+    return MovementType.ISSUE == movementType;
   }
 
   private boolean allQuantitiesEmpty() {
@@ -233,6 +232,6 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
   }
 
   public boolean validateMovementReason() {
-    return reason != null;
+    return movementType != null && movementReason != null;
   }
 }

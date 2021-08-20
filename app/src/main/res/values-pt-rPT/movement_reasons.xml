@@ -33,6 +33,9 @@
 
     <!-- Do not change -->
     <item>PHYSICAL_INVENTORY|INVENTORY|Inventario</item>
+    <item>PHYSICAL_INVENTORY|INVENTORY_NEGATIVE|Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)</item>
+    <item>PHYSICAL_INVENTORY|INVENTORY_POSITIVE|Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)</item>
+
     <!-- Default Code , Do not change -->
     <item>ISSUE|DEFAULT_ISSUE|Issued</item>
     <item>RECEIVE|DEFAULT_RECEIVE|Received</item>

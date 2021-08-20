@@ -107,10 +107,10 @@ public class ChangeMovementReasonToCode extends Migration {
   private boolean trySetReason(StockMovementItem item, String lang, String country) {
     try {
       MovementReason reason = reasonManager
-          .queryByDesc(item.getReason(), new Locale(lang, country));
+          .queryByDesc(item.getMovementType(), item.getReason(), new Locale(lang, country));
       item.setReason(reason.getCode());
       return true;
-    } catch (MovementReasonNotFoundException ignored) {
+    } catch (MovementReasonNotFoundException e) {
       return false;
     }
   }

@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.StockCardBuilder;
@@ -41,6 +42,7 @@ public class AllDrugsMovementPresenterTest {
   public void shouldLoadAllStockCardsWithMovement() throws Exception {
     StockCard stockcard1 = StockCardBuilder.buildStockCard();
     StockMovementItem stockMovementItem = new StockMovementItem(stockcard1);
+    stockMovementItem.setMovementType(MovementType.PHYSICAL_INVENTORY);
     stockMovementItem.setReason("INVENTORY");
     stockcard1.getStockMovementItemsWrapper().add(stockMovementItem);
 
@@ -59,6 +61,7 @@ public class AllDrugsMovementPresenterTest {
     StockCard stockcard1 = StockCardBuilder.buildStockCard();
     StockMovementItem stockMovementItem1 = new StockMovementItem(stockcard1);
     stockMovementItem1.setMovementDate(DateUtil.parseString("2016-08-26", DateUtil.DB_DATE_FORMAT));
+    stockMovementItem1.setMovementType(MovementType.PHYSICAL_INVENTORY);
     stockMovementItem1.setReason("INVENTORY");
     stockcard1.getStockMovementItemsWrapper().add(stockMovementItem1);
 

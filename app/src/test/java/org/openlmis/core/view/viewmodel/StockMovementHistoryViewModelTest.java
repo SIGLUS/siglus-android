@@ -55,6 +55,7 @@ public class StockMovementHistoryViewModelTest {
 
     StockMovementItem physicalInventoryMovementItem = new StockMovementItemBuilder()
         .withMovementType(MovementType.PHYSICAL_INVENTORY)
+        .withMovementReason(MovementReasonManager.INVENTORY)
         .build();
     StockMovementHistoryViewModel physicalInventoryViewModel = new StockMovementHistoryViewModel(
         physicalInventoryMovementItem);

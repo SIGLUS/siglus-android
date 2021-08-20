@@ -20,6 +20,7 @@ package org.openlmis.core.model.helper;
 
 import java.util.List;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.StockMovementItem;
 
 public class FormHelper {
@@ -44,19 +45,23 @@ public class FormHelper {
   }
 
   public StockMovementModifiedItem assignTotalValues(List<StockMovementItem> stockMovementItems) {
-    StockMovementModifiedItem movementModifiedItem = new StockMovementModifiedItem();
+    StockMovementModifiedItem modifiedItem = new StockMovementModifiedItem();
 
     for (StockMovementItem item : stockMovementItems) {
-      if (MovementReasonManager.MovementType.RECEIVE == item.getMovementType()) {
-        movementModifiedItem.totalReceived += item.getMovementQuantity();
-      } else if (MovementReasonManager.MovementType.ISSUE == item.getMovementType()) {
-        movementModifiedItem.totalIssued += item.getMovementQuantity();
-      } else if (MovementReasonManager.MovementType.NEGATIVE_ADJUST == item.getMovementType()) {
-        movementModifiedItem.totalAdjustment -= item.getMovementQuantity();
-      } else if (MovementReasonManager.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
-        movementModifiedItem.totalAdjustment += item.getMovementQuantity();
+      MovementType movementType = item.getMovementType();
+      String reason = item.getReason();
+      if (MovementType.RECEIVE == movementType) {
+        modifiedItem.totalReceived += item.getMovementQuantity();
+      } else if (MovementType.ISSUE == movementType) {
+        modifiedItem.totalIssued += item.getMovementQuantity();
+      } else if (MovementType.NEGATIVE_ADJUST == movementType
+          || MovementReasonManager.INVENTORY_NEGATIVE.equalsIgnoreCase(reason)) {
+        modifiedItem.totalAdjustment -= item.getMovementQuantity();
+      } else if (MovementType.POSITIVE_ADJUST == movementType
+          || MovementReasonManager.INVENTORY_POSITIVE.equalsIgnoreCase(reason)) {
+        modifiedItem.totalAdjustment += item.getMovementQuantity();
       }
     }
-    return movementModifiedItem;
+    return modifiedItem;
   }
 }

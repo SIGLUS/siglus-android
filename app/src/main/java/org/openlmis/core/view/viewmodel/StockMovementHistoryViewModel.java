@@ -20,21 +20,21 @@ package org.openlmis.core.view.viewmodel;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import lombok.Data;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.helper.MovementQuantityHelper;
 import org.openlmis.core.utils.DateUtil;
 
 @Data
 public class StockMovementHistoryViewModel {
 
   private String movementDate;
-  private MovementReasonManager.MovementReason reason;
   private MovementType movementType;
   private String documentNumber;
   private String requested;
@@ -42,7 +42,7 @@ public class StockMovementHistoryViewModel {
   private String signature;
   private StockMovementItem stockMovementItem;
   private List<LotMovementHistoryViewModel> lotViewModelList = new ArrayList<>();
-  private EnumMap<MovementType, String> typeQuantityMap = new EnumMap<>(MovementType.class);
+  private Map<MovementType, String> typeQuantityMap;
 
   public StockMovementHistoryViewModel(StockMovementItem item) {
     stockMovementItem = item;
@@ -52,13 +52,19 @@ public class StockMovementHistoryViewModel {
     stockOnHand = String.valueOf(item.getStockOnHand());
     signature = item.getSignature();
     requested = item.getRequested() == null ? "" : String.valueOf(item.getRequested());
-    try {
-      reason = MovementReasonManager.getInstance().queryByCode(item.getReason());
-    } catch (MovementReasonNotFoundException e) {
-      throw new IllegalArgumentException("MovementReason Cannot be find " + e.getMessage(), e);
-    }
-    typeQuantityMap.put(movementType, String.valueOf(Math.abs(item.getMovementQuantity())));
+    typeQuantityMap = MovementQuantityHelper
+        .generateTypeQuantityMap(movementType, item.getReason(), item.getMovementQuantity());
     buildLotViewModelList(item);
+  }
+
+  public String getMovementDesc() {
+    try {
+      return MovementReasonManager.getInstance()
+          .queryByCode(movementType, stockMovementItem.getReason())
+          .getDescription();
+    } catch (MovementReasonNotFoundException e) {
+      return "";
+    }
   }
 
   public String getReceived() {
@@ -87,11 +93,7 @@ public class StockMovementHistoryViewModel {
   }
 
   public boolean needShowRed() {
-    String movementReason = stockMovementItem.getReason();
-    return movementType == MovementType.INITIAL_INVENTORY
-        || movementType == MovementType.PHYSICAL_INVENTORY
-        || movementType == MovementType.RECEIVE
-        || (movementType == MovementType.ISSUE && MovementReasonManager.UNPACK_KIT.equalsIgnoreCase(movementReason));
+    return stockMovementItem.getMovementType().needShowRed(stockMovementItem.getReason());
   }
 
 
