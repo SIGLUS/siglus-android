@@ -27,6 +27,7 @@ import static org.openlmis.core.constant.FieldConstants.PROGRAM_ID;
 import static org.openlmis.core.constant.FieldConstants.STATUS;
 import static org.openlmis.core.constant.FieldConstants.SUBMITTED_TIME;
 import static org.openlmis.core.constant.FieldConstants.SYNCED;
+import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -366,8 +367,14 @@ public class RnrFormRepository {
 
   protected ArrayList<RnrFormItem> fillAllProducts(RnRForm form, List<RnrFormItem> basicItems)
       throws LMISException {
-    List<Long> productIds = productProgramRepository
-        .queryActiveProductIdsByProgramWithKits(form.getProgram().getProgramCode(), false);
+    List<Long> productIds;
+    String programCode = form.getProgram().getProgramCode();
+    if (programCode.equals(MMIA_PROGRAM_CODE)) {
+      productIds = productProgramRepository.queryActiveProductIdsForMMIA(programCode);
+    } else {
+      productIds = productProgramRepository.queryActiveProductIdsByProgramWithKits(
+              programCode, false);
+    }
     List<Product> products = productRepository.queryProductsByProductIds(productIds);
     ArrayList<RnrFormItem> result = new ArrayList<>();
 
