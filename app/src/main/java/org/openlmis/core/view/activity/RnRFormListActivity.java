@@ -302,7 +302,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
   protected void checkAndGotoEmergencyPage() {
     int dayOfMonth = new DateTime(LMISApp.getInstance().getCurrentTimeMillis()).getDayOfMonth();
     if (dayOfMonth >= Period.INVENTORY_BEGIN_DAY && dayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
-      ToastUtil.showForLongTime(R.string.msg_create_emergency_date_invalid);
+      ToastUtil.show(R.string.msg_create_emergency_date_invalid);
       return;
     }
 
@@ -322,7 +322,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
       @Override
       public void onNext(Boolean hasMissed) {
         if (Boolean.TRUE.equals(hasMissed)) {
-          ToastUtil.showForLongTime(R.string.msg_create_emergency_has_missed);
+          ToastUtil.show(R.string.msg_create_emergency_has_missed);
         } else {
           startActivityForResult(
               SelectEmergencyProductsActivity.getIntentToMe(RnRFormListActivity.this),

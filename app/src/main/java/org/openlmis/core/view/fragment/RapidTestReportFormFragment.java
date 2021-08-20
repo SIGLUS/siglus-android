@@ -146,7 +146,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment
 
   @Override
   public void completeSuccess() {
-    ToastUtil.showForLongTime(R.string.msg_rapid_test_submit_tip);
+    ToastUtil.show(R.string.msg_rapid_test_submit_tip);
     finish();
   }
 

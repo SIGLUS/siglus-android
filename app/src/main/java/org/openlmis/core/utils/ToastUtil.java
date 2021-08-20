@@ -26,7 +26,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -41,7 +40,7 @@ public final class ToastUtil {
     if (TextUtils.isEmpty(text)) {
       return;
     }
-    Toast toast = makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT);
+    Toast toast = makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG);
     setToastLayout(toast);
     toast.show();
   }
@@ -50,30 +49,15 @@ public final class ToastUtil {
     show(LMISApp.getContext().getString(resId));
   }
 
-  public static void showForLongTime(CharSequence text) {
-    if (TextUtils.isEmpty(text)) {
-      return;
-    }
-    Toast toast = makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG);
-    setToastLayout(toast);
-    toast.show();
-  }
-
-  public static void showForLongTime(@StringRes int resId) {
-    Toast toast = makeText(LMISApp.getContext(), resId, Toast.LENGTH_LONG);
-    setToastLayout(toast);
-    toast.show();
-  }
-
   public static void showInCenter(int text) {
-    Toast toast = makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT);
+    Toast toast = makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG);
     setToastLayout(toast);
     toast.setGravity(Gravity.CENTER, 0, 0);
     toast.show();
   }
 
   private static void setToastLayout(Toast toast) {
-    toast.setGravity(Gravity.BOTTOM, 0, 50);
+    toast.setGravity(Gravity.BOTTOM, 0, (int) LMISApp.getContext().getResources().getDimension(R.dimen.px_50));
     View view = toast.getView();
     if (view != null) {
       view.setBackgroundResource(R.drawable.toast_bg);

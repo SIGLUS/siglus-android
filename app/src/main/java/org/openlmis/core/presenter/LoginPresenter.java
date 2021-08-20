@@ -212,7 +212,7 @@ public class LoginPresenter extends Presenter {
       @Override
       public void onError(Throwable e) {
         if (!LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False).equals(e.getMessage())) {
-          ToastUtil.showForLongTime(e.getMessage());
+          ToastUtil.show(e.getMessage());
         }
         view.loaded();
       }
@@ -237,7 +237,7 @@ public class LoginPresenter extends Presenter {
 
           case SHOULD_GO_TO_INITIAL_INVENTORY:
             if (!view.needInitInventory()) {
-              ToastUtil.showForLongTime(R.string.msg_initial_sync_success);
+              ToastUtil.show(R.string.msg_initial_sync_success);
             }
             goToNextPage();
             break;

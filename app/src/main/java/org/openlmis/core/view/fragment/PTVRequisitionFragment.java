@@ -206,7 +206,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements
             showSignDialog();
           }
         } else {
-          ToastUtil.showForLongTime(R.string.msg_uncompleted_ptv_hint);
+          ToastUtil.show(R.string.msg_uncompleted_ptv_hint);
         }
       }
     };
@@ -224,7 +224,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements
 
   @Override
   public void completeSuccess() {
-    ToastUtil.showForLongTime(R.string.msg_ptv_submit_tip);
+    ToastUtil.show(R.string.msg_ptv_submit_tip);
     finish();
 
   }

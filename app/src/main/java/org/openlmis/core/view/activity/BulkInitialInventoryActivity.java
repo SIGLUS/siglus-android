@@ -162,7 +162,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
       subscriptions.add(subscription);
     } else {
       btnDone.setEnabled(true);
-      ToastUtil.showForLongTime(getValidateFailedTips());
+      ToastUtil.show(getValidateFailedTips());
     }
   }
 
@@ -179,7 +179,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     return new Subscriber<Object>() {
       @Override
       public void onCompleted() {
-        ToastUtil.showForLongTime(R.string.successfully_saved);
+        ToastUtil.show(R.string.successfully_saved);
         loaded();
         btnSave.setEnabled(true);
       }

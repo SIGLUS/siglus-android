@@ -105,7 +105,7 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
     if (validateInventory()) {
       showSignDialog();
     } else {
-      ToastUtil.showForLongTime(getValidateFailedTips());
+      ToastUtil.show(getValidateFailedTips());
     }
     trackInventoryEvent(TrackerActions.COMPLETE_INVENTORY);
   }

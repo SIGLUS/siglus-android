@@ -201,7 +201,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements
           }
         } else {
           adapter.updateTip();
-          ToastUtil.showForLongTime(R.string.msg_uncomplete_hint);
+          ToastUtil.show(R.string.msg_uncomplete_hint);
         }
       }
     };
@@ -219,7 +219,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements
 
   @Override
   public void completeSuccess() {
-    ToastUtil.showForLongTime(R.string.msg_al_submit_tip);
+    ToastUtil.show(R.string.msg_al_submit_tip);
     finish();
 
   }

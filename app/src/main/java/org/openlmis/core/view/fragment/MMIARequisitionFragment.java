@@ -421,7 +421,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
   @Override
   public void completeSuccess() {
-    ToastUtil.showForLongTime(R.string.msg_mmia_submit_tip);
+    ToastUtil.show(R.string.msg_mmia_submit_tip);
     finish();
   }
 

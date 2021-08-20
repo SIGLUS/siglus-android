@@ -190,8 +190,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
   private void refreshEmergencyRnr(RnRForm rnRForm) {
     if (!rnRForm.isAuthorized()) {
-      View.OnClickListener onClickListener = v -> ToastUtil
-          .showForLongTime(R.string.msg_emergency_requisition_cant_edit);
+      View.OnClickListener onClickListener = v -> ToastUtil.show(R.string.msg_emergency_requisition_cant_edit);
       consultationView.setEditClickListener(onClickListener);
       kitView.setEditClickListener(onClickListener);
     }
@@ -344,7 +343,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
   @Override
   public void completeSuccess() {
-    ToastUtil.showForLongTime(R.string.msg_requisition_submit_tip);
+    ToastUtil.show(R.string.msg_requisition_submit_tip);
     finish();
   }
 
