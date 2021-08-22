@@ -154,7 +154,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   private void initRecyclerView() {
     rvStockMovement.setLayoutManager(new LinearLayoutManager(this));
     stockMovementAdapter = new StockMovementAdapter();
-    stockMovementAdapter.setFromPage(getScreenName());
+    stockMovementAdapter.setPreviousPage(getScreenName());
     StockMovementHeaderView stockMovementHeaderView = new StockMovementHeaderView(this);
     stockMovementHeaderView.hideLotCodeHeaderView();
     stockMovementAdapter.addHeaderView(stockMovementHeaderView);

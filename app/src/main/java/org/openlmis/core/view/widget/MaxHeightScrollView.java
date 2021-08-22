@@ -54,8 +54,7 @@ public class MaxHeightScrollView extends ScrollView {
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST);
-    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST));
   }
 
 }

@@ -93,7 +93,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements
   private void initUI() {
     rvStockMovementList.setLayoutManager(new LinearLayoutManager(requireContext()));
     stockMovementAdapter = new StockMovementAdapter();
-    stockMovementAdapter.setFromPage(ScreenName.STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN);
+    stockMovementAdapter.setPreviousPage(ScreenName.STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN);
     rvStockMovementList.setAdapter(stockMovementAdapter);
     stockMovementAdapter.setNewInstance(presenter.getStockMovementModelList());
     swipeRefreshLayout.setOnRefreshListener(this);

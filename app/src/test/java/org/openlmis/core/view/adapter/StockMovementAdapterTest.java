@@ -53,7 +53,7 @@ public class StockMovementAdapterTest {
         .build();
     StockMovementHistoryViewModel viewModel = new StockMovementHistoryViewModel(movementItem);
     StockMovementAdapter stockMovementAdapter = new StockMovementAdapter();
-    stockMovementAdapter.setFromPage(ScreenName.STOCK_CARD_MOVEMENT_SCREEN);
+    stockMovementAdapter.setPreviousPage(ScreenName.STOCK_CARD_MOVEMENT_SCREEN);
     BaseViewHolder holder = new BaseViewHolder(
         LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_stock_movement, null));
 

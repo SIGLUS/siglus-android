@@ -49,7 +49,7 @@ public enum ScreenName {
   REQUISITION_SCREEN("Requisition Screen"),
   BULK_ISSUE_CHOOSE_DESTINATION("Bulk Issue Choose Destination Screen"),
   BULK_ISSUE("Bulk Issue Screen"),
-  STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN("STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN");
+  STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN("Stock Movement Detail History Screen");
 
   private final String name;
 

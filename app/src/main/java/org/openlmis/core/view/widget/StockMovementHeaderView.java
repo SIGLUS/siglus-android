@@ -47,7 +47,6 @@ public class StockMovementHeaderView extends FrameLayout {
 
   public void hideLotCodeHeaderView() {
     tvLotCode.setVisibility(GONE);
-
   }
 
   private void initView(@NonNull Context context) {

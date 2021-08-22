@@ -36,7 +36,11 @@ import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
 public class StockMovementAdapter extends BaseQuickAdapter<StockMovementHistoryViewModel, BaseViewHolder> {
 
   @Setter
-  private ScreenName fromPage;
+  private ScreenName previousPage;
+
+  private BaseViewHolder holder;
+
+  private StockMovementHistoryViewModel model;
 
   public StockMovementAdapter() {
     super(R.layout.item_stock_movement);
@@ -44,54 +48,39 @@ public class StockMovementAdapter extends BaseQuickAdapter<StockMovementHistoryV
 
   @Override
   protected void convert(@NonNull BaseViewHolder holder, StockMovementHistoryViewModel model) {
-    if (fromPage == ScreenName.STOCK_CARD_MOVEMENT_SCREEN) {
-      covertByProduct(holder, model);
+    this.holder = holder;
+    this.model = model;
+    if (previousPage == ScreenName.STOCK_CARD_MOVEMENT_SCREEN) {
+      covertByProduct();
     }
-    if (fromPage == ScreenName.STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN) {
-      covertByLot(holder, model);
+    if (previousPage == ScreenName.STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN) {
+      covertByLot();
     }
   }
 
-  private void covertByProduct(@NonNull BaseViewHolder holder, StockMovementHistoryViewModel model) {
-    holder.setText(R.id.tv_date, model.getMovementDate());
-    holder.setText(R.id.tv_reason,
-        model.isNoStock() ? holder.itemView.getContext().getString(R.string.label_inventory) : model.getMovementDesc());
+  private void covertByProduct() {
+    setTextAndTextColor(R.id.tv_date, model.getMovementDate());
+    setTextAndTextColor(R.id.tv_reason, model.isNoStock()
+        ? holder.itemView.getContext().getString(R.string.label_inventory) : model.getMovementDesc());
+    setTextAndTextColor(R.id.tv_document_number, model.getDocumentNumber());
+    setTextAndTextColor(R.id.tv_received, model.getReceived());
+    setTextAndTextColor(R.id.tv_negative_adjustment, model.getNegativeAdjustment());
+    setTextAndTextColor(R.id.tv_positive_adjustment, model.getPositiveAdjustment());
+    setTextAndTextColor(R.id.tv_issued, model.getIssued());
+    setTextAndTextColor(R.id.tv_stock_on_hand, model.getStockOnHand());
+    setTextAndTextColor(R.id.tv_requested, model.getRequested());
+    setTextAndTextColor(R.id.tv_signature, model.getSignature());
     holder.getView(R.id.tv_lot_code).setVisibility(View.GONE);
-    holder.setText(R.id.tv_document_number, model.getDocumentNumber());
-    holder.setText(R.id.tv_received, model.getReceived());
-    holder.setText(R.id.tv_negative_adjustment, model.getNegativeAdjustment());
-    holder.setText(R.id.tv_positive_adjustment, model.getPositiveAdjustment());
-    holder.setText(R.id.tv_issued, model.getIssued());
-    holder.setText(R.id.tv_stock_on_hand, model.getStockOnHand());
-    holder.setText(R.id.tv_requested, model.getRequested());
-    holder.setText(R.id.tv_signature, model.getSignature());
-    holder.setTextColorRes(R.id.tv_date, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_reason, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_document_number, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_received, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_negative_adjustment, model.needShowRed()
-        ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_positive_adjustment, model.needShowRed()
-        ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_issued, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_stock_on_hand, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_requested, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_signature, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
     holder.getView(R.id.rv_stock_movement_lot_list).setVisibility(View.GONE);
   }
 
-  private void covertByLot(@NonNull BaseViewHolder holder, StockMovementHistoryViewModel model) {
-    holder.setText(R.id.tv_date, model.getMovementDate());
-    holder.setText(R.id.tv_stock_on_hand, model.getStockOnHand());
-    holder.setText(R.id.tv_requested, model.getRequested());
-    holder.setText(R.id.tv_signature, model.getSignature());
-    holder.setText(R.id.tv_reason,
-        model.isNoStock() ? holder.itemView.getContext().getString(R.string.label_inventory) : "");
-    holder.setTextColorRes(R.id.tv_date, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_stock_on_hand, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_requested, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_signature, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_reason, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+  private void covertByLot() {
+    setTextAndTextColor(R.id.tv_date, model.getMovementDate());
+    setTextAndTextColor(R.id.tv_stock_on_hand, model.getStockOnHand());
+    setTextAndTextColor(R.id.tv_requested, model.getRequested());
+    setTextAndTextColor(R.id.tv_signature, model.getSignature());
+    setTextAndTextColor(R.id.tv_reason, model.isNoStock()
+        ? holder.itemView.getContext().getString(R.string.label_inventory) : "");
     holder.setBackgroundResource(R.id.ll_stock_movement_root, R.color.color_eeeeee);
     RecyclerView rvLotList = holder.getView(R.id.rv_stock_movement_lot_list);
     if (model.getLotViewModelList().isEmpty()) {
@@ -110,5 +99,10 @@ public class StockMovementAdapter extends BaseQuickAdapter<StockMovementHistoryV
       rvLotList.setAdapter(lotAdapter);
       lotAdapter.setList(model.getLotViewModelList());
     }
+  }
+
+  private void setTextAndTextColor(int viewId, String text) {
+    holder.setText(viewId, text);
+    holder.setTextColorRes(viewId, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
   }
 }
