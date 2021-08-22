@@ -25,6 +25,7 @@ import static org.openlmis.core.utils.Constants.DEVICE_INFO;
 import static org.openlmis.core.utils.Constants.FACILITY_CODE;
 import static org.openlmis.core.utils.Constants.FACILITY_NAME;
 import static org.openlmis.core.utils.Constants.GRANT_TYPE;
+import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_ANDROID;
 import static org.openlmis.core.utils.Constants.UNIQUE_ID;
 import static org.openlmis.core.utils.Constants.USER_NAME;
 import static org.openlmis.core.utils.Constants.VERSION_CODE;
@@ -37,9 +38,11 @@ import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
+import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.enumeration.LoginErrorType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.exceptions.SyncServerException;
@@ -51,6 +54,7 @@ import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.Service;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.adapter.PodAdapter;
 import org.openlmis.core.network.adapter.ProductsResponseAdapter;
 import org.openlmis.core.network.adapter.ProgramAdapter;
@@ -84,6 +88,7 @@ public class LMISRestManager {
   private static LMISRestManager instance;
   private final LMISRestApi lmisRestApi;
   private final SyncService syncService;
+  private final UserRepository userRepository;
 
   protected LMISRestManager(Context context) {
     String baseUrl = context.getString(R.string.server_base_url);
@@ -98,6 +103,7 @@ public class LMISRestManager {
 
     lmisRestApi = restBuilder.build().create(LMISRestApi.class);
     syncService = RoboGuice.getInjector(context).getInstance(SyncService.class);
+    userRepository = RoboGuice.getInjector(context).getInstance(UserRepository.class);
     instance = this;
   }
 
@@ -174,8 +180,7 @@ public class LMISRestManager {
   }
 
   private String getAndroidId() {
-    return Settings.Secure
-        .getString(LMISApp.getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+    return Settings.Secure.getString(LMISApp.getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
   }
 
   class APIErrorHandler implements ErrorHandler {
@@ -183,13 +188,21 @@ public class LMISRestManager {
     @Override
     public Throwable handleError(RetrofitError cause) {
       Response r = cause.getResponse();
+      if (r != null && r.getStatus() == 400) {
+        return new SyncServerException(
+            ((DataErrorResponse) cause.getBodyAs(DataErrorResponse.class)).getError());
+      }
       if (r != null && r.getStatus() == 401) {
         UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
         refreshAccessToken(UserInfoMgr.getInstance().getUser(), cause);
       }
-      if (r != null && r.getStatus() == 400) {
-        return new SyncServerException(
-            ((DataErrorResponse) cause.getBodyAs(DataErrorResponse.class)).getError());
+      if (r != null && r.getStatus() == 403) {
+        DataErrorResponse dataErrorResponse = (DataErrorResponse) cause.getBodyAs(DataErrorResponse.class);
+        if (SIGLUS_API_ERROR_NOT_ANDROID.equals(dataErrorResponse.getMessageKey())) {
+          EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
+          userRepository.deleteLocalUser();
+          return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
+        }
       }
       if (r != null && r.getStatus() == 500) {
         return new SyncServerException(LMISApp.getContext().getString(R.string.sync_server_error));

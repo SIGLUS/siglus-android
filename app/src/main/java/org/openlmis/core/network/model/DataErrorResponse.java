@@ -26,4 +26,8 @@ import lombok.Setter;
 public class DataErrorResponse {
 
   String error;
+
+  String messageKey;
+
+  String message;
 }

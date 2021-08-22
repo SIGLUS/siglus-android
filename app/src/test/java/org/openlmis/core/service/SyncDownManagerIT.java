@@ -310,7 +310,7 @@ public class SyncDownManagerIT {
     String facilityInfoJsonWithIsAndroidFalse = JsonFileReader
         .readJson(getClass(), "facilityInfoResponseWithIsAndroidFalse.json");
     LMISRestManagerMock lmisRestManager = LMISRestManagerMock
-        .getRestManagerWithMockClient("/api/siglusapi/android/me/facility", 200, "OK",
+        .getRestManagerWithMockClient("/api/siglusapi/android/me/facility", 403, "Forbidden",
             facilityInfoJsonWithIsAndroidFalse, RuntimeEnvironment.application);
     mockResponse(lmisRestManager);
     syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();

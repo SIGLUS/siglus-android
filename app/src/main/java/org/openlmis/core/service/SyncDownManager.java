@@ -31,7 +31,6 @@ import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.enumeration.LoginErrorType;
 import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
@@ -475,11 +474,6 @@ public class SyncDownManager {
       LMISException e = new LMISException("fetch facility info exception");
       e.reportToFabric();
       throw e;
-    }
-    if (!facilityInfoResponse.isAndroid()) {
-      userRepository.deleteLocalUser();
-      EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
-      throw new LMISException(errorMessage(R.string.msg_isAndroid_False));
     }
     User user = UserInfoMgr.getInstance().getUser();
     user.setFacilityCode(facilityInfoResponse.getCode());

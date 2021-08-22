@@ -224,6 +224,8 @@ public final class Constants {
 
   public static final String  DEFAULT_REASON_FOR_NO_AMOUNT_LOT = "INTERMEDIATE_WAREHOUSE";
 
+  public static final String SIGLUS_API_ERROR_NOT_ANDROID = "siglusapi.error.notAndroid";
+
   private Constants() {
 
   }
