@@ -38,6 +38,7 @@ import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
@@ -47,6 +48,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.exceptions.SyncServerException;
 import org.openlmis.core.exceptions.UnauthorizedException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
@@ -201,6 +203,7 @@ public class LMISRestManager {
         if (SIGLUS_API_ERROR_NOT_ANDROID.equals(dataErrorResponse.getMessageKey())) {
           EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
           userRepository.deleteLocalUser();
+          SharedPreferenceMgr.getInstance().setLastLoginUser(StringUtils.EMPTY);
           return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
         }
       }
