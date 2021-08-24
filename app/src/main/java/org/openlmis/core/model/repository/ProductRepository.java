@@ -351,6 +351,26 @@ public class ProductRepository {
     return activeProducts;
   }
 
+  public List<Product> queryProductsByProgramCode(String programCode) {
+    String rawSql = "SELECT p1.* FROM products p1 "
+        + "JOIN product_programs p2 "
+        + "ON p1.code = p2.productCode "
+        + "WHERE p2.programCode = '"
+        + programCode
+        + "'";
+    Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+    List<Product> products = new ArrayList<>();
+    if (cursor.moveToFirst()) {
+      do {
+        products.add(buildProductFromCursor(cursor));
+      } while (cursor.moveToNext());
+    }
+    if (!cursor.isClosed()) {
+      cursor.close();
+    }
+    return products;
+  }
+
   @NonNull
   private Product buildProductFromCursor(Cursor cursor) {
     Product product = new Product();

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <View
+    android:id="@+id/v_white_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:layout_margin="@dimen/px_24" />
+
+  <TextView
+    android:id="@+id/tv_issue_voucher_anchor"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="@id/v_white_background"
+    app:layout_constraintLeft_toLeftOf="@id/v_white_background"
+    android:text="@string/label_create_issue_voucher_draft"
+    android:textSize="@dimen/px_24"
+    android:layout_marginStart="@dimen/px_82"
+    android:layout_marginTop="@dimen/px_100"
+    android:textColor="@color/color_black"
+    android:fontFamily="sans-serif-medium" />
+
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/til_order_number"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    app:layout_constraintLeft_toLeftOf="@id/v_white_background"
+    app:layout_constraintTop_toBottomOf="@id/tv_issue_voucher_anchor"
+    app:layout_constraintRight_toRightOf="@id/v_white_background"
+    android:layout_marginHorizontal="@dimen/px_76"
+    android:padding="0dp"
+    android:layout_marginTop="@dimen/px_96">
+    <com.google.android.material.textfield.TextInputEditText
+      android:id="@+id/et_order_number"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/EditText.Gray"
+      android:drawableLeft="@drawable/bitmap_order_number"
+      android:drawablePadding="5dp"
+      android:hint="@string/hint_order_number"
+      android:textSize="@dimen/px_20"
+      android:textColorHint="@color/color_6b6b6b"
+      android:singleLine="true"
+      android:ellipsize="end"
+      android:maxLength="@integer/document_number_length"
+      android:textColor="@color/color_black" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/til_program"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    app:layout_constraintLeft_toLeftOf="@id/v_white_background"
+    app:layout_constraintTop_toBottomOf="@id/til_order_number"
+    app:layout_constraintRight_toRightOf="@id/v_white_background"
+    android:layout_marginHorizontal="@dimen/px_76"
+    android:layout_marginTop="@dimen/px_48">
+
+    <com.google.android.material.textfield.TextInputEditText
+      android:id="@+id/et_issue_voucher_program"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/EditText.Gray"
+      android:drawableLeft="@drawable/bitmap_program"
+      android:drawablePadding="5dp"
+      android:hint="@string/hint_program"
+      android:textSize="@dimen/px_20"
+      android:singleLine="true"
+      android:focusableInTouchMode="false"
+      android:textColorHint="@color/color_6b6b6b"
+      android:textColor="@color/color_black"
+      android:gravity="center_vertical" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/til_origin"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    app:layout_constraintLeft_toLeftOf="@id/v_white_background"
+    app:layout_constraintTop_toBottomOf="@id/til_program"
+    app:layout_constraintRight_toRightOf="@id/v_white_background"
+    android:layout_marginHorizontal="@dimen/px_76"
+    android:layout_marginTop="@dimen/px_48">
+
+    <com.google.android.material.textfield.TextInputEditText
+      android:id="@+id/et_origin"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/EditText.Gray"
+      android:drawableLeft="@drawable/bitmap_origin"
+      android:drawablePadding="5dp"
+      android:hint="@string/hint_origin_of_movement"
+      android:textSize="@dimen/px_20"
+      android:focusableInTouchMode="false"
+      android:singleLine="true"
+      android:textColorHint="@color/color_6b6b6b"
+      android:textColor="@color/color_black"
+      android:gravity="center_vertical" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <androidx.appcompat.widget.AppCompatButton
+    android:id="@+id/bt_next"
+    android:layout_width="@dimen/px_220"
+    android:layout_height="@dimen/px_36"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/til_origin"
+    android:background="@drawable/shape_blue_4_radius_bg"
+    android:layout_marginTop="@dimen/px_120"
+    android:gravity="center"
+    android:text="@string/label_next"
+    android:textColor="@color/color_white"
+    android:textSize="@dimen/px_20" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

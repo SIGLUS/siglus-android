@@ -633,4 +633,11 @@
   <string name="label_create_issue_voucher_draft">Create issue voucher draft</string>
   <string name="label_issue_voucher">Issue Voucher</string>
   <string name="label_pod">Proof of Delivery</string>
+  <string name="hint_order_number">Order Number</string>
+  <string name="hint_program">Program</string>
+  <string name="hint_origin_of_movement">Origin of Movement</string>
+  <string name="msg_order_number_existed">The order number already exists in the issue voucher or PoD list page, please check it.</string>
+  <string name="alert_order_number_can_not_be_blank">Order number cannot be blank</string>
+  <string name="alert_program_can_not_be_blank">Program cannot be blank</string>
+  <string name="alert_movement_reason_can_not_be_blank">Movement reason cannot be blank</string>
 </resources>

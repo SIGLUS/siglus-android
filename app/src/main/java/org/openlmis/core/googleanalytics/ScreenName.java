@@ -49,7 +49,8 @@ public enum ScreenName {
   REQUISITION_SCREEN("Requisition Screen"),
   BULK_ISSUE_CHOOSE_DESTINATION("Bulk Issue Choose Destination Screen"),
   BULK_ISSUE("Bulk Issue Screen"),
-  STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN("Stock Movement Detail History Screen");
+  STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN("Stock Movement Detail History Screen"),
+  ISSUE_VOUCHER_INPUT_ORDER_NUMBER_SCREEN("Issue Voucher Input Order number Screen");
 
   private final String name;
 

@@ -148,6 +148,10 @@
       android:label="@string/title_bulk_issue"
       android:name=".view.activity.BulkIssueActivity"
       android:screenOrientation="portrait" />
+    <activity
+      android:label="@string/label_create_issue_voucher_draft"
+      android:name=".view.activity.IssueVoucherInputOrderNumberActivity"
+      android:screenOrientation="portrait"/>
 
     <provider
       android:authorities="@string/sync_content_authority"

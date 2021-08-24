@@ -50,12 +50,14 @@ public class AddProductsToBulkEntriesPresenter extends Presenter {
   }
 
   public Observable<List<ProductsToBulkEntriesViewModel>> getProducts(List<String> addedProducts,
-      boolean isFromBulkIssue) {
+      boolean isFromBulkIssue, String programCode) {
     return Observable.create((Observable.OnSubscribe<List<ProductsToBulkEntriesViewModel>>) subscriber -> {
       try {
         List<Product> products;
         if (isFromBulkIssue) {
           products = productRepository.queryProductsInStockCard();
+        } else if (programCode != null) {
+          products = productRepository.queryProductsByProgramCode(programCode);
         } else {
           products = productRepository.listAllProductsWithoutKit();
         }

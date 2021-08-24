@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -53,6 +52,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   public static final String EMPTY_STRING = "";
   public static final String SELECTED_PRODUCTS = "SELECTED_PRODUCTS";
   public static final String IS_FROM_BULK_ISSUE = "IS_FROM_ISSUE";
+  public static final String CHOSEN_PROGRAM_CODE = "CHOSEN_PROGRAM_CODE";
   List<String> previouslyProductCodes;
 
   AddProductsToBulkEntriesAdapter adapter;
@@ -72,16 +72,19 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   @InjectView(R.id.btn_add_products)
   Button btnAddProducts;
 
+  private String programCode;
+
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
+    previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_PRODUCTS);
+    programCode = (String) getIntent().getSerializableExtra(CHOSEN_PROGRAM_CODE);
     super.onCreate(savedInstanceState);
     initRecyclerView();
     loading(getString(R.string.add_all_products_loading_message));
-    previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_PRODUCTS);
-    boolean isFromBulkIssue = getIntent().getBooleanExtra(IS_FROM_BULK_ISSUE, false);
     btnAddProducts.setOnClickListener(addProductsListener());
+    boolean isFromBulkIssue = getIntent().getBooleanExtra(IS_FROM_BULK_ISSUE, false);
     Subscription subscription = addProductsToBulkEntriesPresenter
-        .getProducts(previouslyProductCodes, isFromBulkIssue)
+        .getProducts(previouslyProductCodes, isFromBulkIssue, programCode)
         .subscribe(getOnViewModelsLoadedSubscriber());
     subscriptions.add(subscription);
   }
@@ -97,6 +100,11 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   @Override
   protected ScreenName getScreenName() {
     return ScreenName.ADD_PRODUCT_TO_BULK_ENTRIES_SCREEN;
+  }
+
+  @Override
+  protected int getThemeRes() {
+    return programCode != null ? R.style.AppTheme_AMBER : super.getThemeRes();
   }
 
   protected void setTotal(int total) {
@@ -144,7 +152,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
         }
       }
       if (selectedProducts.isEmpty()) {
-        Toast.makeText(getApplicationContext(), R.string.msg_no_product_added, Toast.LENGTH_LONG).show();
+        ToastUtil.show(R.string.msg_no_product_added);
       } else {
         Intent intent = new Intent();
         intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
