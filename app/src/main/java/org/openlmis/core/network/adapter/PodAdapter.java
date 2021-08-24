@@ -18,6 +18,8 @@
 
 package org.openlmis.core.network.adapter;
 
+import static org.openlmis.core.enumeration.OrderStatus.RECEIVED;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.network.model.PodResponse;
 import org.openlmis.core.network.model.PodsLocalResponse;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -47,7 +50,11 @@ public class PodAdapter implements JsonDeserializer<PodsLocalResponse> {
     final PodsLocalResponse podsLocalResponse = new PodsLocalResponse();
     podsLocalResponse.setPods(FluentIterable.from(podResponses).transform(podResponse -> {
       try {
-        return Objects.requireNonNull(podResponse).from();
+        Pod pod = Objects.requireNonNull(podResponse).from();
+        pod.setLocal(false);
+        pod.setDraft(false);
+        pod.setSynced(pod.getOrderStatus() == RECEIVED);
+        return pod;
       } catch (LMISException e) {
         new LMISException(e, "PodAdapter.deserialize").reportToFabric();
         throw new JsonParseException("Pod deserialize fail", e);

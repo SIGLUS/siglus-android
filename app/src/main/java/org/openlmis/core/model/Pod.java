@@ -90,6 +90,15 @@ public class Pod extends BaseModel {
   @DatabaseField
   private String requisitionActualEndDate;
 
+  @DatabaseField
+  private boolean isLocal;
+
+  @DatabaseField
+  private boolean isDraft;
+
+  @DatabaseField
+  private boolean isSynced;
+
   @ForeignCollectionField
   private ForeignCollection<PodProductItem> podProductItemForeignCollection;
 

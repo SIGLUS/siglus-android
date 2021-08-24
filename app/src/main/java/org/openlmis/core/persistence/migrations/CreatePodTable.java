@@ -7,7 +7,7 @@ public class CreatePodTable extends Migration {
   @Override
   public void up() {
     execSQL("CREATE TABLE `pods` " +
-        "(`id` INTEGER PRIMARY KEY AUTOINCREMENT, "+
+        "(`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "`shippedDate` VARCHAR NOT NULL, " +
         "`receivedDate` VARCHAR, " +
         "`deliveredBy` VARCHAR, " +
@@ -25,6 +25,9 @@ public class CreatePodTable extends Migration {
         "`requisitionEndDate` VARCHAR NOT NULL, " +
         "`requisitionActualStartDate` VARCHAR NOT NULL, " +
         "`requisitionActualEndDate` VARCHAR NOT NULL, " +
+        "`isLocal` BOOLEAN DEFAULT 0, " +
+        "`isDraft` BOOLEAN DEFAULT 0, " +
+        "`isSynced` BOOLEAN DEFAULT 0, " +
         "`createdAt` VARCHAR NOT NULL, " +
         "`updatedAt` VARCHAR NOT NULL) ");
   }
