@@ -23,6 +23,6 @@ public class IntentConstants {
   private IntentConstants() {
   }
   
-  
+  public static final String PARAM_IS_ISSUE_VOUCHER = "IS_ISSUE_VOUCHER";
   
 }

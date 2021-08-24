@@ -630,4 +630,7 @@
   <string name="msg_fetching_pods">Downloading pods…</string>
   <string name="msg_sync_pod_failed">Sync pods failed.</string>
   <string name="label_issued_amount">Issued amount:&#160;</string>
+  <string name="label_create_issue_voucher_draft">Create issue voucher draft</string>
+  <string name="label_issue_voucher">Issue Voucher</string>
+  <string name="label_pod">Proof of Delivery</string>
 </resources>

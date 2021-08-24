@@ -16,22 +16,14 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.activity;
+package org.openlmis.core.presenter;
 
-import org.openlmis.core.R;
-import org.openlmis.core.googleanalytics.ScreenName;
-import roboguice.inject.ContentView;
+import org.openlmis.core.view.BaseView;
 
-@ContentView(R.layout.activity_issue_voucher)
-public class IssueVoucherActivity extends BaseActivity {
+public class IssueVoucherListPresenter extends Presenter{
 
   @Override
-  protected ScreenName getScreenName() {
-    return ScreenName.ISSUE_VOUCHER_AND_POD;
-  }
-
-  @Override
-  protected int getThemeRes() {
-    return R.style.AppTheme_AMBER;
+  public void attachView(BaseView v) {
+    // do nothing
   }
 }

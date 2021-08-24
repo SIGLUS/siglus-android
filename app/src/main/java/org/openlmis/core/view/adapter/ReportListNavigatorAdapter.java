@@ -20,6 +20,7 @@ package org.openlmis.core.view.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.TypedValue;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
@@ -30,7 +31,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView;
 import org.openlmis.core.R;
 import org.openlmis.core.model.ReportTypeForm;
-import org.openlmis.core.view.widget.RequisitionPageIndicator;
+import org.openlmis.core.view.widget.FillPageIndicator;
 
 public class ReportListNavigatorAdapter extends CommonNavigatorAdapter {
 
@@ -60,13 +61,14 @@ public class ReportListNavigatorAdapter extends CommonNavigatorAdapter {
     titleView.setNormalColor(Color.BLACK);
     titleView.setSelectedColor(Color.BLACK);
     titleView.setText(data.get(index).getName());
+    titleView.setTypeface(Typeface.DEFAULT_BOLD);
     titleView.setOnClickListener(view -> viewPager.setCurrentItem(index));
     return titleView;
   }
 
   @Override
   public IPagerIndicator getIndicator(Context context) {
-    RequisitionPageIndicator indicator = new RequisitionPageIndicator(context);
+    FillPageIndicator indicator = new FillPageIndicator(context);
     indicator.setLineColors(ContextCompat.getColor(context, R.color.color_purple));
     indicator.setSelectedBackgroundColor(ContextCompat.getColor(context, R.color.color_requisition_background));
     return indicator;

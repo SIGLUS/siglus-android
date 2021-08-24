@@ -126,7 +126,7 @@
       android:screenOrientation="landscape" />
     <activity
       android:label="@string/title_issue_voucher_and_pod"
-      android:name=".view.activity.IssueVoucherActivity"
+      android:name=".view.activity.IssueVoucherListActivity"
       android:screenOrientation="portrait" />
     <activity
       android:label="@string/title_bulk_entries"

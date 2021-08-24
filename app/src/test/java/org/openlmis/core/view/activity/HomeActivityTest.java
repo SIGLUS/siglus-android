@@ -170,7 +170,7 @@ public class HomeActivityTest {
 
     // then
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
-    assertThat(startedIntent.getComponent().getClassName(), equalTo(IssueVoucherActivity.class.getName()));
+    assertThat(startedIntent.getComponent().getClassName(), equalTo(IssueVoucherListActivity.class.getName()));
   }
 
   private void verifyNextPage(String className) {

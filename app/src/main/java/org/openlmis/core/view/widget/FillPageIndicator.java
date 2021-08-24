@@ -33,7 +33,7 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.model.PositionData;
 
-public class RequisitionPageIndicator extends View implements IPagerIndicator {
+public class FillPageIndicator extends View implements IPagerIndicator {
 
   private Interpolator startInterpolator = new LinearInterpolator();
   private Interpolator endInterpolator = new LinearInterpolator();
@@ -50,7 +50,7 @@ public class RequisitionPageIndicator extends View implements IPagerIndicator {
   private final RectF lineRect = new RectF();
   private final RectF backgroundRect = new RectF();
 
-  public RequisitionPageIndicator(Context context) {
+  public FillPageIndicator(Context context) {
     super(context);
     init(context);
   }
