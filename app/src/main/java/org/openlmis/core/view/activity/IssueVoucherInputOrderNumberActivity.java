@@ -21,6 +21,9 @@ package org.openlmis.core.view.activity;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.CHOSEN_PROGRAM_CODE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.IS_FROM_BULK_ISSUE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
+import static org.openlmis.core.view.activity.IssueVoucherActivity.MOVEMENT_REASON_CODE;
+import static org.openlmis.core.view.activity.IssueVoucherActivity.ORDER_NUMBER;
+import static org.openlmis.core.view.activity.IssueVoucherActivity.PROGRAM_CODE;
 
 import android.app.Activity;
 import android.content.Context;
@@ -40,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
@@ -69,6 +73,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   @InjectView(R.id.til_order_number)
   private TextInputLayout tilOrderNumber;
 
+  @Getter(AccessLevel.PACKAGE)
   @InjectView(R.id.et_order_number)
   private TextInputEditText etOrderNumber;
 
@@ -78,20 +83,25 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   @InjectView(R.id.til_origin)
   private TextInputLayout tilOrigin;
 
+  @Getter(AccessLevel.PACKAGE)
   @InjectView(R.id.et_origin)
   private TextInputEditText etOrigin;
 
+  @Getter(AccessLevel.PACKAGE)
   @InjectView(R.id.et_issue_voucher_program)
   private TextInputEditText etProgram;
 
+  @Getter(AccessLevel.PACKAGE)
   @InjectView(R.id.bt_next)
   private Button btNext;
 
+  @Setter(AccessLevel.PACKAGE)
   private String orderNumber = null;
 
   @Setter(AccessLevel.PACKAGE)
   private MovementReason chosenReason = null;
 
+  @Setter(AccessLevel.PACKAGE)
   private Program chosenProgram = null;
 
   @InjectPresenter(IssueVoucherInputOrderNumberPresenter.class)
@@ -133,7 +143,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
     etProgram.setText(chosenProgram == null ? "" : chosenProgram.getProgramName());
   }
 
-  private void initProgramData() {
+  protected void initProgramData() {
     final Subscription subscription = presenter.loadPrograms().subscribe(getOnProgramsLoadedSubscriber());
     subscriptions.add(subscription);
   }
@@ -171,15 +181,15 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
             .toArray(String.class);
         Bundle bundle = new Bundle();
         bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, programArray);
-        SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
-        reasonsDialog.setArguments(bundle);
-        reasonsDialog.setMovementTypeOnClickListener((parent, view1, position, id) -> {
+        SimpleSelectDialogFragment programDialog = new SimpleSelectDialogFragment();
+        programDialog.setArguments(bundle);
+        programDialog.setMovementTypeOnClickListener((parent, view1, position, id) -> {
           tilProgram.setError(null);
           chosenProgram = programItems.get(position);
           updateProgramItem();
-          reasonsDialog.dismiss();
+          programDialog.dismiss();
         });
-        reasonsDialog.show(getSupportFragmentManager(), "SELECT_PROGRAMS");
+        programDialog.show(getSupportFragmentManager(), "SELECT_PROGRAMS");
       }
     };
   }
@@ -209,11 +219,25 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
     };
   }
 
+  private final ActivityResultLauncher<Intent> issueVoucherActivityResultLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          return;
+        }
+      }
+  );
+
   private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
         if (result.getResultCode() != Activity.RESULT_OK) {
           return;
         }
+        Intent intent = new Intent(IssueVoucherInputOrderNumberActivity.this, IssueVoucherActivity.class);
+        intent.putExtra(ORDER_NUMBER, orderNumber);
+        intent.putExtra(PROGRAM_CODE, chosenProgram.getProgramCode());
+        intent.putExtra(MOVEMENT_REASON_CODE, chosenReason.getCode());
+        intent.putExtra(SELECTED_PRODUCTS, result.getData().getSerializableExtra(SELECTED_PRODUCTS));
+        issueVoucherActivityResultLauncher.launch(intent);
       });
 
   @NonNull

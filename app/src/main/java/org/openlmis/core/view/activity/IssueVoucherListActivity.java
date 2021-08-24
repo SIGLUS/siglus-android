@@ -19,6 +19,7 @@
 package org.openlmis.core.view.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -38,9 +39,9 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.IssueVoucherListFragment;
 import org.openlmis.core.view.widget.FillPageIndicator;
 import roboguice.inject.ContentView;
@@ -84,8 +85,8 @@ public class IssueVoucherListActivity extends BaseActivity {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     if (R.id.action_create_issue_voucher == item.getItemId()) {
-      // TODO goto create issue voucher activity
-      ToastUtil.show("create issue voucher");
+      Intent intent = new Intent(LMISApp.getContext(), IssueVoucherInputOrderNumberActivity.class);
+      startActivity(intent);
       return true;
     } else {
       return super.onOptionsItemSelected(item);
