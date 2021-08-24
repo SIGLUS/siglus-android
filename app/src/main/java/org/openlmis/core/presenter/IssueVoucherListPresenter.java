@@ -20,7 +20,7 @@ package org.openlmis.core.presenter;
 
 import org.openlmis.core.view.BaseView;
 
-public class IssueVoucherListPresenter extends Presenter{
+public class IssueVoucherListPresenter extends Presenter {
 
   @Override
   public void attachView(BaseView v) {
