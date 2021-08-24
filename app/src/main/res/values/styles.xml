@@ -988,4 +988,28 @@
   <style name="error_appearance" parent="@android:style/TextAppearance">
     <item name="android:textColor">@color/color_fc2b2a</item>
   </style>
+
+  <style name="Pod" />
+  <style name="Pod.header" />
+  <style name="Pod.header.line" parent="Divider.Vertical">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">@dimen/px_35</item>
+    <item name="android:orientation">horizontal</item>
+  </style>
+  <style name="Pod.header.text">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:gravity">left|center</item>
+    <item name="android:textColor">@color/color_black</item>
+    <item name="android:textSize">@dimen/px_18</item>
+  </style>
+  <style name="Pod.header.text.title">
+    <item name="android:layout_weight">1</item>
+    <item name="android:layout_marginLeft">@dimen/px_16</item>
+  </style>
+  <style name="Pod.header.text.value">
+    <item name="android:layout_weight">2.2</item>
+    <item name="android:layout_marginLeft">@dimen/px_12</item>
+  </style>
+
 </resources>

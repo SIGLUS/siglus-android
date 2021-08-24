@@ -7,6 +7,8 @@
   <string name="title_kit_stock_cards">Visão geral de Kits</string>
   <string name="title_unpack_kit">Desembalar Kit</string>
   <string name="title_requisition">Criar Requisição Balancete para Via clássica</string>
+  <string name="title_pod">Proof of Delivery for Testes Rápidos Diag.</string>
+
   <string name="hint_network_error">Falha na conexão, verifique sua conexão a rede</string>
   <!--Login Page-->
   <string name="hint_username">Usuário</string>

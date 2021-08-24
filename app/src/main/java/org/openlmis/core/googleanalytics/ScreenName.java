@@ -28,6 +28,7 @@ public enum ScreenName {
   AL_REQUISITION_SCREEN("AL Requisition Screen"),
   PTV_REQUISITION_SCREEN("PTV Requisition Screen"),
   VIA_REQUISITION_SCREEN("VIA Requisition Screen"),
+  ISSUE_VOUCHER_REPORT_SCREEN("Issue voucher Report Screen"),
   RN_R_FORM_HISTORY_SCREEN("RnR Form History Screen"),
   STOCK_CARD_OVERVIEW_SCREEN("StockCard Overview Screen"),
   STOCK_CARD_MOVEMENT_SCREEN("StockCard Movement Screen"),

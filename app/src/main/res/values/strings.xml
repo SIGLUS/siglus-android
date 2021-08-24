@@ -8,6 +8,7 @@
   <string name="title_kit_stock_cards">Kit Overview</string>
   <string name="title_unpack_kit">Unpack Kit</string>
   <string name="title_requisition">Create Requisition Balancete for Via classica</string>
+  <string name="title_pod">Proof of Delivery for Testes Rápidos Diag.</string>
 
   <string name="hint_network_error">NetWork error please check you network connection</string>
 
@@ -640,4 +641,10 @@
   <string name="alert_order_number_can_not_be_blank">Order number cannot be blank</string>
   <string name="alert_program_can_not_be_blank">Program cannot be blank</string>
   <string name="alert_movement_reason_can_not_be_blank">Movement reason cannot be blank</string>
+  <string name="label_ordering_facility">Ordering Facility</string>
+  <string name="label_program">Program</string>
+  <string name="label_supplying_depot">Supplying Depot</string>
+  <string name="label_shipping_date">Shipping Date</string>
+  <string name="label_delivered_by">Delivered By</string>
+  <string name="label_received_by">Received By</string>
 </resources>
