@@ -4,7 +4,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
@@ -30,7 +29,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,19 +42,14 @@ import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.ProgramDataForm;
-import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.Service;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
-import org.openlmis.core.model.builder.ProgramDataFormBuilder;
-import org.openlmis.core.model.builder.ReportTypeBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -71,16 +64,10 @@ import org.openlmis.core.network.model.PodsLocalResponse;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SupportedProgram;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
-import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
-import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
-import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
-import org.openlmis.core.network.model.SyncUpProgramResponse;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
-import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 import rx.Scheduler;
@@ -150,13 +137,9 @@ public class SyncDownManagerTest {
     mockFacilityInfoResponse();
     mockRegimenResponse();
     mockSyncDownLatestProductResponse();
-    mockReportResponse();
     mockRequisitionResponse();
     mockStockCardsResponse();
-    mockRapidTestsResponse();
-    mockFetchProgramsResponse();
     mockFetchPodsResponse();
-    mockFetchPTVServiceResponse();
 
     // when
     SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
@@ -187,14 +170,10 @@ public class SyncDownManagerTest {
     // given
     mockFacilityInfoResponse();
     mockRegimenResponse();
-    mockReportResponse();
     mockSyncDownLatestProductResponse();
     mockRequisitionResponse();
     mockStockCardsResponse();
-    mockRapidTestsResponse();
-    mockFetchProgramsResponse();
     mockFetchPodsResponse();
-    mockFetchPTVServiceResponse();
 
     // when
     CountOnNextSubscriber firstEnterSubscriber = new CountOnNextSubscriber();
@@ -215,13 +194,9 @@ public class SyncDownManagerTest {
   @Test
   public void shouldSyncDownNewLatestProductList() throws Exception {
     mockFacilityInfoResponse();
-    mockReportResponse();
     mockSyncDownLatestProductResponse();
     mockRequisitionResponse();
     mockStockCardsResponse();
-    mockRapidTestsResponse();
-    mockFetchProgramsResponse();
-    mockFetchPTVServiceResponse();
     when(productRepository.getByCode(anyString())).thenReturn(new Product());
 
     Program program = new Program();
@@ -408,22 +383,6 @@ public class SyncDownManagerTest {
     when(stockRepository.list()).thenReturn(newArrayList(new StockCardBuilder().build()));
   }
 
-  private void mockRapidTestsResponse() throws ParseException, LMISException {
-    createdPreferences = LMISTestApp.getContext()
-        .getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
-    when(sharedPreferenceMgr.isRapidTestDataSynced()).thenReturn(false);
-    when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
-
-    when(lmisRestApi.fetchProgramDataForms(anyLong())).thenReturn(getRapidTestsResponse());
-  }
-
-  private void mockReportResponse() throws ParseException, LMISException {
-    createdPreferences = LMISTestApp.getContext()
-        .getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
-    when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
-    when(lmisRestApi.fetchReportTypeForms(anyLong())).thenReturn(getReportTypeResponse());
-  }
-
   private void mockFacilityInfoResponse() throws LMISException {
     FacilityInfoResponse facilityInfoResponse = getFacilityInfoResponse();
     when(lmisRestApi.fetchFacilityInfo()).thenReturn(facilityInfoResponse);
@@ -434,54 +393,10 @@ public class SyncDownManagerTest {
     when(lmisRestApi.fetchRegimens()).thenReturn(syncDownRegimensResponse);
   }
 
-  private void mockFetchProgramsResponse() throws LMISException, ParseException {
-    SyncUpProgramResponse response = getFetchProgramsResponse();
-    when(lmisRestApi.fetchPrograms(anyLong())).thenReturn(response);
-  }
-
-  private void mockFetchPTVServiceResponse() throws LMISException {
-    getSyncDownServiceResponse();
-  }
-
   private void mockFetchPodsResponse() throws LMISException {
     PodsLocalResponse podsLocalResponse = buildPodsResponse();
     when(lmisRestApi.fetchPods(false)).thenReturn(podsLocalResponse);
     when(lmisRestApi.fetchPods(true)).thenReturn(podsLocalResponse);
-  }
-
-  private SyncDownServiceResponse getSyncDownServiceResponse() throws LMISException {
-    SyncDownServiceResponse response = new SyncDownServiceResponse();
-    Service service1 = new Service();
-    Service service2 = new Service();
-    service1.setCode("serviceCode");
-    service1.setName("serviceName");
-    service1.setActive(false);
-    service2.setCode("serviceCode1");
-    service2.setName("serviceName1");
-    service2.setActive(true);
-    response.setLatestServices(newArrayList(service1, service2));
-    when(lmisRestApi
-        .fetchPTVService(sharedPreferenceMgr.getLastSyncServiceTime(), Constants.PTV_PROGRAM_CODE))
-        .thenReturn(response);
-    return response;
-  }
-
-  private SyncDownProgramDataResponse getRapidTestsResponse() {
-    ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
-        .setProgram(new Program())
-        .setPeriod(DateUtil.parseString("2016-03-21", DateUtil.DB_DATE_FORMAT))
-        .setStatus(Status.AUTHORIZED)
-        .setSynced(false).build();
-    ProgramDataForm programDataForm2 = new ProgramDataFormBuilder()
-        .setProgram(new Program())
-        .setPeriod(DateUtil.parseString("2016-04-21", DateUtil.DB_DATE_FORMAT))
-        .setStatus(Status.AUTHORIZED)
-        .setSynced(false).build();
-
-    SyncDownProgramDataResponse syncDownProgramDataResponse = new SyncDownProgramDataResponse();
-    syncDownProgramDataResponse
-        .setProgramDataForms(newArrayList(programDataForm1, programDataForm2));
-    return syncDownProgramDataResponse;
   }
 
   private FacilityInfoResponse getFacilityInfoResponse() {
@@ -501,39 +416,6 @@ public class SyncDownManagerTest {
     List<Regimen> regimenList = new ArrayList<>();
     syncDownRegimensResponse.setRegimenList(regimenList);
     return syncDownRegimensResponse;
-  }
-
-  private SyncUpProgramResponse getFetchProgramsResponse() throws ParseException, LMISException {
-    SyncUpProgramResponse syncUpProgramResponse = new SyncUpProgramResponse();
-    Program program1 = new Program();
-    Program program2 = new Program();
-    StockMovementItemBuilder builder = new StockMovementItemBuilder();
-
-    stockMovementItem = builder.build();
-    stockMovementItem.setSynced(false);
-    when(stockMovementRepository.queryFirstStockMovementByStockCardId(anyInt()))
-        .thenReturn(stockMovementItem);
-    syncUpProgramResponse.setPrograms(newArrayList(program1, program2));
-    return syncUpProgramResponse;
-  }
-
-  private SyncDownReportTypeResponse getReportTypeResponse() {
-    DateTime dateTime = new DateTime(DateUtil.getCurrentDate().getTime());
-    ReportTypeForm reportTypeMMIA = new ReportTypeBuilder()
-        .setActive(true)
-        .setCode(Constants.MMIA_REPORT)
-        .setName(Constants.MMIA_REPORT)
-        .setStartTime(dateTime.toDate())
-        .build();
-    ReportTypeForm reportTypeVIA = new ReportTypeBuilder()
-        .setActive(true)
-        .setCode(Constants.VIA_REPORT)
-        .setName(Constants.VIA_REPORT)
-        .setStartTime(dateTime.toDate())
-        .build();
-    SyncDownReportTypeResponse syncDownReportTypeResponse = new SyncDownReportTypeResponse();
-    syncDownReportTypeResponse.setReportTypes(newArrayList(reportTypeMMIA, reportTypeVIA));
-    return syncDownReportTypeResponse;
   }
 
   private PodsLocalResponse buildPodsResponse() {

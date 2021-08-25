@@ -20,7 +20,6 @@ package org.openlmis.core.network;
 
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
@@ -30,13 +29,9 @@ import org.openlmis.core.network.model.PodsLocalResponse;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
-import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
-import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
-import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.SyncUpDeletedMovementResponse;
-import org.openlmis.core.network.model.SyncUpProgramResponse;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.network.model.UserResponse;
@@ -55,12 +50,18 @@ public interface LMISRestApi {
   SyncDownLatestProductsResponse fetchLatestProducts(@Query("lastSyncTime") String afterUpdatedTime)
       throws LMISException;
 
+  @GET("/api/siglusapi/android/regimens")
+  SyncDownRegimensResponse fetchRegimens() throws LMISException;
+
   @GET("/api/siglusapi/android/me/facility")
   FacilityInfoResponse fetchFacilityInfo() throws LMISException;
 
   @GET("/api/siglusapi/android/me/facility/stockCards")
   StockCardsLocalResponse fetchStockMovementData(@Query("startTime") String startDate, @Query("endTime") String endDate)
       throws LMISException;
+
+  @GET("/api/siglusapi/android/me/facility/requisitions")
+  SyncDownRequisitionsResponse fetchRequisitions(@Query("startDate") String startDate) throws LMISException;
 
   @GET("/api/siglusapi/android/me/facility/pods")
   PodsLocalResponse fetchPods(@Query("shippedOnly") boolean shippedOnly) throws LMISException;
@@ -75,54 +76,24 @@ public interface LMISRestApi {
   @POST("/api/siglusapi/android/me/app-info")
   Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;
 
-  @GET("/api/siglusapi/android/me/facility/requisitions")
-  SyncDownRequisitionsResponse fetchRequisitions(@Query("startDate") String startDate) throws LMISException;
-
   @POST("/api/siglusapi/android/me/facility/requisitions")
   Void submitRequisition(@Body RnRForm rnRForm) throws LMISException;
 
   @POST("/api/siglusapi/android/me/facility/requisitions")
   SyncUpRequisitionResponse submitEmergencyRequisition(@Body RnRForm rnRForm) throws LMISException;
 
-  // below are v2 apis
-
   @POST("/api/siglusapi/android/me/facility/stockCards")
   SyncUpStockMovementDataSplitResponse syncUpStockMovementDataSplit(@Body List<StockMovementEntry> entries)
       throws LMISException;
 
-  @POST("/rest-api/facilities/{facilityId}/unSyncedStockCards")
-  Void syncUpUnSyncedStockCards(@Path("facilityId") String facilityId,
-      @Body List<String> unSyncedStockCardCodes) throws LMISException;
-
-  @POST("/rest-api/facilities/{facilityId}/deleteStockCards")
+  @POST("/api/siglusapi/android/me/facility/deleteStockCards")
   SyncUpDeletedMovementResponse syncUpDeletedData(@Path("facilityId") Long facilityId,
       @Body List<DirtyDataItemEntry> entryList) throws LMISException;
-
-  @POST("/rest-api/programData")
-  Void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;
 
   @PUT("/api/siglusapi/android/me/facility/cmms")
   Void syncUpCmms(@Body List<CmmEntry> cmms) throws LMISException;
 
-  @GET("/api/siglusapi/android/regimens")
-  SyncDownRegimensResponse fetchRegimens() throws LMISException;
-
-
-  @GET("/rest-api/programData/facilities/{facilityId}")
-  SyncDownProgramDataResponse fetchProgramDataForms(@Path("facilityId") Long facilityId)
-      throws LMISException;
-
-  @GET("/rest-api/report-types/mapping/{facilityId}")
-  SyncDownReportTypeResponse fetchReportTypeForms(@Path("facilityId") Long facilityId)
-      throws LMISException;
-
-  @GET("/rest-api/services")
-  SyncDownServiceResponse fetchPTVService(@Query("afterUpdatedTime") String afterUpdatedTime,
-      @Query("programCode") String programCode) throws LMISException;
-
-  @GET("/rest-api/programs/{facilityId}")
-  SyncUpProgramResponse fetchPrograms(@Path("facilityId") Long facilityId) throws LMISException;
-
+  // below are v2 api
   @GET("/rest-api/re-sync")
   Void recordReSyncAction() throws LMISException;
 

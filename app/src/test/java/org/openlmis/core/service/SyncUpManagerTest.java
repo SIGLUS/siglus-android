@@ -318,31 +318,6 @@ public class SyncUpManagerTest {
   }
 
   @Test
-  public void shouldSyncUpUnSyncedStockCardListWhenHasNotSyncedUpLatestMovementLastDay()
-      throws Exception {
-    when(mockedSharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(false);
-    syncUpManager.syncUpUnSyncedStockCardCodes();
-    verify(mockedLmisRestApi).syncUpUnSyncedStockCards(facilityID, new ArrayList<String>());
-    verify(mockedSharedPreferenceMgr).setLastMovementHandShakeDateToToday();
-  }
-
-  @Test
-  public void shouldRefreshLastSyncStockCardDateWhenHasNoUnSyncedStockCard() throws Exception {
-    when(mockedSharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(false);
-    syncUpManager.syncUpUnSyncedStockCardCodes();
-    verify(mockedLmisRestApi).syncUpUnSyncedStockCards(facilityID, new ArrayList<String>());
-    verify(mockedSharedPreferenceMgr).setStockLastSyncTime();
-  }
-
-  @Test
-  public void shouldNotSyncUpWhenHasSyncedUpLastDay() throws LMISException {
-    when(mockedSharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(true);
-    syncUpManager.syncUpUnSyncedStockCardCodes();
-    verify(mockedLmisRestApi, never()).syncUpUnSyncedStockCards(facilityID, new ArrayList<String>());
-    verify(mockedSharedPreferenceMgr, never()).setLastMovementHandShakeDateToToday();
-  }
-
-  @Test
   public void shouldSyncUpCmmsAndMarkThemAsSynced() throws Exception {
     //given
     List<Cmm> cmms = createCmmsData();

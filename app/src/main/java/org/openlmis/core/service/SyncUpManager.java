@@ -39,7 +39,6 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.DirtyDataItemInfo;
-import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
@@ -269,28 +268,6 @@ public class SyncUpManager {
     }
   }
 
-  public void syncUpUnSyncedStockCardCodes() {
-    if (sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()) {
-      return;
-    }
-    try {
-      List<String> unSyncedStockCardCodes = FluentIterable
-          .from(stockMovementRepository.listUnSynced())
-          .transform(stockMovementItem -> stockMovementItem.getStockCard().getProduct().getCode())
-          .toList();
-
-      final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-      lmisRestApi.syncUpUnSyncedStockCards(facilityId, unSyncedStockCardCodes);
-      sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
-      boolean isAllStockCardSyncSuccessful = unSyncedStockCardCodes.isEmpty();
-      if (isAllStockCardSyncSuccessful) {
-        sharedPreferenceMgr.setStockLastSyncTime();
-      }
-    } catch (LMISException e) {
-      new LMISException(e, "SyncUpManager.syncUpUnSyncedStockCardCodes").reportToFabric();
-    }
-  }
-
   public void fakeSyncUpUnSyncedStockCardCodes() {
     if (sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()) {
       return;
@@ -429,17 +406,6 @@ public class SyncUpManager {
       new LMISException(e, "SyncUpManager.submitRequisition").reportToFabric();
       Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
       syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RNR_FORM, rnRForm.getId()));
-      return false;
-    }
-  }
-
-  private boolean submitProgramDataForm(ProgramDataForm programDataForm) {
-    try {
-      lmisRestApi.syncUpProgramDataForm(programDataForm);
-      Log.d(TAG, "===> SyncRapidTests: Rapid Tests synced...");
-      return true;
-    } catch (LMISException e) {
-      new LMISException(e, "SyncUpManager.submitProgramDataForm").reportToFabric();
       return false;
     }
   }

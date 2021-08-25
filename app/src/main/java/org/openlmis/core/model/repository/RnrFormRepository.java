@@ -40,9 +40,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
@@ -615,23 +617,28 @@ public class RnrFormRepository {
   }
 
   public void deleteRnrFormDirtyData(List<String> productCodeList) {
-    Cursor getProgramCodeCursor = null;
-    for (String productCode : productCodeList) {
-      String getProgramCodeByProductCode =
-          "SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'";
-      getProgramCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
-          .getWritableDatabase().rawQuery(getProgramCodeByProductCode, null);
-      String programCode = getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE));
-      if (programCode.equals(Constants.AL_PROGRAM_CODE)) {
-        deleteRnrData(Constants.AL_PROGRAM_CODE);
-        deleteRnrData(Constants.VIA_PROGRAM_CODE);
-      } else {
-        deleteRnrData(programCode);
-      }
+    String productIds = StringUtils
+        .join(productCodeList != null ? productCodeList : new HashSet<>(), ',');
+    String getProgramCodeByProductCode =
+        "SELECT DISTINCT programCode FROM product_programs WHERE productCode in ('" + productIds
+            + "')";
+    Cursor getProgramCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
+        .getWritableDatabase().rawQuery(getProgramCodeByProductCode, null);
+    List<String> programCodes = new ArrayList<>();
+    if (getProgramCodeCursor.moveToFirst()) {
+      do {
+        programCodes.add(getProgramCodeCursor.getString(
+            getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE)));
+      } while (getProgramCodeCursor.moveToNext());
     }
-    if (getProgramCodeCursor != null && !getProgramCodeCursor.isClosed()) {
+    if (!getProgramCodeCursor.isClosed()) {
       getProgramCodeCursor.close();
     }
+
+    for (String programCode : programCodes) {
+      deleteRnrData(programCode);
+    }
+
   }
 
   private void deleteRnrData(String programCode) {
