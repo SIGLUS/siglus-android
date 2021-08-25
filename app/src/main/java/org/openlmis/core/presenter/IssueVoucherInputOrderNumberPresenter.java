@@ -27,6 +27,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.view.BaseView;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import rx.Observable;
 import rx.Observable.OnSubscribe;
 import rx.android.schedulers.AndroidSchedulers;
@@ -40,6 +41,8 @@ public class IssueVoucherInputOrderNumberPresenter extends Presenter {
   @Inject
   PodRepository podRepository;
 
+  private List<Pod> existingPods;
+
   @Override
   public void attachView(BaseView v) throws ViewNotMatchException {
     // do nothing
@@ -49,6 +52,7 @@ public class IssueVoucherInputOrderNumberPresenter extends Presenter {
     return Observable.create((OnSubscribe<List<Program>>) subscriber -> {
       try {
         final List<Program> queryActiveProgram = programRepository.queryProgramWithoutML();
+        existingPods = podRepository.listAllPods();
         subscriber.onNext(queryActiveProgram);
       } catch (LMISException exception) {
         subscriber.onError(exception);
@@ -57,12 +61,9 @@ public class IssueVoucherInputOrderNumberPresenter extends Presenter {
   }
 
   public boolean isOrderNumberExisted(String orderNumber) {
-    Pod pod = null;
-    try {
-      pod = podRepository.queryByOrderCode(orderNumber);
-    } catch (LMISException e) {
-      new LMISException(e, "query by order code failed").reportToFabric();
-    }
-    return pod != null;
+    return FluentIterable.from(existingPods)
+        .transform(Pod::getOrderCode)
+        .toList()
+        .contains(orderNumber);
   }
 }

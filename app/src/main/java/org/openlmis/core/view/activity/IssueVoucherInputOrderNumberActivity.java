@@ -266,7 +266,9 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        validateOrderNumber();
+        if (orderNumber != null) {
+          validateOrderNumber();
+        }
         etOrderNumber.clearFocus();
         hideKeyboard(v);
       }
@@ -286,7 +288,6 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
       tilOrderNumber.setError(getResources().getString(R.string.msg_order_number_existed));
       return false;
     }
-    tilOrderNumber.setError(null);
     return true;
   }
 
