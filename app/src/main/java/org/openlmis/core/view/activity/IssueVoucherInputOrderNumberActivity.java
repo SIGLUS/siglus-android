@@ -120,6 +120,11 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
       @Override
       public void afterTextChanged(Editable s) {
         orderNumber = s.toString();
+        if (!StringUtils.isBlank(orderNumber)) {
+          tilOrderNumber.setError(null);
+        } else {
+          tilOrderNumber.setError(getResources().getString(R.string.alert_order_number_can_not_be_blank));
+        }
         super.afterTextChanged(s);
       }
     });
@@ -262,6 +267,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
       @Override
       public void onSingleClick(View v) {
         validateOrderNumber();
+        etOrderNumber.clearFocus();
         hideKeyboard(v);
       }
     };
@@ -280,6 +286,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
       tilOrderNumber.setError(getResources().getString(R.string.msg_order_number_existed));
       return false;
     }
+    tilOrderNumber.setError(null);
     return true;
   }
 
