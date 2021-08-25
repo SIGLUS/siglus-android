@@ -386,6 +386,7 @@ public class RnrFormRepository {
       if (stockFormItem == null) {
         rnrFormItem.setForm(form);
         rnrFormItem.setProduct(product);
+        updateDefaultValue(rnrFormItem);
       } else {
         rnrFormItem = stockFormItem;
       }
@@ -401,6 +402,8 @@ public class RnrFormRepository {
     rnrFormItem.setInitialAmount(lastInventory != null ? lastInventory : 0);
   }
 
+  protected void updateDefaultValue(RnrFormItem rnrFormItem) {
+  }
 
   protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
     return new ArrayList<>();

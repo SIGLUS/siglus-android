@@ -74,4 +74,10 @@ public class RapidTestRepository extends RnrFormRepository {
     rnrFormItem.setInitialAmount(lastInventory);
   }
 
+  @Override
+  protected void updateDefaultValue(RnrFormItem rnrFormItem) {
+    rnrFormItem.setIssued(Long.valueOf(0));
+    rnrFormItem.setAdjustment(Long.valueOf(0));
+  }
+
 }
