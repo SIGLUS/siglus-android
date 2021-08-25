@@ -28,7 +28,7 @@ import org.openlmis.core.model.PodProductItem;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
-public class PodResponse {
+public class PodRemoteResponse {
 
   private PodOrderItemResponse order;
 

@@ -21,18 +21,17 @@ package org.openlmis.core.network.adapter;
 import static org.openlmis.core.enumeration.OrderStatus.RECEIVED;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
-import org.openlmis.core.network.model.PodResponse;
+import org.openlmis.core.network.model.PodRemoteResponse;
 import org.openlmis.core.network.model.PodsLocalResponse;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -41,16 +40,13 @@ public class PodAdapter implements JsonDeserializer<PodsLocalResponse> {
   @Override
   public PodsLocalResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {
-    final Gson gson = new Gson();
-    final JsonArray jsonArray = json.getAsJsonArray();
-    final List<PodResponse> podResponses = new ArrayList<>();
-    for (JsonElement jsonElement : jsonArray) {
-      podResponses.add(gson.fromJson(jsonElement, PodResponse.class));
-    }
-    final PodsLocalResponse podsLocalResponse = new PodsLocalResponse();
-    podsLocalResponse.setPods(FluentIterable.from(podResponses).transform(podResponse -> {
+    Gson gson = new Gson();
+    List<PodRemoteResponse> podRemoteResponses = gson.fromJson(json, new TypeToken<List<PodRemoteResponse>>() {
+    }.getType());
+    PodsLocalResponse podsLocalResponse = new PodsLocalResponse();
+    podsLocalResponse.setPods(FluentIterable.from(podRemoteResponses).transform(podRemoteResponse -> {
       try {
-        Pod pod = Objects.requireNonNull(podResponse).from();
+        Pod pod = Objects.requireNonNull(podRemoteResponse).from();
         pod.setLocal(false);
         pod.setDraft(false);
         pod.setSynced(pod.getOrderStatus() == RECEIVED);

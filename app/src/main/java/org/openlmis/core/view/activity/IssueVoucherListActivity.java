@@ -50,7 +50,7 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_issue_voucher_list)
 public class IssueVoucherListActivity extends BaseActivity {
 
-  public static final int[] TITLE_RES = {R.string.label_issue_voucher, R.string.label_pod};
+  protected static final int[] TITLE_RES = {R.string.label_issue_voucher, R.string.label_pod};
 
   @InjectView(R.id.mi_issue_voucher)
   private MagicIndicator magicIndicator;
