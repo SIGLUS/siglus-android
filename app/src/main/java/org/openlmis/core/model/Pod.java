@@ -18,10 +18,15 @@
 
 package org.openlmis.core.model;
 
+import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT;
+import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
+
 import com.j256.ormlite.dao.ForeignCollection;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,8 +44,8 @@ import org.openlmis.core.utils.ListUtil;
 @DatabaseTable(tableName = "pods")
 public class Pod extends BaseModel {
 
-  @DatabaseField
-  private String shippedDate;
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
+  private Date shippedDate;
 
   @DatabaseField
   private String deliveredBy;
@@ -51,8 +56,8 @@ public class Pod extends BaseModel {
   @DatabaseField
   private String documentNo;
 
-  @DatabaseField
-  private String receivedDate;
+  @DatabaseField(dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
+  private Date receivedDate;
 
   @DatabaseField
   private String orderCode;
@@ -63,11 +68,11 @@ public class Pod extends BaseModel {
   @DatabaseField
   private OrderStatus orderStatus;
 
-  @DatabaseField
-  private String orderCreatedDate;
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
+  private Date orderCreatedDate;
 
-  @DatabaseField
-  private String  orderLastModifiedDate;
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
+  private Date  orderLastModifiedDate;
 
   @DatabaseField
   private String requisitionNumber;
@@ -78,17 +83,17 @@ public class Pod extends BaseModel {
   @DatabaseField
   private String requisitionProgramCode;
 
-  @DatabaseField
-  private String requisitionStartDate;
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
+  private Date requisitionStartDate;
 
-  @DatabaseField
-  private String requisitionEndDate;
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
+  private Date requisitionEndDate;
 
-  @DatabaseField
-  private String requisitionActualStartDate;
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
+  private Date requisitionActualStartDate;
 
-  @DatabaseField
-  private String requisitionActualEndDate;
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
+  private Date requisitionActualEndDate;
 
   @DatabaseField
   private boolean isLocal;

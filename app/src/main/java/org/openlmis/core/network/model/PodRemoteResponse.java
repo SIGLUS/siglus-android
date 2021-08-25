@@ -18,13 +18,14 @@
 
 package org.openlmis.core.network.model;
 
+import java.util.Date;
 import java.util.List;
 import lombok.Data;
-import org.joda.time.LocalDate;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
@@ -32,25 +33,27 @@ public class PodRemoteResponse {
 
   private PodOrderItemResponse order;
 
-  private String  shippedDate;
+  private String shippedDate;
 
   private List<PodProductItemResponse> products;
 
   public Pod from() throws LMISException {
     return Pod.builder()
-        .shippedDate(new LocalDate(shippedDate).toString())
+        .shippedDate(DateUtil.parseString(shippedDate, DateUtil.DB_DATE_FORMAT))
         .orderCode(order.getCode())
         .orderSupplyFacilityName(order.getSupplyFacilityName())
         .orderStatus(OrderStatus.covertToOrderStatus(order.getStatus()))
-        .orderCreatedDate(new LocalDate(order.getCreatedDate()).toString())
-        .orderLastModifiedDate(new LocalDate(order.getLastModifiedDate()).toString())
+        .orderCreatedDate(new Date(order.getCreatedDate()))
+        .orderLastModifiedDate(new Date(order.getLastModifiedDate()))
         .requisitionNumber(order.getRequisition().getNumber())
         .requisitionIsEmergency(order.getRequisition().isEmergency())
         .requisitionProgramCode(order.getRequisition().getProgramCode())
-        .requisitionStartDate(new LocalDate(order.getRequisition().getStartDate()).toString())
-        .requisitionEndDate(new LocalDate(order.getRequisition().getEndDate()).toString())
-        .requisitionActualStartDate(new LocalDate(order.getRequisition().getActualStartDate()).toString())
-        .requisitionActualEndDate(new LocalDate(order.getRequisition().getActualEndDate()).toString())
+        .requisitionStartDate(DateUtil.parseString(order.getRequisition().getStartDate(), DateUtil.DB_DATE_FORMAT))
+        .requisitionEndDate(DateUtil.parseString(order.getRequisition().getEndDate(), DateUtil.DB_DATE_FORMAT))
+        .requisitionActualStartDate(
+            DateUtil.parseString(order.getRequisition().getActualStartDate(), DateUtil.DB_DATE_FORMAT))
+        .requisitionActualEndDate(
+            DateUtil.parseString(order.getRequisition().getActualEndDate(), DateUtil.DB_DATE_FORMAT))
         .podProductItemsWrapper(buildPodProductItems())
         .build();
   }
