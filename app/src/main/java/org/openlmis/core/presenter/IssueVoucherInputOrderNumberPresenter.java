@@ -19,7 +19,10 @@
 package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.Setter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Pod;
@@ -41,14 +44,15 @@ public class IssueVoucherInputOrderNumberPresenter extends Presenter {
   @Inject
   PodRepository podRepository;
 
-  private List<Pod> existingPods;
+  @Setter(AccessLevel.PACKAGE)
+  private List<Pod> existingPods = new ArrayList<>();
 
   @Override
   public void attachView(BaseView v) throws ViewNotMatchException {
     // do nothing
   }
 
-  public Observable<List<Program>> loadPrograms() {
+  public Observable<List<Program>> loadData() {
     return Observable.create((OnSubscribe<List<Program>>) subscriber -> {
       try {
         final List<Program> queryActiveProgram = programRepository.queryProgramWithoutML();

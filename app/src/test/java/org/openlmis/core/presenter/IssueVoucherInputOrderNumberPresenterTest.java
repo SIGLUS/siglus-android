@@ -2,12 +2,12 @@ package org.openlmis.core.presenter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
@@ -60,15 +60,16 @@ public class IssueVoucherInputOrderNumberPresenterTest {
     programs.add(program2);
     programs.add(program3);
     when(mockProgramRepository.queryProgramWithoutML()).thenReturn(programs);
+
     // when
     TestSubscriber<List<Program>> subscriber = new TestSubscriber<>();
-    Observable<List<Program>> observable = presenter.loadPrograms();
+    Observable<List<Program>> observable = presenter.loadData();
     observable.subscribe(subscriber);
     subscriber.awaitTerminalEvent(1, TimeUnit.SECONDS);
     subscriber.assertNoErrors();
     List<Program> resultPrograms = subscriber.getOnNextEvents().get(0);
 
-    //then
+    // then
     assertEquals(3 ,resultPrograms.size());
 
   }
@@ -77,7 +78,7 @@ public class IssueVoucherInputOrderNumberPresenterTest {
   public void isOrderNumberExistedShouldBeTrue() throws LMISException {
     // given
     Pod pod = Pod.builder().orderCode("ORDER-123456789").build();
-    when(mockPodRepository.queryByOrderCode(anyString())).thenReturn(pod);
+    presenter.setExistingPods(Collections.singletonList(pod));
 
     // when
     boolean result = presenter.isOrderNumberExisted("ORDER-123456789");

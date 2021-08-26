@@ -112,7 +112,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    initProgramData();
+    initData();
     background.setOnClickListener(getBackgroundClickListener());
     etOrigin.setOnClickListener(getMovementReasonOnClickListener());
     btNext.setOnClickListener(getNextClickListener());
@@ -148,8 +148,8 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
     etProgram.setText(chosenProgram == null ? "" : chosenProgram.getProgramName());
   }
 
-  protected void initProgramData() {
-    final Subscription subscription = presenter.loadPrograms().subscribe(getOnProgramsLoadedSubscriber());
+  protected void initData() {
+    final Subscription subscription = presenter.loadData().subscribe(getOnProgramsLoadedSubscriber());
     subscriptions.add(subscription);
   }
 

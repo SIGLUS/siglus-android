@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.activity;
 
-
 import static org.robolectric.Shadows.shadowOf;
 
 import android.content.Intent;
