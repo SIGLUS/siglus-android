@@ -21,9 +21,8 @@ package org.openlmis.core.view.activity;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.CHOSEN_PROGRAM_CODE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.IS_FROM_BULK_ISSUE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
-import static org.openlmis.core.view.activity.IssueVoucherActivity.MOVEMENT_REASON_CODE;
-import static org.openlmis.core.view.activity.IssueVoucherActivity.ORDER_NUMBER;
-import static org.openlmis.core.view.activity.IssueVoucherActivity.PROGRAM_CODE;
+import static org.openlmis.core.view.activity.IssueVoucherDraftActivity.MOVEMENT_REASON_CODE;
+import static org.openlmis.core.view.activity.IssueVoucherDraftActivity.ORDER_NUMBER;
 
 import android.app.Activity;
 import android.content.Context;
@@ -237,9 +236,9 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
         if (result.getResultCode() != Activity.RESULT_OK) {
           return;
         }
-        Intent intent = new Intent(IssueVoucherInputOrderNumberActivity.this, IssueVoucherActivity.class);
+        Intent intent = new Intent(this, IssueVoucherDraftActivity.class);
         intent.putExtra(ORDER_NUMBER, orderNumber);
-        intent.putExtra(PROGRAM_CODE, chosenProgram.getProgramCode());
+        intent.putExtra(CHOSEN_PROGRAM_CODE, chosenProgram.getProgramCode());
         intent.putExtra(MOVEMENT_REASON_CODE, chosenReason.getCode());
         intent.putExtra(SELECTED_PRODUCTS, result.getData().getSerializableExtra(SELECTED_PRODUCTS));
         issueVoucherActivityResultLauncher.launch(intent);

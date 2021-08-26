@@ -153,8 +153,8 @@
       android:name=".view.activity.IssueVoucherInputOrderNumberActivity"
       android:screenOrientation="portrait"/>
     <activity
-      android:label="@string/title_bulk_entries"
-      android:name=".view.activity.IssueVoucherActivity"
+      android:label="@string/title_issue_voucher_draft"
+      android:name=".view.activity.IssueVoucherDraftActivity"
       android:screenOrientation="portrait"/>
     <activity
       android:label="@string/title_pod"

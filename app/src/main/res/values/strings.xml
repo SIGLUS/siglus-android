@@ -647,4 +647,5 @@
   <string name="label_shipping_date">Shipping Date</string>
   <string name="label_delivered_by">Delivered By</string>
   <string name="label_received_by">Received By</string>
+  <string name="title_issue_voucher_draft">Issue voucher draft</string>
 </resources>
