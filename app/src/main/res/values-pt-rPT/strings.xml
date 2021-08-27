@@ -116,7 +116,7 @@
   <string name="label_via_kit_hf">US</string>
   <string name="label_via_kit_chw">APE</string>
   <string name="label_requisition_title">Requisição- %1$s a %2$s</string>
-  <string name="label_rapid_test_title">testes rápidos- %1$s a %2$s</string>
+  <string name="label_rapid_test_title">MMIT- %1$s a %2$s</string>
   <string name="label_requisition_header_consultation_header">Requisição normal </string>
   <string name="request_provincial_district_level">Requisição do nível provincial ou distrital</string>
   <string name="title_stock_move_ment">Movimento de stock</string>
@@ -137,14 +137,14 @@
   <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
   <string name="btn_approve">Visto</string>
   <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
-  <string name="msg_rapid_test_submit_signature">Digite suas iniciais e em seguida, aprove as quantidades de testes rápidos.</string>
+  <string name="msg_rapid_test_submit_signature">Digite suas iniciais e em seguida, aprove as quantidades de MMIT.</string>
   <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMIA</string>
   <string name="msg_approve_signature_rapid_test">Digite suas iniciais e em seguida, aprove o teste rápido</string>
   <string name="msg_approve_signature_via">Insira as iniciais do seu nome e aprove a Requisição Balancete</string>
   <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
   <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
   <string name="msg_requisition_signature_message_notify_mmia">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMIA</string>
-  <string name="msg_requisition_signature_message_notify_rapid_test">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de testes rápidos.</string>
+  <string name="msg_requisition_signature_message_notify_rapid_test">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de MMIT.</string>
   <string name="btn_continue">Continuar</string>
   <string name="label_adjustment_dialog_header"><![CDATA[A quantidade a requisitar foi ajustada com base em: <br/>]]></string>
   <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$d</b> Fechados <i>%2$s</i>. São<b>%3$d</b> <i>%4$s</i> em cada kit.<br/>]]></string>
@@ -166,8 +166,8 @@
   <string name="month_year">Mês/Ano:   </string>
 
   <!-- Rapid Test -->
-  <string name="balance_test_report">Balancete dos testes rápidos na Unidade Sanitária</string>
-  <string name="msg_rapid_test_submit_tip">O seu Relatório testes rápidos foi gravado com sucesso,\ne vai ser submetido automaticamente quando tiver conexão a internet.</string>
+  <string name="balance_test_report">Balancete dos MMIT na Unidade Sanitária</string>
+  <string name="msg_rapid_test_submit_tip">O seu Relatório MMIT foi gravado com sucesso,\ne vai ser submetido automaticamente quando tiver conexão a internet.</string>
   <string name="attention_report_in_kit">(Atenção: Reportados em Kits)</string>
   <string name="hint_rapid_test_complete_failed">Não foi possível completar o MMIT, por favor, contacte o administrador.</string>
   <string name="unjustified">Injustificados</string>
@@ -306,7 +306,7 @@
   <string name="label_mmia_name">MMIA</string>
   <string name="label_al_name">AL</string>
   <string name="label_ptv_name">PTV</string>
-  <string name="btn_view_completed_Rapid_Test_inventory">Criar testes rápidos</string>
+  <string name="btn_view_completed_Rapid_Test_inventory">Criar MMIT</string>
   <string name="action_delete_rnr_form">Remover do tablet</string>
   <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criado.</b>]]> Complete o seu inventário antes de criar um MMIA</string>
   <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b> Nenhum MMIT foi criado.</b>]]> Complete o seu inventario antes de criar um MMIT</string>
@@ -331,12 +331,12 @@
   <string name="label_period_date">%1$s à %2$s</string>
   <string name="label_emergency_date">Requisição de Emergencia – %s</string>
   <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>Você será capaz de criar um MMIA a partir do dia 18 de %1$s</b>]]></string>
-  <string name="label_training_can_not_create_rapid_Test_rnr"><![CDATA[<b>Você poderá criar um Relatório de Testes Rápidos no próximo período</b>]]>></string>
+  <string name="label_training_can_not_create_rapid_Test_rnr"><![CDATA[<b>Você poderá criar um Relatório de MMIT no próximo período</b>]]>></string>
   <string name="label_can_not_create_report_rnr"><![CDATA[<b>Você será capaz de criar um %1$s a partir do dia 18 de %2$s</b>]]></string>
   <string name="label_training_can_not_create_report_rnr"><![CDATA[<b>Você poderá criar um %1$s no próximo período</b>]]></string>
   <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
   <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do stock fisico do fim do período]]></string>
-  <string name="Rapid_Test_missed_period"><![CDATA[<b>Testes Rápidos estão atrasados e nenhum inventário foi escolhido</b> Uma relatório será gerado automaticamente usando as quantidades do stock fisico do fim do período]]></string>
+  <string name="Rapid_Test_missed_period"><![CDATA[<b>MMIT estão atrasados e nenhum inventário foi escolhido</b> Uma relatório será gerado automaticamente usando as quantidades do stock fisico do fim do período]]></string>
   <string name="btn_select_close_period">Seleccione o fecho do período</string>
   <string name="label_create_emergency_rnr">Criar requisição de emergência</string>
   <string name="mmia_list">MMIA</string>
@@ -446,16 +446,16 @@
   <string name="title_generate_lot_number">Gerar automaticamente o número de lote para o lote novo?</string>
   <string name="btn_confirm_generate_lot_number">GERAR AUTOMATICAMENTE UM NÚMERO DE LOTE</string>
   <string name="title_rapid_test_reports">MMIT</string>
-  <string name="btn_create_rapid_test_period">CRIAR RELATÓRIO DE TESTES RÁPIDOS</string>
-  <string name="title_rapid_test_form">Relatório de testes rápidos</string>
-  <string name="msg_sync_rapid_tests_failed">Falha na sincronização de testes rápidos.</string>
-  <string name="title_rapid_test">Testes Rápidos</string>
+  <string name="btn_create_rapid_test_period">CRIAR RELATÓRIO DE MMIT</string>
+  <string name="title_rapid_test_form">Relatório de MMIT</string>
+  <string name="msg_sync_rapid_tests_failed">Falha na sincronização de MMIT.</string>
+  <string name="title_rapid_test">MMIT</string>
   <string name="error_positive_larger_than_consumption">O número de testes positivos não pode ser superior ao número de testes consumidos. Introduza os dados correctos</string>
   <string name="error_rapid_test_unjustified">O número de injustificado não pode estar vazio.</string>
   <string name="error_rapid_test_ape">O número de APES não pode estar vazio.</string>
-  <string name="error_rapid_test_only_ape">O relatório de testes rápidos não pode ser apenas APE.</string>
-  <string name="error_empty_rapid_test_product">As informações do Relatório Testes Rápidos não podem estar em branco.</string>
-  <string name="error_empty_rapid_test_list">A lista de relatórios de testes rápidos não pode estar vazia.</string>
+  <string name="error_rapid_test_only_ape">O relatório de MMIT não pode ser apenas APE.</string>
+  <string name="error_empty_rapid_test_product">As informações do Relatório MMIT não podem estar em branco.</string>
+  <string name="error_empty_rapid_test_list">A lista de relatórios de MMIT não pode estar vazia.</string>
   <string name="btn_edit">EDITAR</string>
   <string name="msg_initial_inventory_lot_review_add">Lote <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Inventário</font>]]> de <![CDATA[<font color="#000">%2$d</font>]]> será feito</string>
   <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
