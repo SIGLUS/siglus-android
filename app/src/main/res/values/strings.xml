@@ -655,4 +655,13 @@
   <string name="label_view">VIEW</string>
   <string name="msg_issue_voucher_remove_confirm">Are you sure you want to delete this issue voucher? If you click \'yes\', this issue voucher draft will be deleted.</string>
   <string name="msg_cant_create_issue_voucher">You are not allowed to create a new issue voucher draft until you complete the last draft.</string>
+
+  <string name="label_product_unit">Product Unit</string>
+  <string name="label_quantity_ordered">Quantity Ordered</string>
+  <string name="label_partial_fulfilled">Partial \nFulfilled</string>
+  <string name="label_quantity_shipped">Quantity Shipped</string>
+  <string name="label_quantity_accepted">Quantity Accepted</string>
+  <string name="label_quantity_returned">Quantity Returned</string>
+  <string name="label_rejection_reason">Rejection Reason</string>
+  <string name="label_note">Note</string>
 </resources>

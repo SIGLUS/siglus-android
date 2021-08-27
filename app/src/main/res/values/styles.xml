@@ -1011,5 +1011,14 @@
     <item name="android:layout_weight">2.2</item>
     <item name="android:layout_marginLeft">@dimen/px_12</item>
   </style>
+  <style name="Pod.list"/>
+  <style name="Pod.list.header" >
+    <item name="android:layout_width">@dimen/px_100</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:textColor">@color/color_black</item>
+    <item name="android:textSize">@dimen/px_14</item>
+    <item name="android:gravity">center</item>
+    <item name="android:background">@color/color_9c9c9c</item>
+  </style>
 
 </resources>

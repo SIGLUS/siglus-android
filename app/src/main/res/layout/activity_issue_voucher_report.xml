@@ -8,13 +8,106 @@
 
   <org.openlmis.core.view.widget.OrderInfoView
     android:id="@+id/view_orderInfo"
-    app:layout_constraintTop_toTopOf="parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/px_16"
     android:layout_marginLeft="@dimen/px_12"
     android:layout_marginRight="@dimen/px_12"
-    android:layout_height="wrap_content"
     android:background="@drawable/border_bg"
-    android:layout_width="match_parent"/>
+    app:layout_constraintTop_toTopOf="parent" />
 
+  <LinearLayout
+    android:id="@+id/products_list"
+    android:layout_width="@dimen/px_160"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/px_3"
+    android:layout_marginLeft="@dimen/px_12"
+    android:background="@drawable/border_bg"
+    android:divider="@drawable/divider_horizontal"
+    android:orientation="vertical"
+    app:layout_constraintBottom_toTopOf="@+id/action_panel"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/view_orderInfo">
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/px_50"
+      android:text="@string/label_product_name" />
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/product_name_list_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/color_white"
+      android:scrollbars="none" />
+  </LinearLayout>
+  <org.openlmis.core.view.widget.RequisitionBodyHorizontalScrollView
+    android:id="@+id/form_layout"
+    android:layout_marginTop="@dimen/px_3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/px_172"
+    android:layout_marginRight="@dimen/px_12"
+    android:layout_above="@+id/action_panel"
+    android:layout_toRightOf="@id/products_list"
+    app:layout_constraintBottom_toTopOf="@+id/action_panel"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/view_orderInfo">
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:background="@drawable/border_bg"
+      android:orientation="vertical">
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/px_50"
+        android:divider="@drawable/divider_vertical">
+        <TextView
+          style="@style/Pod.list.header"
+          android:text="@string/label_product_unit" />
+        <TextView
+          style="@style/Pod.list.header"
+          android:text="@string/label_quantity_ordered" />
+        <TextView
+          style="@style/Pod.list.header"
+          android:text="@string/label_partial_fulfilled"/>
+        <TextView
+          style="@style/Pod.list.header"
+          android:text="@string/label_quantity_shipped"/>
+        <TextView
+          style="@style/Pod.list.header"
+          android:text="@string/label_stockcard_lot_code"/>
+        <TextView
+          style="@style/Pod.list.header"
+          android:text="@string/label_quantity_accepted"/>
+        <TextView
+          style="@style/Pod.list.header"
+          android:text="@string/label_quantity_returned"/>
+        <TextView
+          style="@style/Pod.list.header"
+          android:layout_width="@dimen/px_200"
+          android:text="@string/label_rejection_reason"/>
+        <TextView
+          style="@style/Pod.list.header"
+          android:text="@string/label_note"/>
+      </LinearLayout>
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/requisition_form_list_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        android:scrollbars="vertical" />
+    </LinearLayout>
+  </org.openlmis.core.view.widget.RequisitionBodyHorizontalScrollView>
+  <org.openlmis.core.view.widget.ActionPanelView
+    android:id="@+id/action_panel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
