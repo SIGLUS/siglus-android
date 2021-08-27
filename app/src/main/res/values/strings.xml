@@ -320,6 +320,8 @@
   <string name="error_rnr_field_mandatory_negative">Sync failed due to technical problem on the server. Please contact system administrator.</string>
   <string name="error_rnr_validation_equation_not_equal">Sync failed due to technical problem on the server. Please contact system administrator.</string>
   <string name="error_rnr_report_start_date_invalid">Sync failed due to technical problem on the server. Please contact system administrator.</string>
+  <string name="error_pod_order_number_not_exist">Sync failed. This order number does not exist. Please confirm whether this order number is correct.</string>
+  <string name="error_pod_not_sync">This order did not sync due to lack of internet connection. The form will be submitted as soon as an internet connection is available. </string>
 
   <!-- Rnr form historical list -->
   <string name="label_via_name">Requisition Balancete</string>
@@ -648,4 +650,9 @@
   <string name="label_delivered_by">Delivered By</string>
   <string name="label_received_by">Received By</string>
   <string name="title_issue_voucher_draft">Issue voucher draft</string>
+  <string name="label_requesting_facility">Requesting Facility</string>
+  <string name="label_reporting_period">Reporting Period</string>
+  <string name="label_view">View</string>
+  <string name="msg_issue_voucher_remove_confirm">Are you sure you want to delete this issue voucher? If you click \'yes\', this issue voucher draft will be deleted.</string>
+  <string name="msg_cant_create_issue_voucher">You are not allowed to create a new issue voucher draft until you complete the last draft.</string>
 </resources>

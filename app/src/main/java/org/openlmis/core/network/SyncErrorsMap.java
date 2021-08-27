@@ -24,6 +24,7 @@ import org.openlmis.core.R;
 
 public final class SyncErrorsMap {
 
+  public static final String ERROR_POD_ORDER_DOSE_NOT_EXIST = "This order number does not exist";
   private static final String PROGRAM_CONFIG_ERROR = "Program configuration missing";
   private static final String INVALID_PRODUCT_CODES = "Invalid product codes";
   private static final String PREVIOUS_FORM_NOT_FILLED =
@@ -77,9 +78,11 @@ public final class SyncErrorsMap {
     if (errorMessage.contains(ERROR_RNR_FIELD_MANDATORY_NEGATIVE)
         || errorMessage.contains(ERROR_RNR_VALIDATION_EQUATION_NOT_EQUAL)
         || errorMessage.contains(ERROR_RNR_REPORT_START_DATE_INVALID)) {
-      return context.getString(R.string.error_rnr_field_mandatory_negative);
+      return context.getString(R.string.error_pod_order_number_not_exist);
     }
-
+    if (errorMessage.contains(ERROR_POD_ORDER_DOSE_NOT_EXIST)) {
+      return context.getString(R.string.error_pod_order_number_not_exist);
+    }
     return context.getString(R.string.sync_server_error);
   }
 }

@@ -95,6 +95,12 @@ public class FieldConstants {
 
   public static final String IS_SUPPORT_EMERGENCY = "isSupportEmergency";
 
+  public static final String ORDER_STATUS = "orderStatus";
+
+  public static final String IS_LOCAL = "isLocal";
+
+  public static final String IS_DRAFT = "isDraft";
+
   // id
   public static final String STOCK_CARD_ID = "stockCard_id";
 

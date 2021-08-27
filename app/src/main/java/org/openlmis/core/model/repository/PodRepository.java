@@ -18,14 +18,18 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.ORDER_STATUS;
+
 import android.content.Context;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import java.sql.SQLException;
 import java.util.List;
 import lombok.Setter;
 import org.openlmis.core.constant.FieldConstants;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.persistence.DbUtil;
@@ -57,9 +61,34 @@ public class PodRepository {
     return dbUtil.withDao(Pod.class, dao -> dao.queryBuilder().query());
   }
 
+  public List<Pod> queryPodsByStatus(OrderStatus status) throws LMISException {
+    return dbUtil.withDao(Pod.class, dao -> dao.queryBuilder().where().eq(ORDER_STATUS, status).query());
+  }
+
   public Pod queryByOrderCode(String orderCode) throws LMISException {
     return dbUtil.withDao(Pod.class,
         dao -> dao.queryBuilder().where().eq(FieldConstants.ORDER_CODE, orderCode).queryForFirst());
+  }
+
+  public void deleteByOrderCode(String orderCode) throws LMISException {
+    dbUtil.withDao(Pod.class, dao -> {
+      DeleteBuilder<Pod, String> podStringDeleteBuilder = dao.deleteBuilder();
+      podStringDeleteBuilder.where().eq(FieldConstants.ORDER_CODE, orderCode);
+      dao.delete(podStringDeleteBuilder.prepare());
+      return null;
+    });
+  }
+
+  public long queryLocalDraftCount() {
+    try {
+      return dbUtil.withDao(Pod.class,
+          dao -> dao.queryBuilder()
+              .where().eq(FieldConstants.IS_LOCAL, true)
+              .and().eq(FieldConstants.IS_DRAFT, true)
+              .countOf());
+    } catch (LMISException e) {
+      return -1;
+    }
   }
 
   public void batchCreatePodsWithItems(@Nullable final List<Pod> pods) throws LMISException {

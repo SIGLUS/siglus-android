@@ -16,8 +16,11 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.model;
+package org.openlmis.core.view.listener;
 
-public enum SyncType {
-  STOCK_CARDS, RNR_FORM, SYNC_MOVEMENT, POD
+import org.openlmis.core.enumeration.OrderStatus;
+
+public interface OrderOperationListener {
+
+  void orderOperation(OrderStatus orderStatus, String orderCode);
 }

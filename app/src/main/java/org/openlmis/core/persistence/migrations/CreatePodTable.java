@@ -8,23 +8,23 @@ public class CreatePodTable extends Migration {
   public void up() {
     execSQL("CREATE TABLE `pods` " +
         "(`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
-        "`shippedDate` VARCHAR NOT NULL, " +
+        "`shippedDate` VARCHAR, " +
         "`receivedDate` VARCHAR, " +
         "`deliveredBy` VARCHAR, " +
         "`receivedBy` VARCHAR, " +
         "`documentNo` VARCHAR," +
         "`orderCode` VARCHAR NOT NULL," +
-        "`orderSupplyFacilityName` VARCHAR NOT NULL, " +
+        "`orderSupplyFacilityName` VARCHAR, " +
         "`orderStatus` VARCHAR NOT NULL, " +
-        "`orderCreatedDate` VARCHAR NOT NULL, " +
-        "`orderLastModifiedDate` VARCHAR NOT NULL, " +
-        "`requisitionNumber` VARCHAR NOT NULL, " +
+        "`orderCreatedDate` VARCHAR, " +
+        "`orderLastModifiedDate` VARCHAR, " +
+        "`requisitionNumber` VARCHAR, " +
         "`requisitionIsEmergency` BOOLEAN DEFAULT 0, " +
-        "`requisitionProgramCode` VARCHAR NOT NULL, " +
-        "`requisitionStartDate` VARCHAR NOT NULL, " +
-        "`requisitionEndDate` VARCHAR NOT NULL, " +
-        "`requisitionActualStartDate` VARCHAR NOT NULL, " +
-        "`requisitionActualEndDate` VARCHAR NOT NULL, " +
+        "`requisitionProgramCode` VARCHAR, " +
+        "`requisitionStartDate` VARCHAR, " +
+        "`requisitionEndDate` VARCHAR, " +
+        "`requisitionActualStartDate` VARCHAR, " +
+        "`requisitionActualEndDate` VARCHAR, " +
         "`isLocal` BOOLEAN DEFAULT 0, " +
         "`isDraft` BOOLEAN DEFAULT 0, " +
         "`isSynced` BOOLEAN DEFAULT 0, " +
