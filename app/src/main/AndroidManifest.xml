@@ -158,7 +158,6 @@
       android:screenOrientation="portrait"/>
     <activity
       android:label="@string/title_pod"
-      android:configChanges="orientation|screenSize"
       android:name=".view.activity.IssueVoucherReportActivity" />
     <provider
       android:authorities="@string/sync_content_authority"

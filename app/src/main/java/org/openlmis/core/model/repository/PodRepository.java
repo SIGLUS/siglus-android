@@ -18,7 +18,11 @@
 
 package org.openlmis.core.model.repository;
 
+<<<<<<< HEAD
 import static org.openlmis.core.constant.FieldConstants.ORDER_STATUS;
+=======
+import static org.openlmis.core.constant.FieldConstants.ID;
+>>>>>>> [jingzhao] #150 rotate for order info
 
 import android.content.Context;
 import androidx.annotation.Nullable;
@@ -55,6 +59,13 @@ public class PodRepository {
     this.podGenericDao = new GenericDao<>(Pod.class, context);
     this.dbUtil = dbUtil;
     this.context = context;
+  }
+
+  public Pod queryPod(final long id) throws LMISException {
+    Pod pod = dbUtil
+        .withDao(Pod.class, dao -> dao.queryBuilder().where().eq(ID, id).queryForFirst());
+
+    return pod;
   }
 
   public List<Pod> listAllPods() throws LMISException {

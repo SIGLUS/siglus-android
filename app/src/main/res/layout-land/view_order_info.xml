@@ -46,41 +46,45 @@
   </RelativeLayout>
   <LinearLayout style="@style/Pod.header.line">
     <TextView style="@style/Pod.header.text.title"
-      android:text= "@string/label_ordering_facility" />
+      android:text= "@string/label_ordering_facility"
+      android:layout_weight="8"/>
     <TextView style="@style/Pod.header.text.value"
-      android:id="@+id/tv_order_facility" />
+      android:id="@+id/tv_order_facility"
+      android:layout_weight="17" />
+    <TextView style="@style/Pod.header.text.title"
+      android:text="@string/label_supplying_depot"
+      android:layout_weight="8"/>
+    <TextView style="@style/Pod.header.text.value"
+      android:id="@+id/tv_supplying_depot"
+      android:layout_weight="17" />
   </LinearLayout>
   <LinearLayout style="@style/Pod.header.line">
     <TextView style="@style/Pod.header.text.title"
+      android:layout_weight="8"
       android:text="@string/label_program"/>
     <TextView style="@style/Pod.header.text.value"
-      android:id="@+id/tv_program" />
+      android:id="@+id/tv_program"
+      android:layout_weight="17"/>
+    <TextView style="@style/Pod.header.text.title"
+      android:text="@string/label_shipping_date"
+      android:layout_weight="8"/>
+    <TextView style="@style/Pod.header.text.value"
+      android:id="@+id/tv_shipping_date"
+      android:layout_weight="17"/>
   </LinearLayout>
   <LinearLayout style="@style/Pod.header.line">
     <TextView style="@style/Pod.header.text.title"
-      android:text="@string/label_supplying_depot"/>
-    <TextView style="@style/Pod.header.text.value"
-      android:id="@+id/tv_supplying_depot" />
-  </LinearLayout>
-  <LinearLayout style="@style/Pod.header.line">
-    <TextView style="@style/Pod.header.text.title"
-      android:text="@string/label_shipping_date"/>
-    <TextView style="@style/Pod.header.text.value"
-      android:id="@+id/tv__shipping_date" />
-  </LinearLayout>
-  <LinearLayout
-    android:id="@+id/ll_pod_receive_info"
-    style="@style/Pod.header.line">
-    <TextView style="@style/Pod.header.text.title"
-      android:layout_weight="1"
+      android:layout_weight="8"
       android:text="@string/label_delivered_by"/>
-    <TextView style="@style/Pod.header.text.title"
-      android:layout_weight="1"/>
+    <TextView style="@style/Pod.header.text.value"
+      android:id="@+id/tv_delivered_by"
+      android:layout_weight="17"/>
     <TextView style="@style/Pod.header.text.title"
       android:text="@string/label_received_by"
-      android:layout_weight="1"/>
-    <TextView style="@style/Pod.header.text.title"
-      android:layout_weight="1"/>
+      android:layout_weight="8"/>
+    <TextView style="@style/Pod.header.text.value"
+      android:id="@+id/tv_received_by"
+      android:layout_weight="17"/>
   </LinearLayout>
 
 </LinearLayout>

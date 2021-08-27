@@ -83,6 +83,9 @@ public class Pod extends BaseModel {
   @DatabaseField
   private String requisitionProgramCode;
 
+  @DatabaseField
+  private String stockManagementReason;
+
   @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
   private Date requisitionStartDate;
 

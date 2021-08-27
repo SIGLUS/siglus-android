@@ -18,18 +18,40 @@
 
 package org.openlmis.core.view.activity;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
+import org.openlmis.core.model.Pod;
+import org.openlmis.core.presenter.IssueVoucherReportPresenter;
+import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
+import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.view.widget.OrderInfoView;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_issue_voucher_report)
-public class IssueVoucherReportActivity extends BaseActivity {
+public class IssueVoucherReportActivity extends BaseActivity implements IssueVoucherView {
+
+  @InjectView(R.id.view_orderInfo)
+  private OrderInfoView orderInfo;
+
+  @InjectPresenter(IssueVoucherReportPresenter.class)
+  IssueVoucherReportPresenter presenter;
+
+  private long formId;
+  private Pod pod;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    formId = getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 1);
+    pod = (Pod) getIntent().getExtras().getSerializable(Constants.PARAM_ISSUE_VOUCHER);
+    if (pod != null) {
+      refreshIssueVoucherForm(pod);
+    } else {
+      presenter.loadData(formId);
+    }
   }
 
   @Override
@@ -38,8 +60,7 @@ public class IssueVoucherReportActivity extends BaseActivity {
   }
 
   @Override
-  public void onConfigurationChanged(Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
+  public void refreshIssueVoucherForm(Pod pod) {
+    orderInfo.refresh(pod);
   }
-
 }
