@@ -38,6 +38,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.AdditionalProductProgram;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
@@ -68,6 +69,8 @@ import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.service.sync.SchedulerBuilder;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
@@ -214,7 +217,7 @@ public class SyncDownManager {
     }
   }
 
-  private void syncDownPods(Subscriber<? super SyncProgress> subscriber)throws LMISException {
+  private void syncDownPods(Subscriber<? super SyncProgress> subscriber) throws LMISException {
     try {
       subscriber.onNext(SyncProgress.SYNCING_PODS);
       fetchAndSavePods();
@@ -239,7 +242,16 @@ public class SyncDownManager {
       e.reportToFabric();
       throw e;
     }
-    podRepository.batchCreatePodsWithItems(podsLocalResponse.getPods());
+    ImmutableList<Pod> filteredPods = FluentIterable.from(podsLocalResponse.getPods())
+        .filter(pod -> {
+          try {
+            return podRepository.queryByOrderCode(pod.getOrderCode()) == null;
+          } catch (LMISException e) {
+            return false;
+          }
+        })
+        .toList();
+    podRepository.batchCreatePodsWithItems(filteredPods);
   }
 
   @NonNull
