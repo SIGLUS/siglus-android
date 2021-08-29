@@ -26,6 +26,8 @@ import android.view.ViewGroup.LayoutParams;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
+import lombok.AccessLevel;
+import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
@@ -43,6 +45,7 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
   @InjectView(R.id.rv_issue_voucher)
   private RecyclerView rvIssueVoucher;
 
+  @Setter(AccessLevel.PROTECTED)
   private IssueVoucherListAdapter adapter;
 
   @Inject

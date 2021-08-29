@@ -78,7 +78,7 @@ public final class SyncErrorsMap {
     if (errorMessage.contains(ERROR_RNR_FIELD_MANDATORY_NEGATIVE)
         || errorMessage.contains(ERROR_RNR_VALIDATION_EQUATION_NOT_EQUAL)
         || errorMessage.contains(ERROR_RNR_REPORT_START_DATE_INVALID)) {
-      return context.getString(R.string.error_pod_order_number_not_exist);
+      return context.getString(R.string.error_rnr_field_mandatory_negative);
     }
     if (errorMessage.contains(ERROR_POD_ORDER_DOSE_NOT_EXIST)) {
       return context.getString(R.string.error_pod_order_number_not_exist);

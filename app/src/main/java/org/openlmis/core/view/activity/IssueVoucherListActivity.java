@@ -34,6 +34,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 import com.google.inject.Inject;
+import lombok.Getter;
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
@@ -55,9 +56,11 @@ public class IssueVoucherListActivity extends BaseActivity {
 
   protected static final int[] TITLE_RES = {R.string.label_issue_voucher, R.string.label_pod};
 
+  @Getter
   @InjectView(R.id.mi_issue_voucher)
   private MagicIndicator magicIndicator;
 
+  @Getter
   @InjectView(R.id.vp_issue_voucher)
   private ViewPager2 viewPager;
 

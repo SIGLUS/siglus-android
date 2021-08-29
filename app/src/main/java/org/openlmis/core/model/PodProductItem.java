@@ -29,6 +29,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.openlmis.core.utils.ListUtil;
 
 @EqualsAndHashCode(callSuper = true)
 @Setter
@@ -55,4 +56,9 @@ public class PodProductItem extends BaseModel {
   private ForeignCollection<PodProductLotItem> podProductLotItemForeignCollection;
 
   private List<PodProductLotItem> podProductLotItemsWrapper;
+
+  public List<PodProductLotItem> getPodProductLotItemsWrapper() {
+    podProductLotItemsWrapper = ListUtil.wrapOrEmpty(podProductLotItemForeignCollection, podProductLotItemsWrapper);
+    return podProductLotItemsWrapper;
+  }
 }

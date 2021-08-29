@@ -85,6 +85,24 @@ public class IssueVoucherListPresenter extends Presenter {
     }
   };
 
+  Observer<Object> deleteIssueVoucherSubscribe = new Observer<Object>() {
+    @Override
+    public void onCompleted() {
+      view.loaded();
+      view.onRefreshList();
+    }
+
+    @Override
+    public void onError(Throwable e) {
+      // do nothing
+    }
+
+    @Override
+    public void onNext(Object o) {
+      // do nothing
+    }
+  };
+
   @Override
   public void attachView(BaseView v) {
     view = (IssueVoucherListView) v;
@@ -112,15 +130,13 @@ public class IssueVoucherListPresenter extends Presenter {
       try {
         podRepository.deleteByOrderCode(orderCode);
         refreshViewModels();
+        subscriber.onCompleted();
       } catch (Exception e) {
         new LMISException(e, "delete issue voucher failed").reportToFabric();
         // do nothing
       }
       subscriber.onNext(null);
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(o -> {
-      view.loaded();
-      view.onRefreshList();
-    });
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(deleteIssueVoucherSubscribe);
     subscriptions.add(subscribe);
   }
 

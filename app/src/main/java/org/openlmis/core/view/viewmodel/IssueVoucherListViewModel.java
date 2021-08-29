@@ -82,10 +82,6 @@ public class IssueVoucherListViewModel implements Comparable<IssueVoucherListVie
     return OrderStatus.SHIPPED == pod.getOrderStatus();
   }
 
-  public boolean shouldShowEditForPod() {
-    return pod.getOrderStatus() == OrderStatus.RECEIVED;
-  }
-
   public boolean shouldShowOperationIcon() {
     return pod.isLocal() && (isIssueVoucher()
         || (!isIssueVoucher() && StringUtils.contains(getErrorMsg(), SyncErrorsMap.ERROR_POD_ORDER_DOSE_NOT_EXIST)));

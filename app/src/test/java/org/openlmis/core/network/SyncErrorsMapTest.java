@@ -99,4 +99,12 @@ public class SyncErrorsMapTest {
         appDisplayError);
   }
 
+  @Test
+  public void shouldReturnOrderNumberNotExist() {
+    String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(
+        "Sync failed. This order number does not exist. Please confirm whether this order number is correct.");
+    assertEquals(LMISTestApp.getContext().getString(R.string.error_pod_order_number_not_exist),
+        appDisplayError);
+  }
+
 }
