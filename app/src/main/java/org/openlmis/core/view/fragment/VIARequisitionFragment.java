@@ -99,7 +99,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
   @Override
   protected BaseReportPresenter injectPresenter() {
-    presenter = RoboGuice.getInjector(getActivity()).getInstance(VIARequisitionPresenter.class);
+    presenter = RoboGuice.getInjector(requireActivity()).getInstance(VIARequisitionPresenter.class);
     return presenter;
   }
 
@@ -129,6 +129,9 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
   }
 
   public void hideOrShowAddProductMenuInVIAPage() {
+    if (menu == null) {
+      return;
+    }
     menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(presenter.isFormProductEditable());
   }
 
@@ -171,8 +174,8 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
   @Override
   public void refreshRequisitionForm(RnRForm rnRForm) {
+    hideOrShowAddProductMenuInVIAPage();
     bodyView.refresh(rnRForm);
-
     if (rnRForm.isEmergency()) {
       refreshEmergencyRnr(rnRForm);
     } else {
