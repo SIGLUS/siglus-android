@@ -18,8 +18,9 @@
 
 package org.openlmis.core.model.repository;
 
-import static org.openlmis.core.constant.FieldConstants.ORDER_STATUS;
 import static org.openlmis.core.constant.FieldConstants.ID;
+import static org.openlmis.core.constant.FieldConstants.ORDER_STATUS;
+
 import android.content.Context;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;

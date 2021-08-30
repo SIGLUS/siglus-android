@@ -35,7 +35,7 @@
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/product_name_list_view"
       android:layout_width="match_parent"
-      android:layout_height="0dp"
+      android:layout_height="match_parent"
       android:scrollbars="none" />
   </LinearLayout>
   <org.openlmis.core.view.widget.RequisitionBodyHorizontalScrollView
@@ -97,7 +97,8 @@
         android:id="@+id/form_list_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/color_white"
+        android:background="@drawable/border_bg"
+        android:divider="@drawable/divider_horizontal"
         android:scrollbars="vertical" />
     </LinearLayout>
   </org.openlmis.core.view.widget.RequisitionBodyHorizontalScrollView>
