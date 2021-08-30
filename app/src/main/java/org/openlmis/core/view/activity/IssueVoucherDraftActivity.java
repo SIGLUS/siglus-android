@@ -27,12 +27,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import java.util.ArrayList;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
+import org.openlmis.core.view.widget.ActionPanelView;
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 
+@ContentView(R.layout.activity_issue_voucher_draft)
 public class IssueVoucherDraftActivity extends BaseActivity {
 
   public static final String ORDER_NUMBER = "ORDER_NUMBER";

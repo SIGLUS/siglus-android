@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:paddingStart="@dimen/px_24"
+  android:paddingEnd="@dimen/px_0"
+  android:layout_marginTop="@dimen/px_15"
+  android:layout_marginBottom="@dimen/px_15"
+  xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.Guideline
+    android:id="@+id/guideline"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_constraintGuide_percent="0.48" />
+
+  <TextView
+    android:id="@+id/tv_lot_number_and_date"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:gravity="left|center_vertical"
+    android:textColor="@color/color_6b6b6b"
+    android:textStyle="bold"
+    android:textSize="@dimen/px_18"
+    android:layout_marginTop="@dimen/px_32"
+    android:layout_marginBottom="@dimen/px_32"
+    android:layout_marginRight="@dimen/px_26"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toLeftOf="@+id/guideline"
+    tools:text="23A02-04/2021"/>
+
+  <TextView
+    android:id="@+id/tv_quantity_shipped"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/px_45"
+    android:textColor="@color/color_6b6b6b"
+    android:textSize="@dimen/px_18"
+    app:layout_constraintBottom_toTopOf="@+id/tv_lot_number_and_date"
+    app:layout_constraintLeft_toRightOf="@+id/guideline"
+    tools:text="Quantity shipped:10"/>
+
+  <TextView
+    android:id="@+id/tv_quantity_accepted"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/px_45"
+    android:textColor="@color/color_6b6b6b"
+    android:textSize="@dimen/px_18"
+    app:layout_constraintTop_toBottomOf="@+id/tv_lot_number_and_date"
+    app:layout_constraintLeft_toRightOf="@+id/guideline"
+    tools:text="Quantity shipped:10"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

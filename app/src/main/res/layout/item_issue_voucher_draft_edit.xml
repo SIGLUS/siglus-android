@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:background="@color/color_white"
+  android:layout_marginTop="@dimen/px_8"
+  android:orientation="vertical"
+  app:showDividers="beginning"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <LinearLayout
+    android:id="@+id/ll_product_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/px_84"
+    android:background="@color/color_4d727272"
+    android:gravity="center_vertical">
+
+    <TextView
+      android:id="@+id/tv_product_title"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:textStyle="bold"
+      android:layout_marginRight="@dimen/px_36"
+      android:layout_height="wrap_content"
+      android:textColor="@color/color_black"
+      android:layout_marginHorizontal="@dimen/px_24"
+      android:textSize="@dimen/px_20"
+      tools:text="ABACAVIR+LAMIVUDINA 100mg" />
+
+    <RelativeLayout
+      android:id="@+id/rl_trashcan"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:paddingHorizontal="@dimen/px_24">
+      <ImageView
+        android:id="@+id/iv_trashcan"
+        android:layout_width="@dimen/px_24"
+        android:layout_height="@dimen/px_24"
+        android:src="@drawable/ic_trashcan"
+        android:layout_centerInParent="true" />
+    </RelativeLayout>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+      android:id="@+id/tv_error_banner"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/px_18"
+      android:background="@drawable/error_banner"
+      android:padding="@dimen/px_8"
+      android:text="@string/alert_for_fill_in_lot_or_remove_product"
+      android:textColor="@color/color_requisition_banner_text"
+      android:visibility="gone"
+      android:textSize="@dimen/px_15" />
+
+    <TextView
+      android:id="@+id/tv_warning_banner"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/px_18"
+      android:background="@drawable/warning_banner"
+      android:padding="@dimen/px_8"
+      android:text="@string/alert_issue_with_expired"
+      android:textColor="@color/color_requisition_banner_text"
+      android:visibility="gone"
+      android:textSize="@dimen/px_15" />
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rv_lots"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      tools:listitem="@layout/item_issue_voucher_lot_deit"
+      tools:itemCount="3" />
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/ly_action_panel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/px_16"
+    android:layout_marginBottom="@dimen/px_16">
+
+    <TextView
+      android:id="@+id/btn_add_new_lot"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_marginLeft="@dimen/px_48"
+      android:layout_marginRight="@dimen/px_40"
+      android:background="@drawable/border_round_blue"
+      android:gravity="center"
+      android:text="@string/btn_bulk_entries_add_new_lot"
+      android:textColor="@color/color_accent"
+      android:textSize="@dimen/px_16" />
+
+    <TextView
+      android:id="@+id/btn_verify"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_marginRight="@dimen/px_48"
+      android:background="@drawable/border_round_blue"
+      android:gravity="center"
+      android:text="@string/btn_done"
+      android:textColor="@color/color_accent"
+      android:textSize="@dimen/px_16" />
+  </LinearLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

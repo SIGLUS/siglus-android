@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@color/color_white"
+  android:layout_marginTop="@dimen/px_8"
+  android:orientation="vertical"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <LinearLayout
+    android:id="@+id/ll_product_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/px_84"
+    android:gravity="center_vertical">
+
+    <ImageView
+      android:layout_width="@dimen/px_36"
+      android:layout_height="@dimen/px_36"
+      android:src="@drawable/ic_done_green"
+      android:layout_marginLeft="@dimen/px_24" />
+
+    <TextView
+      android:id="@+id/tv_product_title"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:textStyle="bold"
+      android:layout_marginRight="@dimen/px_36"
+      android:layout_height="wrap_content"
+      android:textColor="@color/color_primary"
+      android:layout_marginHorizontal="@dimen/px_24"
+      tools:text="ABACAVIR+LAMIVUDINA 100mg [08S01Z]"
+      android:textSize="@dimen/px_20" />
+
+    <RelativeLayout
+      android:id="@+id/rl_trashcan"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:paddingHorizontal="@dimen/px_24">
+      <ImageView
+        android:id="@+id/iv_trashcan"
+        android:layout_width="@dimen/px_24"
+        android:layout_height="@dimen/px_24"
+        android:src="@drawable/ic_trashcan"
+        android:layout_centerInParent="true" />
+    </RelativeLayout>
+  </LinearLayout>
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rv_lots"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:listitem="@layout/item_issue_voucher_lot_done"
+    tools:itemCount="3" />
+
+  <TextView
+    android:id="@+id/tv_edit"
+    android:layout_width="@dimen/px_216"
+    android:layout_height="@dimen/px_40"
+    android:layout_marginVertical="@dimen/px_16"
+    android:layout_gravity="center_horizontal"
+    android:text="@string/btn_edit"
+    android:gravity="center"
+    android:textSize="@dimen/px_16"
+    android:background="@drawable/border_round_blue"
+    android:textColor="@color/color_form_button_blue" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

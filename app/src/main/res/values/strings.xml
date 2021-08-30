@@ -677,4 +677,6 @@
   <string name="label_default_rejection_reason">Select an option</string>
   <string name="hint_error_field_required">This field is required</string>
   <string name="hint_error_more_than_shipped">You can\'t accept more stock than was shipped</string>
+  <string name="hint_quantity_shipped">Quantity shipped</string>
+  <string name="hint_quantity_accepted">Quantity accepted</string>
 </resources>

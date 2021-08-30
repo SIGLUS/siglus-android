@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".view.activity.IssueVoucherDraftActivity">
+
+  <TextView
+    android:id="@+id/tv_total_amount"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/px_40"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    tools:text="Total: 1147"
+    android:textColor="@color/color_727272"
+    android:textSize="@dimen/px_20"
+    android:gravity="center"
+    android:layout_marginRight="@dimen/px_10" />
+
+  <View
+    android:id="@+id/v_divider_line"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_1"
+    app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
+    android:background="@color/color_ffa000"
+    />
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rv_issue_voucher_draft"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    app:layout_constraintTop_toBottomOf="@+id/v_divider_line"
+    app:layout_constraintBottom_toTopOf="@id/bt_next"/>
+
+  <androidx.cardview.widget.CardView
+    android:id="@+id/bt_next"
+    style="@style/FormAction.Container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_52"
+    android:layout_marginTop="@dimen/px_8"
+    app:layout_constraintBottom_toBottomOf="parent">
+
+    <androidx.appcompat.widget.AppCompatButton
+      android:background="@drawable/blue_button"
+      android:layout_width="@dimen/px_220"
+      android:layout_height="@dimen/px_36"
+      android:layout_gravity="center_vertical|center_horizontal"
+      android:text="@string/label_next"
+      android:textColor="@color/color_white"
+      android:textSize="@dimen/px_20" />
+
+  </androidx.cardview.widget.CardView>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/cl_empty"
+    android:visibility="gone"
+    android:background="@color/color_eeeeee"
+    >
+    <ImageView
+      android:id="@+id/iv_no_product"
+      android:layout_width="@dimen/px_73"
+      android:layout_height="@dimen/px_73"
+      android:src="@drawable/ic_no_product"
+      app:layout_constraintBottom_toTopOf="@id/msg_no_product"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintVertical_chainStyle="packed">
+    </ImageView>
+
+    <TextView
+      android:id="@+id/msg_no_product"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/msg_no_product_in_bulk_entries"
+      android:textSize="@dimen/px_22"
+      android:textColor="@color/color_black"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+    </TextView>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
