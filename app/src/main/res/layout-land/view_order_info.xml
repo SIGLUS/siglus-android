@@ -72,7 +72,8 @@
       android:id="@+id/tv_shipping_date"
       android:layout_weight="17"/>
   </LinearLayout>
-  <LinearLayout style="@style/Pod.header.line">
+  <LinearLayout android:id="@+id/ll_pod_receive_info"
+    style="@style/Pod.header.line">
     <TextView style="@style/Pod.header.text.title"
       android:layout_weight="8"
       android:text="@string/label_delivered_by"/>

@@ -50,7 +50,7 @@ public class PodBuilder {
     List<PodProductItem> podProductItemsWrapper = pod.getPodProductItemsWrapper();
     PodProductItem podProductItem = PodProductItem.builder()
         .pod(pod)
-        .code(FieldConstants.PRODUCT_CODE)
+        .product(product)
         .orderedQuantity(10)
         .partialFulfilledQuantity(10)
         .build();

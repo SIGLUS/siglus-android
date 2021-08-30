@@ -20,20 +20,30 @@ package org.openlmis.core.view.viewmodel;
 
 import java.util.List;
 import lombok.Data;
-import org.openlmis.core.model.Pod;
+import org.openlmis.core.enumeration.OrderStatus;
+import org.openlmis.core.model.PodProductItem;
+import org.openlmis.core.model.Product;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
-public class IssueVoucherReportViewModel {
+public class IssueVoucherReportProductViewModel {
 
-  private Pod pod;
-  List<IssueVoucherReportProductViewModel> productViewModels;
+  private Product product;
+  private long orderedQuantity;
+  private long partialFulfilledQuantity;
+  private OrderStatus orderStatus;
+  private PodProductItem podProductItem;
+  private List<IssueVoucherReportLotViewModel> lotViewModelList;
 
-  public IssueVoucherReportViewModel(Pod pod) {
-    this.pod = pod;
-    productViewModels = FluentIterable.from(pod.getPodProductItemsWrapper())
-        .transform(podProductItem ->
-            new IssueVoucherReportProductViewModel(podProductItem, pod.getOrderStatus()))
+  public IssueVoucherReportProductViewModel(PodProductItem podProductItem,
+      OrderStatus orderStatus) {
+    this.podProductItem = podProductItem;
+    product = podProductItem.getProduct();
+    orderedQuantity = podProductItem.getOrderedQuantity();
+    partialFulfilledQuantity = podProductItem.getPartialFulfilledQuantity();
+    this.orderStatus = orderStatus;
+    lotViewModelList = FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
+        .transform(podLotItem -> new IssueVoucherReportLotViewModel(podLotItem, orderStatus))
         .toList();
   }
 

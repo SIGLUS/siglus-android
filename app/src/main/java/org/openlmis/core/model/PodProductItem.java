@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -40,8 +42,10 @@ import org.openlmis.core.utils.ListUtil;
 @DatabaseTable(tableName = "pod_product_items")
 public class PodProductItem extends BaseModel {
 
-  @DatabaseField
-  private String code;
+  @Expose
+  @SerializedName("code")
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private Product product;
 
   @DatabaseField
   private long orderedQuantity;

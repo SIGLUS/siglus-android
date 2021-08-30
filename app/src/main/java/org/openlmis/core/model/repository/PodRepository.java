@@ -18,12 +18,8 @@
 
 package org.openlmis.core.model.repository;
 
-<<<<<<< HEAD
 import static org.openlmis.core.constant.FieldConstants.ORDER_STATUS;
-=======
 import static org.openlmis.core.constant.FieldConstants.ID;
->>>>>>> [jingzhao] #150 rotate for order info
-
 import android.content.Context;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;

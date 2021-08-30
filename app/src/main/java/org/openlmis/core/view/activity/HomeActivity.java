@@ -329,9 +329,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
           startActivity(KitStockCardListActivity.class);
           break;
         case R.id.btn_issue_voucher:
-          Intent intent = new Intent(HomeActivity.this, IssueVoucherReportActivity.class);
-          intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 1);
-          startActivity(intent);
+          startActivity(new Intent(HomeActivity.this, IssueVoucherListActivity.class));
           break;
         default:
           // do nothing

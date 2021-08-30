@@ -5,7 +5,6 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   tools:context=".view.activity.IssueVoucherReportActivity">
-
   <org.openlmis.core.view.widget.OrderInfoView
     android:id="@+id/view_orderInfo"
     android:layout_width="match_parent"
@@ -19,12 +18,12 @@
   <LinearLayout
     android:id="@+id/products_list"
     android:layout_width="@dimen/px_160"
-    android:layout_height="match_parent"
+    android:layout_height="0dp"
     android:layout_marginTop="@dimen/px_3"
     android:layout_marginLeft="@dimen/px_12"
-    android:background="@drawable/border_bg"
-    android:divider="@drawable/divider_horizontal"
+    android:background="@drawable/border_bg_gray"
     android:orientation="vertical"
+    android:padding="1dp"
     app:layout_constraintBottom_toTopOf="@+id/action_panel"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/view_orderInfo">
@@ -36,15 +35,14 @@
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/product_name_list_view"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="@color/color_white"
+      android:layout_height="0dp"
       android:scrollbars="none" />
   </LinearLayout>
   <org.openlmis.core.view.widget.RequisitionBodyHorizontalScrollView
     android:id="@+id/form_layout"
     android:layout_marginTop="@dimen/px_3"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="0dp"
     android:layout_marginLeft="@dimen/px_172"
     android:layout_marginRight="@dimen/px_12"
     android:layout_above="@+id/action_panel"
@@ -63,6 +61,7 @@
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="@dimen/px_50"
+        android:showDividers="middle"
         android:divider="@drawable/divider_vertical">
         <TextView
           style="@style/Pod.list.header"
@@ -95,7 +94,7 @@
       </LinearLayout>
 
       <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/requisition_form_list_view"
+        android:id="@+id/form_list_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@color/color_white"
@@ -104,6 +103,7 @@
   </org.openlmis.core.view.widget.RequisitionBodyHorizontalScrollView>
   <org.openlmis.core.view.widget.ActionPanelView
     android:id="@+id/action_panel"
+    layout="@layout/view_action_panel"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"

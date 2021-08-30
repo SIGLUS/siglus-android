@@ -68,18 +68,19 @@
     <TextView style="@style/Pod.header.text.value"
       android:id="@+id/tv_shipping_date" />
   </LinearLayout>
-  <LinearLayout
-    android:id="@+id/ll_pod_receive_info"
+  <LinearLayout android:id="@+id/ll_pod_receive_info"
     style="@style/Pod.header.line">
     <TextView style="@style/Pod.header.text.title"
       android:layout_weight="1"
       android:text="@string/label_delivered_by"/>
     <TextView style="@style/Pod.header.text.title"
+      android:id="@+id/tv_delivered_by"
       android:layout_weight="1"/>
     <TextView style="@style/Pod.header.text.title"
       android:text="@string/label_received_by"
       android:layout_weight="1"/>
     <TextView style="@style/Pod.header.text.title"
+      android:id="@+id/tv_received_by"
       android:layout_weight="1"/>
   </LinearLayout>
 

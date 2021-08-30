@@ -30,7 +30,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.PodProductLotItem;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -82,9 +81,8 @@ public class PodProductLotItemRepository {
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
         for (PodProductLotItem podProductLotItem : podProductLotItems) {
-          Product product = productRepository.getByCode(podProductItem.getCode());
           Lot lot = podProductLotItem.getLot();
-          lot.setProduct(product);
+          lot.setProduct(podProductItem.getProduct());
           Lot savedLot = lotRepository.createOrUpdateWithExistingLot(lot);
           podProductLotItem.setPodProductItem(podProductItem);
           podProductLotItem.setLot(savedLot);

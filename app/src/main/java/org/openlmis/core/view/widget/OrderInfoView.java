@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import org.openlmis.core.R;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.utils.DateUtil;
@@ -44,11 +45,14 @@ public class OrderInfoView extends LinearLayout {
   @InjectView(R.id.tv_shipping_date)
   private TextView tvShippingDate;
 
-//  @InjectView(R.id.tv_delivered_by)
-//  private TextView tvDeliveredBy;
-//
-//  @InjectView(R.id.tv_received_by)
-//  private TextView tvReceivedBy;
+  @InjectView(R.id.ll_pod_receive_info)
+  private LinearLayout linearLayout;
+
+  @InjectView(R.id.tv_delivered_by)
+  private TextView tvDeliveredBy;
+
+  @InjectView(R.id.tv_received_by)
+  private TextView tvReceivedBy;
 
 
   public OrderInfoView(Context context) {
@@ -70,10 +74,14 @@ public class OrderInfoView extends LinearLayout {
   public void refresh(Pod pod) {
     tvOrderFacility.setText(SharedPreferenceMgr.getInstance().getCurrentUserFacility());
     tvProgram.setText(pod.getRequisitionProgramCode());
-//    tvSupplyingDepot.setText(pod.getOrderSupplyFacilityName());
-//    tvShippingDate.setText(DateUtil.formatDate(pod.getShippedDate(), DateUtil.SIMPLE_DATE_FORMAT));
-//    tvDeliveredBy.setText(pod.getDeliveredBy());
-//    tvReceivedBy.setText(pod.getReceivedBy());
+    tvSupplyingDepot.setText(pod.getOrderSupplyFacilityName());
+    tvShippingDate.setText(DateUtil.formatDate(pod.getShippedDate(), DateUtil.SIMPLE_DATE_FORMAT));
+    if (pod.getOrderStatus() == OrderStatus.SHIPPED) {
+      tvDeliveredBy.setText(pod.getDeliveredBy());
+      tvReceivedBy.setText(pod.getReceivedBy());
+    } else {
+      linearLayout.setVisibility(GONE);
+    }
   }
 
 }

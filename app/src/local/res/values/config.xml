@@ -1,7 +1,7 @@
 <resources>
-  <string name="server_base_url">http://10.0.3.2:9091/</string>
-  <string name="server_base_url_host">10.0.3.2</string>
-  <integer name="server_base_url_port">9091</integer>
+  <string name="server_base_url">http://10.209.20.187:80/</string>
+  <string name="server_base_url_host">10.209.20.187</string>
+  <integer name="server_base_url_port">80</integer>
   <!-- the line above is the ip used by genymotion to connect to its host machine's localhost-->
   <string name="sync_account_type">org.clintonhealthaccess.lmismoz.local</string>
   <integer name="sync_interval">3600</integer>

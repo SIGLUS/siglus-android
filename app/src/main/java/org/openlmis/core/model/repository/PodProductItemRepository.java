@@ -75,11 +75,11 @@ public class PodProductItemRepository {
     }
   }
 
-  public PodProductItem queryByPodIdAndProductCode(long podId, String productCode) throws LMISException {
+  public PodProductItem queryByPodIdAndProductId(long podId, long productId) throws LMISException {
     return dbUtil.withDao(PodProductItem.class,
         dao -> dao.queryBuilder()
             .where().eq(FieldConstants.POD_ID, podId)
-            .and().eq(FieldConstants.CODE, productCode)
+            .and().eq(FieldConstants.PRODUCT_ID, productId)
             .queryForFirst());
   }
 
@@ -111,8 +111,8 @@ public class PodProductItemRepository {
 
 
   private PodProductItem createOrUpdate(PodProductItem podProductItem) throws LMISException {
-    PodProductItem existingPodProductItem = queryByPodIdAndProductCode(podProductItem.getPod().getId(),
-        podProductItem.getCode());
+    PodProductItem existingPodProductItem = queryByPodIdAndProductId(podProductItem.getPod().getId(),
+        podProductItem.getProduct().getId());
     if (existingPodProductItem != null) {
       podProductItem.setId(existingPodProductItem.getId());
     }

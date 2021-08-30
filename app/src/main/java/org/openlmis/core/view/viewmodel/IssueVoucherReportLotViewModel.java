@@ -18,23 +18,29 @@
 
 package org.openlmis.core.view.viewmodel;
 
-import java.util.List;
 import lombok.Data;
-import org.openlmis.core.model.Pod;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.openlmis.core.enumeration.OrderStatus;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.PodProductLotItem;
 
 @Data
-public class IssueVoucherReportViewModel {
+public class IssueVoucherReportLotViewModel {
 
-  private Pod pod;
-  List<IssueVoucherReportProductViewModel> productViewModels;
+  private Lot lot;
+  private long shippedQuantity;
+  private long acceptedQuantity;
+  private String rejectedReason;
+  private String notes;
+  private PodProductLotItem lotItem;
+  private OrderStatus orderStatus;
 
-  public IssueVoucherReportViewModel(Pod pod) {
-    this.pod = pod;
-    productViewModels = FluentIterable.from(pod.getPodProductItemsWrapper())
-        .transform(podProductItem ->
-            new IssueVoucherReportProductViewModel(podProductItem, pod.getOrderStatus()))
-        .toList();
+  public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, OrderStatus orderStatus) {
+    this.lotItem = lotItem;
+    lot = lotItem.getLot();
+    shippedQuantity = lotItem.getShippedQuantity();
+    acceptedQuantity = lotItem.getAcceptedQuantity();
+    rejectedReason = lotItem.getRejectedReason();
+    notes = lotItem.getNotes();
+    this.orderStatus = orderStatus;
   }
-
 }
