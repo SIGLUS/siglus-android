@@ -69,6 +69,10 @@ public class PodProductLotItemRepository {
             .queryForFirst());
   }
 
+  public void delete(PodProductLotItem lotItem) throws LMISException {
+    podProductLotItemGenericDao.delete(lotItem);
+  }
+
   public void batchCreatePodLotItemsWithLotInfo(@Nullable final List<PodProductLotItem> podProductLotItems,
       PodProductItem podProductItem)
       throws LMISException {

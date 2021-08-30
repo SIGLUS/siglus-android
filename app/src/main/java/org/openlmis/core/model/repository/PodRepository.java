@@ -24,7 +24,6 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
-import com.j256.ormlite.stmt.DeleteBuilder;
 import java.sql.SQLException;
 import java.util.List;
 import lombok.Setter;
@@ -32,6 +31,7 @@ import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -71,10 +71,15 @@ public class PodRepository {
   }
 
   public void deleteByOrderCode(String orderCode) throws LMISException {
-    dbUtil.withDao(Pod.class, dao -> {
-      DeleteBuilder<Pod, String> podStringDeleteBuilder = dao.deleteBuilder();
-      podStringDeleteBuilder.where().eq(FieldConstants.ORDER_CODE, orderCode);
-      dao.delete(podStringDeleteBuilder.prepare());
+    dbUtil.withDaoAsBatch(Pod.class, dao -> {
+      Pod pod = dao.queryBuilder().where().eq(FieldConstants.ORDER_CODE, orderCode).queryForFirst();
+      if (pod == null) {
+        return null;
+      }
+      for (PodProductItem podProductItem : pod.getPodProductItemsWrapper()) {
+        podProductItemRepository.delete(podProductItem);
+      }
+      dao.delete(pod);
       return null;
     });
   }

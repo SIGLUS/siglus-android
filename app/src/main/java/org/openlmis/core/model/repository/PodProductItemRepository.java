@@ -29,6 +29,7 @@ import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
+import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -80,6 +81,16 @@ public class PodProductItemRepository {
             .where().eq(FieldConstants.POD_ID, podId)
             .and().eq(FieldConstants.CODE, productCode)
             .queryForFirst());
+  }
+
+  public void delete(PodProductItem productItem) throws LMISException {
+    dbUtil.withDaoAsBatch(PodProductItem.class, dao -> {
+      for (PodProductLotItem podProductLotItem : productItem.getPodProductLotItemsWrapper()) {
+        podProductLotItemRepository.delete(podProductLotItem);
+      }
+      podProductItemGenericDao.delete(productItem);
+      return null;
+    });
   }
 
   private void createOrUpdateWithItems(final PodProductItem podProductItem) throws LMISException {
