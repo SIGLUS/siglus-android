@@ -211,4 +211,16 @@ public class BulkIssueActivityTest {
     // then
     assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("test msg");
   }
+
+  @Test
+  public void shouldShowConfirmWhenDeleteClicked() {
+    // when
+    bulkIssueActivity.onRemove(1);
+    RobolectricUtils.waitLooperIdle();
+
+    // then
+    Fragment dialog = bulkIssueActivity.getSupportFragmentManager()
+        .findFragmentByTag("bulk_issue_delete_confirm_dialog");
+    Assert.assertNotNull(dialog);
+  }
 }

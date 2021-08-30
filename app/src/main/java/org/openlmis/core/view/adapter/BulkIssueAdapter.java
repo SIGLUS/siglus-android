@@ -32,16 +32,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.Objects;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.BulkIssueAdapter.BulkIssueProductViewHolder;
 import org.openlmis.core.view.listener.AmountChangeListener;
+import org.openlmis.core.view.listener.OnRemoveListener;
 import org.openlmis.core.view.viewmodel.BulkIssueProductViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProductViewModel, BulkIssueProductViewHolder> {
+
+  @Setter
+  private OnRemoveListener removeListener;
 
   public BulkIssueAdapter() {
     addItemType(BulkIssueProductViewModel.TYPE_EDIT, R.layout.item_bulk_issue_edit);
@@ -181,7 +186,9 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
       return new SingleClickButtonListener() {
         @Override
         public void onSingleClick(View v) {
-          removeAt(getLayoutPosition());
+          if (removeListener != null) {
+            removeListener.onRemove(getLayoutPosition());
+          }
         }
       };
     }

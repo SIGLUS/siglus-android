@@ -51,6 +51,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkIssueAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.listener.OnRemoveListener;
 import org.openlmis.core.view.widget.BulkEntriesSignatureDialog;
 import org.openlmis.core.view.widget.SignatureDialog.DialogDelegate;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -58,7 +59,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_bulk_issue)
-public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
+public class BulkIssueActivity extends BaseActivity implements BulkIssueView, OnRemoveListener {
 
   @InjectView(R.id.tv_total_amount)
   private TextView tvTotalAmount;
@@ -190,11 +191,34 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
   }
 
   @Override
+  public void onRemove(int position) {
+    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+        null,
+        getString(R.string.msg_remove_confirm),
+        getString(R.string.btn_positive),
+        getString(R.string.btn_negative),
+        null);
+    dialogFragment.show(getSupportFragmentManager(), "bulk_issue_delete_confirm_dialog");
+    dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+      @Override
+      public void positiveClick(String tag) {
+        bulkIssueAdapter.removeAt(position);
+      }
+
+      @Override
+      public void negativeClick(String tag) {
+        // do nothing
+      }
+    });
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     findViewById(R.id.btn_save).setOnClickListener(clickListener);
     findViewById(R.id.btn_complete).setOnClickListener(clickListener);
     rvBulkIssue.setLayoutManager(new LinearLayoutManager(this));
+    bulkIssueAdapter.setRemoveListener(this);
     rvBulkIssue.setAdapter(bulkIssueAdapter);
     bulkIssueAdapter.registerAdapterDataObserver(dataObserver);
     bulkIssueAdapter.setNewInstance(bulkIssuePresenter.getCurrentViewModels());
