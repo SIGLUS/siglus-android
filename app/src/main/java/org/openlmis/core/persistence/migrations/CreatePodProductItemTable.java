@@ -10,8 +10,8 @@ public class CreatePodProductItemTable extends Migration {
         "(`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "`pod_id` BIGINT NOT NULL, " +
         "`product_id` BIGINT, " +
-        "`orderedQuantity` BIGINT NOT NULL, " +
-        "`partialFulfilledQuantity` BIGINT NOT NULL, " +
+        "`orderedQuantity` BIGINT, " +
+        "`partialFulfilledQuantity` BIGINT, " +
         "`createdAt` VARCHAR NOT NULL, " +
         "`updatedAt` VARCHAR NOT NULL)");
   }

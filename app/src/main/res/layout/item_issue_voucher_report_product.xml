@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/px_50"
+    android:showDividers="middle"
+    android:divider="@drawable/divider_vertical">
+    <TextView style="@style/Pod.list.product"
+      android:id="@+id/tv_product_unit" />
+    <TextView style="@style/Pod.list.product"
+      android:id="@+id/tv_quantity_ordered" />
+    <TextView style="@style/Pod.list.product"
+      android:id="@+id/tv_partial_fulfilled" />
+    <TextView style="@style/Pod.list.product" />
+    <TextView style="@style/Pod.list.product" />
+    <TextView style="@style/Pod.list.product" />
+    <TextView style="@style/Pod.list.product" />
+    <TextView style="@style/Pod.list.product"
+      android:layout_width="@dimen/px_200" />
+    <TextView style="@style/Pod.list.product"
+      android:text="@string/label_note"/>
+  </LinearLayout>
+
+  <View
+    android:id="@+id/v_lot_info_divider"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/color_bfbfbf"
+    />
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rv_issue_voucher_lot_list"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:overScrollMode="never"
+    android:scrollbars="none" />
+</LinearLayout>

@@ -29,8 +29,8 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 public class IssueVoucherReportProductViewModel {
 
   private Product product;
-  private long orderedQuantity;
-  private long partialFulfilledQuantity;
+  private String orderedQuantity;
+  private String partialFulfilledQuantity;
   private OrderStatus orderStatus;
   private PodProductItem podProductItem;
   private List<IssueVoucherReportLotViewModel> lotViewModelList;
@@ -39,8 +39,10 @@ public class IssueVoucherReportProductViewModel {
       OrderStatus orderStatus) {
     this.podProductItem = podProductItem;
     product = podProductItem.getProduct();
-    orderedQuantity = podProductItem.getOrderedQuantity();
-    partialFulfilledQuantity = podProductItem.getPartialFulfilledQuantity();
+    orderedQuantity = podProductItem.getOrderedQuantity() == null ? ""
+        : String.valueOf(podProductItem.getOrderedQuantity());
+    partialFulfilledQuantity = podProductItem.getPartialFulfilledQuantity() == null ? ""
+        : String.valueOf(podProductItem.getPartialFulfilledQuantity());
     this.orderStatus = orderStatus;
     lotViewModelList = FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
         .transform(podLotItem -> new IssueVoucherReportLotViewModel(podLotItem, orderStatus))

@@ -29,6 +29,7 @@ import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.IssueVoucherProductAdapter;
+import org.openlmis.core.view.adapter.IssueVoucherReportAdapter;
 import org.openlmis.core.view.widget.OrderInfoView;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -51,6 +52,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   private long formId;
   private Pod pod;
   private IssueVoucherProductAdapter productAdapter;
+  private IssueVoucherReportAdapter issueVoucherReportAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,8 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     productAdapter = new IssueVoucherProductAdapter();
     rvProductList.setAdapter(productAdapter);
     rvIssueVoucherList.setLayoutManager(new LinearLayoutManager(this));
+    issueVoucherReportAdapter = new IssueVoucherReportAdapter();
+    rvProductList.setAdapter(issueVoucherReportAdapter);
     if (pod != null) {
       refreshIssueVoucherForm(pod);
     } else {
@@ -77,5 +81,6 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   public void refreshIssueVoucherForm(Pod pod) {
     orderInfo.refresh(pod);
     productAdapter.setList(presenter.getIssueVoucherReportViewModel().getProductViewModels());
+    issueVoucherReportAdapter.setList(presenter.getIssueVoucherReportViewModel().getProductViewModels());
   }
 }

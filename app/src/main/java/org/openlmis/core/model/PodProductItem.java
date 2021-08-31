@@ -48,10 +48,10 @@ public class PodProductItem extends BaseModel {
   private Product product;
 
   @DatabaseField
-  private long orderedQuantity;
+  private Long orderedQuantity;
 
   @DatabaseField
-  private long partialFulfilledQuantity;
+  private Long partialFulfilledQuantity;
 
   @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false)
   private Pod pod;

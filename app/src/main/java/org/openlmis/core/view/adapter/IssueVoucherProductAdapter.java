@@ -47,9 +47,7 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
   protected class IssueVoucherProductViewHolder extends BaseViewHolder {
 
     private TextView productName;
-
     private LinearLayout productList;
-
 
     public IssueVoucherProductViewHolder(View itemView) {
       super(itemView);

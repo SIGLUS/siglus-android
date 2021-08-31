@@ -1020,5 +1020,28 @@
     <item name="android:gravity">center</item>
     <item name="android:background">@color/color_9c9c9c</item>
   </style>
-
+  <style name="Pod.list.header.product" >
+    <item name="android:layout_width">@dimen/px_160</item>
+    <item name="android:layout_height">@dimen/px_92</item>
+    <item name="android:textColor">@color/color_black</item>
+    <item name="android:textSize">@dimen/px_14</item>
+    <item name="android:gravity">center</item>
+    <item name="android:background">@color/color_d4d4d4</item>
+  </style>
+  <style name="Pod.list.product">
+    <item name="android:layout_width">@dimen/px_100</item>
+    <item name="android:layout_height">@dimen/px_92</item>
+    <item name="android:textColor">@color/color_black</item>
+    <item name="android:textSize">@dimen/px_14</item>
+    <item name="android:gravity">center</item>
+    <item name="android:background">@color/color_eeeeee</item>
+  </style>
+  <style name="Pod.list.lot">
+    <item name="android:layout_width">@dimen/px_100</item>
+    <item name="android:layout_height">@dimen/px_49</item>
+    <item name="android:textColor">@color/color_black</item>
+    <item name="android:textSize">@dimen/px_14</item>
+    <item name="android:gravity">center</item>
+    <item name="android:background">@color/color_white</item>
+  </style>
 </resources>

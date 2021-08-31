@@ -6,8 +6,7 @@
   android:divider="@drawable/divider_horizontal"
   android:orientation="vertical">
   <TextView
+    style="@style/Pod.list.header.product"
     android:id="@+id/products_name"
-    android:layout_width="@dimen/px_160"
-    android:layout_height="@dimen/px_91"
-    android:text="@string/label_partial_fulfilled"/>
+    android:text="Kit KWATMHOSO2- M6dulo Mangueiras adicionais; N/A;"/>
 </LinearLayout>
