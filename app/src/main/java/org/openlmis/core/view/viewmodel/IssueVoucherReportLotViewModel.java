@@ -27,21 +27,29 @@ import org.openlmis.core.model.PodProductLotItem;
 public class IssueVoucherReportLotViewModel {
 
   private Lot lot;
-  private String shippedQuantity;
-  private String acceptedQuantity;
+  private Long shippedQuantity;
+  private Long acceptedQuantity;
   private String rejectedReason;
   private String notes;
   private PodProductLotItem lotItem;
   private OrderStatus orderStatus;
+  private boolean isLocal;
 
-  public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, OrderStatus orderStatus) {
+  public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, OrderStatus orderStatus, boolean isLocal) {
+    this.isLocal = isLocal;
     this.lotItem = lotItem;
     lot = lotItem.getLot();
-    shippedQuantity = lotItem.getShippedQuantity() == null ? "" : String.valueOf(lotItem.getShippedQuantity());
-    acceptedQuantity =
-        lotItem.getAcceptedQuantity() == null ? "" : String.valueOf(lotItem.getAcceptedQuantity());
+    shippedQuantity = lotItem.getShippedQuantity();
+    acceptedQuantity = lotItem.getAcceptedQuantity();
     rejectedReason = lotItem.getRejectedReason();
     notes = lotItem.getNotes();
     this.orderStatus = orderStatus;
+  }
+
+  public Long getRejectedQuality() {
+    if (shippedQuantity == null || acceptedQuantity == null) {
+      return null;
+    }
+    return shippedQuantity.longValue() - acceptedQuantity.longValue();
   }
 }

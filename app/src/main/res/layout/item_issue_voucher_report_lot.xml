@@ -19,27 +19,31 @@
     <TextView
       style="@style/Pod.list.lot"
       android:id="@+id/tv_partial_fulfilled" />
+    <RelativeLayout style="@style/Pod.list.lot"
+      android:layout_height="match_parent">
+      <EditText
+        android:id="@+id/et_quantity_shipped"
+        style="@style/Pod.list.lot"
+        android:layout_margin="@dimen/px_5"
+        android:paddingRight="@dimen/px_4"
+        android:background="@drawable/border_bg_corner"
+        android:gravity="right|center"
+        android:inputType="numberSigned" />
+    </RelativeLayout>
     <TextView
       style="@style/Pod.list.lot"
-      android:id="@+id/tv_quantity_shipped" />
-    <TextView
-      style="@style/Pod.list.lot"
-      android:width="@dimen/px_200"
+      android:layout_width="@dimen/px_200"
       android:id="@+id/tv_lot_code" />
     <RelativeLayout style="@style/Pod.list.lot"
-      android:layout_width="match_parent"
       android:layout_height="match_parent">
       <EditText
         android:id="@+id/et_quantity_accepted"
         style="@style/Pod.list.lot"
-        android:layout_marginTop="@dimen/px_5"
-        android:layout_marginBottom="@dimen/px_5"
-        android:layout_marginStart="@dimen/px_5"
-        android:layout_marginEnd="@dimen/px_5"
-        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/px_5"
+        android:paddingRight="@dimen/px_4"
         android:background="@drawable/border_bg_corner"
         android:gravity="right|center"
-        android:inputType="text" />
+        android:inputType="numberSigned" />
     </RelativeLayout>
     <TextView
       style="@style/Pod.list.lot"
@@ -73,10 +77,13 @@
         android:layout_marginLeft="@dimen/px_20"
         android:src="@drawable/icon_pulldown_enable" />
     </RelativeLayout>
-    <RelativeLayout style="@style/Pod.list.lot">
+    <RelativeLayout style="@style/Pod.list.lot"
+      android:layout_height="match_parent"
+      android:layout_width="@dimen/px_100">
       <EditText style="@style/Pod.list.lot"
         android:id="@+id/et_note"
         android:layout_margin="@dimen/px_5"
+        android:paddingRight="@dimen/px_4"
         android:gravity="right|center"
         android:inputType="text"
         android:background="@drawable/border_bg_corner" />

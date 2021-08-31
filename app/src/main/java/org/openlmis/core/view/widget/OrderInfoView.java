@@ -23,6 +23,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import java.util.Date;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -35,6 +36,9 @@ public class OrderInfoView extends LinearLayout {
 
   @InjectView(R.id.tv_order_facility)
   private TextView tvOrderFacility;
+
+  @InjectView(R.id.tv_period_info)
+  private TextView tvPeriodInfo;
 
   @InjectView(R.id.tv_program)
   private TextView tvProgram;
@@ -76,12 +80,33 @@ public class OrderInfoView extends LinearLayout {
     tvProgram.setText(pod.getRequisitionProgramCode());
     tvSupplyingDepot.setText(pod.getOrderSupplyFacilityName());
     tvShippingDate.setText(DateUtil.formatDate(pod.getShippedDate(), DateUtil.SIMPLE_DATE_FORMAT));
+    setPeriodInfo(pod);
     if (pod.getOrderStatus() == OrderStatus.SHIPPED) {
+      linearLayout.setVisibility(GONE);
+    } else {
       tvDeliveredBy.setText(pod.getDeliveredBy());
       tvReceivedBy.setText(pod.getReceivedBy());
-    } else {
-      linearLayout.setVisibility(GONE);
     }
+  }
+
+  private void setPeriodInfo(Pod pod) {
+    String periodInfo = getReportingPeriod(pod);
+    if (periodInfo.isEmpty()) {
+      tvPeriodInfo.setVisibility(GONE);
+    } else {
+      tvPeriodInfo.setText(periodInfo);
+    }
+  }
+
+  private String getReportingPeriod(Pod pod) {
+    Date requisitionActualStartDate = pod.getRequisitionActualStartDate();
+    Date requisitionActualEndDate = pod.getRequisitionActualEndDate();
+    if (requisitionActualStartDate == null || requisitionActualEndDate == null) {
+      return "";
+    }
+    String startDate = DateUtil.formatDate(requisitionActualStartDate, DateUtil.SIMPLE_DATE_FORMAT);
+    String endDate = DateUtil.formatDate(requisitionActualEndDate, DateUtil.SIMPLE_DATE_FORMAT);
+    return startDate + " - " + endDate;
   }
 
 }
