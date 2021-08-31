@@ -51,7 +51,7 @@ public class StockCardsResponseAdapterTest {
   @Test
   public void shouldCorrectlySetProperty() throws Exception {
     // given
-    final Product product = ProductBuilder.buildAdultProduct();
+    Product product = ProductBuilder.buildAdultProduct();
     product.setCode(productCode);
     when(mockProductRepository.getByCode(anyString())).thenReturn(product);
     String json = JsonFileReader.readJson(getClass(), "StockCardsResponse.json");
@@ -59,25 +59,25 @@ public class StockCardsResponseAdapterTest {
     // when
     StockCardsLocalResponse stockCardsLocalResponse = adapter
         .deserialize(new JsonParser().parse(json), null, null);
-    final StockCard stockCard = stockCardsLocalResponse.getStockCards().get(0);
+    StockCard stockCard = stockCardsLocalResponse.getStockCards().get(0);
     assertNotNull(json);
 
     // then
     assertEquals(100, stockCard.getStockOnHand());
     assertEquals(productCode, stockCard.getProduct().getCode());
 
-    final StockMovementItem stockMovementItem = stockCard.getStockMovementItemsWrapper().get(0);
+    StockMovementItem stockMovementItem = stockCard.getStockMovementItemsWrapper().get(0);
     assertEquals(1, stockCard.getStockMovementItemsWrapper().size());
     assertEquals(200, stockMovementItem.getMovementQuantity());
     assertEquals(MovementType.POSITIVE_ADJUST, stockMovementItem.getMovementType());
     assertNull(stockMovementItem.getDocumentNumber());
-    // TODO temp set assertNull(stockMovementItem.getReason());
+    assertNull(stockMovementItem.getReason());
     assertEquals(300, stockMovementItem.getStockOnHand());
     assertEquals("hui", stockMovementItem.getSignature());
     assertEquals(100, stockMovementItem.getRequested().longValue());
     assertEquals("2021-06-21", DateUtil.formatDate(stockMovementItem.getCreatedTime(), DateUtil.DB_DATE_FORMAT));
 
-    final LotMovementItem lotMovementItem = stockMovementItem.getLotMovementItemListWrapper().get(0);
+    LotMovementItem lotMovementItem = stockMovementItem.getLotMovementItemListWrapper().get(0);
     assertEquals(1, stockMovementItem.getLotMovementItemListWrapper().size());
     assertEquals("123", lotMovementItem.getDocumentNumber());
     assertEquals("CUSTOMER_RETURN", lotMovementItem.getReason());
@@ -85,11 +85,11 @@ public class StockCardsResponseAdapterTest {
     assertEquals(200, lotMovementItem.getMovementQuantity().longValue());
     assertEquals(300, lotMovementItem.getStockOnHand().longValue());
 
-    final LotOnHand lotOnHand = stockCard.getLotOnHandListWrapper().get(0);
+    LotOnHand lotOnHand = stockCard.getLotOnHandListWrapper().get(0);
     assertEquals(1, stockCard.getLotOnHandListWrapper().size());
     assertEquals(300, lotOnHand.getQuantityOnHand().longValue());
 
-    final Lot lot = lotOnHand.getLot();
+    Lot lot = lotOnHand.getLot();
     assertEquals(productCode, lot.getProduct().getCode());
     assertEquals("08A07-on-hand", lot.getLotNumber());
     assertEquals("2022-05-11", DateUtil.formatDate(lot.getExpirationDate(), DateUtil.DB_DATE_FORMAT));
@@ -98,7 +98,7 @@ public class StockCardsResponseAdapterTest {
   @Test
   public void shouldCorrectlySetPropertyForKit() throws Exception {
     // given
-    final Product product = ProductBuilder.buildAdultProduct();
+    Product product = ProductBuilder.buildAdultProduct();
     product.setCode(productCode);
     when(mockProductRepository.getByCode(anyString())).thenReturn(product);
     String json = JsonFileReader.readJson(getClass(), "StockCardsResponseForKit.json");
@@ -106,14 +106,14 @@ public class StockCardsResponseAdapterTest {
     // when
     StockCardsLocalResponse stockCardsLocalResponse = adapter
         .deserialize(new JsonParser().parse(json), null, null);
-    final StockCard stockCard = stockCardsLocalResponse.getStockCards().get(0);
+    StockCard stockCard = stockCardsLocalResponse.getStockCards().get(0);
     assertNotNull(json);
 
     // then
     assertEquals(100, stockCard.getStockOnHand());
     assertEquals(productCode, stockCard.getProduct().getCode());
 
-    final StockMovementItem stockMovementItem = stockCard.getStockMovementItemsWrapper().get(0);
+    StockMovementItem stockMovementItem = stockCard.getStockMovementItemsWrapper().get(0);
     assertEquals("CUSTOMER_RETURN", stockMovementItem.getReason());
     assertEquals("123", stockMovementItem.getDocumentNumber());
 
@@ -124,21 +124,19 @@ public class StockCardsResponseAdapterTest {
   @Test
   public void testMapToLocalMovementType() throws LMISException {
     // when
-    final MovementType physicalInventory = mapToLocalMovementType(NetworkMovementType.PHYSICAL_INVENTORY.name(), 0);
-    final MovementType positiveAdjustWithInventory = mapToLocalMovementType(
+    MovementType physicalInventory = mapToLocalMovementType(NetworkMovementType.PHYSICAL_INVENTORY.name(), 0);
+    MovementType positiveAdjustWithInventory = mapToLocalMovementType(
         NetworkMovementType.PHYSICAL_INVENTORY.name(), 100);
-    final MovementType negativeAdjustWithInventory = mapToLocalMovementType(
+    MovementType negativeAdjustWithInventory = mapToLocalMovementType(
         NetworkMovementType.PHYSICAL_INVENTORY.name(), -100);
-    final MovementType receive = mapToLocalMovementType(NetworkMovementType.RECEIVE.name(), 100);
-    final MovementType issueWithIssue = mapToLocalMovementType(NetworkMovementType.ISSUE.name(), -100);
-    final MovementType issueWithUnpackKit = mapToLocalMovementType(NetworkMovementType.UNPACK_KIT.name(), -100);
-    final MovementType positiveAdjustWithAdjustment = mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(),
-        100);
-    final MovementType negativeAdjustWithAdjustment = mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(),
-        -100);
-    final IllegalArgumentException adjustmentIllegalException = assertThrows(IllegalArgumentException.class,
+    MovementType receive = mapToLocalMovementType(NetworkMovementType.RECEIVE.name(), 100);
+    MovementType issueWithIssue = mapToLocalMovementType(NetworkMovementType.ISSUE.name(), -100);
+    MovementType issueWithUnpackKit = mapToLocalMovementType(NetworkMovementType.UNPACK_KIT.name(), -100);
+    MovementType positiveAdjustWithAdjustment = mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), 100);
+    MovementType negativeAdjustWithAdjustment = mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), -100);
+    IllegalArgumentException adjustmentIllegalException = assertThrows(IllegalArgumentException.class,
         () -> mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), 0));
-    final LMISException errorTypeException = assertThrows(LMISException.class,
+    LMISException errorTypeException = assertThrows(LMISException.class,
         () -> mapToLocalMovementType("ERROR_TYPE", 0));
 
     // then
@@ -157,8 +155,8 @@ public class StockCardsResponseAdapterTest {
   @Test
   public void testMapToLocalReason() throws LMISException {
     // when
-    final String unpackKitReason = adapter.mapToLocalReason(NetworkMovementType.UNPACK_KIT.name(), null);
-    final String testReason = adapter.mapToLocalReason(NetworkMovementType.ADJUSTMENT.name(), "test");
+    String unpackKitReason = adapter.mapToLocalReason(NetworkMovementType.UNPACK_KIT.name(), null);
+    String testReason = adapter.mapToLocalReason(NetworkMovementType.ADJUSTMENT.name(), "test");
 
     // then
     assertEquals("UNPACK_KIT", unpackKitReason);
@@ -176,12 +174,12 @@ public class StockCardsResponseAdapterTest {
     String errorString = "ERROR_TYPE";
 
     // when
-    final NetworkMovementType physicalInventoryType = NetworkMovementType.convertValue(physicalInventoryString);
-    final NetworkMovementType receiveType = NetworkMovementType.convertValue(receiveString);
-    final NetworkMovementType issueType = NetworkMovementType.convertValue(issueString);
-    final NetworkMovementType adjustmentType = NetworkMovementType.convertValue(adjustmentString);
-    final NetworkMovementType unpackKitType = NetworkMovementType.convertValue(unpackKitString);
-    final LMISException exception = Assert
+    NetworkMovementType physicalInventoryType = NetworkMovementType.convertValue(physicalInventoryString);
+    NetworkMovementType receiveType = NetworkMovementType.convertValue(receiveString);
+    NetworkMovementType issueType = NetworkMovementType.convertValue(issueString);
+    NetworkMovementType adjustmentType = NetworkMovementType.convertValue(adjustmentString);
+    NetworkMovementType unpackKitType = NetworkMovementType.convertValue(unpackKitString);
+    LMISException exception = Assert
         .assertThrows(LMISException.class, () -> NetworkMovementType.convertValue(errorString));
 
     // then
