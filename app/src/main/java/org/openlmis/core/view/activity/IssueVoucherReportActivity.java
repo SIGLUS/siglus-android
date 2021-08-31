@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.openlmis.core.view.widget.DoubleRecycleViewScrollListener.scrollInSync;
+
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -61,6 +63,8 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     pod = (Pod) getIntent().getExtras().getSerializable(Constants.PARAM_ISSUE_VOUCHER);
     initProductList();
     initIssueVoucherList();
+    scrollInSync(rvProductList, rvIssueVoucherList);
+
     if (pod != null) {
       refreshIssueVoucherForm(pod);
     } else {
