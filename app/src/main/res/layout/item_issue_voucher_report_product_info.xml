@@ -9,4 +9,9 @@
     style="@style/Pod.list.header.product"
     android:id="@+id/products_name"
     android:text="Kit KWATMHOSO2- M6dulo Mangueiras adicionais; N/A;"/>
+  <LinearLayout
+    android:id="@+id/ll_lot_list"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" />
 </LinearLayout>

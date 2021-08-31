@@ -48,6 +48,7 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
 
     private TextView productName;
     private LinearLayout productList;
+    private LinearLayout lotList;
 
     public IssueVoucherProductViewHolder(View itemView) {
       super(itemView);
@@ -56,12 +57,14 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
     public void populate(IssueVoucherReportProductViewModel issueVoucherReportProductViewModel) {
       productName = itemView.findViewById(R.id.products_name);
       productList = itemView.findViewById(R.id.products_list_item);
+      lotList = itemView.findViewById(R.id.ll_lot_list);
       productName.setText(issueVoucherReportProductViewModel.getPodProductItem()
           .getProduct().getPrimaryName());
       if (issueVoucherReportProductViewModel.getLotViewModelList().size() > 0) {
         ViewGroup inflate = (ViewGroup) LayoutInflater.from(itemView.getContext())
             .inflate(R.layout.item_issue_voucher_lot_name, productList, false);
-        productList.addView(inflate);
+        lotList.removeAllViews();
+        lotList.addView(inflate);
       }
     }
   }

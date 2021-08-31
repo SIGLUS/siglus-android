@@ -59,12 +59,8 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     super.onCreate(savedInstanceState);
     formId = getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 1);
     pod = (Pod) getIntent().getExtras().getSerializable(Constants.PARAM_ISSUE_VOUCHER);
-    rvProductList.setLayoutManager(new LinearLayoutManager(this));
-    productAdapter = new IssueVoucherProductAdapter();
-    rvProductList.setAdapter(productAdapter);
-    rvIssueVoucherList.setLayoutManager(new LinearLayoutManager(this));
-    issueVoucherReportAdapter = new IssueVoucherReportAdapter();
-    rvProductList.setAdapter(issueVoucherReportAdapter);
+    initProductList();
+    initIssueVoucherList();
     if (pod != null) {
       refreshIssueVoucherForm(pod);
     } else {
@@ -83,4 +79,17 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     productAdapter.setList(presenter.getIssueVoucherReportViewModel().getProductViewModels());
     issueVoucherReportAdapter.setList(presenter.getIssueVoucherReportViewModel().getProductViewModels());
   }
+
+  private void initIssueVoucherList() {
+    rvIssueVoucherList.setLayoutManager(new LinearLayoutManager(this));
+    issueVoucherReportAdapter = new IssueVoucherReportAdapter();
+    rvIssueVoucherList.setAdapter(issueVoucherReportAdapter);
+  }
+
+  private void initProductList() {
+    rvProductList.setLayoutManager(new LinearLayoutManager(this));
+    productAdapter = new IssueVoucherProductAdapter();
+    rvProductList.setAdapter(productAdapter);
+  }
+
 }
