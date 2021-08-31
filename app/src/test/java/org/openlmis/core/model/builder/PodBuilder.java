@@ -58,7 +58,7 @@ public class PodBuilder {
     PodProductLotItem podProductLotItem = PodProductLotItem.builder()
         .podProductItem(podProductItem)
         .lot(lot)
-        .shippedQuantity(10)
+        .shippedQuantity(Long.valueOf(10))
         .build();
     podProductLotItemsWrapper.add(podProductLotItem);
     podProductItemsWrapper.add(podProductItem);

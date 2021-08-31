@@ -77,6 +77,7 @@
           android:text="@string/label_quantity_shipped"/>
         <TextView
           style="@style/Pod.list.header"
+          android:layout_width="@dimen/px_200"
           android:text="@string/label_stockcard_lot_code"/>
         <TextView
           style="@style/Pod.list.header"

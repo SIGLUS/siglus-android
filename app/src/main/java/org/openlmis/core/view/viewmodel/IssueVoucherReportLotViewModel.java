@@ -27,8 +27,8 @@ import org.openlmis.core.model.PodProductLotItem;
 public class IssueVoucherReportLotViewModel {
 
   private Lot lot;
-  private long shippedQuantity;
-  private long acceptedQuantity;
+  private String shippedQuantity;
+  private String acceptedQuantity;
   private String rejectedReason;
   private String notes;
   private PodProductLotItem lotItem;
@@ -37,8 +37,9 @@ public class IssueVoucherReportLotViewModel {
   public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, OrderStatus orderStatus) {
     this.lotItem = lotItem;
     lot = lotItem.getLot();
-    shippedQuantity = lotItem.getShippedQuantity();
-    acceptedQuantity = lotItem.getAcceptedQuantity();
+    shippedQuantity = lotItem.getShippedQuantity() == null ? "" : String.valueOf(lotItem.getShippedQuantity());
+    acceptedQuantity =
+        lotItem.getAcceptedQuantity() == null ? "" : String.valueOf(lotItem.getAcceptedQuantity());
     rejectedReason = lotItem.getRejectedReason();
     notes = lotItem.getNotes();
     this.orderStatus = orderStatus;

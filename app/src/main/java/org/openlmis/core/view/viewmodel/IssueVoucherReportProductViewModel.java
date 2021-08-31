@@ -29,6 +29,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 public class IssueVoucherReportProductViewModel {
 
   private Product product;
+  private String productUnitName;
   private String orderedQuantity;
   private String partialFulfilledQuantity;
   private OrderStatus orderStatus;
@@ -39,6 +40,7 @@ public class IssueVoucherReportProductViewModel {
       OrderStatus orderStatus) {
     this.podProductItem = podProductItem;
     product = podProductItem.getProduct();
+    productUnitName = product.getStrength() == null ? "each" : product.getStrength();
     orderedQuantity = podProductItem.getOrderedQuantity() == null ? ""
         : String.valueOf(podProductItem.getOrderedQuantity());
     partialFulfilledQuantity = podProductItem.getPartialFulfilledQuantity() == null ? ""

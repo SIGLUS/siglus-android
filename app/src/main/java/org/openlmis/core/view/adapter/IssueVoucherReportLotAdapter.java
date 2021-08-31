@@ -18,10 +18,9 @@
 
 package org.openlmis.core.view.adapter;
 
-import static org.openlmis.core.persistence.Migration.TAG;
-
-import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -44,15 +43,43 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
   }
 
   protected class IssueVoucherReportLotViewHolder extends BaseViewHolder {
+    private TextView etQuantityShipped;
+    private TextView tvLotCode;
+    private EditText etQuantityAccepted;
+    private EditText etNote;
 
     public IssueVoucherReportLotViewHolder(View itemView) {
       super(itemView);
     }
 
     public void populate(IssueVoucherReportLotViewModel lotViewModel) {
+      initView();
+      tvLotCode.setText(lotViewModel.getLot().getLotNumber());
+      etQuantityShipped.setText(lotViewModel.getShippedQuantity());
+      etQuantityAccepted.setText(lotViewModel.getAcceptedQuantity());
+      etNote.setText(lotViewModel.getNotes());
       if (lotViewModel.getOrderStatus() == OrderStatus.SHIPPED) {
-        Log.i(TAG, "onCreate");
+        setFocusableStatus(true);
+      } else {
+        setFocusableStatus(false);
       }
+    }
+
+    private void setFocusableStatus(boolean isFocus) {
+      etQuantityShipped.setFocusable(isFocus);
+      etQuantityAccepted.setFocusable(isFocus);
+      etNote.setFocusable(isFocus);
+    }
+
+    private void initView() {
+      etQuantityShipped = itemView.findViewById(R.id.tv_quantity_shipped);
+      tvLotCode = itemView.findViewById(R.id.tv_lot_code);
+      etQuantityAccepted = itemView.findViewById(R.id.et_quantity_accepted);
+      //      TextView tvQuantityReturned = itemView.findViewById(R.id.tv_quantity_returned);
+      //      View vRejectionReason = itemView.findViewById(R.id.v_rejection_reason);
+      //      TextView tvRejectionReason = itemView.findViewById(R.id.tv_rejection_reason);
+      //      ImageView ivRejectionReason = itemView.findViewById(R.id.iv_rejection_reason);
+      etNote = itemView.findViewById(R.id.et_note);
     }
   }
 }

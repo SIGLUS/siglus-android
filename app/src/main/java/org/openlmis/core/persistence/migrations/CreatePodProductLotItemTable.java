@@ -10,7 +10,7 @@ public class CreatePodProductLotItemTable extends Migration {
         "(`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "`podProductItem_id` BIGINT NOT NULL, " +
         "`lot_id` BIGINT NOT NULL, " +
-        "`shippedQuantity` BIGINT NOT NULL, " +
+        "`shippedQuantity` BIGINT, " +
         "`acceptedQuantity` BIGINT, " +
         "`rejectedReason` VARCHAR, " +
         "`notes` VARCHAR, " +

@@ -40,10 +40,10 @@ public class PodProductLotItem extends BaseModel {
   private Lot lot;
 
   @DatabaseField
-  private long shippedQuantity;
+  private Long shippedQuantity;
 
   @DatabaseField
-  private long acceptedQuantity;
+  private Long acceptedQuantity;
 
   @DatabaseField
   private String rejectedReason;

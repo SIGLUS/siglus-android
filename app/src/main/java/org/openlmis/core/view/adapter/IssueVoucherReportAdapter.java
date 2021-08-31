@@ -48,23 +48,29 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
     private TextView tvProductUnit;
     private TextView tvQuantityOrdered;
     private TextView tvPartialFulfilled;
+    private RecyclerView rvLotList;
+    private IssueVoucherReportLotAdapter lotAdapter;
 
     public IssueVoucherReportViewHolder(View itemView) {
       super(itemView);
     }
 
     public void populate(IssueVoucherReportProductViewModel productViewModel) {
-      RecyclerView rvLotList = itemView.findViewById(R.id.rv_issue_voucher_lot_list);
-      rvLotList.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
-      IssueVoucherReportLotAdapter lotAdapter = new IssueVoucherReportLotAdapter();
-      rvLotList.setAdapter(lotAdapter);
+      initView();
       lotAdapter.setList(productViewModel.getLotViewModelList());
+      tvProductUnit.setText(productViewModel.getProductUnitName());
+      tvPartialFulfilled.setText(productViewModel.getPartialFulfilledQuantity());
+      tvQuantityOrdered.setText(productViewModel.getOrderedQuantity());
+    }
+
+    private void initView() {
+      rvLotList = itemView.findViewById(R.id.rv_issue_voucher_lot_list);
+      rvLotList.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+      lotAdapter = new IssueVoucherReportLotAdapter();
+      rvLotList.setAdapter(lotAdapter);
       tvProductUnit = itemView.findViewById(R.id.tv_product_unit);
       tvPartialFulfilled = itemView.findViewById(R.id.tv_partial_fulfilled);
       tvQuantityOrdered = itemView.findViewById(R.id.tv_quantity_ordered);
-      tvProductUnit.setText(productViewModel.getProduct().getUnit());
-      tvPartialFulfilled.setText(productViewModel.getPartialFulfilledQuantity());
-      tvQuantityOrdered.setText(productViewModel.getOrderedQuantity());
     }
   }
 }

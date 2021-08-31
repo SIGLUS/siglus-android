@@ -8,6 +8,7 @@
     android:layout_width="wrap_content"
     android:layout_height="@dimen/px_50"
     android:showDividers="middle"
+    android:orientation="horizontal"
     android:divider="@drawable/divider_vertical">
     <TextView
       style="@style/Pod.list.lot"
@@ -23,44 +24,54 @@
       android:id="@+id/tv_quantity_shipped" />
     <TextView
       style="@style/Pod.list.lot"
+      android:width="@dimen/px_200"
       android:id="@+id/tv_lot_code" />
-    <RelativeLayout style="@style/Pod.list.lot">
-      <EditText style="@style/Pod.list.lot"
-        android:id="@+id/tv_quantity_accepted"
-        android:layout_margin="@dimen/px_5"
+    <RelativeLayout style="@style/Pod.list.lot"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+      <EditText
+        android:id="@+id/et_quantity_accepted"
+        style="@style/Pod.list.lot"
+        android:layout_marginTop="@dimen/px_5"
+        android:layout_marginBottom="@dimen/px_5"
+        android:layout_marginStart="@dimen/px_5"
+        android:layout_marginEnd="@dimen/px_5"
+        android:layout_centerInParent="true"
+        android:background="@drawable/border_bg_corner"
         android:gravity="right|center"
-        android:inputType="number"
-        android:background="@drawable/border_bg_corner" />
-   </RelativeLayout>
+        android:inputType="text" />
+    </RelativeLayout>
     <TextView
       style="@style/Pod.list.lot"
       android:id="@+id/tv_quantity_returned"/>
     <RelativeLayout style="@style/Pod.list.lot"
       android:layout_width="@dimen/px_200">
-      <View style="@style/Pod.list.lot"
-        android:layout_width="match_parent"
+      <View
         android:id="@+id/v_rejection_reason"
-        android:layout_marginVertical="@dimen/px_5"
+        style="@style/Pod.list.lot"
+        android:layout_width="match_parent"
         android:layout_marginHorizontal="@dimen/px_10"
-        android:background="@drawable/border_bg_corner" />
-      <TextView style="@style/Pod.list.lot"
-        android:id="@+id/tv_rejection_reason"
-        android:background="@color/white_transparent_color"
         android:layout_marginVertical="@dimen/px_5"
-        android:layout_marginLeft="@dimen/px_32"
-        android:layout_marginRight="@dimen/px_15"
-        android:gravity="center"
+        android:background="@drawable/border_bg_corner" />
+      <TextView
+        android:id="@+id/tv_rejection_reason"
+        style="@style/Pod.list.lot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/label_default_rejection_reason"/>
+        android:layout_marginLeft="@dimen/px_32"
+        android:layout_marginRight="@dimen/px_15"
+        android:layout_marginVertical="@dimen/px_5"
+        android:background="@color/white_transparent_color"
+        android:gravity="center"
+        android:text="@string/label_default_rejection_reason" />
       <ImageView
         android:id="@+id/iv_rejection_reason"
+        android:paddingHorizontal="@dimen/px_1"
         android:layout_width="@dimen/px_16"
         android:layout_height="@dimen/px_16"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/px_20"
         android:src="@drawable/icon_pulldown_enable" />
-
     </RelativeLayout>
     <RelativeLayout style="@style/Pod.list.lot">
       <EditText style="@style/Pod.list.lot"
