@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,10 +33,13 @@ import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.openlmis.core.presenter.IssueVoucherListPresenter.IssueVoucherListView;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.IssueVoucherReportActivity;
 import org.openlmis.core.view.adapter.IssueVoucherListAdapter;
 import org.openlmis.core.view.listener.OrderOperationListener;
 import roboguice.inject.InjectView;
@@ -105,7 +109,7 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
   }
 
   @Override
-  public void orderOperation(OrderStatus orderStatus, String orderCode) {
+  public void orderDeleteOperation(OrderStatus orderStatus, String orderCode) {
     if (OrderStatus.SHIPPED == orderStatus) {
       SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
           null,
@@ -128,5 +132,12 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
     } else {
       ToastUtil.show("edit " + orderCode);
     }
+  }
+
+  @Override
+  public void orderEditOrViewOperation(Pod pod) {
+    Intent intent = new Intent(getActivity(), IssueVoucherReportActivity.class);
+    intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, pod.getId());
+    startActivity(intent);
   }
 }

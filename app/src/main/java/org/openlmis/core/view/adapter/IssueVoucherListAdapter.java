@@ -68,6 +68,15 @@ public class IssueVoucherListAdapter extends BaseQuickAdapter<IssueVoucherListVi
       setText(R.id.tv_error_tips, viewModel.getErrorMsg());
       setGone(R.id.tv_error_tips, StringUtils.isEmpty(viewModel.getErrorMsg()) || viewModel.isIssueVoucher());
       setVisible(R.id.v_top_divider_line, !viewModel.isIssueVoucher());
+      getView(R.id.tv_edit).setOnClickListener(new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          if (listener == null) {
+            return;
+          }
+          listener.orderEditOrViewOperation(viewModel.getPod());
+        }
+      });
       if (viewModel.shouldShowOperationIcon()) {
         setGone(R.id.rl_operation, false);
         getView(R.id.rl_operation).setOnClickListener(new SingleClickButtonListener() {
@@ -76,7 +85,7 @@ public class IssueVoucherListAdapter extends BaseQuickAdapter<IssueVoucherListVi
             if (listener == null) {
               return;
             }
-            listener.orderOperation(viewModel.getPod().getOrderStatus(), viewModel.getPod().getOrderCode());
+            listener.orderDeleteOperation(viewModel.getPod().getOrderStatus(), viewModel.getPod().getOrderCode());
           }
         });
       } else {

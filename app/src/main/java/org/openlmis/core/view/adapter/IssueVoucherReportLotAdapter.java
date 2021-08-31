@@ -18,10 +18,10 @@
 
 package org.openlmis.core.view.adapter;
 
+import static org.openlmis.core.persistence.Migration.TAG;
+
+import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -45,22 +45,13 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
 
   protected class IssueVoucherReportLotViewHolder extends BaseViewHolder {
 
-    private TextView tvQuantityShipped;
-    private TextView tvLotCode;
-    private EditText etQuantityAccepted;
-    private TextView tvQuantityReturned;
-    private View vRejectionReason;
-    private TextView tvRejectionReason;
-    private ImageView ivRejectionReason;
-    private EditText etNote;
-
     public IssueVoucherReportLotViewHolder(View itemView) {
       super(itemView);
     }
 
     public void populate(IssueVoucherReportLotViewModel lotViewModel) {
       if (lotViewModel.getOrderStatus() == OrderStatus.SHIPPED) {
-
+        Log.i(TAG, "onCreate");
       }
     }
   }

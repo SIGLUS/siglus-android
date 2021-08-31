@@ -19,8 +19,11 @@
 package org.openlmis.core.view.listener;
 
 import org.openlmis.core.enumeration.OrderStatus;
+import org.openlmis.core.model.Pod;
 
 public interface OrderOperationListener {
 
-  void orderOperation(OrderStatus orderStatus, String orderCode);
+  void orderDeleteOperation(OrderStatus orderStatus, String orderCode);
+
+  void orderEditOrViewOperation(Pod pod);
 }

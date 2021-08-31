@@ -77,7 +77,7 @@ public class IssueVoucherListFragmentTest {
   @Test
   public void shouldShowConfirmDialogAfterOrderOperation() {
     // when
-    fragment.orderOperation(OrderStatus.SHIPPED, FieldConstants.ORDER_CODE);
+    fragment.orderDeleteOperation(OrderStatus.SHIPPED, FieldConstants.ORDER_CODE);
     RobolectricUtils.waitLooperIdle();
 
     // then

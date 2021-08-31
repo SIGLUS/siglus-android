@@ -107,7 +107,7 @@ public class IssueVoucherListAdapterTest {
     holder.getView(R.id.rl_operation).performClick();
 
     // then
-    Mockito.verify(mockListener, Mockito.times(1)).orderOperation(OrderStatus.SHIPPED, pod.getOrderCode());
+    Mockito.verify(mockListener, Mockito.times(1)).orderDeleteOperation(OrderStatus.SHIPPED, pod.getOrderCode());
   }
 
   @Test
