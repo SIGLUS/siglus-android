@@ -26,7 +26,7 @@ public class PodLotMovementItemResponse {
 
   private LotResponse lot;
 
-  private long shippedQuantity;
+  private Long shippedQuantity;
 
   public PodProductLotItem from() {
     return PodProductLotItem.builder()

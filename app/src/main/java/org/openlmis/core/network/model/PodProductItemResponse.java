@@ -37,7 +37,7 @@ public class PodProductItemResponse {
 
   private long orderedQuantity;
 
-  private long partialFulfilledQuantity;
+  private Long partialFulfilledQuantity;
 
   private List<PodLotMovementItemResponse> lots;
 
