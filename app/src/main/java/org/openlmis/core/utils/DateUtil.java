@@ -279,8 +279,8 @@ public final class DateUtil {
         String firstLoginTrainingTime = SharedPreferenceMgr.getInstance().getLastLoginTrainingTime();
         if (firstLoginTrainingTime != null) {
            String currentDate = DateUtil.formatDate(new Date(), DateUtil.SIMPLE_DATE_FORMAT);
-           long diffTime = DateUtil.parseString(currentDate, DateUtil.SIMPLE_DATE_FORMAT).getTime() -
-               DateUtil.parseString(firstLoginTrainingTime, DateUtil.SIMPLE_DATE_FORMAT).getTime();
+           long diffTime = DateUtil.parseString(currentDate, DateUtil.SIMPLE_DATE_FORMAT).getTime()
+               - DateUtil.parseString(firstLoginTrainingTime, DateUtil.SIMPLE_DATE_FORMAT).getTime();
            if (diffTime > 0) {
               long diffDay =  TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
               calendar.add(Calendar.DATE, (int) diffDay);

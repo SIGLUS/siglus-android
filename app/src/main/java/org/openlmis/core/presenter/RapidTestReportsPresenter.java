@@ -110,7 +110,7 @@ public class RapidTestReportsPresenter extends Presenter {
             RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size() - 1) : null;
             if (typeForm.active && lastViewModel != null
                     && (lastViewModel.getStatus() == Status.FIRST_MISSING
-                    && lastViewModel.getPeriod().getEnd().isAfterNow())) {
+                    && lastViewModel.getPeriod().getEnd().isAfter(DateUtil.getCurrentDate().getTime()))) {
 
                 DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
                 DateTime endDateTime = new DateTime(lastViewModel.getPeriod().getEnd());
