@@ -88,6 +88,7 @@ public class IssueVoucherListPresenter extends Presenter {
   Observer<Object> deleteIssueVoucherSubscribe = new Observer<Object>() {
     @Override
     public void onCompleted() {
+      Collections.sort(viewModels);
       view.loaded();
       view.onRefreshList();
     }
