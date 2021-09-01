@@ -30,8 +30,12 @@
     android:id="@+id/rv_issue_voucher_draft"
     android:layout_width="match_parent"
     android:layout_height="0dp"
+    android:layout_marginTop="@dimen/px_8"
+    android:layout_marginBottom="@dimen/px_16"
+    android:paddingHorizontal="@dimen/px_16"
     app:layout_constraintTop_toBottomOf="@+id/v_divider_line"
-    app:layout_constraintBottom_toTopOf="@id/bt_next"/>
+    app:layout_constraintBottom_toTopOf="@id/bt_next"
+    tools:listitem="@layout/item_issue_voucher_draft_edit"/>
 
   <androidx.cardview.widget.CardView
     android:id="@+id/bt_next"

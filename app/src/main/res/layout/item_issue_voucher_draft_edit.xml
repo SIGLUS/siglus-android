@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
+  android:layout_height="wrap_content"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:background="@color/color_white"
   android:layout_marginTop="@dimen/px_8"
   android:orientation="vertical"
-  app:showDividers="beginning"
+  app:divider="@drawable/shape_bulk_issue_item_decoration"
+  app:showDividers="middle"
   xmlns:tools="http://schemas.android.com/tools">
 
   <LinearLayout
@@ -38,7 +39,7 @@
         android:id="@+id/iv_trashcan"
         android:layout_width="@dimen/px_24"
         android:layout_height="@dimen/px_24"
-        android:src="@drawable/ic_trashcan"
+        android:src="@drawable/ic_ashcan"
         android:layout_centerInParent="true" />
     </RelativeLayout>
   </LinearLayout>
@@ -76,7 +77,7 @@
       android:id="@+id/rv_lots"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      tools:listitem="@layout/item_issue_voucher_lot_deit"
+      tools:listitem="@layout/item_issue_voucher_lot_edit"
       tools:itemCount="3" />
   </LinearLayout>
 

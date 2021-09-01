@@ -2,9 +2,12 @@
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:background="@color/color_white"
   android:layout_marginTop="@dimen/px_8"
   android:orientation="vertical"
+  app:divider="@drawable/shape_bulk_issue_item_decoration"
+  app:showDividers="middle"
   xmlns:tools="http://schemas.android.com/tools">
 
   <LinearLayout
@@ -41,7 +44,7 @@
         android:id="@+id/iv_trashcan"
         android:layout_width="@dimen/px_24"
         android:layout_height="@dimen/px_24"
-        android:src="@drawable/ic_trashcan"
+        android:src="@drawable/ic_ashcan"
         android:layout_centerInParent="true" />
     </RelativeLayout>
   </LinearLayout>

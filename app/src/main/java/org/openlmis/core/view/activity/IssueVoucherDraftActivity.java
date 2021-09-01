@@ -28,17 +28,44 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import java.util.ArrayList;
+import lombok.AccessLevel;
+import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
-import org.openlmis.core.view.widget.ActionPanelView;
+import org.openlmis.core.presenter.IssueVoucherDraftPresenter;
+import org.openlmis.core.presenter.IssueVoucherDraftPresenter.IssueVoucherDraftView;
+import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.listener.OnRemoveListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_issue_voucher_draft)
-public class IssueVoucherDraftActivity extends BaseActivity {
+public class IssueVoucherDraftActivity extends BaseActivity implements IssueVoucherDraftView, OnRemoveListener {
+
+  @InjectView(R.id.tv_total_amount)
+  private TextView tvTotalAmount;
+
+  @Setter(AccessLevel.PROTECTED)
+  @InjectView(R.id.rv_issue_voucher_draft)
+  private RecyclerView rvIssueVoucher;
+
+  @InjectView(R.id.bt_next)
+  private View btNext;
+
+  @InjectView(R.id.cl_empty)
+  private View emptyView;
+
+  @InjectPresenter(IssueVoucherDraftPresenter.class)
+  private IssueVoucherDraftPresenter issueVoucherDraftPresenter;
 
   public static final String ORDER_NUMBER = "ORDER_NUMBER";
 
@@ -46,11 +73,7 @@ public class IssueVoucherDraftActivity extends BaseActivity {
 
   private String programCode;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    programCode = (String) getIntent().getSerializableExtra(CHOSEN_PROGRAM_CODE);
-  }
+  IssueVoucherDraftProductAdapter issueVoucherDraftProductAdapter = new IssueVoucherDraftProductAdapter();
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -67,6 +90,40 @@ public class IssueVoucherDraftActivity extends BaseActivity {
     } else {
       return super.onOptionsItemSelected(item);
     }
+  }
+
+  @Override
+  public void onRemove(int position) {
+    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+        null,
+        getString(R.string.msg_remove_confirm),
+        getString(R.string.btn_positive),
+        getString(R.string.btn_negative),
+        null);
+    dialogFragment.show(getSupportFragmentManager(), "bulk_issue_delete_confirm_dialog");
+    dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+      @Override
+      public void positiveClick(String tag) {
+        issueVoucherDraftProductAdapter.removeAt(position);
+      }
+
+      @Override
+      public void negativeClick(String tag) {
+        // do nothing
+      }
+    });
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    programCode = (String) getIntent().getSerializableExtra(CHOSEN_PROGRAM_CODE);
+    rvIssueVoucher.setLayoutManager(new LinearLayoutManager(this));
+    issueVoucherDraftProductAdapter.setRemoveListener(this);
+    rvIssueVoucher.setAdapter(issueVoucherDraftProductAdapter);
+    issueVoucherDraftProductAdapter.registerAdapterDataObserver(dataObserver);
+    issueVoucherDraftProductAdapter.setNewInstance(issueVoucherDraftPresenter.getCurrentViewModels());
+    issueVoucherDraftPresenter.initialViewModels(getIntent());
   }
 
   @Override
@@ -93,4 +150,34 @@ public class IssueVoucherDraftActivity extends BaseActivity {
           return;
         }
       });
+
+  private final RecyclerView.AdapterDataObserver dataObserver = new AdapterDataObserver() {
+    @Override
+    public void onChanged() {
+      updateUI();
+    }
+
+    @Override
+    public void onItemRangeChanged(int positionStart, int itemCount) {
+      updateUI();
+    }
+
+    private void updateUI() {
+      int viewModelSize = issueVoucherDraftPresenter.getCurrentViewModels().size();
+      btNext.setVisibility(viewModelSize == 0 ? View.GONE : View.VISIBLE);
+      emptyView.setVisibility(viewModelSize == 0 ? View.VISIBLE : View.GONE);
+      tvTotalAmount.setText(getString(R.string.label_total, viewModelSize));
+    }
+  };
+
+  @Override
+  public void onRefreshViewModels() {
+    issueVoucherDraftProductAdapter.notifyDataSetChanged();
+
+  }
+
+  @Override
+  public void onLoadViewModelsFailed(Throwable throwable) {
+    finish();
+  }
 }
