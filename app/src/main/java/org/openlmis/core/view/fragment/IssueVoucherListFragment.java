@@ -18,12 +18,15 @@
 
 package org.openlmis.core.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
@@ -39,6 +42,7 @@ import org.openlmis.core.presenter.IssueVoucherListPresenter.IssueVoucherListVie
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.EditOrderNumberActivity;
 import org.openlmis.core.view.activity.IssueVoucherReportActivity;
 import org.openlmis.core.view.adapter.IssueVoucherListAdapter;
 import org.openlmis.core.view.listener.OrderOperationListener;
@@ -54,6 +58,14 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
 
   @Inject
   private IssueVoucherListPresenter presenter;
+
+  private final ActivityResultLauncher<Intent> editOrderNumberResultLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          ToastUtil.show("edit order number success");
+        }
+      }
+  );
 
   public static IssueVoucherListFragment newInstance(boolean isIssueVoucher) {
     final IssueVoucherListFragment issueVoucherListFragment = new IssueVoucherListFragment();
@@ -109,7 +121,7 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
   }
 
   @Override
-  public void orderDeleteOperation(OrderStatus orderStatus, String orderCode) {
+  public void orderDeleteOrEditOperation(OrderStatus orderStatus, String orderCode) {
     if (OrderStatus.SHIPPED == orderStatus) {
       SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
           null,
@@ -130,7 +142,9 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
         }
       });
     } else {
-      ToastUtil.show("edit " + orderCode);
+      Intent intent = new Intent(requireContext(), EditOrderNumberActivity.class);
+      intent.putExtra(IntentConstants.PARAM_ORDER_NUMBER, orderCode);
+      editOrderNumberResultLauncher.launch(intent);
     }
   }
 

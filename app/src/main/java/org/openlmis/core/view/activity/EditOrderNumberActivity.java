@@ -16,14 +16,32 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.listener;
+package org.openlmis.core.view.activity;
 
-import org.openlmis.core.enumeration.OrderStatus;
-import org.openlmis.core.model.Pod;
+import android.os.Bundle;
+import android.util.Log;
+import org.openlmis.core.R;
+import org.openlmis.core.constant.IntentConstants;
+import org.openlmis.core.googleanalytics.ScreenName;
+import roboguice.inject.ContentView;
 
-public interface OrderOperationListener {
+@ContentView(R.layout.activity_edit_order_number)
+public class EditOrderNumberActivity extends BaseActivity {
 
-  void orderDeleteOrEditOperation(OrderStatus orderStatus, String orderCode);
+  @Override
+  protected ScreenName getScreenName() {
+    return ScreenName.EDIT_ORDER_NUMBER_SCREEN;
+  }
 
-  void orderEditOrViewOperation(Pod pod);
+  @Override
+  protected int getThemeRes() {
+    return R.style.AppTheme_AMBER;
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    String orderNumber = getIntent().getStringExtra(IntentConstants.PARAM_ORDER_NUMBER);
+    Log.d("TAG", "onCreate: " + orderNumber);
+  }
 }

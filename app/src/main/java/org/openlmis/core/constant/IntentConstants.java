@@ -22,7 +22,9 @@ public class IntentConstants {
 
   private IntentConstants() {
   }
-  
+
   public static final String PARAM_IS_ISSUE_VOUCHER = "IS_ISSUE_VOUCHER";
-  
+
+  public static final String PARAM_ORDER_NUMBER = "ORDER_NUMBER";
+
 }

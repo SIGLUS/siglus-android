@@ -20,6 +20,7 @@ package org.openlmis.core.view.fragment;
 
 import static org.robolectric.Shadows.shadowOf;
 
+import android.content.Intent;
 import androidx.fragment.app.Fragment;
 import com.google.inject.AbstractModule;
 import org.junit.After;
@@ -34,11 +35,13 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
+import org.openlmis.core.view.activity.EditOrderNumberActivity;
 import org.openlmis.core.view.activity.IssueVoucherListActivity;
 import org.openlmis.core.view.adapter.IssueVoucherListAdapter;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
+import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
@@ -77,12 +80,26 @@ public class IssueVoucherListFragmentTest {
   @Test
   public void shouldShowConfirmDialogAfterOrderOperation() {
     // when
-    fragment.orderDeleteOperation(OrderStatus.SHIPPED, FieldConstants.ORDER_CODE);
+    fragment.orderDeleteOrEditOperation(OrderStatus.SHIPPED, FieldConstants.ORDER_CODE);
     RobolectricUtils.waitLooperIdle();
 
     // then
     Fragment dialog = fragment.getParentFragmentManager().findFragmentByTag("delete_issue_voucher_confirm_dialog");
     Assert.assertNotNull(dialog);
+  }
+
+  @Test
+  public void shouldGotoEditOrderNumber() {
+    // when
+    fragment.orderDeleteOrEditOperation(OrderStatus.RECEIVED, FieldConstants.ORDER_CODE);
+    RobolectricUtils.waitLooperIdle();
+
+    // when
+    ShadowActivity shadowActivity = shadowOf(listActivity);
+    Intent startedIntent = shadowActivity.getNextStartedActivity();
+
+    // then
+    Assert.assertEquals(EditOrderNumberActivity.class.getName(),startedIntent.getComponent().getClassName());
   }
 
   @Test

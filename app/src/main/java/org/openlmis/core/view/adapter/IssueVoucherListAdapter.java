@@ -85,7 +85,7 @@ public class IssueVoucherListAdapter extends BaseQuickAdapter<IssueVoucherListVi
             if (listener == null) {
               return;
             }
-            listener.orderDeleteOperation(viewModel.getPod().getOrderStatus(), viewModel.getPod().getOrderCode());
+            listener.orderDeleteOrEditOperation(viewModel.getPod().getOrderStatus(), viewModel.getPod().getOrderCode());
           }
         });
       } else {

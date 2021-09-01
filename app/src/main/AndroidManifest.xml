@@ -151,15 +151,19 @@
     <activity
       android:label="@string/label_create_issue_voucher_draft"
       android:name=".view.activity.IssueVoucherInputOrderNumberActivity"
-      android:screenOrientation="portrait"/>
+      android:screenOrientation="portrait" />
     <activity
       android:label="@string/title_issue_voucher_draft"
       android:name=".view.activity.IssueVoucherDraftActivity"
-      android:screenOrientation="portrait"/>
+      android:screenOrientation="portrait" />
     <activity
       android:label="@string/title_pod"
       android:name=".view.activity.IssueVoucherReportActivity"
-      android:windowSoftInputMode="adjustPan|stateHidden"/>
+      android:windowSoftInputMode="adjustPan|stateHidden" />
+    <activity
+      android:name=".view.activity.EditOrderNumberActivity"
+      android:label="@string/title_edit_order_number" />
+
     <provider
       android:authorities="@string/sync_content_authority"
       android:name=".service.StubContentProvider"
@@ -184,6 +188,7 @@
         <action android:name="android.intent.action.ACTION_SHUTDOWN" />
       </intent-filter>
     </receiver>
+
     <service
       android:exported="true"
       android:name=".service.SyncService"
