@@ -35,7 +35,7 @@ public class PodProductItemResponse {
 
   private String code;
 
-  private long orderedQuantity;
+  private Long orderedQuantity;
 
   private Long partialFulfilledQuantity;
 
