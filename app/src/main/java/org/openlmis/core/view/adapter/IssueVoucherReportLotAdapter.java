@@ -76,30 +76,29 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
       etQuantityAccepted.setText(convertLongValueToString(lotViewModel.getAcceptedQuantity()));
       etNote.setText(lotViewModel.getNotes());
       if (lotViewModel.getOrderStatus() == OrderStatus.SHIPPED) {
-        setEditStatus(true);
-        setViewWhenEnableEditStatus();
+        setViewForShipped();
       } else {
-        setEditStatus(false);
-        etQuantityShipped.setBackground(null);
-        etQuantityAccepted.setBackground(null);
-        etNote.setBackground(null);
-        vRejectionReason.setBackground(null);
-        ivRejectionReason.setVisibility(View.GONE);
+        setViewForReceived();
       }
     }
 
-    private void setEditStatus(boolean isFocus) {
-      etQuantityShipped.setFocusable(isFocus);
-      etQuantityAccepted.setFocusable(isFocus);
-      etNote.setFocusable(isFocus);
+    private void setViewForReceived() {
+      setEditStatus(false);
+      etQuantityShipped.setBackground(null);
+      etQuantityAccepted.setBackground(null);
+      etNote.setBackground(null);
+      vRejectionReason.setBackground(null);
+      ivRejectionReason.setVisibility(View.GONE);
     }
 
-    private void setViewWhenEnableEditStatus() {
+    private void setViewForShipped() {
+      setEditStatus(true);
       if (lotViewModel.isLocal() == true) {
         SingleTextWatcher quantityShippedTextWatcher = getQuantityShippedTextWatcher();
         etQuantityShipped.removeTextChangedListener(quantityShippedTextWatcher);
         etQuantityShipped.addTextChangedListener(quantityShippedTextWatcher);
       } else {
+        etQuantityShipped.setFocusable(false);
         etQuantityShipped.setBackground(null);
       }
       SingleTextWatcher quantityAcceptedTextWatcher = getQuantityAcceptedTextWatcher();
@@ -185,6 +184,12 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
         return "";
       }
       return value.toString();
+    }
+
+    private void setEditStatus(boolean isFocus) {
+      etQuantityShipped.setFocusable(isFocus);
+      etQuantityAccepted.setFocusable(isFocus);
+      etNote.setFocusable(isFocus);
     }
 
     class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {
