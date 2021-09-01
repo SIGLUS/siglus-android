@@ -26,9 +26,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.view.adapter.IssueVoucherProductAdapter.IssueVoucherProductViewHolder;
 
+import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 
 public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherReportProductViewModel,
@@ -60,10 +62,18 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
       lotList = itemView.findViewById(R.id.ll_lot_list);
       productName.setText(issueVoucherReportProductViewModel.getPodProductItem()
           .getProduct().getPrimaryName());
-      if (issueVoucherReportProductViewModel.getLotViewModelList().size() > 0) {
+      lotList.removeAllViews();
+      List<IssueVoucherReportLotViewModel> lotViewModels = issueVoucherReportProductViewModel.getLotViewModelList();
+      if (lotViewModels.isEmpty()) {
+        return;
+      }
+      addEmptyLotView(lotViewModels);
+    }
+
+    private void addEmptyLotView(List<IssueVoucherReportLotViewModel> lotViewModels) {
+      for (int i = 0; i < lotViewModels.size(); i++) {
         ViewGroup inflate = (ViewGroup) LayoutInflater.from(itemView.getContext())
             .inflate(R.layout.item_issue_voucher_lot_name, productList, false);
-        lotList.removeAllViews();
         lotList.addView(inflate);
       }
     }

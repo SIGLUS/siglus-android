@@ -26,6 +26,7 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -42,7 +43,7 @@ import org.openlmis.core.utils.ListUtil;
 @NoArgsConstructor
 @AllArgsConstructor
 @DatabaseTable(tableName = "pods")
-public class Pod extends BaseModel {
+public class Pod extends BaseModel implements Serializable {
 
   @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
   private Date shippedDate;

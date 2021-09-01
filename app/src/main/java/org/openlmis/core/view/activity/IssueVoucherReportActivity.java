@@ -51,7 +51,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @InjectPresenter(IssueVoucherReportPresenter.class)
   IssueVoucherReportPresenter presenter;
 
-  private long formId;
+  private Long podId;
   private Pod pod;
   private IssueVoucherProductAdapter productAdapter;
   private IssueVoucherReportAdapter issueVoucherReportAdapter;
@@ -59,7 +59,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    formId = getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 1);
+    podId = getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 0);
     pod = (Pod) getIntent().getExtras().getSerializable(Constants.PARAM_ISSUE_VOUCHER);
     initProductList();
     initIssueVoucherList();
@@ -68,7 +68,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     if (pod != null) {
       refreshIssueVoucherForm(pod);
     } else {
-      presenter.loadData(formId);
+      presenter.loadData(podId);
     }
   }
 

@@ -44,8 +44,8 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   IssueVoucherReportViewModel issueVoucherReportViewModel;
   private Pod pod;
 
-  public void loadData(long formId) {
-    Subscription subscription = getRnrFormObservable(formId)
+  public void loadData(long podId) {
+    Subscription subscription = getRnrFormObservable(podId)
         .subscribe(loadDataOnNextAction, loadDataOnErrorAction);
     subscriptions.add(subscription);
   }
