@@ -24,6 +24,7 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
+import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -51,6 +52,7 @@ import org.openlmis.core.service.SyncDownManager.SyncLocalUserProgress;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.training.TrainingEnvironmentHelper;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 
@@ -159,6 +161,9 @@ public class LoginPresenter extends Presenter {
     private void authorizeAndLoginUserLocal(User user) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             sharedPreferenceMgr.resetLatestLowStockAvgTime();
+            if (sharedPreferenceMgr.getLastLoginTrainingTime() == null) {
+                sharedPreferenceMgr.setLastLoginTrainingTime(DateUtil.formatDate(new Date(), DateUtil.SIMPLE_DATE_FORMAT));
+            }
             if (userRepository.getLocalUser() == null) {
                 TrainingEnvironmentHelper.getInstance().setUpData();
             }

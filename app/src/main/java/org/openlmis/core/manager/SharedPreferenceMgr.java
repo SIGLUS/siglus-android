@@ -95,6 +95,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_DELETED_MOVEMENT_ITEM = "deleted_movement_line";
     public static final String KEY_DELETED_PRODUCT_TIME = "deleted_product_time";
     public static final String KEY_KEEP_MOVEMENT_LINE = "keep_movement_line";
+    public static final String KEY_TRAINING_FIRST_LOGIN_TIME = "training_first_login_time";
 
     final int MONTH_OFFSET = 13;
     protected StockRepository stockRepository;
@@ -225,6 +226,14 @@ public class SharedPreferenceMgr {
 
     public void setKeyLastSyncServiceTime(String lastSyncProductTime) {
         sharedPreferences.edit().putString(KEY_LAST_SYNC_SERVICE_TIME, lastSyncProductTime).apply();
+    }
+
+    public String getLastLoginTrainingTime() {
+        return sharedPreferences.getString(KEY_TRAINING_FIRST_LOGIN_TIME, null);
+    }
+
+    public void setLastLoginTrainingTime(String trainingLoginTime) {
+        sharedPreferences.edit().putString(KEY_TRAINING_FIRST_LOGIN_TIME, trainingLoginTime).apply();
     }
 
     public String getLastSyncProductTime() {

@@ -18,6 +18,7 @@
 
 package org.openlmis.core.utils;
 
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -25,6 +26,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockCard;
 
@@ -75,28 +77,22 @@ public final class DateUtil {
     }
 
     public static Date getCurrentDate() {
-        if (LMISApp.getInstance() != null && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(2021, 0, 18);
-            return calendar.getTime();
+        if (isTraining()) {
+            return getCurrentCalendarForTraining().getTime();
         }
         return new Date();
     }
 
     public static Date today() {
-        if (LMISApp.getInstance() != null && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(2021, 0, 18);
-            return calendar.getTime();
+        if (isTraining()) {
+            return getCurrentCalendarForTraining().getTime();
         }
         return Calendar.getInstance().getTime();
     }
 
     public static  Calendar getCurrentCalendar() {
-        if (LMISApp.getInstance() != null && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            Calendar calendar = GregorianCalendar.getInstance();
-            calendar.set(2021, 0, 18);
-            return calendar;
+        if (isTraining()) {
+            return getCurrentCalendarForTraining();
         }
         return GregorianCalendar.getInstance();
 
@@ -271,5 +267,25 @@ public final class DateUtil {
         CALENDAR_NOW.setTime(date);
         CALENDAR_NOW.set(Calendar.DAY_OF_MONTH, CALENDAR_NOW.getActualMaximum(Calendar.DAY_OF_MONTH));
         return CALENDAR_NOW.getTime();
+    }
+
+    private static boolean isTraining() {
+        return LMISApp.getInstance() != null && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
+    }
+
+    private static Calendar getCurrentCalendarForTraining() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2021, 7, 18);
+        String firstLoginTrainingTime = SharedPreferenceMgr.getInstance().getLastLoginTrainingTime();
+        if (firstLoginTrainingTime != null) {
+           String currentDate = DateUtil.formatDate(new Date(), DateUtil.SIMPLE_DATE_FORMAT);
+           long diffTime = DateUtil.parseString(currentDate, DateUtil.SIMPLE_DATE_FORMAT).getTime() -
+               DateUtil.parseString(firstLoginTrainingTime, DateUtil.SIMPLE_DATE_FORMAT).getTime();
+           if (diffTime > 0) {
+              long diffDay =  TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
+              calendar.add(Calendar.DATE, (int) diffDay);
+           }
+        }
+        return calendar;
     }
 }
