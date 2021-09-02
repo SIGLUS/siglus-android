@@ -43,6 +43,20 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
     holder.populate(viewModel);
   }
 
+  public int validateAll() {
+    int position = -1;
+    for (int i = 0; i < getData().size(); i++) {
+      if (getData().get(i).validate()) {
+        continue;
+      }
+      if (position == -1) {
+        position = i;
+      }
+    }
+    notifyDataSetChanged();
+    return position;
+  }
+
   protected class IssueVoucherReportViewHolder extends BaseViewHolder {
 
     private TextView tvProductUnit;

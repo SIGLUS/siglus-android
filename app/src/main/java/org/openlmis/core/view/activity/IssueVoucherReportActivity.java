@@ -21,23 +21,42 @@ package org.openlmis.core.view.activity;
 import static org.openlmis.core.view.widget.DoubleRecycleViewScrollListener.scrollInSync;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.Date;
 import org.openlmis.core.R;
+import org.openlmis.core.enumeration.OrderStatus;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
+import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.network.NetworkSchedulerService;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.IssueVoucherProductAdapter;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
+import org.openlmis.core.view.widget.ActionPanelView;
+import org.openlmis.core.view.widget.BulkEntriesSignatureDialog;
 import org.openlmis.core.view.widget.OrderInfoView;
+import org.openlmis.core.view.widget.SignatureDialog;
+import org.openlmis.core.view.widget.SignatureDialog.DialogDelegate;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import rx.Subscription;
 
 @ContentView(R.layout.activity_issue_voucher_report)
 public class IssueVoucherReportActivity extends BaseActivity implements IssueVoucherView {
+  private static final String TAG = LmisSqliteOpenHelper.class.getSimpleName();
 
   @InjectView(R.id.view_orderInfo)
   private OrderInfoView orderInfo;
@@ -47,6 +66,9 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   @InjectView(R.id.form_list_view)
   private RecyclerView rvIssueVoucherList;
+
+  @InjectView(R.id.action_panel)
+  private ActionPanelView actionPanelView;
 
   @InjectPresenter(IssueVoucherReportPresenter.class)
   IssueVoucherReportPresenter presenter;
@@ -80,8 +102,15 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Override
   public void refreshIssueVoucherForm(Pod pod) {
     orderInfo.refresh(pod);
-    productAdapter.setList(presenter.getIssueVoucherReportViewModel().getProductViewModels());
-    issueVoucherReportAdapter.setList(presenter.getIssueVoucherReportViewModel().getProductViewModels());
+    IssueVoucherReportViewModel viewModel = presenter.getIssueVoucherReportViewModel();
+    productAdapter.setList(viewModel.getProductViewModels());
+    issueVoucherReportAdapter.setList(viewModel.getProductViewModels());
+    if (viewModel.getPodStatus() == OrderStatus.RECEIVED) {
+      actionPanelView.setVisibility(View.GONE);
+    } else {
+      actionPanelView.setVisibility(View.VISIBLE);
+      actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
+    }
   }
 
   private void initIssueVoucherList() {
@@ -94,6 +123,31 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     rvProductList.setLayoutManager(new LinearLayoutManager(this));
     productAdapter = new IssueVoucherProductAdapter();
     rvProductList.setAdapter(productAdapter);
+  }
+
+  @NonNull
+  private SingleClickButtonListener getOnCompleteListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        int position = issueVoucherReportAdapter.validateAll();
+        if (position >= 0) {
+          rvIssueVoucherList.smoothScrollToPosition(position);
+        } else {
+           Log.i(TAG, "complete");
+        }
+      }
+    };
+  }
+
+  @NonNull
+  private SingleClickButtonListener getOnSaveListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        Log.i(TAG, "save");
+      }
+    };
   }
 
 }

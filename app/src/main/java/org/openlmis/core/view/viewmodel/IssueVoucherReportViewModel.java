@@ -20,6 +20,7 @@ package org.openlmis.core.view.viewmodel;
 
 import java.util.List;
 import lombok.Data;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.Pod;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -35,6 +36,10 @@ public class IssueVoucherReportViewModel {
         .transform(podProductItem ->
             new IssueVoucherReportProductViewModel(podProductItem, pod.getOrderStatus(), pod.isLocal()))
         .toList();
+  }
+
+  public OrderStatus getPodStatus() {
+    return pod.getOrderStatus();
   }
 
 }

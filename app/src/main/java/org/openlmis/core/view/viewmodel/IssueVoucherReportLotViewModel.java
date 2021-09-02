@@ -34,6 +34,7 @@ public class IssueVoucherReportLotViewModel {
   private PodProductLotItem lotItem;
   private OrderStatus orderStatus;
   private boolean isLocal;
+  private boolean isValidate = true;
 
   public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, OrderStatus orderStatus, boolean isLocal) {
     this.isLocal = isLocal;
@@ -46,7 +47,7 @@ public class IssueVoucherReportLotViewModel {
     this.orderStatus = orderStatus;
   }
 
-  public Long getRejectedQuality() {
+  public Long getReturnedQuality() {
     if (shippedQuantity == null || acceptedQuantity == null) {
       return null;
     }

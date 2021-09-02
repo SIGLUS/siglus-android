@@ -36,6 +36,7 @@ public class IssueVoucherReportProductViewModel {
   private PodProductItem podProductItem;
   private List<IssueVoucherReportLotViewModel> lotViewModelList;
   private boolean isLocal;
+  private boolean isValidate = true;
 
   public IssueVoucherReportProductViewModel(PodProductItem podProductItem,
       OrderStatus orderStatus, boolean isLocal) {
@@ -51,6 +52,30 @@ public class IssueVoucherReportProductViewModel {
     lotViewModelList = FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
         .transform(podLotItem -> new IssueVoucherReportLotViewModel(podLotItem, orderStatus, isLocal))
         .toList();
+  }
+
+  public boolean validate() {
+    for (IssueVoucherReportLotViewModel lotViewModel : lotViewModelList) {
+      if (lotViewModel.getOrderStatus() == OrderStatus.SHIPPED) {
+        if (lotViewModel.getShippedQuantity() == null || lotViewModel.getAcceptedQuantity() == null ||
+            (lotViewModel.getReturnedQuality() != null &&  lotViewModel.getReturnedQuality() > 0 && lotViewModel.getRejectedReason() == null)) {
+          setValidate(false);
+          return false;
+        }
+      }
+    }
+    setValidate(true);
+    return true;
+  }
+
+  public void setValidate(boolean isValidate) {
+    this.isValidate = isValidate;
+    if (lotViewModelList == null || lotViewModelList.isEmpty()) {
+      return;
+    }
+    for (IssueVoucherReportLotViewModel lotViewModel : lotViewModelList) {
+      lotViewModel.setValidate(isValidate);
+    }
   }
 
 }
