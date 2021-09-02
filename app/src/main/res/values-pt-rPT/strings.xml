@@ -528,4 +528,6 @@
 
   <!-- Siglus TO 12 -->
   <string name="dashboard_product_types">Total Products</string>
+  <string name="hint_error_field_required">This field is required</string>
+  <string name="hint_error_more_than_shipped">You can\'t accept more stock than was shipped</string>
 </resources>

@@ -134,7 +134,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
         });
        setRejectReasonText();
       } else {
-        vRejectionReason.setBackgroundResource(R.drawable.border_bg_bottom_gray);
+        vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_gray);
         ivRejectionReason.setImageResource(R.drawable.ic_pulldown_unable);
         tvRejectionReason.setText(itemView.getResources().getString(R.string.label_default_rejection_reason));
       }
@@ -150,14 +150,18 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
       if (lotViewModel.isValidate()) {
         return;
       }
-      String inValidateSting = LMISApp.getContext().getString(R.string.hint_error_input);
       if (lotViewModel.isLocal() && lotViewModel.getShippedQuantity() == null) {
-        etQuantityShipped.setError(inValidateSting);
-        return;
-      } else if (etQuantityAccepted == null) {
-        etQuantityAccepted.setError(inValidateSting);
+        etQuantityShipped.setError(LMISApp.getContext().getString(R.string.hint_error_field_required));
+        etQuantityShipped.requestFocus();
+      } else if (lotViewModel.getAcceptedQuantity() == null) {
+        etQuantityAccepted.setError(LMISApp.getContext().getString(R.string.hint_error_field_required));
+        etQuantityAccepted.requestFocus();
+      } else if (lotViewModel.getAcceptedQuantity().longValue() > lotViewModel.getShippedQuantity().longValue()) {
+        etQuantityAccepted.setError(LMISApp.getContext().getString(R.string.hint_error_more_than_shipped));
+        etQuantityAccepted.requestFocus();
       } else if (lotViewModel.getReturnedQuality().longValue() > 0 && lotViewModel.getRejectedReason() == null) {
-        tvRejectionReason.setError(inValidateSting);
+        tvRejectionReason.setError("");
+        vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_red);
       }
     }
 
@@ -167,7 +171,9 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
         public void afterTextChanged(Editable text) {
           try {
             lotViewModel.setShippedQuantity(Long.valueOf(text.toString()));
+            etQuantityShipped.setError(null);
             tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
+            setRejectReason();
           } catch (NumberFormatException e) {
             new LMISException(e, "lotViewModel shippedQuantity").reportToFabric();
           }
@@ -181,7 +187,9 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
         public void afterTextChanged(Editable s) {
           try {
             lotViewModel.setAcceptedQuantity(Long.valueOf(s.toString()));
+            etQuantityAccepted.setError(null);
             tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
+            setRejectReason();
           } catch (NumberFormatException e) {
             new LMISException(e, "issue voucher acceptedQuantity").reportToFabric();
           }
@@ -244,6 +252,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         viewModel.setRejectedReason(rejectReasons[position]);
         tvRejectionReason.setText(viewModel.getRejectedReason());
+        tvRejectionReason.setError(null);
         reasonsDialog.dismiss();
       }
     }

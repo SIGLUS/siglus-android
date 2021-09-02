@@ -51,6 +51,7 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
       }
       if (position == -1) {
         position = i;
+        break;
       }
     }
     notifyDataSetChanged();
