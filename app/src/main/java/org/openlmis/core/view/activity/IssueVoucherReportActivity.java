@@ -95,6 +95,11 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   }
 
   @Override
+  protected int getThemeRes() {
+    return R.style.AppTheme_AMBER;
+  }
+
+  @Override
   protected void onDestroy() {
     rvProductList.removeOnScrollListener(listeners[0]);
     rvIssueVoucherList.removeOnScrollListener(listeners[1]);
