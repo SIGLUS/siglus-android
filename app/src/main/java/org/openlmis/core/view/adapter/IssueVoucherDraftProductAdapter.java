@@ -3,10 +3,10 @@ package org.openlmis.core.view.adapter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,13 +19,13 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.enumeration.IssueVoucherValidationType;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter.IssueVoucherProductViewHolder;
-import org.openlmis.core.view.holder.BulkEntriesLotMovementViewHolder.AmountChangeListener;
+import org.openlmis.core.view.listener.AmountChangeListener;
 import org.openlmis.core.view.listener.OnRemoveListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
@@ -34,7 +34,6 @@ import org.openlmis.core.view.widget.AddLotDialogFragment;
 import org.openlmis.core.view.widget.BaseLotListView.OnDismissListener;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
-import org.w3c.dom.Text;
 
 public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<IssueVoucherProductViewModel,
     IssueVoucherProductViewHolder> {
@@ -42,9 +41,25 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
   @Setter
   private OnRemoveListener removeListener;
 
+  private RecyclerView rvLots;
+
   public IssueVoucherDraftProductAdapter() throws NoSuchMethodError{
     addItemType(IssueVoucherProductViewModel.TYPE_EDIT, R.layout.item_issue_voucher_draft_edit);
     addItemType(IssueVoucherProductViewModel.TYPE_DONE, R.layout.item_issue_voucher_draft_done);
+  }
+
+  public int validateAll() {
+    int position = -1;
+    for (int i = 0; i < getData().size(); i++) {
+      if (getData().get(i).validate()) {
+        continue;
+      }
+      if (position == -1) {
+        position = i;
+      }
+    }
+    notifyDataSetChanged();
+    return position;
   }
 
   @Override
@@ -68,15 +83,14 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
 
     private TextView btnAddNewLot;
 
-    private TextView btnVerify;
-
     public IssueVoucherProductViewHolder(@NotNull View view) {
       super(view);
     }
 
     @Override
-    public void onAmountChange() {
-
+    public void onAmountChange(String value) {
+      viewModel.validProduct();
+      updateErrorStatus();
     }
 
     public void populate(IssueVoucherProductViewModel viewModel) {
@@ -90,13 +104,21 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
       } else {
         btnAddNewLot = getView(R.id.btn_add_new_lot);
         btnAddNewLot.setOnClickListener(getAddNewLotOnClickListener());
+        tvErrorBanner = getView(R.id.tv_error_banner);
         getView(R.id.btn_verify).setOnClickListener(getVerifyClickListener());
-        setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getStockCard().getProduct()));
+        setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getProduct()));
+        updateErrorStatus();
+      }
+    }
+
+    private void setAllLotShouldShowError() {
+      for (IssueVoucherLotViewModel lotViewModel : viewModel.getLotViewModels()) {
+        lotViewModel.setShouldShowError(true);
       }
     }
 
     private void initLots() {
-      RecyclerView rvLots = getView(R.id.rv_lots);
+      rvLots = getView(R.id.rv_lots);
       rvLots.setLayoutManager(new LinearLayoutManager(itemView.getContext()) {
         @Override
         public boolean canScrollVertically() {
@@ -108,7 +130,13 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
       if (rvLots.getItemDecorationCount() == 0) {
         rvLots.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
       }
-      lotAdapter.setNewInstance(viewModel.getLotViewModels());
+      lotAdapter.setAmountChangeListener(this);
+      List<IssueVoucherLotViewModel> filteredLotViewModels = viewModel.getLotViewModels();
+      if (viewModel.isDone()) {
+        filteredLotViewModels = FluentIterable.from(viewModel.getLotViewModels()).filter(issueVoucherLotViewModel ->
+            Objects.requireNonNull(issueVoucherLotViewModel).getShippedQuantity() != null).toList();
+      }
+      lotAdapter.setNewInstance(filteredLotViewModels);
     }
 
     private SingleClickButtonListener getRemoveClickListener() {
@@ -136,26 +164,38 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
       return new SingleClickButtonListener() {
         @Override
         public void onSingleClick(View v) {
-          if (viewModel.validate()) {
-            notifyItemChanged(getLayoutPosition());
-          } else {
-            updateBanner();
-          }
+          viewModel.validate();
+          notifyItemChanged(getLayoutPosition());
+          setAllLotShouldShowError();
+          updateErrorStatus();
+          rvLots.requestFocus();
         }
       };
     }
 
-    private void updateBanner() {
-      int errorRes = viewModel.getErrorRes();
-      if (errorRes == 0) {
-        tvErrorBanner.setVisibility(View.GONE);
-      } else {
+    private void updateErrorStatus() {
+      if (IssueVoucherValidationType.NO_LOT == viewModel.getValidationType()) {
+        ivTrashcan.setImageResource(R.drawable.ic_red_ashcan);
         tvErrorBanner.setVisibility(View.VISIBLE);
-        tvErrorBanner.setText(errorRes);
+        tvErrorBanner.setText(R.string.alert_issue_voucher_can_not_be_blank);
+        btnAddNewLot.setBackground(ResourcesCompat.getDrawable(getContext().getResources(),
+            R.drawable.border_round_red, null));
+        btnAddNewLot.setTextColor(ContextCompat.getColor(getContext(), R.color.color_red));
+      } else if (IssueVoucherValidationType.ALL_LOT_BLANK == viewModel.getValidationType()) {
+        ivTrashcan.setImageResource(R.drawable.ic_red_ashcan);
+        tvErrorBanner.setVisibility(View.VISIBLE);
+        tvErrorBanner.setText(R.string.alert_issue_voucher_can_not_be_blank);
+        btnAddNewLot.setTextColor(ContextCompat.getColor(getContext(), R.color.color_accent));
+        btnAddNewLot.setBackground(ResourcesCompat.getDrawable(getContext().getResources(),
+            R.drawable.border_round_blue, null));
+      } else {
+        ivTrashcan.setImageResource(R.drawable.ic_ashcan);
+        tvErrorBanner.setVisibility(View.GONE);
+        btnAddNewLot.setTextColor(ContextCompat.getColor(getContext(), R.color.color_accent));
+        btnAddNewLot.setBackground(ResourcesCompat.getDrawable(getContext().getResources(),
+            R.drawable.border_round_blue, null));
       }
 
-      ivTrashcan.setImageResource(viewModel.isShouldShowError() ? R.drawable.ic_trashcan_red : R.drawable.ic_trashcan);
-      tvErrorBanner.setVisibility(viewModel.isShouldShowError() ? View.VISIBLE : View.GONE);
     }
 
     @NonNull
@@ -189,7 +229,7 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
             case R.id.btn_complete:
               if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
                 addNewLot(new IssueVoucherLotViewModel(addLotDialogFragment.getLotNumber(),
-                    addLotDialogFragment.getExpiryDate()));
+                    addLotDialogFragment.getExpiryDate(), viewModel.getProduct()));
                 addLotDialogFragment.dismiss();
               }
               break;
@@ -216,7 +256,7 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
         if (getLotNumbers().contains(lotNumber)) {
           ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_without_number_already_exists));
         } else {
-          addNewLot(new IssueVoucherLotViewModel(lotNumber, expiryDate));
+          addNewLot(new IssueVoucherLotViewModel(lotNumber, expiryDate, viewModel.getProduct()));
         }
       };
     }
@@ -235,7 +275,10 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
 
     private void addNewLot(IssueVoucherLotViewModel issueVoucherLotViewModel) {
       viewModel.getLotViewModels().add(issueVoucherLotViewModel);
-      lotAdapter.notifyDataSetChanged();
+      lotAdapter.notifyItemInserted(lotAdapter.getItemPosition(issueVoucherLotViewModel));
+      viewModel.validProduct();
+      issueVoucherLotViewModel.setShouldShowError(false);
+      updateErrorStatus();
     }
   }
 

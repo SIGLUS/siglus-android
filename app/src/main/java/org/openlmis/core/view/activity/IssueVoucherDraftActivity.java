@@ -18,33 +18,44 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.openlmis.core.utils.Constants.PARAM_ISSUE_VOUCHER;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.CHOSEN_PROGRAM_CODE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.IS_FROM_BULK_ISSUE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
+import org.openlmis.core.manager.MovementReasonManager.MovementReason;
+import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.IssueVoucherDraftPresenter;
 import org.openlmis.core.presenter.IssueVoucherDraftPresenter.IssueVoucherDraftView;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.widget.BulkEntriesSignatureDialog;
+import org.openlmis.core.view.widget.SignatureDialog.DialogDelegate;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -93,6 +104,21 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   }
 
   @Override
+  public void onRefreshViewModels() {
+    issueVoucherDraftProductAdapter.notifyDataSetChanged();
+  }
+
+  @Override
+  public void onLoadViewModelsFailed(Throwable throwable) {
+    finish();
+  }
+
+  @Override
+  public void onBackPressed() {
+      showConfirmDialog();
+  }
+
+  @Override
   public void onRemove(int position) {
     SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
         null,
@@ -120,6 +146,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
     programCode = (String) getIntent().getSerializableExtra(CHOSEN_PROGRAM_CODE);
     rvIssueVoucher.setLayoutManager(new LinearLayoutManager(this));
     issueVoucherDraftProductAdapter.setRemoveListener(this);
+    btNext.setOnClickListener(getNextButtonClickListener);
     rvIssueVoucher.setAdapter(issueVoucherDraftProductAdapter);
     issueVoucherDraftProductAdapter.registerAdapterDataObserver(dataObserver);
     issueVoucherDraftProductAdapter.setNewInstance(issueVoucherDraftPresenter.getCurrentViewModels());
@@ -140,7 +167,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
     Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
     intent.putExtra(IS_FROM_BULK_ISSUE, false);
     intent.putExtra(CHOSEN_PROGRAM_CODE, programCode);
-    intent.putExtra(SELECTED_PRODUCTS, new ArrayList<>());
+    intent.putExtra(SELECTED_PRODUCTS, (Serializable) issueVoucherDraftPresenter.getAddedProductCodeList());
     addProductsLauncher.launch(intent);
   }
 
@@ -149,6 +176,8 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
         if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null) {
           return;
         }
+        issueVoucherDraftPresenter.addProducts((List<Product>)
+            result.getData().getSerializableExtra(SELECTED_PRODUCTS));
       });
 
   private final RecyclerView.AdapterDataObserver dataObserver = new AdapterDataObserver() {
@@ -170,14 +199,60 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
     }
   };
 
-  @Override
-  public void onRefreshViewModels() {
-    issueVoucherDraftProductAdapter.notifyDataSetChanged();
+  private void showConfirmDialog() {
+    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+        null,
+        getString(R.string.msg_issue_voucher_back_confirm),
+        getString(R.string.btn_positive),
+        getString(R.string.btn_negative),
+        "issue_voucher_back_confirm_dialog");
+    dialogFragment.show(getSupportFragmentManager(), "issue_voucher_back_confirm_dialog");
+    dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+      @Override
+      public void positiveClick(String tag) {
+        finish();
+      }
 
+      @Override
+      public void negativeClick(String tag) {
+        dialogFragment.dismiss();
+      }
+    });
   }
 
-  @Override
-  public void onLoadViewModelsFailed(Throwable throwable) {
-    finish();
+  private final SingleClickButtonListener getNextButtonClickListener = new SingleClickButtonListener() {
+    @Override
+    public void onSingleClick(View v) {
+      if (v.getId() == R.id.bt_next) {
+        hideKeyboard(v);
+        int position = issueVoucherDraftProductAdapter.validateAll();
+        if (position >= 0) {
+          rvIssueVoucher.smoothScrollToPosition(position);
+        } else {
+          openIssueVoucherReportPage();
+        }
+      }
+    }
+  };
+
+  private void openIssueVoucherReportPage() {
+    Intent intent = new Intent(this, IssueVoucherReportActivity.class);
+    intent.putExtra(PARAM_ISSUE_VOUCHER, issueVoucherDraftPresenter.coverToPodFromIssueVoucher(programCode));
+    issueVoucherReportLauncher.launch(intent);
+  }
+
+  private final ActivityResultLauncher<Intent> issueVoucherReportLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null) {
+          return;
+        }
+      });
+
+  private void hideKeyboard(View view) {
+    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
+        Context.INPUT_METHOD_SERVICE);
+    if (inputMethodManager != null) {
+      inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
   }
 }

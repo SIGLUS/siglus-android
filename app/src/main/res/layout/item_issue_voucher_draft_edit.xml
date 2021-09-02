@@ -6,6 +6,8 @@
   android:background="@color/color_white"
   android:layout_marginTop="@dimen/px_8"
   android:orientation="vertical"
+  android:focusable="true"
+  android:focusableInTouchMode="true"
   app:divider="@drawable/shape_bulk_issue_item_decoration"
   app:showDividers="middle"
   xmlns:tools="http://schemas.android.com/tools">
@@ -47,7 +49,8 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:divider="@drawable/shape_bulk_issue_item_decoration">
 
     <TextView
       android:id="@+id/tv_error_banner"
@@ -56,27 +59,22 @@
       android:layout_margin="@dimen/px_18"
       android:background="@drawable/error_banner"
       android:padding="@dimen/px_8"
-      android:text="@string/alert_for_fill_in_lot_or_remove_product"
+      android:text="@string/alert_issue_voucher_can_not_be_blank"
       android:textColor="@color/color_requisition_banner_text"
       android:visibility="gone"
       android:textSize="@dimen/px_15" />
 
-    <TextView
-      android:id="@+id/tv_warning_banner"
+    <ImageView
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/px_18"
-      android:background="@drawable/warning_banner"
-      android:padding="@dimen/px_8"
-      android:text="@string/alert_issue_with_expired"
-      android:textColor="@color/color_requisition_banner_text"
-      android:visibility="gone"
-      android:textSize="@dimen/px_15" />
+      android:layout_height="@dimen/px_1"
+      android:background="@drawable/shape_bulk_issue_item_decoration"/>
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/rv_lots"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:focusable="true"
+      android:focusableInTouchMode="true"
       tools:listitem="@layout/item_issue_voucher_lot_edit"
       tools:itemCount="3" />
   </LinearLayout>
