@@ -20,11 +20,12 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Setter;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.repository.PodRepository;
@@ -47,16 +48,19 @@ public class IssueVoucherInputOrderNumberPresenter extends Presenter {
   @Setter(AccessLevel.PACKAGE)
   private List<Pod> existingPods = new ArrayList<>();
 
+  private final HashMap<String, Program> programCodeToProgram = new HashMap<>();
+
   @Override
-  public void attachView(BaseView v) throws ViewNotMatchException {
+  public void attachView(BaseView v) {
     // do nothing
   }
 
   public Observable<List<Program>> loadData() {
     return Observable.create((OnSubscribe<List<Program>>) subscriber -> {
       try {
-        final List<Program> queryActiveProgram = programRepository.queryProgramWithoutML();
+        List<Program> queryActiveProgram = programRepository.queryProgramWithoutML();
         existingPods = podRepository.listAllPods();
+        collectIssueVoucherPrograms(queryActiveProgram);
         subscriber.onNext(queryActiveProgram);
       } catch (LMISException exception) {
         subscriber.onError(exception);
@@ -69,5 +73,24 @@ public class IssueVoucherInputOrderNumberPresenter extends Presenter {
         .transform(Pod::getOrderCode)
         .toList()
         .contains(orderNumber);
+  }
+
+  public boolean isProgramAvailable(Program program) {
+    return programCodeToProgram.get(program.getProgramCode()) == null;
+  }
+
+  private void collectIssueVoucherPrograms(List<Program> programs) {
+    programCodeToProgram.clear();
+    HashMap<String, Program> allProgramCodeToProgram = new HashMap<>();
+    for (Program program : programs) {
+      allProgramCodeToProgram.put(program.getProgramCode(), program);
+    }
+    for (Pod existingPod : existingPods) {
+      if (OrderStatus.SHIPPED != existingPod.getOrderStatus()) {
+        continue;
+      }
+      String podProgramCode = existingPod.getRequisitionProgramCode();
+      programCodeToProgram.put(podProgramCode, allProgramCodeToProgram.get(podProgramCode));
+    }
   }
 }

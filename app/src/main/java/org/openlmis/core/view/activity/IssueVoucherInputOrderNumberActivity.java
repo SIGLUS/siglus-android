@@ -128,6 +128,14 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
         super.afterTextChanged(s);
       }
     });
+    etOrderNumber.setOnFocusChangeListener((v, hasFocus) -> {
+      if (hasFocus) {
+        return;
+      }
+      if (presenter.isOrderNumberExisted(orderNumber)) {
+        tilOrderNumber.setError(getResources().getString(R.string.msg_order_number_existed));
+      }
+    });
   }
 
   @Override
@@ -145,6 +153,8 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   }
 
   private void updateProgramItem() {
+    tilProgram.setError(presenter.isProgramAvailable(chosenProgram) ? null
+        : getString(R.string.msg_has_incomplete_issue_voucher, chosenProgram.getProgramName()));
     etProgram.setText(chosenProgram == null ? "" : chosenProgram.getProgramName());
   }
 
@@ -181,7 +191,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View view) {
-        hideKeyboard(view);
+        hideKeyboard();
         String[] programArray = FluentIterable.from(programItems).transform(Program::getProgramName)
             .toArray(String.class);
         Bundle bundle = new Bundle();
@@ -189,7 +199,6 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
         SimpleSelectDialogFragment programDialog = new SimpleSelectDialogFragment();
         programDialog.setArguments(bundle);
         programDialog.setItemClickListener((parent, view1, position, id) -> {
-          tilProgram.setError(null);
           chosenProgram = programItems.get(position);
           updateProgramItem();
           programDialog.dismiss();
@@ -204,7 +213,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View view) {
-        hideKeyboard(view);
+        hideKeyboard();
         List<MovementReason> movementReasons = MovementReasonManager.getInstance()
             .buildReasonListForMovementType(MovementType.RECEIVE);
         String[] reasonArray = FluentIterable.from(movementReasons).transform(MovementReason::getDescription)
@@ -250,7 +259,8 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        if (validateItemNotBlank() && validateOrderNumber()) {
+        hideKeyboard();
+        if (validateAll()) {
           Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
           intent.putExtra(SELECTED_PRODUCTS, (Serializable) Collections.singletonList(""));
           intent.putExtra(IS_FROM_BULK_ISSUE, false);
@@ -263,43 +273,41 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
 
   @NonNull
   private OnClickListener getBackgroundClickListener() {
-    return v -> {
-      if (orderNumber != null) {
-        validateOrderNumber();
-      }
-      etOrderNumber.clearFocus();
-      hideKeyboard(v);
-    };
+    return v -> hideKeyboard();
   }
 
-  private void hideKeyboard(View view) {
-    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
-        Context.INPUT_METHOD_SERVICE);
-    if (inputMethodManager != null) {
-      inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+  private void hideKeyboard() {
+    etOrderNumber.clearFocus();
+    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+    if (imm != null) {
+      imm.hideSoftInputFromWindow(etProgram.getWindowToken(), 0);
     }
   }
 
+  private boolean validateAll() {
+    if (chosenProgram == null) {
+      tilProgram.setError(getResources().getString(R.string.alert_program_can_not_be_blank));
+    } else if (!presenter.isProgramAvailable(chosenProgram)) {
+      tilProgram.setError(getString(R.string.msg_has_incomplete_issue_voucher, chosenProgram.getProgramName()));
+    }
+    if (chosenReason == null) {
+      tilOrigin.setError(getResources().getString(R.string.alert_movement_reason_can_not_be_blank));
+    }
+    return validateOrderNumber()
+        && chosenReason != null
+        && chosenProgram != null
+        && presenter.isProgramAvailable(chosenProgram);
+  }
+
   private boolean validateOrderNumber() {
+    if (StringUtils.isBlank(orderNumber)) {
+      tilOrderNumber.setError(getResources().getString(R.string.alert_order_number_can_not_be_blank));
+      return false;
+    }
     if (presenter.isOrderNumberExisted(orderNumber)) {
       tilOrderNumber.setError(getResources().getString(R.string.msg_order_number_existed));
       return false;
     }
     return true;
-  }
-
-  private boolean validateItemNotBlank() {
-    if (StringUtils.isBlank(orderNumber)) {
-      tilOrderNumber.setError(getResources().getString(R.string.alert_order_number_can_not_be_blank));
-    }
-    if (chosenProgram == null) {
-      tilProgram.setError(getResources().getString(R.string.alert_program_can_not_be_blank));
-    }
-    if (chosenReason == null) {
-      tilOrigin.setError(getResources().getString(R.string.alert_movement_reason_can_not_be_blank));
-    }
-    return !StringUtils.isBlank(orderNumber)
-        && chosenReason != null
-        && chosenProgram != null;
   }
 }
