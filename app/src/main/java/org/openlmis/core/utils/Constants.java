@@ -147,6 +147,8 @@ public final class Constants {
       = "confirmGenerateLotNumberMessage";
   public static final String PARAM_STOCK_ITEM = "stockCardItem";
   public static final String PARAM_ISSUE_VOUCHER_FORM_ID  = "issueVoucherFormId";
+  public static final String PARAM_ISSUE_VOUCHER_OR_POD  = "issueVoucherOrPod";
+  public static final String PARAM_POD = "pod";
   public static final String PARAM_ISSUE_VOUCHER = "issueVoucher";
 
   // Request Params

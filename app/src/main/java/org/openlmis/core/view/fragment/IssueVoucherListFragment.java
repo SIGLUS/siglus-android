@@ -34,6 +34,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.event.ChangeOrderNumberEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
@@ -173,6 +174,9 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
     }
     Intent intent = new Intent(getActivity(), IssueVoucherReportActivity.class);
     intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, viewModel.getPod().getId());
+    intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_OR_POD,
+        viewModel.getPod().getOrderStatus() == OrderStatus.SHIPPED ? Constants.PARAM_ISSUE_VOUCHER
+            : Constants.PARAM_POD);
     startActivity(intent);
   }
 

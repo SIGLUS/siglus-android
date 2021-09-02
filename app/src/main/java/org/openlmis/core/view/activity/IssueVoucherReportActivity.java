@@ -27,6 +27,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.googleanalytics.ScreenName;
@@ -49,6 +50,7 @@ import roboguice.inject.InjectView;
 public class IssueVoucherReportActivity extends BaseActivity implements IssueVoucherView {
   private static final String TAG = LmisSqliteOpenHelper.class.getSimpleName();
 
+  @Setter
   @InjectView(R.id.view_orderInfo)
   private OrderInfoView orderInfo;
 
@@ -66,6 +68,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   private Long podId;
   private Pod pod;
+  private String pageName;
   private IssueVoucherProductAdapter productAdapter;
   private IssueVoucherReportAdapter issueVoucherReportAdapter;
   private RecyclerView.OnScrollListener[] listeners;
@@ -74,7 +77,11 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     podId = getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 0);
-    pod = (Pod) getIntent().getExtras().getSerializable(Constants.PARAM_ISSUE_VOUCHER);
+    String toPage = getIntent().getStringExtra(Constants.PARAM_ISSUE_VOUCHER_OR_POD);
+    pageName = toPage == null ? Constants.PARAM_ISSUE_VOUCHER : toPage;
+    if (getIntent().getExtras() != null) {
+      pod = (Pod) getIntent().getExtras().getSerializable(Constants.PARAM_ISSUE_VOUCHER);
+    }
     initProductList();
     initIssueVoucherList();
     listeners = scrollInSync(rvIssueVoucherList, rvProductList);
@@ -107,9 +114,13 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   @Override
   public void onBackPressed() {
-    Intent intent = new Intent(this, IssueVoucherListActivity.class);
-    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    startActivity(intent);
+    if (pageName.equals(Constants.PARAM_ISSUE_VOUCHER)) {
+      Intent intent = new Intent(this, IssueVoucherListActivity.class);
+      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+      startActivity(intent);
+    } else {
+      super.onBackPressed();
+    }
   }
 
   @Override
@@ -145,6 +156,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
       public void onSingleClick(View v) {
         int position = issueVoucherReportAdapter.validateAll();
         if (position >= 0) {
+          rvIssueVoucherList.requestFocus();
           rvIssueVoucherList.post(() -> rvIssueVoucherList.scrollToPosition(position));
           rvProductList.post(() -> {
             rvProductList.removeOnScrollListener(listeners[1]);
