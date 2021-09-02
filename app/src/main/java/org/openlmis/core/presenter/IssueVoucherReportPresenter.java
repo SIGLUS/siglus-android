@@ -42,7 +42,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   IssueVoucherView issueVoucherView;
   @Getter
   IssueVoucherReportViewModel issueVoucherReportViewModel;
-  private Pod pod;
+  public Pod pod;
 
   public void loadData(long podId) {
     Subscription subscription = getRnrFormObservable(podId)
@@ -83,11 +83,15 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     issueVoucherView = (IssueVoucherView) v;
   }
 
-  protected Action1<Pod> loadDataOnNextAction = podContent -> {
+  public void loadViewModelByPod(Pod podContent) {
     pod = podContent;
     issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
     issueVoucherView.loaded();
     issueVoucherView.refreshIssueVoucherForm(pod);
+  }
+
+  protected Action1<Pod> loadDataOnNextAction = podContent -> {
+    loadViewModelByPod(podContent);
   };
 
   protected Action1<Throwable> loadDataOnErrorAction = throwable -> {

@@ -1030,7 +1030,7 @@
   </style>
   <style name="Pod.list.product">
     <item name="android:layout_width">@dimen/px_100</item>
-    <item name="android:layout_height">@dimen/px_92</item>
+    <item name="android:layout_height">@dimen/px_94</item>
     <item name="android:textColor">@color/color_black</item>
     <item name="android:textSize">@dimen/px_14</item>
     <item name="android:gravity">center</item>

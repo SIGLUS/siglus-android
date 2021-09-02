@@ -20,9 +20,11 @@ package org.openlmis.core.view.activity;
 
 import static org.openlmis.core.view.widget.DoubleRecycleViewScrollListener.scrollInSync;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -78,8 +80,10 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     initIssueVoucherList();
     listeners = scrollInSync(rvProductList, rvIssueVoucherList);
 
-    if (pod != null) {
-      refreshIssueVoucherForm(pod);
+    if (savedInstanceState != null && presenter.getIssueVoucherReportViewModel() != null) {
+      refreshIssueVoucherForm(presenter.pod);
+    } else if (pod != null) {
+      presenter.loadViewModelByPod(pod);
     } else {
       presenter.loadData(podId);
     }
@@ -95,6 +99,11 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     rvProductList.removeOnScrollListener(listeners[0]);
     rvIssueVoucherList.removeOnScrollListener(listeners[1]);
     super.onDestroy();
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
   }
 
   @Override
@@ -128,9 +137,11 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
+        hideKeyboard(v);
         int position = issueVoucherReportAdapter.validateAll();
         if (position >= 0) {
-          rvIssueVoucherList.smoothScrollToPosition(position);
+          rvIssueVoucherList.post(() -> rvIssueVoucherList.scrollToPosition(position));
+          rvProductList.post(() -> rvProductList.scrollToPosition(position));
         } else {
           Log.i(TAG, "complete");
         }
@@ -146,6 +157,14 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
         Log.i(TAG, "save");
       }
     };
+  }
+
+  private void hideKeyboard(View view) {
+    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
+        Context.INPUT_METHOD_SERVICE);
+    if (inputMethodManager != null) {
+      inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
   }
 
 }

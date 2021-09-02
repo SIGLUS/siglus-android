@@ -120,9 +120,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
 
     private void setRejectReason() {
       if (lotViewModel.getReturnedQuality() != null && lotViewModel.getReturnedQuality().longValue() > 0) {
-        vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner);
-        ivRejectionReason.setImageResource(R.drawable.icon_pulldown_enable);
-        tvRejectionReason.setText(itemView.getResources().getString(R.string.label_default_rejection_reason));
+        setRejectReasonForCanSelectStatus();
         vRejectionReason.setOnClickListener(v -> {
           Bundle bundle = new Bundle();
           bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, rejectReasons);
@@ -134,10 +132,17 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
         });
         setRejectReasonText();
       } else {
+        vRejectionReason.setOnClickListener(null);
         vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_gray);
         ivRejectionReason.setImageResource(R.drawable.ic_pulldown_unable);
         tvRejectionReason.setText(itemView.getResources().getString(R.string.label_default_rejection_reason));
       }
+    }
+
+    private void setRejectReasonForCanSelectStatus() {
+      vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner);
+      ivRejectionReason.setImageResource(R.drawable.icon_pulldown_enable);
+      setRejectReasonText();
     }
 
     private void setRejectReasonText() {
@@ -251,7 +256,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         viewModel.setRejectedReason(rejectReasons[position]);
-        tvRejectionReason.setText(viewModel.getRejectedReason());
+        setRejectReasonForCanSelectStatus();
         tvRejectionReason.setError(null);
         reasonsDialog.dismiss();
       }

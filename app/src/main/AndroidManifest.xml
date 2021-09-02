@@ -158,7 +158,8 @@
       android:screenOrientation="portrait"/>
     <activity
       android:label="@string/title_pod"
-      android:name=".view.activity.IssueVoucherReportActivity" />
+      android:name=".view.activity.IssueVoucherReportActivity"
+      android:windowSoftInputMode="adjustPan|stateHidden"/>
     <provider
       android:authorities="@string/sync_content_authority"
       android:name=".service.StubContentProvider"

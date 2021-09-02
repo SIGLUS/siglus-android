@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="wrap_content"
-  android:layout_height="wrap_content"
-  android:orientation="vertical">
-
-  <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="@dimen/px_50"
-    android:showDividers="middle"
-    android:orientation="horizontal"
-    android:divider="@drawable/divider_vertical">
+  android:layout_height="@dimen/px_50"
+  android:showDividers="middle"
+  android:orientation="horizontal"
+  android:divider="@drawable/divider_vertical">
     <TextView
       style="@style/Pod.list.lot"
       android:id="@+id/tv_product_unit" />
@@ -27,6 +22,7 @@
         android:layout_margin="@dimen/px_5"
         android:paddingRight="@dimen/px_4"
         android:background="@drawable/border_bg_corner"
+        android:maxLength="@integer/edit_amount_length"
         android:gravity="right|center"
         android:inputType="numberSigned" />
     </RelativeLayout>
@@ -42,6 +38,7 @@
         android:layout_margin="@dimen/px_5"
         android:paddingRight="@dimen/px_4"
         android:background="@drawable/border_bg_corner"
+        android:maxLength="@integer/edit_amount_length"
         android:gravity="right|center"
         android:inputType="numberSigned" />
     </RelativeLayout>
@@ -86,7 +83,7 @@
         android:paddingRight="@dimen/px_4"
         android:gravity="right|center"
         android:inputType="text"
+        android:maxLength="100"
         android:background="@drawable/border_bg_corner" />
     </RelativeLayout>
-  </LinearLayout>
 </LinearLayout>
