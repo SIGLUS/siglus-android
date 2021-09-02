@@ -114,7 +114,7 @@ public class LotMovementViewModel implements Serializable {
         if (getExpiryDate() == null) {
             return true;
         }
-        Calendar nowCalender = Calendar.getInstance();
+        Calendar nowCalender = DateUtil.getCurrentCalendar();
 
         Date expireDate = DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
         if (expireDate != null) {
