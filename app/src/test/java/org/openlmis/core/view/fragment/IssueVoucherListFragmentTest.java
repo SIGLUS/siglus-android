@@ -18,6 +18,11 @@
 
 package org.openlmis.core.view.fragment;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.content.Intent;
@@ -28,16 +33,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.constant.FieldConstants;
-import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.EditOrderNumberActivity;
 import org.openlmis.core.view.activity.IssueVoucherListActivity;
 import org.openlmis.core.view.adapter.IssueVoucherListAdapter;
+import org.openlmis.core.view.viewmodel.IssueVoucherListViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
@@ -57,7 +61,7 @@ public class IssueVoucherListFragmentTest {
 
   @Before
   public void setup() {
-    mockPresenter = Mockito.mock(IssueVoucherListPresenter.class);
+    mockPresenter = mock(IssueVoucherListPresenter.class);
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
       @Override
       protected void configure() {
@@ -78,9 +82,14 @@ public class IssueVoucherListFragmentTest {
   }
 
   @Test
-  public void shouldShowConfirmDialogAfterOrderOperation() {
+  public void shouldShowConfirmDialogAfterOrderOperation() throws Exception {
+    // given
+    IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
+    when(mockViewModel.getPod()).thenReturn(PodBuilder.generatePod());
+    when(mockViewModel.isIssueVoucher()).thenReturn(true);
+
     // when
-    fragment.orderDeleteOrEditOperation(OrderStatus.SHIPPED, FieldConstants.ORDER_CODE);
+    fragment.orderDeleteOrEditOperation(mockViewModel);
     RobolectricUtils.waitLooperIdle();
 
     // then
@@ -89,9 +98,15 @@ public class IssueVoucherListFragmentTest {
   }
 
   @Test
-  public void shouldGotoEditOrderNumber() {
+  public void shouldGotoEditOrderNumber() throws Exception {
+    // given
+    IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
+    when(mockViewModel.isIssueVoucher()).thenReturn(false);
+    when(mockViewModel.getPod()).thenReturn(PodBuilder.generatePod());
+    when(mockPresenter.editablePodOrder(anyString())).thenReturn(true);
+
     // when
-    fragment.orderDeleteOrEditOperation(OrderStatus.RECEIVED, FieldConstants.ORDER_CODE);
+    fragment.orderDeleteOrEditOperation(mockViewModel);
     RobolectricUtils.waitLooperIdle();
 
     // when
@@ -99,7 +114,7 @@ public class IssueVoucherListFragmentTest {
     Intent startedIntent = shadowActivity.getNextStartedActivity();
 
     // then
-    Assert.assertEquals(EditOrderNumberActivity.class.getName(),startedIntent.getComponent().getClassName());
+    Assert.assertEquals(EditOrderNumberActivity.class.getName(), startedIntent.getComponent().getClassName());
   }
 
   @Test
@@ -116,13 +131,13 @@ public class IssueVoucherListFragmentTest {
   @Test
   public void shouldRefreshAdapterAfterLoadData() {
     // given
-    IssueVoucherListAdapter mockAdapter = Mockito.mock(IssueVoucherListAdapter.class);
+    IssueVoucherListAdapter mockAdapter = mock(IssueVoucherListAdapter.class);
     fragment.setAdapter(mockAdapter);
 
     // when
     fragment.onRefreshList();
 
     // then
-    Mockito.verify(mockAdapter, Mockito.times(1)).notifyDataSetChanged();
+    verify(mockAdapter, times(1)).notifyDataSetChanged();
   }
 }

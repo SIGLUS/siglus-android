@@ -19,7 +19,6 @@
 package org.openlmis.core.view.activity;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.openlmis.core.view.activity.IssueVoucherListActivity.TITLE_RES;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -42,7 +41,6 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.googleanalytics.ScreenName;
-import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -50,27 +48,21 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.fakes.RoboMenu;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
-import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
 public class IssueVoucherListActivityTest {
 
   private IssueVoucherListActivity listActivity;
-
-  private PodRepository mockPodRepository;
-
   private IssueVoucherListPresenter mockedPresenter;
   private ActivityController<IssueVoucherListActivity> activityController;
 
   @Before
   public void setUp() {
     mockedPresenter = mock(IssueVoucherListPresenter.class);
-    mockPodRepository = mock(PodRepository.class);
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
       @Override
       protected void configure() {
-        bind(PodRepository.class).toInstance(mockPodRepository);
         bind(IssueVoucherListPresenter.class).toInstance(mockedPresenter);
       }
     });
@@ -107,23 +99,8 @@ public class IssueVoucherListActivityTest {
   }
 
   @Test
-  public void shouldToastWhenHaveDraft() {
+  public void shouldGotoIssueVoucherInputOrderNumberActivity() {
     // given
-    when(mockPodRepository.queryLocalDraftCount()).thenReturn(1L);
-    MenuItem menuItem = new RoboMenuItem(R.id.action_create_issue_voucher);
-
-    // when
-    listActivity.onOptionsItemSelected(menuItem);
-
-    // then
-    Assert.assertEquals(LMISTestApp.getContext().getString(R.string.msg_cant_create_issue_voucher),
-        ShadowToast.getTextOfLatestToast());
-  }
-
-  @Test
-  public void shouldGotoIssueVoucherInputOrderNumberActivityWhenHaveDraft() {
-    // given
-    when(mockPodRepository.queryLocalDraftCount()).thenReturn(0L);
     MenuItem menuItem = new RoboMenuItem(R.id.action_create_issue_voucher);
 
     // when

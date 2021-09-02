@@ -126,8 +126,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
           bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, rejectReasons);
           SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
           reasonsDialog.setArguments(bundle);
-          reasonsDialog.setMovementTypeOnClickListener(
-              new MovementTypeOnClickListener(reasonsDialog, lotViewModel));
+          reasonsDialog.setItemClickListener(new MovementTypeOnClickListener(reasonsDialog, lotViewModel));
           reasonsDialog.show(((BaseActivity) itemView.getContext()).getSupportFragmentManager(), "SELECT_REASONS");
         });
         setRejectReasonText();

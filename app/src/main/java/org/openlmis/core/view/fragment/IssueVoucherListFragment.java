@@ -18,25 +18,24 @@
 
 package org.openlmis.core.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Setter;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
-import org.openlmis.core.enumeration.OrderStatus;
+import org.openlmis.core.event.ChangeOrderNumberEvent;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Pod;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.openlmis.core.presenter.IssueVoucherListPresenter.IssueVoucherListView;
 import org.openlmis.core.presenter.Presenter;
@@ -46,6 +45,7 @@ import org.openlmis.core.view.activity.EditOrderNumberActivity;
 import org.openlmis.core.view.activity.IssueVoucherReportActivity;
 import org.openlmis.core.view.adapter.IssueVoucherListAdapter;
 import org.openlmis.core.view.listener.OrderOperationListener;
+import org.openlmis.core.view.viewmodel.IssueVoucherListViewModel;
 import roboguice.inject.InjectView;
 
 public class IssueVoucherListFragment extends BaseFragment implements IssueVoucherListView, OrderOperationListener {
@@ -59,13 +59,7 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
   @Inject
   private IssueVoucherListPresenter presenter;
 
-  private final ActivityResultLauncher<Intent> editOrderNumberResultLauncher = registerForActivityResult(
-      new StartActivityForResult(), result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-          ToastUtil.show("edit order number success");
-        }
-      }
-  );
+  private boolean shouldRefreshList;
 
   public static IssueVoucherListFragment newInstance(boolean isIssueVoucher) {
     final IssueVoucherListFragment issueVoucherListFragment = new IssueVoucherListFragment();
@@ -99,18 +93,26 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
     rvIssueVoucher.setAdapter(adapter);
     presenter.setIssueVoucher(requireArguments().getBoolean(IntentConstants.PARAM_IS_ISSUE_VOUCHER));
     presenter.loadData();
+    EventBus.getDefault().register(this);
   }
 
-  private View generateHeaderView() {
-    View view = new View(requireContext());
-    LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
-        requireActivity().getResources().getDimensionPixelOffset(R.dimen.px_16));
-    view.setLayoutParams(layoutParams);
-    return view;
+  @Override
+  public void onResume() {
+    super.onResume();
+    if (shouldRefreshList) {
+      presenter.loadData();
+    }
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    EventBus.getDefault().unregister(this);
   }
 
   @Override
   public void onRefreshList() {
+    shouldRefreshList = false;
     adapter.notifyDataSetChanged();
   }
 
@@ -121,8 +123,9 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
   }
 
   @Override
-  public void orderDeleteOrEditOperation(OrderStatus orderStatus, String orderCode) {
-    if (OrderStatus.SHIPPED == orderStatus) {
+  public void orderDeleteOrEditOperation(IssueVoucherListViewModel viewModel) {
+    String orderCode = viewModel.getPod().getOrderCode();
+    if (viewModel.isIssueVoucher()) {
       SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
           null,
           getString(R.string.msg_issue_voucher_remove_confirm),
@@ -142,16 +145,47 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
         }
       });
     } else {
+      if (!presenter.editablePodOrder(orderCode)) {
+        WarningDialogFragment warningDataDialog = WarningDialogFragment.newInstanceForDeleteProduct(
+            getString(R.string.msg_cannot_edit_order_number,
+                viewModel.getPod().getOrderCode(), viewModel.getProgramName()),
+            getString(R.string.btn_ok),
+            getString(R.string.btn_ok));
+        warningDataDialog.show(getParentFragmentManager(), "cannot_edit_order_number_dialog");
+        return;
+      }
       Intent intent = new Intent(requireContext(), EditOrderNumberActivity.class);
       intent.putExtra(IntentConstants.PARAM_ORDER_NUMBER, orderCode);
-      editOrderNumberResultLauncher.launch(intent);
+      startActivity(intent);
     }
   }
 
   @Override
-  public void orderEditOrViewOperation(Pod pod) {
+  public void orderEditOrViewOperation(IssueVoucherListViewModel viewModel) {
+    if (viewModel.isIssueVoucher() && presenter.hasUnmatchedPod(viewModel.getPod().getRequisitionProgramCode())) {
+      SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+          null,
+          getString(R.string.msg_has_unmatched_pod, viewModel.getProgramName()),
+          getString(R.string.btn_positive),
+          null);
+      dialogFragment.show(getParentFragmentManager(), "has_unmatched_pod_dialog");
+      return;
+    }
     Intent intent = new Intent(getActivity(), IssueVoucherReportActivity.class);
-    intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, pod.getId());
+    intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, viewModel.getPod().getId());
     startActivity(intent);
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveChangeOrderNumberEvent(ChangeOrderNumberEvent event) {
+    shouldRefreshList = true;
+  }
+
+  private View generateHeaderView() {
+    View view = new View(requireContext());
+    LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
+        requireActivity().getResources().getDimensionPixelOffset(R.dimen.px_16));
+    view.setLayoutParams(layoutParams);
+    return view;
   }
 }

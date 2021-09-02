@@ -16,13 +16,9 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.listener;
+package org.openlmis.core.event;
 
-import org.openlmis.core.view.viewmodel.IssueVoucherListViewModel;
+@SuppressWarnings("squid:S2094")
+public class ChangeOrderNumberEvent {
 
-public interface OrderOperationListener {
-
-  void orderDeleteOrEditOperation(IssueVoucherListViewModel viewModel);
-
-  void orderEditOrViewOperation(IssueVoucherListViewModel viewModel);
 }

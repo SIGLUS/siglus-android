@@ -18,21 +18,26 @@
 
 package org.openlmis.core.model.repository;
 
-import static org.openlmis.core.constant.FieldConstants.ID;
 import static org.openlmis.core.constant.FieldConstants.ORDER_STATUS;
 
 import android.content.Context;
+import android.database.Cursor;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
+import org.openlmis.core.model.SyncType;
+import org.openlmis.core.network.SyncErrorsMap;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -52,17 +57,17 @@ public class PodRepository {
   PodProductItemRepository podProductItemRepository;
 
   @Inject
+  SyncErrorsRepository syncErrorsRepository;
+
+  @Inject
   public PodRepository(Context context, DbUtil dbUtil) {
     this.podGenericDao = new GenericDao<>(Pod.class, context);
     this.dbUtil = dbUtil;
     this.context = context;
   }
 
-  public Pod queryPod(final long id) throws LMISException {
-    Pod pod = dbUtil
-        .withDao(Pod.class, dao -> dao.queryBuilder().where().eq(ID, id).queryForFirst());
-
-    return pod;
+  public Pod queryPod(long id) throws LMISException {
+    return podGenericDao.getById(String.valueOf(id));
   }
 
   public List<Pod> listAllPods() throws LMISException {
@@ -78,6 +83,69 @@ public class PodRepository {
         dao -> dao.queryBuilder().where().eq(FieldConstants.ORDER_CODE, orderCode).queryForFirst());
   }
 
+  public List<String> queryIssueVoucherOrderCodesBelongProgram(String orderCode) {
+    String rawSql = "SELECT orderCode FROM pods WHERE requisitionProgramCode"
+        + " IN (SELECT requisitionProgramCode FROM pods WHERE orderCode = '" + orderCode + "')"
+        + " AND orderStatus = 'SHIPPED'"
+        + " AND isLocal = 0";
+    Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+    List<String> matchedOrderCodes = new ArrayList<>();
+    if (cursor.moveToFirst()) {
+      do {
+        matchedOrderCodes.add(cursor.getString(cursor.getColumnIndexOrThrow(FieldConstants.ORDER_CODE)));
+      } while (cursor.moveToNext());
+    }
+    if (!cursor.isClosed()) {
+      cursor.close();
+    }
+    return matchedOrderCodes;
+  }
+
+  public boolean hasUnmatchedPodByProgram(String programCode) {
+    String rawSql = "SELECT errorMessage FROM sync_errors WHERE syncType = 'POD'"
+        + " AND syncObjectId IN (SELECT id FROM pods WHERE requisitionProgramCode = '" + programCode + "'"
+        + " AND isSynced = 0)";
+    try (Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
+        .getWritableDatabase()
+        .rawQuery(rawSql, null)) {
+      if (!cursor.moveToFirst()) {
+        return false;
+      }
+      do {
+        String errorMsg = cursor.getString(cursor.getColumnIndexOrThrow(FieldConstants.ERROR_MESSAGE));
+        if (StringUtils.isNotEmpty(errorMsg) && errorMsg.contains(SyncErrorsMap.ERROR_POD_ORDER_DOSE_NOT_EXIST)) {
+          return true;
+        }
+      } while (cursor.moveToNext());
+      return false;
+    }
+  }
+
+  public void updateOrderCode(String podOrderCode, String issueVoucherOrderCode) throws LMISException {
+    dbUtil.withDaoAsBatch(Pod.class, dao -> {
+      // delete chosen issueVoucher
+      Pod issueVoucher = dao.queryBuilder()
+          .where().eq(FieldConstants.ORDER_CODE, issueVoucherOrderCode)
+          .queryForFirst();
+      for (PodProductItem podProductItem : issueVoucher.getPodProductItemsWrapper()) {
+        podProductItemRepository.delete(podProductItem);
+      }
+      dao.delete(issueVoucher);
+
+      // set origin order code and update pod
+      Pod pod = dao.queryBuilder().where().eq(FieldConstants.ORDER_CODE, podOrderCode).queryForFirst();
+      if (StringUtils.isEmpty(pod.getOriginOrderCode())) {
+        pod.setOriginOrderCode(podOrderCode);
+      }
+      pod.setOrderCode(issueVoucherOrderCode);
+      dao.update(pod);
+
+      // delete sync error
+      syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.POD, pod.getId());
+      return null;
+    });
+  }
+
   public void deleteByOrderCode(String orderCode) throws LMISException {
     dbUtil.withDaoAsBatch(Pod.class, dao -> {
       Pod pod = dao.queryBuilder().where().eq(FieldConstants.ORDER_CODE, orderCode).queryForFirst();
@@ -90,18 +158,6 @@ public class PodRepository {
       dao.delete(pod);
       return null;
     });
-  }
-
-  public long queryLocalDraftCount() {
-    try {
-      return dbUtil.withDao(Pod.class,
-          dao -> dao.queryBuilder()
-              .where().eq(FieldConstants.IS_LOCAL, true)
-              .and().eq(FieldConstants.IS_DRAFT, true)
-              .countOf());
-    } catch (LMISException e) {
-      return -1;
-    }
   }
 
   public void batchCreatePodsWithItems(@Nullable final List<Pod> pods) throws LMISException {

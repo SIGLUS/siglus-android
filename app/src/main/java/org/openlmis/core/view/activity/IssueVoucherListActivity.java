@@ -33,7 +33,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
-import com.google.inject.Inject;
 import lombok.Getter;
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
@@ -44,8 +43,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorT
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
-import org.openlmis.core.model.repository.PodRepository;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.IssueVoucherListFragment;
 import org.openlmis.core.view.widget.FillPageIndicator;
 import roboguice.inject.ContentView;
@@ -63,9 +60,6 @@ public class IssueVoucherListActivity extends BaseActivity {
   @Getter
   @InjectView(R.id.vp_issue_voucher)
   private ViewPager2 viewPager;
-
-  @Inject
-  private PodRepository podRepository;
 
   private final OnPageChangeCallback pageChangeCallback = new OnPageChangeCallback() {
     @Override
@@ -93,17 +87,12 @@ public class IssueVoucherListActivity extends BaseActivity {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    if (R.id.action_create_issue_voucher == item.getItemId()) {
-      if (podRepository.queryLocalDraftCount() != 0) {
-        ToastUtil.show(R.string.msg_cant_create_issue_voucher);
-        return true;
-      }
-      Intent intent = new Intent(LMISApp.getContext(), IssueVoucherInputOrderNumberActivity.class);
-      startActivity(intent);
-      return true;
-    } else {
+    if (R.id.action_create_issue_voucher != item.getItemId()) {
       return super.onOptionsItemSelected(item);
     }
+    Intent intent = new Intent(LMISApp.getContext(), IssueVoucherInputOrderNumberActivity.class);
+    startActivity(intent);
+    return true;
   }
 
   @Override

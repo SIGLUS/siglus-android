@@ -188,7 +188,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
         bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, programArray);
         SimpleSelectDialogFragment programDialog = new SimpleSelectDialogFragment();
         programDialog.setArguments(bundle);
-        programDialog.setMovementTypeOnClickListener((parent, view1, position, id) -> {
+        programDialog.setItemClickListener((parent, view1, position, id) -> {
           tilProgram.setError(null);
           chosenProgram = programItems.get(position);
           updateProgramItem();
@@ -213,7 +213,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
         bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonArray);
         SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
         reasonsDialog.setArguments(bundle);
-        reasonsDialog.setMovementTypeOnClickListener((parent, view1, position, id) -> {
+        reasonsDialog.setItemClickListener((parent, view1, position, id) -> {
           tilOrigin.setError(null);
           chosenReason = movementReasons.get(position);
           updateMovementReason();

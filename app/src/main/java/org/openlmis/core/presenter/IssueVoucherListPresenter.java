@@ -141,6 +141,14 @@ public class IssueVoucherListPresenter extends Presenter {
     subscriptions.add(subscribe);
   }
 
+  public boolean editablePodOrder(String orderCode) {
+    return !podRepository.queryIssueVoucherOrderCodesBelongProgram(orderCode).isEmpty();
+  }
+
+  public boolean hasUnmatchedPod(String programCode) {
+    return podRepository.hasUnmatchedPodByProgram(programCode);
+  }
+
   private void refreshViewModels() throws LMISException {
     List<Pod> pods = podRepository.queryPodsByStatus(isIssueVoucher ? OrderStatus.SHIPPED : OrderStatus.RECEIVED);
     viewModels.clear();

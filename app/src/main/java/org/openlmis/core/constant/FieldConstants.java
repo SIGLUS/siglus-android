@@ -101,6 +101,8 @@ public class FieldConstants {
 
   public static final String IS_DRAFT = "isDraft";
 
+  public static final String ERROR_MESSAGE = "errorMessage";
+
   // id
   public static final String STOCK_CARD_ID = "stockCard_id";
 

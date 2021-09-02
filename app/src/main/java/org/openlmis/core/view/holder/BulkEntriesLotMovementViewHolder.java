@@ -141,7 +141,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
         bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonDescriptions);
         SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
         reasonsDialog.setArguments(bundle);
-        reasonsDialog.setMovementTypeOnClickListener(new MovementTypeOnClickListener(reasonsDialog, viewModel));
+        reasonsDialog.setItemClickListener(new MovementTypeOnClickListener(reasonsDialog, viewModel));
         reasonsDialog.show(((BulkEntriesActivity) (((ContextWrapper) view.getContext()).getBaseContext()))
             .getSupportFragmentManager(), "SELECT_REASONS");
       }

@@ -1,9 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   tools:context=".view.activity.EditOrderNumberActivity">
 
+  <androidx.appcompat.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/px_24"
+    android:background="@color/color_white"
+    android:orientation="vertical">
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/label_edit_order_number"
+      android:textColor="@color/color_black"
+      android:textSize="@dimen/px_24"
+      android:textStyle="bold"
+      android:fontFamily="sans-serif-medium"
+      android:layout_marginLeft="@dimen/px_81"
+      android:layout_marginTop="@dimen/px_100" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/px_40"
+      android:textColor="@color/color_form_button_blue"
+      android:text="@string/label_old_order_number"
+      android:textSize="@dimen/px_12"
+      android:layout_marginLeft="@dimen/px_81" />
+
+    <TextView
+      android:id="@+id/tv_old_order_number"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/px_4"
+      android:fontFamily="sans-serif-medium"
+      android:textSize="@dimen/px_20"
+      android:textColor="@color/color_727272"
+      tools:text="ORDER-AS5J7B1RR"
+      android:layout_marginLeft="@dimen/px_81" />
+
+    <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/til_new_order_number"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingVertical="@dimen/px_8"
+      android:layout_marginHorizontal="@dimen/px_76"
+      android:layout_marginTop="@dimen/px_40"
+      app:errorTextAppearance="@style/Text.Red.Regular.Compat"
+      >
+
+      <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/et_new_order_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/EditText.Gray"
+        android:drawableLeft="@drawable/bitmap_order_number"
+        android:drawablePadding="@dimen/px_5"
+        android:hint="@string/label_new_order_number"
+        android:textSize="@dimen/px_20"
+        android:singleLine="true"
+        android:focusableInTouchMode="false"
+        android:background="@drawable/shape_edit_text_background"
+        android:textColorHint="@color/color_606162"
+        android:textColor="@color/color_black"
+        android:gravity="center_vertical" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+      android:id="@+id/tv_confirm"
+      android:layout_width="@dimen/px_220"
+      android:layout_height="@dimen/px_36"
+      android:layout_marginTop="@dimen/px_100"
+      android:layout_gravity="center_horizontal"
+      android:text="@string/label_confirm"
+      android:gravity="center"
+      android:background="@drawable/blue_button"
+      android:textColor="@color/color_white"
+      android:textSize="@dimen/px_20" />
+  </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>

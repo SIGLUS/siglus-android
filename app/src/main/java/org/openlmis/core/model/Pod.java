@@ -64,6 +64,9 @@ public class Pod extends BaseModel implements Serializable {
   private String orderCode;
 
   @DatabaseField
+  private String originOrderCode;
+
+  @DatabaseField
   private String orderSupplyFacilityName;
 
   @DatabaseField
@@ -73,7 +76,7 @@ public class Pod extends BaseModel implements Serializable {
   private Date orderCreatedDate;
 
   @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
-  private Date  orderLastModifiedDate;
+  private Date orderLastModifiedDate;
 
   @DatabaseField
   private String requisitionNumber;

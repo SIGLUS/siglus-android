@@ -147,7 +147,7 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
         bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonArray);
         SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
         reasonsDialog.setArguments(bundle);
-        reasonsDialog.setMovementTypeOnClickListener((parent, view1, position, id) -> {
+        reasonsDialog.setItemClickListener((parent, view1, position, id) -> {
           tilDestination.setError(null);
           chosenReason = movementReasons.get(position);
           updateMovementReason();

@@ -75,21 +75,4 @@ public class PodRepositoryTest {
     // then
     Assert.assertEquals(0, podRepository.listAllPods().size());
   }
-
-  @Test
-  public void shouldCorrectQueryLocalDraftCount() throws Exception {
-    // given
-    ArrayList<Pod> pods = new ArrayList<>();
-    Pod pod = PodBuilder.generatePod();
-    pod.setLocal(true);
-    pod.setDraft(true);
-    pods.add(pod);
-    podRepository.batchCreatePodsWithItems(pods);
-
-    // when
-    long draftCount = podRepository.queryLocalDraftCount();
-
-    // then
-    Assert.assertEquals(1, draftCount);
-  }
 }

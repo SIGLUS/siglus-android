@@ -74,7 +74,7 @@ public class IssueVoucherListAdapter extends BaseQuickAdapter<IssueVoucherListVi
           if (listener == null) {
             return;
           }
-          listener.orderEditOrViewOperation(viewModel.getPod());
+          listener.orderEditOrViewOperation(viewModel);
         }
       });
       if (viewModel.shouldShowOperationIcon()) {
@@ -85,7 +85,7 @@ public class IssueVoucherListAdapter extends BaseQuickAdapter<IssueVoucherListVi
             if (listener == null) {
               return;
             }
-            listener.orderDeleteOrEditOperation(viewModel.getPod().getOrderStatus(), viewModel.getPod().getOrderCode());
+            listener.orderDeleteOrEditOperation(viewModel);
           }
         });
       } else {

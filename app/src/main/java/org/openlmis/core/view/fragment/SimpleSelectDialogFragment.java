@@ -32,7 +32,7 @@ public class SimpleSelectDialogFragment extends BaseDialogFragment {
   public static final String SELECTIONS = "selections";
 
   @Setter
-  private AdapterView.OnItemClickListener movementTypeOnClickListener;
+  private AdapterView.OnItemClickListener itemClickListener;
   private String[] mySelections;
 
   public SimpleSelectDialogFragment() {
@@ -46,9 +46,8 @@ public class SimpleSelectDialogFragment extends BaseDialogFragment {
     }
   }
 
-  public SimpleSelectDialogFragment(AdapterView.OnItemClickListener movementTypeOnClickListener,
-      String[] mySelections) {
-    this.movementTypeOnClickListener = movementTypeOnClickListener;
+  public SimpleSelectDialogFragment(AdapterView.OnItemClickListener itemClickListener, String[] mySelections) {
+    this.itemClickListener = itemClickListener;
     this.mySelections = mySelections;
   }
 
@@ -60,7 +59,7 @@ public class SimpleSelectDialogFragment extends BaseDialogFragment {
         mySelections);
     builder.setAdapter(adapter, null);
     AlertDialog alertDialog = builder.create();
-    alertDialog.getListView().setOnItemClickListener(movementTypeOnClickListener);
+    alertDialog.getListView().setOnItemClickListener(itemClickListener);
     return alertDialog;
   }
 }
