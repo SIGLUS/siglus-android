@@ -132,7 +132,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
               new MovementTypeOnClickListener(reasonsDialog, lotViewModel));
           reasonsDialog.show(((BaseActivity) itemView.getContext()).getSupportFragmentManager(), "SELECT_REASONS");
         });
-       setRejectReasonText();
+        setRejectReasonText();
       } else {
         vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_gray);
         ivRejectionReason.setImageResource(R.drawable.ic_pulldown_unable);

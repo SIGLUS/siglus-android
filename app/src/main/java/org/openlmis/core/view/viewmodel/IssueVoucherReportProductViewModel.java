@@ -56,17 +56,15 @@ public class IssueVoucherReportProductViewModel {
 
   public boolean validate() {
     for (IssueVoucherReportLotViewModel lotViewModel : lotViewModelList) {
-      if (lotViewModel.getOrderStatus() == OrderStatus.SHIPPED) {
-        if (lotViewModel.getShippedQuantity() == null || lotViewModel.getAcceptedQuantity() == null ||
-            (lotViewModel.getReturnedQuality() != null &&  lotViewModel.getReturnedQuality() > 0 && lotViewModel.getRejectedReason() == null)) {
-          setValidate(false);
-          return false;
-        }
+      if (lotViewModel.getOrderStatus() == OrderStatus.SHIPPED && isContainInvalidateQuantity(lotViewModel)) {
+        setValidate(false);
+        return false;
       }
     }
     setValidate(true);
     return true;
   }
+
 
   public void setValidate(boolean isValidate) {
     this.isValidate = isValidate;
@@ -76,6 +74,16 @@ public class IssueVoucherReportProductViewModel {
     for (IssueVoucherReportLotViewModel lotViewModel : lotViewModelList) {
       lotViewModel.setValidate(isValidate);
     }
+  }
+
+  private boolean isContainInvalidateQuantity(IssueVoucherReportLotViewModel lotViewModel) {
+    return lotViewModel.getShippedQuantity() == null || lotViewModel.getAcceptedQuantity() == null
+        || isInvalidateReason(lotViewModel);
+  }
+
+  private boolean isInvalidateReason(IssueVoucherReportLotViewModel lotViewModel) {
+    return lotViewModel.getReturnedQuality() != null && lotViewModel.getReturnedQuality() > 0
+        && lotViewModel.getRejectedReason() == null;
   }
 
 }

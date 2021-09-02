@@ -26,33 +26,23 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.Date;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
-import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.model.Pod;
-import org.openlmis.core.network.NetworkSchedulerService;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.IssueVoucherProductAdapter;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import org.openlmis.core.view.widget.ActionPanelView;
-import org.openlmis.core.view.widget.BulkEntriesSignatureDialog;
 import org.openlmis.core.view.widget.OrderInfoView;
-import org.openlmis.core.view.widget.SignatureDialog;
-import org.openlmis.core.view.widget.SignatureDialog.DialogDelegate;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
-import rx.Subscription;
 
 @ContentView(R.layout.activity_issue_voucher_report)
 public class IssueVoucherReportActivity extends BaseActivity implements IssueVoucherView {
@@ -142,7 +132,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
         if (position >= 0) {
           rvIssueVoucherList.smoothScrollToPosition(position);
         } else {
-           Log.i(TAG, "complete");
+          Log.i(TAG, "complete");
         }
       }
     };
