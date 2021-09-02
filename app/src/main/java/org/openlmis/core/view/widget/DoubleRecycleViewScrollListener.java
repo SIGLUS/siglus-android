@@ -22,14 +22,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public final class DoubleRecycleViewScrollListener {
 
-  public static void scrollInSync(RecyclerView rvHostView, RecyclerView rvViceView) {
+  public static RecyclerView.OnScrollListener[] scrollInSync(RecyclerView rvHostView, RecyclerView rvViceView) {
     final RecyclerView.OnScrollListener[] scrollListeners = new RecyclerView.OnScrollListener[2];
     scrollListeners[0] = new RecyclerView.OnScrollListener() {
       @Override
       public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
         rvViceView.removeOnScrollListener(scrollListeners[1]);
-        rvViceView.scrollBy(dx, dy);
+        if (dy != 0) { rvViceView.scrollBy(dx, dy); }
         rvViceView.addOnScrollListener(scrollListeners[1]);
       }
     };
@@ -44,6 +44,7 @@ public final class DoubleRecycleViewScrollListener {
     };
     rvHostView.addOnScrollListener(scrollListeners[0]);
     rvViceView.addOnScrollListener(scrollListeners[1]);
+    return scrollListeners;
   }
 
 }

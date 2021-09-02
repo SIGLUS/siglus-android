@@ -77,6 +77,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   private Pod pod;
   private IssueVoucherProductAdapter productAdapter;
   private IssueVoucherReportAdapter issueVoucherReportAdapter;
+  private RecyclerView.OnScrollListener[] listeners;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     pod = (Pod) getIntent().getExtras().getSerializable(Constants.PARAM_ISSUE_VOUCHER);
     initProductList();
     initIssueVoucherList();
-    scrollInSync(rvProductList, rvIssueVoucherList);
+    listeners = scrollInSync(rvProductList, rvIssueVoucherList);
 
     if (pod != null) {
       refreshIssueVoucherForm(pod);
@@ -97,6 +98,13 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Override
   protected ScreenName getScreenName() {
     return ScreenName.ISSUE_VOUCHER_REPORT_SCREEN;
+  }
+
+  @Override
+  protected void onDestroy() {
+    rvProductList.removeOnScrollListener(listeners[0]);
+    rvIssueVoucherList.removeOnScrollListener(listeners[1]);
+    super.onDestroy();
   }
 
   @Override
