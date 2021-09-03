@@ -663,7 +663,7 @@
   <string name="msg_new_order_number_error">New order number cannot be blank</string>
   <string name="msg_edit_order_number_confirm">Are you sure you want to use %1$s to replace the old one? If you click \'yes\', the old order number will be replaced.</string>
   <string name="msg_cannot_edit_order_number">You cannot edit %1$s.There is no electronic issue voucher of %2$s. can be matched. Please contact the administrator.</string>
-  <string name="msg_has_unmatched_pod">You cannot edit the issue voucher of %1$s. because there is an unmatched POD of this program. Please handle it first.</string>
+  <string name="msg_has_unmatched_pod">You cannot edit the issue voucher of %1$s. because there is a proof of delivery for the same program to be finalized. Please finalize it first.</string>
   <string name="msg_has_incomplete_issue_voucher">Please complete the existed issue voucher of %1$s first.</string>
 
   <string name="label_product_unit">Product Unit</string>
