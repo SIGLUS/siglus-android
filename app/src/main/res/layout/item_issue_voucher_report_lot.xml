@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="wrap_content"
   android:layout_height="@dimen/px_50"
+  android:background="@drawable/border_bg_gray_bottom"
   android:showDividers="middle"
   android:orientation="horizontal"
   android:divider="@drawable/divider_vertical">
