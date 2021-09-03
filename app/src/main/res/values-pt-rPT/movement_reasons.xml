@@ -5,6 +5,12 @@
     <item>RECEIVE|PROVINCE_DPM|Província (DPM)</item>
     <item>RECEIVE|INTERMEDIATE_WAREHOUSE|Intermediate Warehouse ( AI)</item>
 
+    <item>REJECTION_REASON|DAMAGED|Damaged/broken/spilled</item>
+    <item>REJECTION_REASON|RECEIVED_MORE|Received more quantites than expected</item>
+    <item>REJECTION_REASON|RECEIVED_LESS|Received less quantites than expected</item>
+    <item>REJECTION_REASON|EXPIRED|Expired products</item>
+    <item>REJECTION_REASON|Inappropriate|Inappropriate for consumption</item>
+
     <item>ISSUE|PUB_PHARMACY|Farmácia Pública</item>
     <item>ISSUE|MATERNITY|Maternidade-SMI</item>
     <item>ISSUE|GENERAL_WARD|Enfermaria</item>

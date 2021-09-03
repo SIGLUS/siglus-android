@@ -5,6 +5,12 @@
     <item>RECEIVE|PROVINCE_DPM|Province ( DPM)</item>
     <item>RECEIVE|INTERMEDIATE_WAREHOUSE|Intermediate Warehouse ( AI)</item>
 
+    <item>REJECTION_REASON|DAMAGED|Danificado/quebrado/derramado</item>
+    <item>REJECTION_REASON|RECEIVED_MORE|Recebido a mais</item>
+    <item>REJECTION_REASON|RECEIVED_LESS|Recebido a menos</item>
+    <item>REJECTION_REASON|EXPIRED|Fora do prazo de validade</item>
+    <item>REJECTION_REASON|Inappropriate|Impróprio para o consumo</item>
+
     <item>ISSUE|PUB_PHARMACY|Public pharmacy</item>
     <item>ISSUE|MATERNITY|Maternity</item>
     <item>ISSUE|GENERAL_WARD|General Ward</item>

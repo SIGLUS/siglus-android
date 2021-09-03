@@ -28,15 +28,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementReason;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.adapter.IssueVoucherReportLotAdapter.IssueVoucherReportLotViewHolder;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherReportLotViewModel,
     IssueVoucherReportLotViewHolder> {
@@ -62,7 +67,6 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
     private View vRejectionReason;
     private TextView tvRejectionReason;
     private ImageView ivRejectionReason;
-    private String[] rejectReasons = new String[]{"damaged", "divided"};
 
     public IssueVoucherReportLotViewHolder(View itemView) {
       super(itemView);
@@ -123,10 +127,14 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
         setRejectReasonForCanSelectStatus();
         vRejectionReason.setOnClickListener(v -> {
           Bundle bundle = new Bundle();
-          bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, rejectReasons);
+          List<MovementReason> movementReasons = MovementReasonManager.getInstance()
+              .buildReasonListForMovementType(MovementType.ISSUE);
+          String[] reasonArray = FluentIterable.from(movementReasons).transform(MovementReason::getDescription)
+              .toArray(String.class);
+          bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonArray);
           SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
           reasonsDialog.setArguments(bundle);
-          reasonsDialog.setItemClickListener(new MovementTypeOnClickListener(reasonsDialog, lotViewModel));
+          reasonsDialog.setItemClickListener(new MovementTypeOnClickListener(reasonsDialog, lotViewModel, reasonArray));
           reasonsDialog.show(((BaseActivity) itemView.getContext()).getSupportFragmentManager(), "SELECT_REASONS");
         });
         setRejectReasonText();
@@ -145,6 +153,11 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
     }
 
     private void setRejectReasonText() {
+      if (lotViewModel.getOrderStatus() == OrderStatus.RECEIVED) {
+        tvRejectionReason.setText(lotViewModel.getRejectedReason() == null
+            ? "" : lotViewModel.getRejectedReason());
+        return;
+      }
       tvRejectionReason.setText(lotViewModel.getRejectedReason() == null
           ? itemView.getResources().getString(R.string.label_default_rejection_reason)
           : lotViewModel.getRejectedReason());
@@ -245,10 +258,12 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
 
       private final SimpleSelectDialogFragment reasonsDialog;
       private IssueVoucherReportLotViewModel viewModel;
+      private String[] rejectReasons;
 
       public MovementTypeOnClickListener(SimpleSelectDialogFragment reasonsDialog,
-          IssueVoucherReportLotViewModel viewModel) {
+          IssueVoucherReportLotViewModel viewModel, String[] reasons) {
         this.reasonsDialog = reasonsDialog;
+        this.rejectReasons = reasons;
         this.viewModel = viewModel;
       }
 
