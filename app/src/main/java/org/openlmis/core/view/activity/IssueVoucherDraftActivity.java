@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import java.io.Serializable;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
@@ -63,6 +64,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   @InjectView(R.id.rv_issue_voucher_draft)
   private RecyclerView rvIssueVoucher;
 
+  @Getter(AccessLevel.PACKAGE)
   @InjectView(R.id.bt_next)
   private View btNext;
 
@@ -72,6 +74,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   @InjectPresenter(IssueVoucherDraftPresenter.class)
   private IssueVoucherDraftPresenter issueVoucherDraftPresenter;
 
+  @Setter
   private String programCode;
 
   IssueVoucherDraftProductAdapter issueVoucherDraftProductAdapter = new IssueVoucherDraftProductAdapter();
@@ -116,7 +119,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
         getString(R.string.btn_positive),
         getString(R.string.btn_negative),
         null);
-    dialogFragment.show(getSupportFragmentManager(), "bulk_issue_delete_confirm_dialog");
+    dialogFragment.show(getSupportFragmentManager(), "issue_voucher_delete_confirm_dialog");
     dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
       @Override
       public void positiveClick(String tag) {

@@ -129,12 +129,6 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
       }
     }
 
-    private void setAllLotShouldShowError() {
-      for (IssueVoucherLotViewModel lotViewModel : viewModel.getLotViewModels()) {
-        lotViewModel.setShouldShowError(true);
-      }
-    }
-
     private void initLots() {
       rvLots = getView(R.id.rv_lots);
       rvLots.setLayoutManager(new LinearLayoutManager(itemView.getContext()) {
@@ -146,7 +140,7 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
       lotAdapter = new IssueVoucherLotAdapter();
       rvLots.setAdapter(lotAdapter);
       if (rvLots.getItemDecorationCount() == 0) {
-        rvLots.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        rvLots.addItemDecoration(new DividerItemDecoration(itemView.getContext(), DividerItemDecoration.VERTICAL));
       }
       lotAdapter.setAmountChangeListener(this);
       List<IssueVoucherLotViewModel> filteredLotViewModels = viewModel.getLotViewModels();
@@ -183,12 +177,18 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
         @Override
         public void onSingleClick(View v) {
           viewModel.validate();
-          notifyItemChanged(getLayoutPosition());
           setAllLotShouldShowError();
+          notifyItemChanged(getLayoutPosition());
           updateErrorStatus();
           rvLots.requestFocus();
         }
       };
+    }
+
+    private void setAllLotShouldShowError() {
+      for (IssueVoucherLotViewModel lotViewModel : viewModel.getLotViewModels()) {
+        lotViewModel.setShouldShowError(true);
+      }
     }
 
     private void updateErrorStatus() {
@@ -209,8 +209,8 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
       } else {
         ivTrashcan.setImageResource(R.drawable.ic_ashcan);
         tvErrorBanner.setVisibility(View.GONE);
-        btnAddNewLot.setTextColor(ContextCompat.getColor(getContext(), R.color.color_accent));
-        btnAddNewLot.setBackground(ResourcesCompat.getDrawable(getContext().getResources(),
+        btnAddNewLot.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.color_accent));
+        btnAddNewLot.setBackground(ResourcesCompat.getDrawable(itemView.getContext().getResources(),
             R.drawable.border_round_blue, null));
       }
 
