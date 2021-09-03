@@ -53,7 +53,7 @@ public class PodBuilder {
         .pod(pod)
         .product(product)
         .orderedQuantity(quantity)
-        .partialFulfilledQuantity(quantity)
+        .partialFulfilledQuantity(5L)
         .build();
     List<PodProductLotItem> podProductLotItemsWrapper = podProductItem.getPodProductLotItemsWrapper();
     PodProductLotItem podProductLotItem = PodProductLotItem.builder()
