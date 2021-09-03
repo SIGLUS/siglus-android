@@ -74,6 +74,10 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
       for (int i = 0; i < lotViewModels.size(); i++) {
         ViewGroup inflate = (ViewGroup) LayoutInflater.from(itemView.getContext())
             .inflate(R.layout.item_issue_voucher_lot_name, productList, false);
+        LinearLayout lotItem = inflate.findViewById(R.id.ll_lot_name);
+        if (i != lotViewModels.size() - 1) {
+          lotItem.setBackground(null);
+        }
         lotList.addView(inflate);
       }
     }
