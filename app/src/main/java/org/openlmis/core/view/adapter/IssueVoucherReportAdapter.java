@@ -66,7 +66,7 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
     private RecyclerView rvLotList;
     private IssueVoucherReportLotAdapter lotAdapter;
 
-    public IssueVoucherReportViewHolder(View itemView) {
+    public IssueVoucherReportViewHolder(@NonNull View itemView) {
       super(itemView);
     }
 
