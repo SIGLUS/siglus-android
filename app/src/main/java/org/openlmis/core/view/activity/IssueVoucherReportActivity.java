@@ -113,8 +113,8 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   @Override
   public void refreshIssueVoucherForm(Pod pod) {
-    orderInfo.refresh(pod);
     IssueVoucherReportViewModel viewModel = presenter.getIssueVoucherReportViewModel();
+    orderInfo.refresh(pod, viewModel);
     productAdapter.setList(viewModel.getProductViewModels());
     issueVoucherReportAdapter.setList(viewModel.getProductViewModels());
     if (viewModel.getPodStatus() == OrderStatus.RECEIVED) {

@@ -22,12 +22,14 @@ import java.util.List;
 import lombok.Data;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.Program;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
 public class IssueVoucherReportViewModel {
 
   private Pod pod;
+  private Program program;
   List<IssueVoucherReportProductViewModel> productViewModels;
 
   public IssueVoucherReportViewModel(Pod pod) {

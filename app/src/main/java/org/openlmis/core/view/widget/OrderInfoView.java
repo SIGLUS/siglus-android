@@ -29,6 +29,7 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
@@ -75,11 +76,14 @@ public class OrderInfoView extends LinearLayout {
     RoboGuice.getInjector(getContext()).injectViewMembers(this);
   }
 
-  public void refresh(Pod pod) {
+  public void refresh(Pod pod, IssueVoucherReportViewModel reportViewModel) {
     tvOrderFacility.setText(SharedPreferenceMgr.getInstance().getCurrentUserFacility());
-    tvProgram.setText(pod.getRequisitionProgramCode());
-    tvSupplyingDepot.setText(pod.getOrderSupplyFacilityName());
-    tvShippingDate.setText(DateUtil.formatDate(pod.getShippedDate(), DateUtil.SIMPLE_DATE_FORMAT));
+    tvProgram.setText(reportViewModel.getProgram().getProgramName());
+    String supplyingName = pod.getOrderSupplyFacilityName();
+    tvSupplyingDepot.setText(supplyingName == null ? "" : supplyingName);
+    if (pod.getShippedDate() != null) {
+      tvShippingDate.setText(DateUtil.formatDate(pod.getShippedDate(), DateUtil.SIMPLE_DATE_FORMAT));
+    }
     setPeriodInfo(pod);
     if (pod.getOrderStatus() == OrderStatus.SHIPPED) {
       linearLayout.setVisibility(GONE);

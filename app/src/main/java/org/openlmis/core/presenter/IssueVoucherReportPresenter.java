@@ -23,7 +23,9 @@ import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.repository.PodRepository;
+import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
@@ -39,6 +41,10 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
   @Inject
   PodRepository podRepository;
+
+  @Inject
+  private ProgramRepository programRepository;
+
   IssueVoucherView issueVoucherView;
   @Getter
   IssueVoucherReportViewModel issueVoucherReportViewModel;
@@ -85,9 +91,15 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
   public void loadViewModelByPod(Pod podContent) {
     pod = podContent;
-    issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
-    issueVoucherView.loaded();
-    issueVoucherView.refreshIssueVoucherForm(pod);
+    try {
+      Program program = programRepository.queryByCode(pod.getRequisitionProgramCode());
+      issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
+      issueVoucherReportViewModel.setProgram(program);
+      issueVoucherView.loaded();
+      issueVoucherView.refreshIssueVoucherForm(pod);
+    } catch (LMISException e) {
+      new LMISException(e, "IssueVoucherReport.getProgram").reportToFabric();
+    }
   }
 
   protected Action1<Pod> loadDataOnNextAction = podContent -> {
