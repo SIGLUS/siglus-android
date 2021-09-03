@@ -1,6 +1,7 @@
 package org.openlmis.core.presenter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -19,6 +20,7 @@ import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.utils.Constants;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -70,12 +72,12 @@ public class IssueVoucherInputOrderNumberPresenterTest {
     List<Program> resultPrograms = subscriber.getOnNextEvents().get(0);
 
     // then
-    assertEquals(3 ,resultPrograms.size());
+    assertEquals(3, resultPrograms.size());
 
   }
 
   @Test
-  public void isOrderNumberExistedShouldBeTrue() throws LMISException {
+  public void isOrderNumberExistedShouldBeTrue() {
     // given
     Pod pod = Pod.builder().orderCode("ORDER-123456789").build();
     presenter.setExistingPods(Collections.singletonList(pod));
@@ -85,7 +87,19 @@ public class IssueVoucherInputOrderNumberPresenterTest {
 
     // then
     assertTrue(result);
-
   }
 
+  @Test
+  public void testIsProgramAvailable() {
+    // given
+    Program VCProgram = new Program();
+    VCProgram.setProgramCode(Constants.Program.VIA_PROGRAM.getCode());
+    Program MLProgram = new Program();
+    MLProgram.setProgramCode(Constants.Program.AL_PROGRAM.getCode());
+    presenter.getProgramCodeToProgram().put(Constants.Program.VIA_PROGRAM.getCode(), VCProgram);
+
+    // then
+    assertFalse(presenter.isProgramAvailable(VCProgram));
+    assertTrue(presenter.isProgramAvailable(MLProgram));
+  }
 }

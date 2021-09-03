@@ -142,7 +142,7 @@ public class IssueVoucherListPresenter extends Presenter {
   }
 
   public boolean editablePodOrder(String orderCode) {
-    return !podRepository.queryIssueVoucherOrderCodesBelongProgram(orderCode).isEmpty();
+    return !podRepository.querySameProgramIssueVoucherByOrderCode(orderCode).isEmpty();
   }
 
   public boolean hasUnmatchedPod(String programCode) {

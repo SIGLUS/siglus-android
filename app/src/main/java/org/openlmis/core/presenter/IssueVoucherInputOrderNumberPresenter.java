@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
@@ -48,6 +49,7 @@ public class IssueVoucherInputOrderNumberPresenter extends Presenter {
   @Setter(AccessLevel.PACKAGE)
   private List<Pod> existingPods = new ArrayList<>();
 
+  @Getter
   private final HashMap<String, Program> programCodeToProgram = new HashMap<>();
 
   @Override

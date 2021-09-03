@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.google.android.material.textfield.TextInputLayout;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.R;
@@ -57,6 +58,7 @@ public class EditOrderNumberActivity extends BaseActivity implements EditOrderNu
   @InjectView(R.id.tv_confirm)
   private TextView tvConfirm;
 
+  @Setter
   private String newOrderNumber;
 
   private String podOrderNumber;
@@ -85,7 +87,7 @@ public class EditOrderNumberActivity extends BaseActivity implements EditOrderNu
       dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
         @Override
         public void positiveClick(String tag) {
-          presenter.changeOrderNumber(podOrderNumber, newOrderNumber);
+          presenter.updateOrderNumber(podOrderNumber, newOrderNumber);
         }
 
         @Override
@@ -134,18 +136,18 @@ public class EditOrderNumberActivity extends BaseActivity implements EditOrderNu
 
   @Override
   public void loadDataFailed() {
-    ToastUtil.show("load edit order list error");
+    ToastUtil.show("Load Order List Failed");
     finish();
   }
 
   @Override
-  public void changeOrderNumberFailed() {
-    ToastUtil.show("change edit order error");
+  public void updateOrderNumberFailed() {
+    ToastUtil.show("Change Order Number Failed");
     finish();
   }
 
   @Override
-  public void changeOrderNumberSuccess() {
+  public void updateOrderNumberSuccess() {
     EventBus.getDefault().post(new ChangeOrderNumberEvent());
     finish();
   }

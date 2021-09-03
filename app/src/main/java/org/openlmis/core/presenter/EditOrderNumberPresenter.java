@@ -35,7 +35,7 @@ public class EditOrderNumberPresenter extends Presenter {
   private EditOrderNumberView view;
 
   @Getter
-  private List<String> orderNumbers = new ArrayList<>();
+  private final List<String> orderNumbers = new ArrayList<>();
 
   @Inject
   private PodRepository podRepository;
@@ -62,13 +62,13 @@ public class EditOrderNumberPresenter extends Presenter {
     @Override
     public void onCompleted() {
       view.loaded();
-      view.changeOrderNumberSuccess();
+      view.updateOrderNumberSuccess();
     }
 
     @Override
     public void onError(Throwable e) {
       view.loaded();
-      view.changeOrderNumberFailed();
+      view.updateOrderNumberFailed();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class EditOrderNumberPresenter extends Presenter {
     view.loading();
     Observable.create(subscriber -> {
       orderNumbers.clear();
-      orderNumbers.addAll(podRepository.queryIssueVoucherOrderCodesBelongProgram(podOrderNumber));
+      orderNumbers.addAll(podRepository.querySameProgramIssueVoucherByOrderCode(podOrderNumber));
       subscriber.onNext(null);
       subscriber.onCompleted();
     }).observeOn(AndroidSchedulers.mainThread())
@@ -95,7 +95,7 @@ public class EditOrderNumberPresenter extends Presenter {
         .subscribe(loadDataObserver);
   }
 
-  public void changeOrderNumber(String podOrderNumber, String issueVoucherOrderNumber) {
+  public void updateOrderNumber(String podOrderNumber, String issueVoucherOrderNumber) {
     view.loading();
     Observable.create(subscriber -> {
       try {
@@ -115,8 +115,8 @@ public class EditOrderNumberPresenter extends Presenter {
 
     void loadDataFailed();
 
-    void changeOrderNumberFailed();
+    void updateOrderNumberFailed();
 
-    void changeOrderNumberSuccess();
+    void updateOrderNumberSuccess();
   }
 }

@@ -24,6 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -161,5 +162,23 @@ public class IssueVoucherListPresenterTest {
     // then
     verify(mockView, times(1)).loaded();
     verify(mockView, times(1)).onRefreshList();
+  }
+
+  @Test
+  public void testEditablePodOrder() {
+    // given
+    when(mockPodRepository.querySameProgramIssueVoucherByOrderCode(any())).thenReturn(newArrayList("test"));
+
+    // then
+    Assert.assertFalse(presenter.hasUnmatchedPod(""));
+  }
+
+  @Test
+  public void testHasUnmatchedPod() {
+    // given
+    when(mockPodRepository.hasUnmatchedPodByProgram(any())).thenReturn(true);
+
+    // then
+    Assert.assertTrue(presenter.hasUnmatchedPod(""));
   }
 }

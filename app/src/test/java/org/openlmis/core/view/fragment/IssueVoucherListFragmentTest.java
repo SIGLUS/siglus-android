@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.fragment;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -40,6 +41,7 @@ import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.EditOrderNumberActivity;
 import org.openlmis.core.view.activity.IssueVoucherListActivity;
+import org.openlmis.core.view.activity.IssueVoucherReportActivity;
 import org.openlmis.core.view.adapter.IssueVoucherListAdapter;
 import org.openlmis.core.view.viewmodel.IssueVoucherListViewModel;
 import org.robolectric.Robolectric;
@@ -82,7 +84,7 @@ public class IssueVoucherListFragmentTest {
   }
 
   @Test
-  public void shouldShowConfirmDialogAfterOrderOperation() throws Exception {
+  public void shouldShowDeleteConfirmDialogAfterOperation() throws Exception {
     // given
     IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
     when(mockViewModel.getPod()).thenReturn(PodBuilder.generatePod());
@@ -94,6 +96,23 @@ public class IssueVoucherListFragmentTest {
 
     // then
     Fragment dialog = fragment.getParentFragmentManager().findFragmentByTag("delete_issue_voucher_confirm_dialog");
+    Assert.assertNotNull(dialog);
+  }
+
+  @Test
+  public void shouldShowWarningDialogAfterOperation() throws Exception {
+    // given
+    IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
+    when(mockViewModel.getPod()).thenReturn(PodBuilder.generatePod());
+    when(mockViewModel.isIssueVoucher()).thenReturn(false);
+    when(mockPresenter.editablePodOrder(any())).thenReturn(false);
+
+    // when
+    fragment.orderDeleteOrEditOperation(mockViewModel);
+    RobolectricUtils.waitLooperIdle();
+
+    // then
+    Fragment dialog = fragment.getParentFragmentManager().findFragmentByTag("cannot_edit_order_number_dialog");
     Assert.assertNotNull(dialog);
   }
 
@@ -115,6 +134,42 @@ public class IssueVoucherListFragmentTest {
 
     // then
     Assert.assertEquals(EditOrderNumberActivity.class.getName(), startedIntent.getComponent().getClassName());
+  }
+
+  @Test
+  public void shouldGotoReportPage() throws Exception {
+    // given
+    IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
+    when(mockViewModel.isIssueVoucher()).thenReturn(false);
+    when(mockViewModel.getPod()).thenReturn(PodBuilder.generatePod());
+
+    // when
+    fragment.orderEditOrViewOperation(mockViewModel);
+    RobolectricUtils.waitLooperIdle();
+
+    // when
+    ShadowActivity shadowActivity = shadowOf(listActivity);
+    Intent startedIntent = shadowActivity.getNextStartedActivity();
+
+    // then
+    Assert.assertEquals(IssueVoucherReportActivity.class.getName(), startedIntent.getComponent().getClassName());
+  }
+
+  @Test
+  public void shouldShowWarningDialogWhenHasUnmatchedPod() throws Exception {
+    // given
+    IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
+    when(mockViewModel.getPod()).thenReturn(PodBuilder.generatePod());
+    when(mockViewModel.isIssueVoucher()).thenReturn(true);
+    when(mockPresenter.hasUnmatchedPod(any())).thenReturn(true);
+
+    // when
+    fragment.orderEditOrViewOperation(mockViewModel);
+    RobolectricUtils.waitLooperIdle();
+
+    // then
+    Fragment dialog = fragment.getParentFragmentManager().findFragmentByTag("has_unmatched_pod_dialog");
+    Assert.assertNotNull(dialog);
   }
 
   @Test

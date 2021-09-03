@@ -83,7 +83,7 @@ public class PodRepository {
         dao -> dao.queryBuilder().where().eq(FieldConstants.ORDER_CODE, orderCode).queryForFirst());
   }
 
-  public List<String> queryIssueVoucherOrderCodesBelongProgram(String orderCode) {
+  public List<String> querySameProgramIssueVoucherByOrderCode(String orderCode) {
     String rawSql = "SELECT orderCode FROM pods WHERE requisitionProgramCode"
         + " IN (SELECT requisitionProgramCode FROM pods WHERE orderCode = '" + orderCode + "')"
         + " AND orderStatus = 'SHIPPED'"
