@@ -1,3 +1,21 @@
+/*
+ * This program is part of the OpenLMIS logistics management information
+ * system platform software.
+ *
+ * Copyright © 2015 ThoughtWorks, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version. This program is distributed in the
+ * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details. You should
+ * have received a copy of the GNU Affero General Public License along with
+ * this program. If not, see http://www.gnu.org/licenses. For additional
+ * information contact info@OpenLMIS.org
+ */
+
 package org.openlmis.core.view.adapter;
 
 import android.text.Editable;
@@ -14,15 +32,12 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.R;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.adapter.IssueVoucherLotAdapter.IssueVoucherLotViewHolder;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.AmountChangeListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherLotViewModel;
-import org.openlmis.core.view.viewmodel.LotMovementViewModel;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVoucherLotViewModel,
     IssueVoucherLotViewHolder> {
@@ -43,9 +58,9 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
 
   protected class IssueVoucherLotViewHolder extends BaseViewHolder {
 
-    private IssueVoucherLotViewModel viewModel;
     private TextInputLayout tilShippedQuantity;
     private TextInputLayout tilAcceptedQuantity;
+    private IssueVoucherLotViewModel viewModel;
 
     public IssueVoucherLotViewHolder(View itemView) {
       super(itemView);
@@ -60,13 +75,13 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
       } else {
         tilShippedQuantity = getView(R.id.til_quantity_shipped);
         tilAcceptedQuantity = getView(R.id.til_quantity_accepted);
-        TextInputEditText etShippedQuantity = getView(R.id.et_quantity_shipped);
-        TextInputEditText etAcceptedQuantity = getView(R.id.et_quantity_accepted);
         setText(R.id.et_quantity_shipped,
             viewModel.getShippedQuantity() == null ? "" : viewModel.getShippedQuantity().toString());
-        etShippedQuantity.setSelection(Objects.requireNonNull(etShippedQuantity.getText()).toString().length());
         setText(R.id.et_quantity_accepted,
             viewModel.getAcceptedQuantity() == null ? "" : viewModel.getAcceptedQuantity().toString());
+        TextInputEditText etShippedQuantity = getView(R.id.et_quantity_shipped);
+        TextInputEditText etAcceptedQuantity = getView(R.id.et_quantity_accepted);
+        etShippedQuantity.setSelection(Objects.requireNonNull(etShippedQuantity.getText()).toString().length());
         etAcceptedQuantity.setSelection(Objects.requireNonNull(etAcceptedQuantity.getText()).toString().length());
         etShippedQuantity.removeTextChangedListener(getShippedQuantityTextWatcher());
         etAcceptedQuantity.removeTextChangedListener(getAcceptedQuantityTextWatcher());

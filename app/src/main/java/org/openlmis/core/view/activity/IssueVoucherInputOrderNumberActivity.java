@@ -21,8 +21,6 @@ package org.openlmis.core.view.activity;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.CHOSEN_PROGRAM_CODE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.IS_FROM_BULK_ISSUE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
-import static org.openlmis.core.view.activity.IssueVoucherDraftActivity.MOVEMENT_REASON_CODE;
-import static org.openlmis.core.view.activity.IssueVoucherDraftActivity.ORDER_NUMBER;
 
 import android.app.Activity;
 import android.content.Context;
@@ -47,11 +45,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.presenter.IssueVoucherInputOrderNumberPresenter;
 import org.openlmis.core.utils.InjectPresenter;
@@ -248,9 +246,9 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
           return;
         }
         Intent intent = new Intent(this, IssueVoucherDraftActivity.class);
-        intent.putExtra(ORDER_NUMBER, orderNumber);
-        intent.putExtra(CHOSEN_PROGRAM_CODE, chosenProgram.getProgramCode());
-        intent.putExtra(MOVEMENT_REASON_CODE, chosenReason.getCode());
+        intent.putExtra(IntentConstants.PARAM_ORDER_NUMBER, orderNumber);
+        intent.putExtra(IntentConstants.CHOSEN_PROGRAM_CODE, chosenProgram.getProgramCode());
+        intent.putExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE, chosenReason.getCode());
         intent.putExtra(SELECTED_PRODUCTS, result.getData().getSerializableExtra(SELECTED_PRODUCTS));
         issueVoucherActivityResultLauncher.launch(intent);
       });

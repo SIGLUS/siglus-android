@@ -27,4 +27,10 @@ public class IntentConstants {
 
   public static final String PARAM_ORDER_NUMBER = "ORDER_NUMBER";
 
+  public static final String PARAM_MOVEMENT_REASON_CODE = "MOVEMENT_REASON";
+
+  public static final String PARAM_SELECTED_PRODUCTS = "SELECTED_PRODUCTS";
+
+  public static final String CHOSEN_PROGRAM_CODE = "CHOSEN_PROGRAM_CODE";
+
 }

@@ -1,8 +1,22 @@
-package org.openlmis.core.presenter;
+/*
+ * This program is part of the OpenLMIS logistics management information
+ * system platform software.
+ *
+ * Copyright © 2015 ThoughtWorks, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version. This program is distributed in the
+ * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details. You should
+ * have received a copy of the GNU Affero General Public License along with
+ * this program. If not, see http://www.gnu.org/licenses. For additional
+ * information contact info@OpenLMIS.org
+ */
 
-import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
-import static org.openlmis.core.view.activity.IssueVoucherDraftActivity.MOVEMENT_REASON_CODE;
-import static org.openlmis.core.view.activity.IssueVoucherDraftActivity.ORDER_NUMBER;
+package org.openlmis.core.presenter;
 
 import android.content.Intent;
 import com.google.inject.Inject;
@@ -12,10 +26,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
+import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.BaseModel;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
@@ -38,6 +52,7 @@ public class IssueVoucherDraftPresenter extends Presenter {
   private final List<IssueVoucherProductViewModel> currentViewModels = new ArrayList<>();
 
   private IssueVoucherDraftView issueVoucherDraftView;
+
   @Inject
   private StockRepository stockRepository;
 
@@ -51,12 +66,12 @@ public class IssueVoucherDraftPresenter extends Presenter {
   }
 
   public void initialViewModels(Intent intent) {
-    orderNumber = (String)intent.getSerializableExtra(ORDER_NUMBER);
-    movementReasonCode = (String)intent.getSerializableExtra(MOVEMENT_REASON_CODE);
+    orderNumber = (String) intent.getSerializableExtra(IntentConstants.PARAM_ORDER_NUMBER);
+    movementReasonCode = (String) intent.getSerializableExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE);
     issueVoucherDraftView.loading();
     currentViewModels.clear();
     Observable<List<IssueVoucherProductViewModel>> initObservable = getObservableFromProducts(
-        (List<Product>) intent.getSerializableExtra(SELECTED_PRODUCTS));
+        (List<Product>) intent.getSerializableExtra(IntentConstants.PARAM_SELECTED_PRODUCTS));
     Subscription subscription = initObservable
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -111,7 +126,7 @@ public class IssueVoucherDraftPresenter extends Presenter {
         List<IssueVoucherProductViewModel> issueVoucherProductViewModels = new ArrayList<>();
         for (Product product : products) {
           IssueVoucherProductViewModel issueVoucherProductViewModel;
-          if (productStockCardMap .get(product) != null) {
+          if (productStockCardMap.get(product) != null) {
             issueVoucherProductViewModel = new IssueVoucherProductViewModel(productStockCardMap.get(product));
           } else {
             issueVoucherProductViewModel = new IssueVoucherProductViewModel(product);
@@ -127,7 +142,8 @@ public class IssueVoucherDraftPresenter extends Presenter {
     });
   }
 
-  private Observer<List<IssueVoucherProductViewModel>> viewModelsSubscribe = new Observer<List<IssueVoucherProductViewModel>>() {
+  private Observer<List<IssueVoucherProductViewModel>> viewModelsSubscribe =
+      new Observer<List<IssueVoucherProductViewModel>>() {
     @Override
     public void onCompleted() {
       issueVoucherDraftView.loaded();

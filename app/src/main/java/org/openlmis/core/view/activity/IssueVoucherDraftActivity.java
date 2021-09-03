@@ -19,9 +19,7 @@
 package org.openlmis.core.view.activity;
 
 import static org.openlmis.core.utils.Constants.PARAM_ISSUE_VOUCHER;
-import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.CHOSEN_PROGRAM_CODE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.IS_FROM_BULK_ISSUE;
-import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
 
 import android.app.Activity;
 import android.content.Context;
@@ -42,10 +40,8 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.openlmis.core.R;
+import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.googleanalytics.ScreenName;
-import org.openlmis.core.manager.MovementReasonManager.MovementReason;
-import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.IssueVoucherDraftPresenter;
 import org.openlmis.core.presenter.IssueVoucherDraftPresenter.IssueVoucherDraftView;
@@ -53,8 +49,6 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.OnRemoveListener;
-import org.openlmis.core.view.widget.BulkEntriesSignatureDialog;
-import org.openlmis.core.view.widget.SignatureDialog.DialogDelegate;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -77,10 +71,6 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
 
   @InjectPresenter(IssueVoucherDraftPresenter.class)
   private IssueVoucherDraftPresenter issueVoucherDraftPresenter;
-
-  public static final String ORDER_NUMBER = "ORDER_NUMBER";
-
-  public static final String MOVEMENT_REASON_CODE = "MOVEMENT_REASON";
 
   private String programCode;
 
@@ -115,7 +105,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
 
   @Override
   public void onBackPressed() {
-      showConfirmDialog();
+    showConfirmDialog();
   }
 
   @Override
@@ -143,7 +133,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    programCode = (String) getIntent().getSerializableExtra(CHOSEN_PROGRAM_CODE);
+    programCode = (String) getIntent().getSerializableExtra(IntentConstants.CHOSEN_PROGRAM_CODE);
     rvIssueVoucher.setLayoutManager(new LinearLayoutManager(this));
     issueVoucherDraftProductAdapter.setRemoveListener(this);
     btNext.setOnClickListener(getNextButtonClickListener);
@@ -166,8 +156,9 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   private void openAddProducts() {
     Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
     intent.putExtra(IS_FROM_BULK_ISSUE, false);
-    intent.putExtra(CHOSEN_PROGRAM_CODE, programCode);
-    intent.putExtra(SELECTED_PRODUCTS, (Serializable) issueVoucherDraftPresenter.getAddedProductCodeList());
+    intent.putExtra(IntentConstants.CHOSEN_PROGRAM_CODE, programCode);
+    intent.putExtra(IntentConstants.PARAM_SELECTED_PRODUCTS,
+        (Serializable) issueVoucherDraftPresenter.getAddedProductCodeList());
     addProductsLauncher.launch(intent);
   }
 
@@ -177,7 +168,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
           return;
         }
         issueVoucherDraftPresenter.addProducts((List<Product>)
-            result.getData().getSerializableExtra(SELECTED_PRODUCTS));
+            result.getData().getSerializableExtra(IntentConstants.PARAM_SELECTED_PRODUCTS));
       });
 
   private final RecyclerView.AdapterDataObserver dataObserver = new AdapterDataObserver() {

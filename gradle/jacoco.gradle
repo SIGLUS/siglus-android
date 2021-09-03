@@ -1,6 +1,6 @@
 apply plugin: 'jacoco'
 
-def jacocoCoverageThreshold = 0.54
+def jacocoCoverageThreshold = 0.53
 def buildDir = "$project.buildDir"
 def jacocoFileFilter = [
         '**/R.class',
