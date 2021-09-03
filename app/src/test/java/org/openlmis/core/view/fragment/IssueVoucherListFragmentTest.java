@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
@@ -87,7 +88,8 @@ public class IssueVoucherListFragmentTest {
   public void shouldShowDeleteConfirmDialogAfterOperation() throws Exception {
     // given
     IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
-    when(mockViewModel.getPod()).thenReturn(PodBuilder.generatePod());
+    Pod pod = PodBuilder.generatePod();
+    when(mockViewModel.getPod()).thenReturn(pod);
     when(mockViewModel.isIssueVoucher()).thenReturn(true);
 
     // when
@@ -103,7 +105,8 @@ public class IssueVoucherListFragmentTest {
   public void shouldShowWarningDialogAfterOperation() throws Exception {
     // given
     IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
-    when(mockViewModel.getPod()).thenReturn(PodBuilder.generatePod());
+    Pod pod = PodBuilder.generatePod();
+    when(mockViewModel.getPod()).thenReturn(pod);
     when(mockViewModel.isIssueVoucher()).thenReturn(false);
     when(mockPresenter.editablePodOrder(any())).thenReturn(false);
 
@@ -121,7 +124,8 @@ public class IssueVoucherListFragmentTest {
     // given
     IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
     when(mockViewModel.isIssueVoucher()).thenReturn(false);
-    when(mockViewModel.getPod()).thenReturn(PodBuilder.generatePod());
+    Pod pod = PodBuilder.generatePod();
+    when(mockViewModel.getPod()).thenReturn(pod);
     when(mockPresenter.editablePodOrder(anyString())).thenReturn(true);
 
     // when
@@ -141,7 +145,8 @@ public class IssueVoucherListFragmentTest {
     // given
     IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
     when(mockViewModel.isIssueVoucher()).thenReturn(false);
-    when(mockViewModel.getPod()).thenReturn(PodBuilder.generatePod());
+    Pod pod = PodBuilder.generatePod();
+    when(mockViewModel.getPod()).thenReturn(pod);
 
     // when
     fragment.orderEditOrViewOperation(mockViewModel);
@@ -159,7 +164,8 @@ public class IssueVoucherListFragmentTest {
   public void shouldShowWarningDialogWhenHasUnmatchedPod() throws Exception {
     // given
     IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
-    when(mockViewModel.getPod()).thenReturn(PodBuilder.generatePod());
+    Pod pod = PodBuilder.generatePod();
+    when(mockViewModel.getPod()).thenReturn(pod);
     when(mockViewModel.isIssueVoucher()).thenReturn(true);
     when(mockPresenter.hasUnmatchedPod(any())).thenReturn(true);
 

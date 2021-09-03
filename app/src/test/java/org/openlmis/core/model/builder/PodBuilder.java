@@ -48,17 +48,18 @@ public class PodBuilder {
         .orderStatus(OrderStatus.SHIPPED)
         .build();
     List<PodProductItem> podProductItemsWrapper = pod.getPodProductItemsWrapper();
+    Long quantity = 10L;
     PodProductItem podProductItem = PodProductItem.builder()
         .pod(pod)
         .product(product)
-        .orderedQuantity(Long.valueOf(10))
-        .partialFulfilledQuantity(Long.valueOf(10))
+        .orderedQuantity(quantity)
+        .partialFulfilledQuantity(quantity)
         .build();
     List<PodProductLotItem> podProductLotItemsWrapper = podProductItem.getPodProductLotItemsWrapper();
     PodProductLotItem podProductLotItem = PodProductLotItem.builder()
         .podProductItem(podProductItem)
         .lot(lot)
-        .shippedQuantity(Long.valueOf(10))
+        .shippedQuantity(quantity)
         .build();
     podProductLotItemsWrapper.add(podProductLotItem);
     podProductItemsWrapper.add(podProductItem);
