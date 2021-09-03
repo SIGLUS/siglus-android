@@ -51,7 +51,7 @@ public final class UserInfoMgr {
     this.user = user;
     SharedPreferenceMgr.getInstance().setCurrentUserFacility(user.getFacilityName());
     SharedPreferenceMgr.getInstance().setLastLoginUser(user.getUsername());
-    SharedPreferenceMgr.getInstance().setUserFacilityId(user.getFacilityId());
+    SharedPreferenceMgr.getInstance().setUserFacilityCode(user.getFacilityCode());
     AnalyticsTracker.getInstance().setUserInfo(getUserNameForAppCenter());
   }
 

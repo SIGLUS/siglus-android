@@ -55,7 +55,7 @@ public class SharedPreferenceMgr {
   private static final String KEY_LAST_SYNCED_TIME_STOCKCARD = "lastSyncedDateStockCard";
   public static final String KEY_LAST_LOGIN_USER = "last_user";
   public static final String KEY_USER_FACILITY = "user_facility";
-  public static final String KEY_USER_FACILITY_ID = "user_facility_id";
+  public static final String KEY_USER_FACILITY_CODE = "user_facility_code";
   private static final String KEY_NEEDS_INVENTORY = "init_inventory";
   private static final String KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS =
       "has_get_month_stock_cards_synced";
@@ -537,12 +537,12 @@ public class SharedPreferenceMgr {
   }
 
 
-  public void setUserFacilityId(String facilityId) {
-    sharedPreferences.edit().putString(KEY_USER_FACILITY_ID, facilityId).apply();
+  public void setUserFacilityCode(String facilityCode) {
+    sharedPreferences.edit().putString(KEY_USER_FACILITY_CODE, facilityCode).apply();
   }
 
-  public String getUserFacilityId() {
-    return sharedPreferences.getString(KEY_USER_FACILITY_ID, StringUtils.EMPTY);
+  public String getUserFacilityCode() {
+    return sharedPreferences.getString(KEY_USER_FACILITY_CODE, StringUtils.EMPTY);
   }
 
   public Date getCheckDataDate() {

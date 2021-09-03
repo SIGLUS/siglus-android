@@ -272,8 +272,8 @@ public class DirtyDataManager {
     if (items.size() == 0) {
       return;
     }
-    final String facilityId = sharedPreferenceMgr.getUserFacilityId();
-    if (TextUtils.isEmpty(facilityId)) {
+    final String facilityCode = sharedPreferenceMgr.getUserFacilityCode();
+    if (TextUtils.isEmpty(facilityCode)) {
       return;
     }
     List<DirtyDataItemInfo> dirtyDataItemInfos = new ArrayList<>();
