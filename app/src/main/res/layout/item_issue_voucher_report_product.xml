@@ -22,14 +22,14 @@
     <TextView style="@style/Pod.list.product" />
     <TextView style="@style/Pod.list.product"
       android:layout_width="@dimen/px_200" />
-    <TextView style="@style/Pod.list.product"
-      android:text="@string/label_note"/>
+    <TextView style="@style/Pod.list.product" />
   </LinearLayout>
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/rv_issue_voucher_lot_list"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:nestedScrollingEnabled="false"
     android:overScrollMode="never"
     android:scrollbars="none" />
 </LinearLayout>

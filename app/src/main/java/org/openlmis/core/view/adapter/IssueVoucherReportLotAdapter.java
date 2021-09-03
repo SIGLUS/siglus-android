@@ -20,6 +20,7 @@ package org.openlmis.core.view.adapter;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -29,6 +30,7 @@ import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
@@ -79,8 +81,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
       etQuantityShipped.setText(convertLongValueToString(lotViewModel.getShippedQuantity()));
       etQuantityAccepted.setText(convertLongValueToString(lotViewModel.getAcceptedQuantity()));
       tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
-      setRejectReasonText();
-      etNote.setText(lotViewModel.getNotes());
+      etNote.setText(lotViewModel.getNotes() == null ? "" : lotViewModel.getNotes());
       if (lotViewModel.getOrderStatus() == OrderStatus.SHIPPED) {
         setViewForShipped();
       } else {
@@ -89,10 +90,15 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
     }
 
     private void setViewForReceived() {
+      setRejectReasonText();
       setEditStatus(false);
       etQuantityShipped.setBackground(null);
+      etQuantityShipped.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
       etQuantityAccepted.setBackground(null);
+      etQuantityAccepted.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
       etNote.setBackground(null);
+      etNote.setGravity(Gravity.CENTER);
+      etQuantityAccepted.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
       vRejectionReason.setBackground(null);
       ivRejectionReason.setVisibility(View.GONE);
     }
@@ -119,6 +125,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
       } else {
         etQuantityShipped.setFocusable(false);
         etQuantityShipped.setBackground(null);
+        etQuantityShipped.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
       }
     }
 
@@ -128,7 +135,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
         vRejectionReason.setOnClickListener(v -> {
           Bundle bundle = new Bundle();
           List<MovementReason> movementReasons = MovementReasonManager.getInstance()
-              .buildReasonListForMovementType(MovementType.ISSUE);
+              .buildReasonListForMovementType(MovementType.REJECTION);
           String[] reasonArray = FluentIterable.from(movementReasons).transform(MovementReason::getDescription)
               .toArray(String.class);
           bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonArray);
@@ -142,6 +149,8 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
         vRejectionReason.setOnClickListener(null);
         vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_gray);
         ivRejectionReason.setImageResource(R.drawable.ic_pulldown_unable);
+        lotViewModel.setRejectedReason(null);
+        tvRejectionReason.setError(null);
         tvRejectionReason.setText(itemView.getResources().getString(R.string.label_default_rejection_reason));
       }
     }
@@ -154,12 +163,11 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
 
     private void setRejectReasonText() {
       if (lotViewModel.getOrderStatus() == OrderStatus.RECEIVED) {
-        tvRejectionReason.setText(lotViewModel.getRejectedReason() == null
-            ? "" : lotViewModel.getRejectedReason());
+        tvRejectionReason.setText(lotViewModel.getRejectedReason() == null ? "" : lotViewModel.getRejectedReason());
         return;
       }
-      tvRejectionReason.setText(lotViewModel.getRejectedReason() == null
-          ? itemView.getResources().getString(R.string.label_default_rejection_reason)
+      tvRejectionReason.setText(lotViewModel.getRejectedReason() == null ? itemView.getResources()
+          .getString(R.string.label_default_rejection_reason)
           : lotViewModel.getRejectedReason());
     }
 
@@ -187,7 +195,9 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
         @Override
         public void afterTextChanged(Editable text) {
           try {
-            lotViewModel.setShippedQuantity(Long.valueOf(text.toString()));
+            String shippedQuantity = text.toString();
+            Long quantityValue = StringUtils.isEmpty(shippedQuantity) ? null : Long.parseLong(shippedQuantity);
+            lotViewModel.setShippedQuantity(quantityValue);
             etQuantityShipped.setError(null);
             tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
             setRejectReason();
@@ -203,7 +213,9 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
         @Override
         public void afterTextChanged(Editable s) {
           try {
-            lotViewModel.setAcceptedQuantity(Long.valueOf(s.toString()));
+            String acceptedQuantity = s.toString();
+            Long acceptedValue = StringUtils.isEmpty(acceptedQuantity) ? null : Long.parseLong(acceptedQuantity);
+            lotViewModel.setAcceptedQuantity(acceptedValue);
             etQuantityAccepted.setError(null);
             tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
             setRejectReason();

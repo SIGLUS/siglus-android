@@ -29,9 +29,7 @@ public final class DoubleRecycleViewScrollListener {
       public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
         rvViceView.removeOnScrollListener(scrollListeners[1]);
-        if (dy != 0) {
-          rvViceView.scrollBy(dx, dy);
-        }
+        rvViceView.scrollBy(dx, dy);
         rvViceView.addOnScrollListener(scrollListeners[1]);
       }
     };
@@ -40,7 +38,9 @@ public final class DoubleRecycleViewScrollListener {
       public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
         rvHostView.removeOnScrollListener(scrollListeners[0]);
-        rvHostView.scrollBy(dx, dy);
+        if (dy != 0) {
+          rvHostView.scrollBy(dx, dy);
+        }
         rvHostView.addOnScrollListener(scrollListeners[0]);
       }
     };

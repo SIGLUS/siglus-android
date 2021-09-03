@@ -5,11 +5,6 @@
     <item>RECEIVE|PROVINCE_DPM|Província (DPM)</item>
     <item>RECEIVE|INTERMEDIATE_WAREHOUSE|Intermediate Warehouse ( AI)</item>
 
-    <item>REJECTION_REASON|DAMAGED|Damaged/broken/spilled</item>
-    <item>REJECTION_REASON|RECEIVED_MORE|Received more quantites than expected</item>
-    <item>REJECTION_REASON|RECEIVED_LESS|Received less quantites than expected</item>
-    <item>REJECTION_REASON|EXPIRED|Expired products</item>
-    <item>REJECTION_REASON|Inappropriate|Inappropriate for consumption</item>
 
     <item>ISSUE|PUB_PHARMACY|Farmácia Pública</item>
     <item>ISSUE|MATERNITY|Maternidade-SMI</item>
@@ -47,5 +42,11 @@
     <item>RECEIVE|DEFAULT_RECEIVE|Received</item>
     <item>NEGATIVE_ADJUST|DEFAULT_NEGATIVE_ADJUSTMENT|Negative adjustment</item>
     <item>POSITIVE_ADJUST|DEFAULT_POSITIVE_ADJUSTMENT|Positive adjustment</item>
+
+    <item>REJECTION|DAMAGED|Danificado/quebrado/derramado</item>
+    <item>REJECTION|RECEIVED_MORE|Recebido a mais</item>
+    <item>REJECTION|RECEIVED_LESS|Recebido a menos</item>
+    <item>REJECTION|EXPIRED|Fora do prazo de validade</item>
+    <item>REJECTION|Inappropriate|Impróprio para o consumo</item>
   </string-array>
 </resources>

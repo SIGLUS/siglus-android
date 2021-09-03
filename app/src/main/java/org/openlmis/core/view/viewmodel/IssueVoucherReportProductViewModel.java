@@ -78,7 +78,7 @@ public class IssueVoucherReportProductViewModel {
 
   private boolean isContainInvalidateQuantity(IssueVoucherReportLotViewModel lotViewModel) {
     return lotViewModel.getShippedQuantity() == null || lotViewModel.getAcceptedQuantity() == null
-        || isInvalidateReason(lotViewModel);
+        || lotViewModel.getReturnedQuality() < 0 || isInvalidateReason(lotViewModel);
   }
 
   private boolean isInvalidateReason(IssueVoucherReportLotViewModel lotViewModel) {

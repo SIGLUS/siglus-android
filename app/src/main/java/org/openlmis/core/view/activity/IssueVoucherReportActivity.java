@@ -20,11 +20,10 @@ package org.openlmis.core.view.activity;
 
 import static org.openlmis.core.view.widget.DoubleRecycleViewScrollListener.scrollInSync;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -78,7 +77,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     pod = (Pod) getIntent().getExtras().getSerializable(Constants.PARAM_ISSUE_VOUCHER);
     initProductList();
     initIssueVoucherList();
-    listeners = scrollInSync(rvProductList, rvIssueVoucherList);
+    listeners = scrollInSync(rvIssueVoucherList, rvProductList);
 
     if (savedInstanceState != null && presenter.getIssueVoucherReportViewModel() != null) {
       refreshIssueVoucherForm(presenter.pod);
@@ -108,7 +107,9 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   @Override
   public void onBackPressed() {
-    super.onBackPressed();
+    Intent intent = new Intent(this, IssueVoucherListActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    startActivity(intent);
   }
 
   @Override
@@ -142,11 +143,14 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        hideKeyboard(v);
         int position = issueVoucherReportAdapter.validateAll();
         if (position >= 0) {
           rvIssueVoucherList.post(() -> rvIssueVoucherList.scrollToPosition(position));
-          rvProductList.post(() -> rvProductList.scrollToPosition(position));
+          rvProductList.post(() -> {
+            rvProductList.removeOnScrollListener(listeners[1]);
+            rvProductList.scrollToPosition(position);
+            rvProductList.removeOnScrollListener(listeners[1]);
+          });
         } else {
           Log.i(TAG, "complete");
         }
@@ -164,12 +168,5 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     };
   }
 
-  private void hideKeyboard(View view) {
-    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
-        Context.INPUT_METHOD_SERVICE);
-    if (inputMethodManager != null) {
-      inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-  }
 
 }

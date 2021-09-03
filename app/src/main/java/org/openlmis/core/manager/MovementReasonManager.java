@@ -202,7 +202,8 @@ public final class MovementReasonManager {
     PHYSICAL_INVENTORY("PHYSICAL_INVENTORY"),
     INITIAL_INVENTORY("INITIAL_INVENTORY"),
     DEFAULT("default"),
-    ADJUSTMENT("ADJUSTMENT");
+    ADJUSTMENT("ADJUSTMENT"),
+    REJECTION("REJECTION");
 
     private final String value;
 

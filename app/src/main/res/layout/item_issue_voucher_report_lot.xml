@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="wrap_content"
   android:layout_height="@dimen/px_50"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:background="@drawable/border_bg_gray_bottom"
   android:showDividers="middle"
   android:orientation="horizontal"
@@ -15,34 +16,34 @@
     <TextView
       style="@style/Pod.list.lot"
       android:id="@+id/tv_partial_fulfilled" />
-    <RelativeLayout style="@style/Pod.list.lot"
-      android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot">
       <EditText
         android:id="@+id/et_quantity_shipped"
-        style="@style/Pod.list.lot"
-        android:layout_margin="@dimen/px_5"
-        android:paddingRight="@dimen/px_4"
-        android:background="@drawable/border_bg_corner"
+        style="@style/Pod.list.lot.editView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:maxLength="@integer/edit_amount_length"
-        android:gravity="right|center"
+        android:gravity="right|center_vertical"
         android:inputType="numberSigned" />
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <TextView
       style="@style/Pod.list.lot"
       android:layout_width="@dimen/px_200"
       android:id="@+id/tv_lot_code" />
-    <RelativeLayout style="@style/Pod.list.lot"
-      android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot">
       <EditText
         android:id="@+id/et_quantity_accepted"
-        style="@style/Pod.list.lot"
-        android:layout_margin="@dimen/px_5"
-        android:paddingRight="@dimen/px_4"
-        android:background="@drawable/border_bg_corner"
+        style="@style/Pod.list.lot.editView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:maxLength="@integer/edit_amount_length"
-        android:gravity="right|center"
+        android:gravity="right|center_vertical"
         android:inputType="numberSigned" />
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <TextView
       style="@style/Pod.list.lot"
       android:id="@+id/tv_quantity_returned"/>
@@ -64,8 +65,7 @@
         android:layout_marginRight="@dimen/px_15"
         android:layout_marginVertical="@dimen/px_5"
         android:background="@color/white_transparent_color"
-        android:gravity="center"
-        android:text="@string/label_default_rejection_reason" />
+        android:gravity="center" />
       <ImageView
         android:id="@+id/iv_rejection_reason"
         android:paddingHorizontal="@dimen/px_1"
@@ -75,16 +75,16 @@
         android:layout_marginLeft="@dimen/px_20"
         android:src="@drawable/icon_pulldown_enable" />
     </RelativeLayout>
-    <RelativeLayout style="@style/Pod.list.lot"
-      android:layout_height="match_parent"
-      android:layout_width="@dimen/px_100">
-      <EditText style="@style/Pod.list.lot"
+   <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot">
+      <EditText style="@style/Pod.list.lot.editView"
         android:id="@+id/et_note"
-        android:layout_margin="@dimen/px_5"
-        android:paddingRight="@dimen/px_4"
-        android:gravity="right|center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="right|center_vertical"
         android:inputType="text"
         android:maxLength="100"
         android:background="@drawable/border_bg_corner" />
-    </RelativeLayout>
+   </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

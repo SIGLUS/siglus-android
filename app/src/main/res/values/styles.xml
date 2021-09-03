@@ -1044,4 +1044,14 @@
     <item name="android:gravity">center</item>
     <item name="android:background">@color/color_white</item>
   </style>
+  <style name="Pod.list.lot.editView">
+    <item name="android:layout_width">@dimen/px_90</item>
+    <item name="android:layout_height">@dimen/px_39</item>
+    <item name="android:textColor">@color/color_black</item>
+    <item name="android:textSize">@dimen/px_14</item>
+    <item name="android:gravity">center</item>
+    <item name="android:layout_margin">@dimen/px_5</item>
+    <item name="android:paddingRight">@dimen/px_4</item>
+    <item name="android:background">@drawable/border_bg_corner</item>
+  </style>
 </resources>
