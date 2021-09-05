@@ -46,6 +46,7 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
   private Product product;
   private StockCard stockCard;
   private IssueVoucherValidationType validationType;
+  private boolean shouldShowError;
 
   public IssueVoucherProductViewModel(Product product) {
     this.product = product;

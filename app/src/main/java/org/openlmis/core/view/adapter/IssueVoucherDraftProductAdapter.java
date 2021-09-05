@@ -72,6 +72,7 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
       if (getData().get(i).validate()) {
         continue;
       }
+      getData().get(i).setShouldShowError(true);
       if (position == -1) {
         position = i;
       }
@@ -108,6 +109,7 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
     @Override
     public void onAmountChange(String value) {
       viewModel.validProduct();
+      viewModel.setShouldShowError(true);
       updateErrorStatus();
     }
 
@@ -125,7 +127,11 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
         tvErrorBanner = getView(R.id.tv_error_banner);
         getView(R.id.btn_verify).setOnClickListener(getVerifyClickListener());
         setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getProduct()));
-        updateErrorStatus();
+        if (viewModel.isShouldShowError()) {
+          updateErrorStatus();
+        } else {
+          setValidStatus();
+        }
       }
     }
 
@@ -177,6 +183,7 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
         @Override
         public void onSingleClick(View v) {
           viewModel.validate();
+          viewModel.setShouldShowError(true);
           setAllLotShouldShowError();
           notifyItemChanged(getLayoutPosition());
           updateErrorStatus();
@@ -193,27 +200,38 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
 
     private void updateErrorStatus() {
       if (IssueVoucherValidationType.NO_LOT == viewModel.getValidationType()) {
-        ivTrashcan.setImageResource(R.drawable.ic_red_ashcan);
-        tvErrorBanner.setVisibility(View.VISIBLE);
-        tvErrorBanner.setText(R.string.alert_issue_voucher_can_not_be_blank);
-        btnAddNewLot.setBackground(ResourcesCompat.getDrawable(getContext().getResources(),
-            R.drawable.border_round_red, null));
-        btnAddNewLot.setTextColor(ContextCompat.getColor(getContext(), R.color.color_red));
+        setNoLotStatus();
       } else if (IssueVoucherValidationType.ALL_LOT_BLANK == viewModel.getValidationType()) {
-        ivTrashcan.setImageResource(R.drawable.ic_red_ashcan);
-        tvErrorBanner.setVisibility(View.VISIBLE);
-        tvErrorBanner.setText(R.string.alert_issue_voucher_can_not_be_blank);
-        btnAddNewLot.setTextColor(ContextCompat.getColor(getContext(), R.color.color_accent));
-        btnAddNewLot.setBackground(ResourcesCompat.getDrawable(getContext().getResources(),
-            R.drawable.border_round_blue, null));
+        setAllLotBlankStatus();
       } else {
-        ivTrashcan.setImageResource(R.drawable.ic_ashcan);
-        tvErrorBanner.setVisibility(View.GONE);
-        btnAddNewLot.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.color_accent));
-        btnAddNewLot.setBackground(ResourcesCompat.getDrawable(itemView.getContext().getResources(),
-            R.drawable.border_round_blue, null));
+        setValidStatus();
       }
+    }
 
+    private void setNoLotStatus() {
+      ivTrashcan.setImageResource(R.drawable.ic_red_ashcan);
+      tvErrorBanner.setVisibility(View.VISIBLE);
+      tvErrorBanner.setText(R.string.alert_issue_voucher_can_not_be_blank);
+      btnAddNewLot.setBackground(ResourcesCompat.getDrawable(getContext().getResources(),
+          R.drawable.border_round_red, null));
+      btnAddNewLot.setTextColor(ContextCompat.getColor(getContext(), R.color.color_red));
+    }
+
+    private void setAllLotBlankStatus() {
+      ivTrashcan.setImageResource(R.drawable.ic_red_ashcan);
+      tvErrorBanner.setVisibility(View.VISIBLE);
+      tvErrorBanner.setText(R.string.alert_issue_voucher_can_not_be_blank);
+      btnAddNewLot.setTextColor(ContextCompat.getColor(getContext(), R.color.color_accent));
+      btnAddNewLot.setBackground(ResourcesCompat.getDrawable(getContext().getResources(),
+          R.drawable.border_round_blue, null));
+    }
+
+    private void setValidStatus() {
+      ivTrashcan.setImageResource(R.drawable.ic_ashcan);
+      tvErrorBanner.setVisibility(View.GONE);
+      btnAddNewLot.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.color_accent));
+      btnAddNewLot.setBackground(ResourcesCompat.getDrawable(itemView.getContext().getResources(),
+          R.drawable.border_round_blue, null));
     }
 
     @NonNull
@@ -263,7 +281,7 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
 
     @NonNull
     private OnDismissListener getOnAddNewLotDialogDismissListener() {
-      return () -> setActionAddNewEnabled(true);
+      return this::setActionAddNewEnabled;
     }
 
     private AddLotDialogFragment.AddLotWithoutNumberListener getAddLotWithoutNumberListener() {
@@ -281,14 +299,12 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
 
     @NonNull
     private List<String> getLotNumbers() {
-      final List<String> existingLots = new ArrayList<>();
-      existingLots.addAll(FluentIterable.from(viewModel.getLotViewModels())
+      return new ArrayList<>(FluentIterable.from(viewModel.getLotViewModels())
           .transform(IssueVoucherLotViewModel::getLotNumber).toList());
-      return existingLots;
     }
 
-    private void setActionAddNewEnabled(boolean actionAddNewEnabled) {
-      btnAddNewLot.setEnabled(actionAddNewEnabled);
+    private void setActionAddNewEnabled() {
+      btnAddNewLot.setEnabled(true);
     }
 
     private void addNewLot(IssueVoucherLotViewModel issueVoucherLotViewModel) {
@@ -296,7 +312,9 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
       lotAdapter.notifyItemInserted(lotAdapter.getItemPosition(issueVoucherLotViewModel));
       viewModel.validProduct();
       issueVoucherLotViewModel.setShouldShowError(false);
-      updateErrorStatus();
+      if (viewModel.isShouldShowError()) {
+        updateErrorStatus();
+      }
     }
   }
 

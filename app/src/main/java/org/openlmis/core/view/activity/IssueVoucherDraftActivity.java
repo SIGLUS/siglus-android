@@ -221,7 +221,8 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
         hideKeyboard(v);
         int position = issueVoucherDraftProductAdapter.validateAll();
         if (position >= 0) {
-          rvIssueVoucher.smoothScrollToPosition(position);
+          LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvIssueVoucher.getLayoutManager();
+          linearLayoutManager.scrollToPositionWithOffset(position, 0);
         } else {
           openIssueVoucherReportPage();
         }
