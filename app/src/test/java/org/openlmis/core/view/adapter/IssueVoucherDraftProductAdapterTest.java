@@ -19,6 +19,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter.IssueVoucherProductViewHolder;
+import org.openlmis.core.view.listener.OnRemoveListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
 
 @RunWith(LMISTestRunner.class)
@@ -76,4 +77,56 @@ public class IssueVoucherDraftProductAdapterTest {
     Assert.assertEquals(0, adapter.validateAll());
   }
 
+  @Test
+  public void shouldCorrectRemoveItem() {
+    // given
+    OnRemoveListener mockOnRemoveListener = Mockito.mock(OnRemoveListener.class);
+    IssueVoucherDraftProductAdapter mockAdapter = new IssueVoucherDraftProductAdapter();
+    mockAdapter.setRemoveListener(mockOnRemoveListener);
+    IssueVoucherDraftProductAdapter.IssueVoucherProductViewHolder holder = mockAdapter.new IssueVoucherProductViewHolder(
+        LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_issue_voucher_draft_edit, null));
+    holder.populate(mockProductViewModel);
+    RobolectricUtils.resetNextClickTime();
+
+    // when
+    holder.getView(R.id.iv_trashcan).performClick();
+
+    // then
+    Mockito.verify(mockOnRemoveListener, Mockito.times(1)).onRemove(holder.getLayoutPosition());
+  }
+
+  @Test
+  public void shouldBackToEditStatusWhenEditClicked() {
+    // given
+    IssueVoucherDraftProductAdapter mockAdapter = Mockito.mock(IssueVoucherDraftProductAdapter.class);
+    IssueVoucherProductViewHolder holder = mockAdapter.new IssueVoucherProductViewHolder(
+        LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_issue_voucher_draft_done, null));
+    Mockito.when(mockProductViewModel.isDone()).thenReturn(true);
+    holder.populate(mockProductViewModel);
+    RobolectricUtils.resetNextClickTime();
+
+    // when
+    holder.getView(R.id.tv_edit).performClick();
+
+    // then
+    Mockito.verify(mockProductViewModel, Mockito.times(1)).setDone(false);
+    Mockito.verify(mockAdapter, Mockito.times(1)).notifyItemChanged(holder.getLayoutPosition());
+  }
+
+  @Test
+  public void shouldUpdateUiAfterVerifyClicked() {
+    // given
+    IssueVoucherDraftProductAdapter mockAdapter = Mockito.mock(IssueVoucherDraftProductAdapter.class);
+    IssueVoucherProductViewHolder holder = mockAdapter.new IssueVoucherProductViewHolder(
+        LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_issue_voucher_draft_edit, null));
+    Mockito.when(mockProductViewModel.validate()).thenReturn(true);
+    holder.populate(mockProductViewModel);
+    RobolectricUtils.resetNextClickTime();
+
+    // when
+    holder.getView(R.id.btn_verify).performClick();
+
+    // then
+    Mockito.verify(mockAdapter, Mockito.times(1)).notifyItemChanged(holder.getLayoutPosition());
+  }
 }

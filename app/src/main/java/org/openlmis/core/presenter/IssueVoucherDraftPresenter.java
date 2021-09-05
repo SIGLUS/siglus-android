@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
+import lombok.Setter;
 import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
@@ -56,8 +57,10 @@ public class IssueVoucherDraftPresenter extends Presenter {
   @Inject
   private StockRepository stockRepository;
 
+  @Setter
   private String orderNumber;
 
+  @Setter
   private String movementReasonCode;
 
   @Override
@@ -142,7 +145,7 @@ public class IssueVoucherDraftPresenter extends Presenter {
     });
   }
 
-  private Observer<List<IssueVoucherProductViewModel>> viewModelsSubscribe =
+  protected Observer<List<IssueVoucherProductViewModel>> viewModelsSubscribe =
       new Observer<List<IssueVoucherProductViewModel>>() {
     @Override
     public void onCompleted() {

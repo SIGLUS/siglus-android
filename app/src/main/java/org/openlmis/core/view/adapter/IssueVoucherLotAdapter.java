@@ -28,6 +28,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import java.util.Objects;
+import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +44,7 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
     IssueVoucherLotViewHolder> {
 
   @Setter
+  @Getter
   private AmountChangeListener amountChangeListener;
 
   public IssueVoucherLotAdapter() {
