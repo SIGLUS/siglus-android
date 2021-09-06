@@ -685,4 +685,8 @@
   <string name="msg_shipped_quantity_can_not_be_blank">Quantity shipped cannot be blank</string>
   <string name="msg_accepted_quantity_can_not_be_blank">Quantity accepted cannot be blank</string>
   <string name="msg_shipped_quantity_can_not_be_zero">Quantity shipped cannot be 0</string>
+
+  <string name="title_issue_voucher_remote_input_order_number">Issue voucher remote</string>
+  <string name="title_electronic_issue_voucher">Electronic Issue Voucher</string>
+
 </resources>

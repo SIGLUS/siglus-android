@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
@@ -52,6 +53,7 @@ import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.presenter.IssueVoucherInputOrderNumberPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
@@ -68,6 +70,10 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
 
   @InjectView(R.id.v_white_background)
   private View background;
+
+
+  @InjectView(R.id.tv_issue_voucher_anchor)
+  private TextView issueVoucherText;
 
   @InjectView(R.id.til_order_number)
   private TextInputLayout tilOrderNumber;
@@ -107,34 +113,27 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   IssueVoucherInputOrderNumberPresenter presenter;
 
   private List<Program> programItems = new ArrayList<>();
+  private boolean isElectronicIssueVoucher;
+  private Long podId;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    initData();
+    isElectronicIssueVoucher = getIntent()
+        .getBooleanExtra(Constants.PARAM_IS_ELECTRONIC_ISSUE_VOUCHER, false);
+    if (isElectronicIssueVoucher) {
+      issueVoucherText.setText(getResources().getString(R.string.title_electronic_issue_voucher));
+      podId = getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 0);
+      setTitle(getResources().getString(R.string.title_issue_voucher_remote_input_order_number));
+      tilOrderNumber.setVisibility(View.GONE);
+      etOrderNumber.setVisibility(View.GONE);
+      tilProgram.setVisibility(View.GONE);
+      etProgram.setVisibility(View.GONE);
+    }
     background.setOnClickListener(getBackgroundClickListener());
     etOrigin.setOnClickListener(getMovementReasonOnClickListener());
     btNext.setOnClickListener(getNextClickListener());
-    etOrderNumber.addTextChangedListener(new SimpleTextWatcher() {
-      @Override
-      public void afterTextChanged(Editable s) {
-        orderNumber = s.toString();
-        if (!StringUtils.isBlank(orderNumber)) {
-          tilOrderNumber.setError(null);
-        } else {
-          tilOrderNumber.setError(getResources().getString(R.string.alert_order_number_can_not_be_blank));
-        }
-        super.afterTextChanged(s);
-      }
-    });
-    etOrderNumber.setOnFocusChangeListener((v, hasFocus) -> {
-      if (hasFocus) {
-        return;
-      }
-      if (presenter.isOrderNumberExisted(orderNumber)) {
-        tilOrderNumber.setError(getResources().getString(R.string.msg_order_number_existed));
-      }
-    });
+    initForManuallyIssueVoucher();
   }
 
   @Override
@@ -157,7 +156,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
     etProgram.setText(chosenProgram == null ? "" : chosenProgram.getProgramName());
   }
 
-  protected void initData() {
+  protected void initProgramData() {
     final Subscription subscription = presenter.loadData().subscribe(getOnProgramsLoadedSubscriber());
     subscriptions.add(subscription);
   }
@@ -183,6 +182,38 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
         etProgram.setOnClickListener(getProgramOnClickListener());
       }
     };
+  }
+
+  private void initForManuallyIssueVoucher() {
+    if (isElectronicIssueVoucher) {
+      return;
+    }
+    initProgramData();
+    addListenerForOrderNumber();
+  }
+
+  private void addListenerForOrderNumber() {
+
+    etOrderNumber.addTextChangedListener(new SimpleTextWatcher() {
+      @Override
+      public void afterTextChanged(Editable s) {
+        orderNumber = s.toString();
+        if (!StringUtils.isBlank(orderNumber)) {
+          tilOrderNumber.setError(null);
+        } else {
+          tilOrderNumber.setError(getResources().getString(R.string.alert_order_number_can_not_be_blank));
+        }
+        super.afterTextChanged(s);
+      }
+    });
+    etOrderNumber.setOnFocusChangeListener((v, hasFocus) -> {
+      if (hasFocus) {
+        return;
+      }
+      if (presenter.isOrderNumberExisted(orderNumber)) {
+        tilOrderNumber.setError(getResources().getString(R.string.msg_order_number_existed));
+      }
+    });
   }
 
   @NonNull
@@ -259,15 +290,36 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
       @Override
       public void onSingleClick(View v) {
         hideKeyboard();
-        if (validateAll()) {
-          Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
-          intent.putExtra(SELECTED_PRODUCTS, (Serializable) Collections.singletonList(""));
-          intent.putExtra(IS_FROM_BULK_ISSUE, false);
-          intent.putExtra(CHOSEN_PROGRAM_CODE, chosenProgram.getProgramCode());
-          addProductsActivityResultLauncher.launch(intent);
+        if (isElectronicIssueVoucher) {
+          validateForRemote();
+        } else {
+          validateForLocal();
         }
       }
     };
+  }
+
+  private void validateForRemote() {
+    if (chosenReason == null) {
+      tilOrigin.setError(getResources().getString(R.string.alert_movement_reason_can_not_be_blank));
+      return;
+    }
+    Intent intent = new Intent(getApplicationContext(), IssueVoucherReportActivity.class);
+    intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, podId);
+    intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_OR_POD, Constants.PARAM_ISSUE_VOUCHER);
+    intent.putExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE, chosenReason.getCode());
+    startActivity(intent);
+
+  }
+
+  private void validateForLocal() {
+    if (validateAll()) {
+      Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
+      intent.putExtra(SELECTED_PRODUCTS, (Serializable) Collections.singletonList(""));
+      intent.putExtra(IS_FROM_BULK_ISSUE, false);
+      intent.putExtra(CHOSEN_PROGRAM_CODE, chosenProgram.getProgramCode());
+      addProductsActivityResultLauncher.launch(intent);
+    }
   }
 
   @NonNull

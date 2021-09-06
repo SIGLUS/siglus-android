@@ -142,14 +142,14 @@ public final class Constants {
   public static final String PARAM_ADDED_DRUGS_TO_VIA = "addedDrugsToVIA";
   public static final String PARAM_ADDED_DRUG_CODES_IN_VIA = "addedDrugsInVIA";
   public static final String PARAM_MOVEMENT_TYPE = "movementType";
-  public static final String PARAM_LOT_DETAILS = "lotDetails";
   public static final String PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER
       = "confirmGenerateLotNumberMessage";
-  public static final String PARAM_STOCK_ITEM = "stockCardItem";
   public static final String PARAM_ISSUE_VOUCHER_FORM_ID  = "issueVoucherFormId";
   public static final String PARAM_ISSUE_VOUCHER_OR_POD  = "issueVoucherOrPod";
   public static final String PARAM_POD = "pod";
   public static final String PARAM_ISSUE_VOUCHER = "issueVoucher";
+  public static final String PARAM_IS_ELECTRONIC_ISSUE_VOUCHER = "isElectronicIssueVoucher";
+
 
   // Request Params
   public static final int REQUEST_FROM_STOCK_LIST_PAGE = 100;

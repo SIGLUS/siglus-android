@@ -41,6 +41,7 @@ import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.EditOrderNumberActivity;
+import org.openlmis.core.view.activity.IssueVoucherInputOrderNumberActivity;
 import org.openlmis.core.view.activity.IssueVoucherListActivity;
 import org.openlmis.core.view.activity.IssueVoucherReportActivity;
 import org.openlmis.core.view.adapter.IssueVoucherListAdapter;
@@ -147,6 +148,8 @@ public class IssueVoucherListFragmentTest {
     when(mockViewModel.isIssueVoucher()).thenReturn(false);
     Pod pod = PodBuilder.generatePod();
     when(mockViewModel.getPod()).thenReturn(pod);
+    when(mockViewModel.isRemoteIssueVoucherOrPod()).thenReturn(true);
+    when(mockViewModel.isNeedEnterInputOrderNumber()).thenReturn(false);
 
     // when
     fragment.orderEditOrViewOperation(mockViewModel);
@@ -158,6 +161,28 @@ public class IssueVoucherListFragmentTest {
 
     // then
     Assert.assertEquals(IssueVoucherReportActivity.class.getName(), startedIntent.getComponent().getClassName());
+  }
+
+  @Test
+  public void shouldGoToInputOrderNumberPage() throws Exception {
+    // given
+    IssueVoucherListViewModel mockViewModel = mock(IssueVoucherListViewModel.class);
+    when(mockViewModel.isIssueVoucher()).thenReturn(false);
+    Pod pod = PodBuilder.generatePod();
+    when(mockViewModel.getPod()).thenReturn(pod);
+    when(mockViewModel.isRemoteIssueVoucherOrPod()).thenReturn(true);
+    when(mockViewModel.isNeedEnterInputOrderNumber()).thenReturn(true);
+
+    // when
+    fragment.orderEditOrViewOperation(mockViewModel);
+    RobolectricUtils.waitLooperIdle();
+
+    // when
+    ShadowActivity shadowActivity = shadowOf(listActivity);
+    Intent startedIntent = shadowActivity.getNextStartedActivity();
+
+    // then
+    Assert.assertEquals(IssueVoucherInputOrderNumberActivity.class.getName(), startedIntent.getComponent().getClassName());
   }
 
   @Test

@@ -530,4 +530,8 @@
   <string name="dashboard_product_types">Total Products</string>
   <string name="hint_error_field_required">This field is required</string>
   <string name="hint_error_more_than_shipped">You can\'t accept more stock than was shipped</string>
+
+  <string name="title_issue_voucher_remote_input_order_number">Issue voucher remote</string>
+  <string name="title_electronic_issue_voucher">Electronic Issue Voucher</string>
+
 </resources>
