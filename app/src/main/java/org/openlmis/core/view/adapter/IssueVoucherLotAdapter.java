@@ -27,6 +27,7 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import java.text.MessageFormat;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
@@ -70,7 +71,8 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
 
     public void populate(IssueVoucherLotViewModel viewModel) {
       this.viewModel = viewModel;
-      setText(R.id.tv_lot_number_and_date, viewModel.getLotNumber());
+      setText(R.id.tv_lot_number_and_date, MessageFormat.format("{0} - {1}",
+          viewModel.getLotNumber(), viewModel.getExpiryDate()));
       if (viewModel.isDone()) {
         setText(R.id.tv_quantity_shipped, "Quantity shipped: " + viewModel.getShippedQuantity());
         setText(R.id.tv_quantity_accepted, "Quantity accepted: " + viewModel.getAcceptedQuantity());

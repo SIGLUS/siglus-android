@@ -78,7 +78,7 @@ public class BulkIssueLotAdapter extends BaseMultiItemQuickAdapter<BulkIssueLotV
         tilAmount = getView(R.id.til_amount);
         setVisible(R.id.til_amount, !viewModel.isExpired());
         setText(R.id.tv_lot_number_and_date,
-            lot.getLotNumber() + " - " + DateUtil.formatDateWithLongMonthAndYear(lot.getExpirationDate()));
+            lot.getLotNumber() + " - " + DateUtil.formatDateWithoutDay(lot.getExpirationDate()));
         setText(R.id.tv_existing_lot_on_hand,
             itemView.getContext().getString(R.string.label_existing_soh_of_lot)
                 + "  "

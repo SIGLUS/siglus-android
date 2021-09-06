@@ -47,7 +47,7 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/px_10"
-    android:layout_marginRight="@dimen/px_82"
+    android:layout_marginRight="@dimen/px_72"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toRightOf="@+id/guideline"
     app:layout_constraintRight_toRightOf="parent">
@@ -68,7 +68,7 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/px_14"
-    android:layout_marginRight="@dimen/px_82"
+    android:layout_marginRight="@dimen/px_72"
     app:layout_constraintTop_toBottomOf="@id/til_quantity_shipped"
     app:layout_constraintLeft_toRightOf="@+id/guideline"
     app:layout_constraintRight_toRightOf="parent">
