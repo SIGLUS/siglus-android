@@ -228,13 +228,21 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
         }
       }
     }
-  };
 
-  private void openIssueVoucherReportPage() {
-    Intent intent = new Intent(this, IssueVoucherReportActivity.class);
-    intent.putExtra(PARAM_ISSUE_VOUCHER, issueVoucherDraftPresenter.coverToPodFromIssueVoucher(programCode));
-    issueVoucherReportLauncher.launch(intent);
-  }
+    private void openIssueVoucherReportPage() {
+      Intent intent = new Intent(IssueVoucherDraftActivity.this, IssueVoucherReportActivity.class);
+      intent.putExtra(PARAM_ISSUE_VOUCHER, issueVoucherDraftPresenter.coverToPodFromIssueVoucher(programCode));
+      issueVoucherReportLauncher.launch(intent);
+    }
+
+    private void hideKeyboard(View view) {
+      InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
+          Context.INPUT_METHOD_SERVICE);
+      if (inputMethodManager != null) {
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+      }
+    }
+  };
 
   private final ActivityResultLauncher<Intent> issueVoucherReportLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
@@ -243,11 +251,4 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
         }
       });
 
-  private void hideKeyboard(View view) {
-    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
-        Context.INPUT_METHOD_SERVICE);
-    if (inputMethodManager != null) {
-      inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-  }
 }

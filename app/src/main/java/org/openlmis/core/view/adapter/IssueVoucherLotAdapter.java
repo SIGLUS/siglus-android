@@ -19,10 +19,10 @@
 package org.openlmis.core.view.adapter;
 
 import android.text.Editable;
-import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -71,12 +71,13 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
 
     public void populate(IssueVoucherLotViewModel viewModel) {
       this.viewModel = viewModel;
-      setText(R.id.tv_lot_number_and_date, MessageFormat.format("{0} - {1}",
-          viewModel.getLotNumber(), viewModel.getExpiryDate()));
       if (viewModel.isDone()) {
+        setText(R.id.tv_lot_number_and_date, viewModel.getLotNumber());
         setText(R.id.tv_quantity_shipped, "Quantity shipped: " + viewModel.getShippedQuantity());
         setText(R.id.tv_quantity_accepted, "Quantity accepted: " + viewModel.getAcceptedQuantity());
       } else {
+        setText(R.id.tv_lot_number_and_date, MessageFormat.format("{0} - {1}",
+            viewModel.getLotNumber(), viewModel.getExpiryDate()));
         tilShippedQuantity = getView(R.id.til_quantity_shipped);
         tilAcceptedQuantity = getView(R.id.til_quantity_accepted);
         setText(R.id.et_quantity_shipped,
@@ -176,10 +177,11 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
     private View.OnClickListener getOnClickListenerForDeleteIcon() {
       return v -> {
         final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-            Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
-            Html.fromHtml(getContext().getResources()
+            HtmlCompat.fromHtml(getString(R.string.msg_remove_new_lot_title), HtmlCompat.FROM_HTML_MODE_LEGACY),
+            HtmlCompat.fromHtml(getContext().getResources()
                 .getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(),
-                    viewModel.getExpiryDate(), viewModel.getProduct().getPrimaryName())),
+                    viewModel.getExpiryDate(), viewModel.getProduct().getPrimaryName()),
+                HtmlCompat.FROM_HTML_MODE_LEGACY),
             getString(R.string.btn_remove_lot),
             getString(R.string.btn_cancel), "confirm_dialog");
         dialogFragment.show(((BaseActivity) getContext()).getSupportFragmentManager(), "confirm_dialog");

@@ -88,13 +88,13 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
 
   protected class IssueVoucherProductViewHolder extends BaseViewHolder implements AmountChangeListener {
 
+    protected AddLotDialogFragment addLotDialogFragment;
+
     private IssueVoucherProductViewModel viewModel;
 
     private IssueVoucherLotAdapter lotAdapter;
 
-    protected AddLotDialogFragment addLotDialogFragment;
-
-    public static final String ADD_LOT = "add_new_lot";
+    private static final String ADD_LOT = "add_new_lot";
 
     private ImageView ivTrashcan;
 

@@ -43,9 +43,6 @@ import org.openlmis.core.utils.Constants;
 public class PTVRepository extends RnrFormRepository {
 
   @Inject
-  ProductRepository productRepository;
-
-  @Inject
   ServiceFormRepository serviceFormRepository;
 
   @Inject

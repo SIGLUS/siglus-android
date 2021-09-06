@@ -30,7 +30,6 @@ import lombok.Setter;
 import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseModel;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
@@ -64,7 +63,7 @@ public class IssueVoucherDraftPresenter extends Presenter {
   private String movementReasonCode;
 
   @Override
-  public void attachView(BaseView v) throws ViewNotMatchException {
+  public void attachView(BaseView v) {
     this.issueVoucherDraftView = (IssueVoucherDraftView) v;
   }
 
@@ -117,6 +116,26 @@ public class IssueVoucherDraftPresenter extends Presenter {
         .toList();
   }
 
+  protected Observer<List<IssueVoucherProductViewModel>> viewModelsSubscribe =
+      new Observer<List<IssueVoucherProductViewModel>>() {
+        @Override
+        public void onCompleted() {
+          issueVoucherDraftView.loaded();
+          issueVoucherDraftView.onRefreshViewModels();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+          issueVoucherDraftView.loaded();
+          issueVoucherDraftView.onLoadViewModelsFailed(e);
+        }
+
+        @Override
+        public void onNext(List<IssueVoucherProductViewModel> issueVoucherProductViewModels) {
+          currentViewModels.addAll(issueVoucherProductViewModels);
+        }
+      };
+
   private Observable<List<IssueVoucherProductViewModel>> getObservableFromProducts(List<Product> products) {
     return Observable.create(subscriber -> {
       try {
@@ -130,7 +149,8 @@ public class IssueVoucherDraftPresenter extends Presenter {
         for (Product product : products) {
           IssueVoucherProductViewModel issueVoucherProductViewModel;
           if (productStockCardMap.get(product) != null) {
-            issueVoucherProductViewModel = new IssueVoucherProductViewModel(productStockCardMap.get(product));
+            issueVoucherProductViewModel = new IssueVoucherProductViewModel(
+                Objects.requireNonNull(productStockCardMap.get(product)));
           } else {
             issueVoucherProductViewModel = new IssueVoucherProductViewModel(product);
           }
@@ -144,26 +164,6 @@ public class IssueVoucherDraftPresenter extends Presenter {
       }
     });
   }
-
-  protected Observer<List<IssueVoucherProductViewModel>> viewModelsSubscribe =
-      new Observer<List<IssueVoucherProductViewModel>>() {
-    @Override
-    public void onCompleted() {
-      issueVoucherDraftView.loaded();
-      issueVoucherDraftView.onRefreshViewModels();
-    }
-
-    @Override
-    public void onError(Throwable e) {
-      issueVoucherDraftView.loaded();
-      issueVoucherDraftView.onLoadViewModelsFailed(e);
-    }
-
-    @Override
-    public void onNext(List<IssueVoucherProductViewModel> issueVoucherProductViewModels) {
-      currentViewModels.addAll(issueVoucherProductViewModels);
-    }
-  };
 
   public interface IssueVoucherDraftView extends BaseView {
 

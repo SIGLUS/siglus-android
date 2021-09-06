@@ -144,9 +144,6 @@ public class MMIARepository extends RnrFormRepository {
   }
 
   @Inject
-  ProductRepository productRepository;
-
-  @Inject
   public MMIARepository(Context context) {
     super(context);
     programCode = Constants.MMIA_PROGRAM_CODE;
@@ -348,8 +345,7 @@ public class MMIARepository extends RnrFormRepository {
     rnrFormItem.setReceived(totalReceived);
   }
 
-  private void initMMiARnrFormItemWithoutMovement(RnrFormItem rnrFormItem, long lastRnrInventory)
-      throws LMISException {
+  private void initMMiARnrFormItemWithoutMovement(RnrFormItem rnrFormItem, long lastRnrInventory) {
     rnrFormItem.setReceived(0);
     rnrFormItem.setCalculatedOrderQuantity(0L);
     rnrFormItem.setInitialAmount(lastRnrInventory);

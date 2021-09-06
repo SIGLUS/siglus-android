@@ -437,30 +437,6 @@ public class SyncDownManagerIT {
     assertFalse(product26A02.isKit());
   }
 
-  @Ignore
-  @Test
-  public void shouldSyncDownLastYearSilently() throws LMISException {
-    // given
-    String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
-    LMISRestManagerMock lmisRestManager = LMISRestManagerMock
-        .getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857",
-            200, "OK", productJson, RuntimeEnvironment.application);
-
-    mockResponse(lmisRestManager);
-    syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
-    sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
-    sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-    syncDownManager.syncDownServerData();
-
-//        /rest-api/latest-products
-    String syncDownKitChagneResponseJson = JsonFileReader
-        .readJson(getClass(), "fetchKitChangeReponse.json");
-    lmisRestManager
-        .addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=1578289583857",
-            200, "OK", syncDownKitChagneResponseJson);
-
-  }
-
   @Test
   @Ignore
   public void shouldSyncDownKitChange() throws LMISException {
