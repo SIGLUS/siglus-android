@@ -82,6 +82,7 @@ import org.openlmis.core.persistence.migrations.CreateDraftLotMovementTable;
 import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
 import org.openlmis.core.persistence.migrations.CreateInitialInventoryDraftTables;
+import org.openlmis.core.persistence.migrations.CreateIssueVoucherDraftTables;
 import org.openlmis.core.persistence.migrations.CreateKitProductsTable;
 import org.openlmis.core.persistence.migrations.CreateMalariaTreatments;
 import org.openlmis.core.persistence.migrations.CreatePTVProgramSchema;
@@ -223,6 +224,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new CreateUsageColumnsMapTable());
     MIGRATIONS.add(new UpdateUsageColumnsMap());
     MIGRATIONS.add(new CreateAdditionalProductProgramTable());
+    MIGRATIONS.add(new CreateIssueVoucherDraftTables());
   }
 
   private LmisSqliteOpenHelper(Context context) {
