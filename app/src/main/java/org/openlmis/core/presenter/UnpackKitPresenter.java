@@ -134,12 +134,9 @@ public class UnpackKitPresenter extends Presenter {
     kitMovementItem.setMovementQuantity(kitUnpackQuantity);
     kitMovementItem.setSignature(signature);
     kitMovementItem.setDocumentNumber(documentNumber);
-
     List<StockMovementItem> stockMovementItems = new ArrayList<>();
     stockMovementItems.add(kitMovementItem);
-
     kitStockCard.setStockMovementItemsWrapper(stockMovementItems);
-
     return kitStockCard;
   }
 
@@ -156,19 +153,14 @@ public class UnpackKitPresenter extends Presenter {
     }
     stockCard.getProduct().setArchived(false);
     List<LotMovementViewModel> totalLotMovementViewModelList = new ArrayList<>();
-    for (LotMovementViewModel lotMovementViewModel : inventoryViewModel.getExistingLotMovementViewModelList()) {
-      final String quantity = lotMovementViewModel.getQuantity();
-      if (quantity == null) {
-        lotMovementViewModel.setQuantity("0");
-      }
-      totalLotMovementViewModelList.add(lotMovementViewModel);
-    }
+    totalLotMovementViewModelList.addAll(
+        FluentIterable.from(inventoryViewModel.getExistingLotMovementViewModelList())
+            .filter(LotMovementViewModel::quantityGreaterThanZero).toList());
     totalLotMovementViewModelList.addAll(inventoryViewModel.getNewLotMovementViewModelList());
     stockMovementItems.add(
         createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature, totalLotMovementViewModelList));
     stockCard.setStockOnHand(stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand());
     stockCard.setStockMovementItemsWrapper(stockMovementItems);
-
     return stockCard;
   }
 
