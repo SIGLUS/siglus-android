@@ -57,13 +57,12 @@
     <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
-      android:background="@drawable/border_bg"
+      android:background="@drawable/border_bg_gray_bottom"
       android:orientation="vertical">
 
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="@dimen/px_50"
-        android:background="@drawable/border_bg_gray_top_bottom"
         android:showDividers="middle"
         android:divider="@drawable/divider_vertical">
         <TextView
@@ -101,7 +100,6 @@
         android:id="@+id/form_list_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@drawable/border_bg_gray_top"
         android:divider="@drawable/divider_horizontal"
         android:scrollbars="vertical" />
     </LinearLayout>
