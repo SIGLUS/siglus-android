@@ -27,6 +27,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +35,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.SyncType;
@@ -160,6 +162,44 @@ public class PodRepository {
     });
   }
 
+  public boolean hasOldData() {
+    try {
+      List<Pod> list = list();
+      int definedOffsetMonth = SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData();
+      Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(DateUtil.getCurrentDate(), definedOffsetMonth);
+      for (Pod pod : list) {
+        Date requisitionEndDate = pod.getRequisitionEndDate();
+        if (requisitionEndDate != null && requisitionEndDate.before(dueDateShouldDataLivedInDB)) {
+          return true;
+        }
+      }
+    } catch (LMISException e) {
+      new LMISException(e, "PodRepository.hasOldDate").reportToFabric();
+    }
+    return false;
+  }
+
+  public void deleteOldData() {
+    String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(DateUtil.getCurrentDate(),
+        SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData()), DateUtil.DB_DATE_FORMAT);
+
+    String rawSqlDeletePod = "DELETE FROM pods"
+        + " WHERE requisitionEndDate NOT NULL AND requisitionEndDate < '" + dueDateShouldDataLivedInDB + "'";
+
+    String rawSqlDeletePodProductItems = "DELETE FROM pod_product_items"
+        + " WHERE pod_id IN (SELECT id FROM pods WHERE requisitionEndDate NOT NULL AND requisitionEndDate < '"
+        + dueDateShouldDataLivedInDB + "')";
+
+    String rawSqlDeletePodLotItems = "DELETE FROM pod_product_lot_items"
+        + " WHERE podProductItem_id IN (SELECT id FROM pod_product_items"
+        + " WHERE pod_id IN (SELECT id FROM pods WHERE requisitionEndDate NOT NULL AND requisitionEndDate < '"
+        + dueDateShouldDataLivedInDB + "'))";
+
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeletePodLotItems);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeletePodProductItems);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeletePod);
+  }
+
   public void batchCreatePodsWithItems(@Nullable final List<Pod> pods) throws LMISException {
     if (pods == null) {
       return;
@@ -180,13 +220,12 @@ public class PodRepository {
 
   private void createOrUpdateWithItems(final Pod pod) throws LMISException {
     try {
-      TransactionManager
-          .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-              () -> {
-                Pod savedPod = createOrUpdate(pod);
-                podProductItemRepository.batchCreatePodProductsWithItems(pod.getPodProductItemsWrapper(), savedPod);
-                return null;
-              });
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
+          () -> {
+            Pod savedPod = createOrUpdate(pod);
+            podProductItemRepository.batchCreatePodProductsWithItems(pod.getPodProductItemsWrapper(), savedPod);
+            return null;
+          });
     } catch (SQLException e) {
       throw new LMISException(e);
     }

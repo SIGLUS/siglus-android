@@ -59,6 +59,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observable;
+import rx.Observable.OnSubscribe;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -349,7 +350,6 @@ public class LoginPresenter extends Presenter {
 
     view.sendScreenToGoogleAnalyticsAfterLogin();
     archiveOldData();
-
     try {
       saveUserDataToLocalDatabase(user);
     } catch (LMISException e) {
@@ -374,8 +374,7 @@ public class LoginPresenter extends Presenter {
     if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_old_data)) {
       return;
     }
-
-    Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+    Observable.create((OnSubscribe<Void>) subscriber -> {
       if (stockRepository.hasOldDate()) {
         stockRepository.deleteOldData();
         SharedPreferenceMgr.getInstance().setHasDeletedOldStockMovement(true);
@@ -386,6 +385,9 @@ public class LoginPresenter extends Presenter {
       }
       if (dirtyDataRepository.hasOldDate()) {
         dirtyDataRepository.deleteOldData();
+      }
+      if (podRepository.hasOldData()) {
+        podRepository.deleteOldData();
       }
     }).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())

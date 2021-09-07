@@ -309,23 +309,18 @@ public class RnrFormRepository {
     return false;
   }
 
-
   public boolean hasOldDate() {
-    List<RnRForm> list = null;
     try {
-      list = list();
-    } catch (LMISException e) {
-      new LMISException(e, "RnrFormRepository.hasOldDate").reportToFabric();
-    }
-    Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(DateUtil.getCurrentDate(),
-        SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
-
-    if (CollectionUtils.isNotEmpty(list)) {
+      List<RnRForm> list = list();
+      Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(DateUtil.getCurrentDate(),
+          SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
       for (RnRForm rnrForm : list) {
         if (rnrForm.getPeriodEnd().before(dueDateShouldDataLivedInDB)) {
           return true;
         }
       }
+    } catch (LMISException e) {
+      new LMISException(e, "RnrFormRepository.hasOldDate").reportToFabric();
     }
     return false;
   }
@@ -375,7 +370,7 @@ public class RnrFormRepository {
       productIds = productProgramRepository.queryActiveProductIdsForMMIA(programCode);
     } else {
       productIds = productProgramRepository.queryActiveProductIdsByProgramWithKits(
-              programCode, false);
+          programCode, false);
     }
     List<Product> products = productRepository.queryProductsByProductIds(productIds);
     ArrayList<RnrFormItem> result = new ArrayList<>();

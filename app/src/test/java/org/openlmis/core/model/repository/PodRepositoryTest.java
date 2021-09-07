@@ -33,6 +33,7 @@ import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.network.SyncErrorsMap;
 import org.openlmis.core.utils.Constants.Program;
+import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
@@ -144,7 +145,6 @@ public class PodRepositoryTest {
   @Test
   public void shouldCorrectUpdateOrderCode() throws Exception {
     // given
-
     String issueVoucherOrderCode = "issueVoucherOrderCode";
     String podOrderCode = "podOrderCode";
 
@@ -179,5 +179,47 @@ public class PodRepositoryTest {
     Assert.assertEquals(podOrderCode, updatedPod.getOriginOrderCode());
     Assert.assertNull(podRepository.queryByOrderCode(podOrderCode));
     Assert.assertFalse(podRepository.hasUnmatchedPodByProgram(Program.VIA_PROGRAM.getCode()));
+  }
+
+  @Test
+  public void shouldCorrectCheckOldData() throws Exception {
+    // given
+    String issueVoucherOrderCode = "issueVoucherOrderCode";
+    Pod issueVoucher = PodBuilder.generatePod();
+    issueVoucher.setId(2);
+    issueVoucher.setOrderCode(issueVoucherOrderCode);
+    issueVoucher.setOrderStatus(OrderStatus.SHIPPED);
+    issueVoucher.setRequisitionProgramCode(Program.VIA_PROGRAM.getCode());
+    issueVoucher.setRequisitionEndDate(DateUtil.parseString("2020-01-01", DateUtil.DB_DATE_FORMAT));
+    ArrayList<Pod> pods = new ArrayList<>();
+    pods.add(issueVoucher);
+    podRepository.batchCreatePodsWithItems(pods);
+
+    // then
+    Assert.assertTrue(podRepository.hasOldData());
+  }
+
+  @Test
+  public void shouldCorrectDeleteOldData() throws Exception {
+    // given
+    String issueVoucherOrderCode = "issueVoucherOrderCode";
+    Pod issueVoucher = PodBuilder.generatePod();
+    issueVoucher.setId(2);
+    issueVoucher.setOrderCode(issueVoucherOrderCode);
+    issueVoucher.setOrderStatus(OrderStatus.SHIPPED);
+    issueVoucher.setRequisitionProgramCode(Program.VIA_PROGRAM.getCode());
+    issueVoucher.setRequisitionEndDate(DateUtil.parseString("2020-01-01", DateUtil.DB_DATE_FORMAT));
+    ArrayList<Pod> pods = new ArrayList<>();
+    pods.add(issueVoucher);
+    podRepository.batchCreatePodsWithItems(pods);
+
+    // then
+    Assert.assertEquals(2, podRepository.list().size());
+
+    // when
+    podRepository.deleteOldData();
+
+    // then
+    Assert.assertEquals(1, podRepository.list().size());
   }
 }
