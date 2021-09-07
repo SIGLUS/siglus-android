@@ -53,4 +53,13 @@ public class IssueVoucherReportLotViewModel {
     }
     return shippedQuantity.longValue() - acceptedQuantity.longValue();
   }
+
+  public PodProductLotItem convertToModel() {
+    lotItem.setShippedQuantity(shippedQuantity);
+    lotItem.setAcceptedQuantity(acceptedQuantity);
+    lotItem.setRejectedReason(rejectedReason);
+    lotItem.setNotes(notes);
+    return lotItem;
+  }
+
 }

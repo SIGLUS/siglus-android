@@ -22,6 +22,7 @@ import java.util.List;
 import lombok.Data;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.PodProductItem;
+import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.model.Product;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -52,6 +53,16 @@ public class IssueVoucherReportProductViewModel {
     lotViewModelList = FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
         .transform(podLotItem -> new IssueVoucherReportLotViewModel(podLotItem, orderStatus, isLocal))
         .toList();
+  }
+
+  public PodProductItem convertToPodProductModel() {
+    List<PodProductLotItem> lotItems = FluentIterable.from(lotViewModelList).transform(lotViewModel -> {
+      PodProductLotItem lotItem = lotViewModel.convertToModel();
+      lotItem.setPodProductItem(podProductItem);
+      return lotItem;
+    }).toList();
+    podProductItem.setPodProductLotItemsWrapper(lotItems);
+    return podProductItem;
   }
 
   public boolean validate() {

@@ -26,9 +26,11 @@ import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.inject.ContextSingleton;
 import rx.Observable;
 import rx.Subscription;
@@ -44,6 +46,8 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
   @Inject
   private ProgramRepository programRepository;
+
+  public String reasonCode;
 
   IssueVoucherView issueVoucherView;
   @Getter
@@ -105,6 +109,57 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   protected Action1<Pod> loadDataOnNextAction = podContent -> {
     loadViewModelByPod(podContent);
   };
+
+  public void deleteIssueVoucher() {
+    try {
+      podRepository.deleteByOrderCode(pod.getOrderCode());
+    } catch (Exception e) {
+      new LMISException(e, "deleteIssueVoucher").reportToFabric();
+    }
+  }
+
+  public Observable<Void> getSaveFormObservable() {
+    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+      try {
+        pod.setDraft(true);
+        if (reasonCode != null) {
+          pod.setStockManagementReason(reasonCode);
+        }
+        setPodItems();
+        podRepository.createOrUpdateWithItems(pod);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "Pod.getSaveFormObservable").reportToFabric();
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  public Observable<Void> getCompleteFormObservable(String deliveredBy, String receivedBy) {
+    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+      try {
+        pod.setDraft(true);
+        pod.setReceivedBy(receivedBy);
+        pod.setDeliveredBy(deliveredBy);
+        pod.setReceivedDate(DateUtil.getCurrentDate());
+        if (reasonCode != null) {
+          pod.setStockManagementReason(reasonCode);
+        }
+        setPodItems();
+        podRepository.createOrUpdateWithItems(pod);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "Pod.getCompleteFormObservable").reportToFabric();
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  public void setPodItems() {
+    pod.setPodProductItemsWrapper(FluentIterable.from(
+        issueVoucherReportViewModel.getProductViewModels())
+        .transform(productViewModel -> productViewModel.convertToPodProductModel()).toList());
+  }
 
   protected Action1<Throwable> loadDataOnErrorAction = throwable -> {
     issueVoucherView.loaded();

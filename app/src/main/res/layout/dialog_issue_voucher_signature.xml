@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <TextView
+    android:id="@+id/tv_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/px_40"
+    android:layout_marginLeft="@dimen/px_53"
+    android:layout_marginRight="@dimen/px_53"
+    app:layout_constraintTop_toTopOf="parent"
+    android:textSize="@dimen/font_x_large"
+    android:text="@string/msg_title_for_signature" />
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/ly_process_date"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/px_13"
+    android:layout_marginLeft="@dimen/px_53"
+    android:layout_marginRight="@dimen/px_53"
+    app:layout_constraintTop_toBottomOf="@+id/tv_title">
+
+    <TextView
+      android:id="@+id/et_process_date"
+      style="@style/Dialog.EditText"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:drawableLeftCompat="@drawable/ic_sign_date"
+      android:textSize="@dimen/font_x_large"
+      android:paddingLeft="@dimen/px_5"
+      tools:ignore="TextFields" />
+
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/ly_delivered"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/px_53"
+    android:layout_marginRight="@dimen/px_53"
+    app:layout_constraintTop_toBottomOf="@+id/ly_process_date">
+
+    <EditText
+      android:id="@+id/et_delivered"
+      style="@style/Dialog.EditText"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="textPersonName"
+      android:maxLength="@integer/signature_length"
+      android:hint="@string/msg_delivered_for_signature"
+      android:drawableStart="@drawable/ic_receive_by"
+      android:drawablePadding="@dimen/padding_normal"
+      android:paddingVertical="@dimen/px_23"
+      android:textSize="@dimen/font_x_large"/>
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/ly_received"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/px_53"
+    android:layout_marginRight="@dimen/px_53"
+    app:layout_constraintTop_toBottomOf="@+id/ly_delivered">
+
+    <EditText
+      android:id="@+id/et_received"
+      style="@style/Dialog.EditText"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="textPersonName"
+      android:maxLength="@integer/signature_length"
+      android:hint="@string/msg_receive_for_signature"
+      android:drawableStart="@drawable/ic_delivered_by"
+      android:drawablePadding="@dimen/padding_normal"
+      android:paddingVertical="@dimen/px_23"
+      android:textSize="@dimen/font_x_large"/>
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <LinearLayout
+    style="@style/Dialog.ActionPanel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/px_100"
+    android:paddingVertical="@dimen/px_44"
+    app:layout_constraintTop_toBottomOf="@+id/ly_received"
+    app:layout_constraintEnd_toEndOf="@+id/ly_received">
+
+    <TextView
+      android:id="@+id/btn_cancel"
+      style="@style/Dialog.Btn.TextBlue"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/button_height_default"
+      android:text="@string/btn_cancel" />
+
+    <Button
+      android:id="@+id/btn_done"
+      style="@style/Dialog.Btn.Positive"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/button_height_default"
+      android:layout_marginStart="16dp"
+      android:text="@string/btn_complete" />
+  </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

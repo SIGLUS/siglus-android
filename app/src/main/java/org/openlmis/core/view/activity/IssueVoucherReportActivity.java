@@ -27,28 +27,37 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.inject.Inject;
+import java.util.Date;
 import lombok.Setter;
 import org.openlmis.core.R;
+import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Pod;
-import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
+import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.IssueVoucherProductAdapter;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import org.openlmis.core.view.widget.ActionPanelView;
+import org.openlmis.core.view.widget.IssueVoucherSignatureDialog;
 import org.openlmis.core.view.widget.OrderInfoView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import rx.Subscriber;
+import rx.Subscription;
 
 @ContentView(R.layout.activity_issue_voucher_report)
 public class IssueVoucherReportActivity extends BaseActivity implements IssueVoucherView {
-  private static final String TAG = LmisSqliteOpenHelper.class.getSimpleName();
 
   @Setter
   @InjectView(R.id.view_orderInfo)
@@ -66,6 +75,12 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @InjectPresenter(IssueVoucherReportPresenter.class)
   IssueVoucherReportPresenter presenter;
 
+  @Inject
+  InternetCheck internetCheck;
+
+  @Inject
+  SyncService syncService;
+
   private Long podId;
   private Pod pod;
   private String pageName;
@@ -81,6 +96,10 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     pageName = toPage == null ? Constants.PARAM_ISSUE_VOUCHER : toPage;
     if (getIntent().getExtras() != null) {
       pod = (Pod) getIntent().getExtras().getSerializable(Constants.PARAM_ISSUE_VOUCHER);
+    }
+    String reason = getIntent().getStringExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE);
+    if (reason != null) {
+      presenter.reasonCode = reason;
     }
     initProductList();
     initIssueVoucherList();
@@ -115,9 +134,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Override
   public void onBackPressed() {
     if (pageName.equals(Constants.PARAM_ISSUE_VOUCHER)) {
-      Intent intent = new Intent(this, IssueVoucherListActivity.class);
-      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-      startActivity(intent);
+      showConfirmDialog();
     } else {
       super.onBackPressed();
     }
@@ -149,6 +166,27 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     rvProductList.setAdapter(productAdapter);
   }
 
+  private void showConfirmDialog() {
+    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+        null,
+        getString(R.string.msg_back_confirm),
+        getString(R.string.btn_positive),
+        getString(R.string.btn_negative),
+        "back_confirm_dialog");
+    dialogFragment.show(getSupportFragmentManager(), "back_confirm_dialog");
+    dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+      @Override
+      public void positiveClick(String tag) {
+        presenter.deleteIssueVoucher();
+        backToIssueVoucherListActivity();
+      }
+
+      @Override
+      public void negativeClick(String tag) {
+      }
+    });
+  }
+
   @NonNull
   private SingleClickButtonListener getOnCompleteListener() {
     return new SingleClickButtonListener() {
@@ -164,7 +202,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
             rvProductList.removeOnScrollListener(listeners[1]);
           });
         } else {
-          Log.i(TAG, "complete");
+          showSignDialog();
         }
       }
     };
@@ -175,10 +213,91 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        Log.i(TAG, "save");
+        loading();
+        Subscription subscription = presenter.getSaveFormObservable()
+            .subscribe(getOnSavedSubscriber());
+        subscriptions.add(subscription);
       }
     };
   }
 
+  @NonNull
+  public Subscriber<Void> getOnSavedSubscriber() {
+    return new Subscriber<Void>() {
+      @Override
+      public void onCompleted() {
+        loaded();
+        backToIssueVoucherListActivity();
+      }
 
+      @Override
+      public void onError(Throwable e) {
+        loaded();
+        ToastUtil.show(getString(R.string.hint_save_issue_voucher_failed));
+      }
+
+      @Override
+      public void onNext(Void aVoid) {
+        // do nothing
+      }
+    };
+  }
+
+  private void showSignDialog() {
+    IssueVoucherSignatureDialog signatureDialog = new IssueVoucherSignatureDialog();
+    signatureDialog.setArguments(IssueVoucherSignatureDialog.getBundleToMe(DateUtil.formatDate(new Date()),
+        presenter.getIssueVoucherReportViewModel().getProgram().getProgramName()));
+    signatureDialog.setDelegate(getSignatureDialogDelegate());
+    signatureDialog.show(getSupportFragmentManager());
+  }
+
+  private IssueVoucherSignatureDialog.DialogDelegate getSignatureDialogDelegate() {
+    return new IssueVoucherSignatureDialog.DialogDelegate() {
+      @Override
+      public void onSign(String deliveredBy, String receivedBy) {
+        loading();
+        Subscription subscription = presenter.getCompleteFormObservable(deliveredBy, receivedBy)
+            .subscribe(getCompleteIssueVoucherSubscriber());
+        subscriptions.add(subscription);
+      }
+    };
+  }
+
+  private Subscriber<Void> getCompleteIssueVoucherSubscriber() {
+    return new Subscriber<Void>() {
+      @Override
+      public void onCompleted() {
+        loaded();
+        ToastUtil.show(R.string.msg_complete_successfully);
+        internetCheck.execute(checkInternetListener());
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        ToastUtil.show(e.getMessage());
+        loaded();
+      }
+
+      @Override
+      public void onNext(Void aVoid) {
+      }
+    };
+  }
+
+  private InternetCheck.Callback checkInternetListener() {
+
+    return internet -> {
+      if (Boolean.TRUE.equals(internet)) {
+        syncService.requestSyncImmediatelyByTask();
+      } else {
+        Log.d("Internet", "No hay conexion");
+      }
+    };
+  }
+
+  private void backToIssueVoucherListActivity() {
+    Intent intent = new Intent(this, IssueVoucherListActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    startActivity(intent);
+  }
 }

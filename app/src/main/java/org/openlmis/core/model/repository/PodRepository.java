@@ -218,7 +218,7 @@ public class PodRepository {
     }
   }
 
-  private void createOrUpdateWithItems(final Pod pod) throws LMISException {
+  public void createOrUpdateWithItems(final Pod pod) throws LMISException {
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
           () -> {
