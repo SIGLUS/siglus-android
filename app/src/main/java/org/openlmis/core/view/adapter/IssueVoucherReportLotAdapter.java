@@ -98,7 +98,6 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
       etQuantityAccepted.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
       etNote.setBackground(null);
       etNote.setGravity(Gravity.CENTER);
-      etQuantityAccepted.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
       vRejectionReason.setBackground(null);
       ivRejectionReason.setVisibility(View.GONE);
     }

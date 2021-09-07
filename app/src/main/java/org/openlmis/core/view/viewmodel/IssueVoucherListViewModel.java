@@ -83,7 +83,7 @@ public class IssueVoucherListViewModel implements Comparable<IssueVoucherListVie
   }
 
   public boolean isRemoteIssueVoucherOrPod() {
-    return  false == pod.isLocal();
+    return  !pod.isLocal();
   }
 
   public boolean isNeedEnterInputOrderNumber() {
