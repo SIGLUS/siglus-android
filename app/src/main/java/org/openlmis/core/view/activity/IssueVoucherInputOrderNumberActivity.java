@@ -51,6 +51,7 @@ import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.presenter.IssueVoucherInputOrderNumberPresenter;
 import org.openlmis.core.utils.Constants;
@@ -119,8 +120,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    isElectronicIssueVoucher = getIntent()
-        .getBooleanExtra(Constants.PARAM_IS_ELECTRONIC_ISSUE_VOUCHER, false);
+    isElectronicIssueVoucher = getIntent().getBooleanExtra(Constants.PARAM_IS_ELECTRONIC_ISSUE_VOUCHER, false);
     if (isElectronicIssueVoucher) {
       issueVoucherText.setText(getResources().getString(R.string.title_electronic_issue_voucher));
       podId = getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 0);
@@ -148,12 +148,6 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
 
   private void updateMovementReason() {
     etOrigin.setText(chosenReason == null ? "" : chosenReason.getDescription());
-  }
-
-  private void updateProgramItem() {
-    tilProgram.setError(presenter.isProgramAvailable(chosenProgram) ? null
-        : getString(R.string.msg_has_incomplete_issue_voucher, chosenProgram.getProgramName()));
-    etProgram.setText(chosenProgram == null ? "" : chosenProgram.getProgramName());
   }
 
   protected void initProgramData() {
@@ -230,7 +224,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
         programDialog.setArguments(bundle);
         programDialog.setItemClickListener((parent, view1, position, id) -> {
           chosenProgram = programItems.get(position);
-          updateProgramItem();
+          updateProgramStatus();
           programDialog.dismiss();
         });
         programDialog.show(getSupportFragmentManager(), "SELECT_PROGRAMS");
@@ -338,8 +332,8 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   private boolean validateAll() {
     if (chosenProgram == null) {
       tilProgram.setError(getResources().getString(R.string.alert_program_can_not_be_blank));
-    } else if (!presenter.isProgramAvailable(chosenProgram)) {
-      tilProgram.setError(getString(R.string.msg_has_incomplete_issue_voucher, chosenProgram.getProgramName()));
+    } else if (presenter.getSameProgramIssueVoucher(chosenProgram) != null) {
+      updateProgramStatus();
     }
     if (chosenReason == null) {
       tilOrigin.setError(getResources().getString(R.string.alert_movement_reason_can_not_be_blank));
@@ -347,7 +341,25 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
     return validateOrderNumber()
         && chosenReason != null
         && chosenProgram != null
-        && presenter.isProgramAvailable(chosenProgram);
+        && presenter.getSameProgramIssueVoucher(chosenProgram) == null;
+  }
+
+  private void updateProgramStatus() {
+    if (chosenProgram == null) {
+      tilProgram.setError(null);
+      etProgram.setText("");
+      return;
+    }
+    etProgram.setText(chosenProgram.getProgramName());
+    Pod sameProgramIssueVoucher = presenter.getSameProgramIssueVoucher(chosenProgram);
+    if (sameProgramIssueVoucher == null) {
+      tilProgram.setError(null);
+    } else if (sameProgramIssueVoucher.isLocal()) {
+      tilProgram.setError(getString(R.string.msg_has_incomplete_manual_issue_voucher, chosenProgram.getProgramName()));
+    } else {
+      tilProgram
+          .setError(getString(R.string.msg_has_incomplete_electronic_issue_voucher, chosenProgram.getProgramName()));
+    }
   }
 
   private boolean validateOrderNumber() {

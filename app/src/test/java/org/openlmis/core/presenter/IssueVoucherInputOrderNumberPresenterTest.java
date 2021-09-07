@@ -1,7 +1,7 @@
 package org.openlmis.core.presenter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -92,14 +92,13 @@ public class IssueVoucherInputOrderNumberPresenterTest {
   @Test
   public void testIsProgramAvailable() {
     // given
-    Program VCProgram = new Program();
-    VCProgram.setProgramCode(Constants.Program.VIA_PROGRAM.getCode());
-    Program MLProgram = new Program();
-    MLProgram.setProgramCode(Constants.Program.AL_PROGRAM.getCode());
-    presenter.getProgramCodeToProgram().put(Constants.Program.VIA_PROGRAM.getCode(), VCProgram);
+    Pod pod = new Pod();
+    pod.setLocal(true);
+    presenter.getProgramCodeToIssueVoucher().put(Constants.Program.VIA_PROGRAM.getCode(), pod);
+    Program program = new Program();
+    program.setProgramCode(Constants.Program.VIA_PROGRAM.getCode());
 
     // then
-    assertFalse(presenter.isProgramAvailable(VCProgram));
-    assertTrue(presenter.isProgramAvailable(MLProgram));
+    assertNotNull(presenter.getSameProgramIssueVoucher(program));
   }
 }

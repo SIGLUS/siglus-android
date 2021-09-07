@@ -50,7 +50,7 @@ public class IssueVoucherInputOrderNumberPresenter extends Presenter {
   private List<Pod> existingPods = new ArrayList<>();
 
   @Getter
-  private final HashMap<String, Program> programCodeToProgram = new HashMap<>();
+  private final HashMap<String, Pod> programCodeToIssueVoucher = new HashMap<>();
 
   @Override
   public void attachView(BaseView v) {
@@ -62,7 +62,7 @@ public class IssueVoucherInputOrderNumberPresenter extends Presenter {
       try {
         List<Program> queryActiveProgram = programRepository.queryProgramWithoutML();
         existingPods = podRepository.list();
-        collectIssueVoucherPrograms(queryActiveProgram);
+        collectProgramCodeToIssueVoucher();
         subscriber.onNext(queryActiveProgram);
       } catch (LMISException exception) {
         subscriber.onError(exception);
@@ -77,22 +77,18 @@ public class IssueVoucherInputOrderNumberPresenter extends Presenter {
         .contains(orderNumber);
   }
 
-  public boolean isProgramAvailable(Program program) {
-    return programCodeToProgram.get(program.getProgramCode()) == null;
+  public Pod getSameProgramIssueVoucher(Program program) {
+    return programCodeToIssueVoucher.get(program.getProgramCode());
   }
 
-  private void collectIssueVoucherPrograms(List<Program> programs) {
-    programCodeToProgram.clear();
-    HashMap<String, Program> allProgramCodeToProgram = new HashMap<>();
-    for (Program program : programs) {
-      allProgramCodeToProgram.put(program.getProgramCode(), program);
-    }
+  private void collectProgramCodeToIssueVoucher() {
+    programCodeToIssueVoucher.clear();
     for (Pod existingPod : existingPods) {
       if (OrderStatus.SHIPPED != existingPod.getOrderStatus()) {
         continue;
       }
       String podProgramCode = existingPod.getRequisitionProgramCode();
-      programCodeToProgram.put(podProgramCode, allProgramCodeToProgram.get(podProgramCode));
+      programCodeToIssueVoucher.put(podProgramCode, existingPod);
     }
   }
 }
