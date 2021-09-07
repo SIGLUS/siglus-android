@@ -49,6 +49,7 @@
       android:textColorHint="@color/color_6b6b6b"
       android:singleLine="true"
       android:ellipsize="end"
+      android:maxLength="30"
       android:textColor="@color/color_black" />
   </com.google.android.material.textfield.TextInputLayout>
 
