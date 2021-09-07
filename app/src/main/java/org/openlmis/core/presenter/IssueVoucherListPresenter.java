@@ -18,11 +18,11 @@
 
 package org.openlmis.core.presenter;
 
-import android.util.Log;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections.CollectionUtils;
@@ -152,24 +152,24 @@ public class IssueVoucherListPresenter extends Presenter {
   private void refreshViewModels() throws LMISException {
     List<Pod> pods = podRepository.queryPodsByStatus(isIssueVoucher ? OrderStatus.SHIPPED : OrderStatus.RECEIVED);
     viewModels.clear();
-    viewModels.addAll(FluentIterable.from(pods).transform(this::transformPodToViewModel).toList());
+    Map<String, Program> codeToProgramMap = programRepository.codeToProgramMap();
+    viewModels.addAll(FluentIterable.from(pods)
+        .transform(pod -> transformPodToViewModel(pod, codeToProgramMap))
+        .toList());
   }
 
-  private IssueVoucherListViewModel transformPodToViewModel(Pod pod) {
-    String programName = "";
+  private IssueVoucherListViewModel transformPodToViewModel(Pod pod, Map<String, Program> codeToProgramMap) {
     SyncError syncError = null;
-    try {
-      Program program = programRepository.queryByCode(pod.getRequisitionProgramCode());
-      programName = program.getProgramName();
-      List<SyncError> syncErrors = syncErrorsRepository.getBySyncTypeAndObjectId(SyncType.POD, pod.getId());
-      if (CollectionUtils.isNotEmpty(syncErrors)) {
-        syncError = syncErrors.get(0);
-      }
-    } catch (LMISException e) {
-      Log.w("IVListPresenter", e);
-      // do nothing
+    List<SyncError> syncErrors = syncErrorsRepository.getBySyncTypeAndObjectId(SyncType.POD, pod.getId());
+    if (CollectionUtils.isNotEmpty(syncErrors)) {
+      syncError = syncErrors.get(0);
     }
-    return IssueVoucherListViewModel.builder().pod(pod).programName(programName).syncError(syncError).build();
+    Program program = codeToProgramMap.get(pod.getRequisitionProgramCode());
+    return IssueVoucherListViewModel.builder()
+        .pod(pod)
+        .programName(program == null ? "" : program.getProgramName())
+        .syncError(syncError)
+        .build();
   }
 
   public interface IssueVoucherListView extends BaseView {

@@ -30,7 +30,9 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
@@ -63,6 +65,14 @@ public class ProgramRepository {
 
   public List<Program> list() throws LMISException {
     return genericDao.queryForAll();
+  }
+
+  public Map<String, Program> codeToProgramMap() throws LMISException {
+    HashMap<String, Program> codeToProgramMap = new HashMap<>();
+    for (Program program : list()) {
+      codeToProgramMap.put(program.getProgramCode(), program);
+    }
+    return codeToProgramMap;
   }
 
   public List<Program> listEmergencyPrograms() throws LMISException {
