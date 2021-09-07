@@ -33,6 +33,7 @@ import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.LotBuilder;
 import org.openlmis.core.model.builder.LotMovementItemBuilder;
+import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.utils.DateUtil;
 
 @RunWith(LMISTestRunner.class)
@@ -68,7 +69,7 @@ public class LotMovementHistoryViewModelTest {
   public void shouldGetCorrectReceivedValue() {
     // given
     lotMovementItem.setMovementQuantity(100L);
-    lotMovementItem.setReason(MovementReasonManager.DEFAULT_RECEIVE);
+    lotMovementItem.setReason(ChangeMovementReasonToCode.DEFAULT_RECEIVE);
     lotMovementItem.setDocumentNumber("aaa");
     LotMovementHistoryViewModel viewModel = new LotMovementHistoryViewModel(MovementType.RECEIVE, lotMovementItem);
 
@@ -83,7 +84,7 @@ public class LotMovementHistoryViewModelTest {
   public void shouldGetCorrectIssuedValue() {
     // given
     lotMovementItem.setMovementQuantity(200L);
-    lotMovementItem.setReason(MovementReasonManager.DEFAULT_ISSUE);
+    lotMovementItem.setReason(ChangeMovementReasonToCode.DEFAULT_ISSUE);
     LotMovementHistoryViewModel viewModel = new LotMovementHistoryViewModel(MovementType.ISSUE, lotMovementItem);
 
     // when & then
@@ -97,7 +98,7 @@ public class LotMovementHistoryViewModelTest {
   public void shouldGetCorrectNegativeAdjustment() {
     // given
     lotMovementItem.setMovementQuantity(300L);
-    lotMovementItem.setReason(MovementReasonManager.DEFAULT_NEGATIVE_ADJUSTMENT);
+    lotMovementItem.setReason(ChangeMovementReasonToCode.DEFAULT_NEGATIVE_ADJUSTMENT);
     LotMovementHistoryViewModel viewModel = new LotMovementHistoryViewModel(MovementType.NEGATIVE_ADJUST,
         lotMovementItem);
 
@@ -112,7 +113,7 @@ public class LotMovementHistoryViewModelTest {
   public void shouldGetCorrectPositiveAdjustment() {
     // given
     lotMovementItem.setMovementQuantity(400L);
-    lotMovementItem.setReason(MovementReasonManager.DEFAULT_POSITIVE_ADJUSTMENT);
+    lotMovementItem.setReason(ChangeMovementReasonToCode.DEFAULT_POSITIVE_ADJUSTMENT);
     LotMovementHistoryViewModel viewModel = new LotMovementHistoryViewModel(MovementType.POSITIVE_ADJUST,
         lotMovementItem);
 
@@ -124,35 +125,35 @@ public class LotMovementHistoryViewModelTest {
   }
 
   @Test
-  public void testNeedShowRed() {
+  public void testShouldShowRed() {
     // given
-    lotMovementItem.setReason(MovementReasonManager.DEFAULT_ISSUE);
+    lotMovementItem.setReason(ChangeMovementReasonToCode.DEFAULT_ISSUE);
     LotMovementHistoryViewModel initialInventoryViewModel = new LotMovementHistoryViewModel(
         MovementType.INITIAL_INVENTORY, lotMovementItem);
 
     // then
-    Assert.assertTrue(initialInventoryViewModel.needShowRed());
+    Assert.assertTrue(initialInventoryViewModel.shouldShowRed());
 
     lotMovementItem.setReason(MovementReasonManager.INVENTORY);
     LotMovementHistoryViewModel physicalInventoryViewModel = new LotMovementHistoryViewModel(
         MovementType.PHYSICAL_INVENTORY, lotMovementItem);
 
     // then
-    Assert.assertTrue(physicalInventoryViewModel.needShowRed());
+    Assert.assertTrue(physicalInventoryViewModel.shouldShowRed());
 
-    lotMovementItem.setReason(MovementReasonManager.DEFAULT_RECEIVE);
+    lotMovementItem.setReason(ChangeMovementReasonToCode.DEFAULT_RECEIVE);
     LotMovementHistoryViewModel receiveViewModel = new LotMovementHistoryViewModel(
         MovementType.RECEIVE, lotMovementItem);
 
     // then
-    Assert.assertTrue(receiveViewModel.needShowRed());
+    Assert.assertTrue(receiveViewModel.shouldShowRed());
 
 
     lotMovementItem.setReason(MovementReasonManager.UNPACK_KIT);
     LotMovementHistoryViewModel unpackKitViewModel = new LotMovementHistoryViewModel(
         MovementType.ISSUE, lotMovementItem);
     // then
-    Assert.assertTrue(unpackKitViewModel.needShowRed());
+    Assert.assertTrue(unpackKitViewModel.shouldShowRed());
   }
 
   @Test
@@ -162,14 +163,14 @@ public class LotMovementHistoryViewModelTest {
         .setLot(new LotBuilder()
             .setExpirationDate(DateUtil.parseString("2020-01-02", DateUtil.DB_DATE_FORMAT))
             .build())
-        .setReason(MovementReasonManager.DEFAULT_ISSUE)
+        .setReason(ChangeMovementReasonToCode.DEFAULT_ISSUE)
         .setMovementQuantity(1L)
         .build();
     LotMovementItem lotMovementItemTwo = new LotMovementItemBuilder()
         .setLot(new LotBuilder()
             .setExpirationDate(DateUtil.parseString("2020-01-01", DateUtil.DB_DATE_FORMAT))
             .build())
-        .setReason(MovementReasonManager.DEFAULT_ISSUE)
+        .setReason(ChangeMovementReasonToCode.DEFAULT_ISSUE)
         .setMovementQuantity(1L)
         .build();
     LotMovementHistoryViewModel viewModelOne = new LotMovementHistoryViewModel(MovementType.RECEIVE,

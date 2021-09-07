@@ -84,18 +84,16 @@ public class StockMovementHistoryViewModel {
   }
 
   public boolean isNoStock() {
-    MovementType movementType = stockMovementItem.getMovementType();
     String movementReason = stockMovementItem.getReason();
-    return (movementType == MovementType.INITIAL_INVENTORY || movementType == MovementType.PHYSICAL_INVENTORY)
+    return (MovementType.INITIAL_INVENTORY == movementType || MovementType.PHYSICAL_INVENTORY == movementType)
         && stockMovementItem.getStockOnHand() == 0
         && stockMovementItem.getLotMovementItemListWrapper().isEmpty()
         && MovementReasonManager.INVENTORY.equalsIgnoreCase(movementReason);
   }
 
-  public boolean needShowRed() {
-    return stockMovementItem.getMovementType().needShowRed(stockMovementItem.getReason());
+  public boolean shouldShowRed() {
+    return stockMovementItem.getMovementType().shouldShowRed(stockMovementItem.getReason());
   }
-
 
   private void buildLotViewModelList(StockMovementItem item) {
     lotViewModelList.clear();

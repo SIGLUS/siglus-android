@@ -44,19 +44,19 @@ public class ChangeMovementReasonToCodeTest extends LMISRepositoryUnitTest {
     item.setReason("cannot find a code");
 
     migrate.setDefaultReasonCode(item);
-    assertThat(item.getReason(), is(MovementReasonManager.DEFAULT_ISSUE));
+    assertThat(item.getReason(), is(ChangeMovementReasonToCode.DEFAULT_ISSUE));
 
     item.setMovementType(MovementReasonManager.MovementType.RECEIVE);
     migrate.setDefaultReasonCode(item);
-    assertThat(item.getReason(), is(MovementReasonManager.DEFAULT_RECEIVE));
+    assertThat(item.getReason(), is(ChangeMovementReasonToCode.DEFAULT_RECEIVE));
 
     item.setMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST);
     migrate.setDefaultReasonCode(item);
-    assertThat(item.getReason(), is(MovementReasonManager.DEFAULT_POSITIVE_ADJUSTMENT));
+    assertThat(item.getReason(), is(ChangeMovementReasonToCode.DEFAULT_POSITIVE_ADJUSTMENT));
 
     item.setMovementType(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
     migrate.setDefaultReasonCode(item);
-    assertThat(item.getReason(), is(MovementReasonManager.DEFAULT_NEGATIVE_ADJUSTMENT));
+    assertThat(item.getReason(), is(ChangeMovementReasonToCode.DEFAULT_NEGATIVE_ADJUSTMENT));
 
     item.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
     migrate.setDefaultReasonCode(item);

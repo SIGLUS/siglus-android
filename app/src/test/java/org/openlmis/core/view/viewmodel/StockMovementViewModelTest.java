@@ -40,6 +40,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
+import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.widget.NewMovementLotListView;
 
@@ -345,7 +346,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
             .setHasLotDataChanged(true).build());
     stockMovementViewModel.setSignature("signa");
     stockMovementViewModel.setMovementType(MovementType.ISSUE);
-    stockMovementViewModel.setMovementReason(MovementReasonManager.DEFAULT_ISSUE);
+    stockMovementViewModel.setMovementReason(ChangeMovementReasonToCode.DEFAULT_ISSUE);
     assertTrue(stockMovementViewModel.hasLotDataChanged());
     assertTrue(stockMovementViewModel.movementQuantitiesExist());
     assertFalse(stockMovementViewModel.isLotEmpty());
@@ -373,7 +374,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
     item.setStockOnHand(200);
     item.setSignature("signa");
     item.setMovementType(MovementType.ISSUE);
-    item.setReason(MovementReasonManager.DEFAULT_ISSUE);
+    item.setReason(ChangeMovementReasonToCode.DEFAULT_ISSUE);
 
     StockMovementViewModel stockMovementViewModel1 = new StockMovementViewModel(item);
     StockMovementViewModel stockMovementViewModel2 = new StockMovementViewModel(item);

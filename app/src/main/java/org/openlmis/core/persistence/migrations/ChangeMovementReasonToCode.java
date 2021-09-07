@@ -33,10 +33,16 @@ import org.openlmis.core.persistence.Migration;
 
 public class ChangeMovementReasonToCode extends Migration {
 
+  public static final String DEFAULT_PREFIX = "DEFAULT";
+  public static final String DEFAULT_ISSUE = "DEFAULT_ISSUE";
+  public static final String DEFAULT_RECEIVE = "DEFAULT_RECEIVE";
+  public static final String DEFAULT_NEGATIVE_ADJUSTMENT = "DEFAULT_NEGATIVE_ADJUSTMENT";
+  public static final String DEFAULT_POSITIVE_ADJUSTMENT = "DEFAULT_POSITIVE_ADJUSTMENT";
+
   GenericDao<StockMovementItem> stockItemGenericDao;
 
-
   MovementReasonManager reasonManager;
+
   DbUtil dbUtil;
 
   public ChangeMovementReasonToCode() {
@@ -74,16 +80,16 @@ public class ChangeMovementReasonToCode extends Migration {
     } else {
       switch (item.getMovementType()) {
         case ISSUE:
-          item.setReason(MovementReasonManager.DEFAULT_ISSUE);
+          item.setReason(DEFAULT_ISSUE);
           break;
         case POSITIVE_ADJUST:
-          item.setReason(MovementReasonManager.DEFAULT_POSITIVE_ADJUSTMENT);
+          item.setReason(DEFAULT_POSITIVE_ADJUSTMENT);
           break;
         case NEGATIVE_ADJUST:
-          item.setReason(MovementReasonManager.DEFAULT_NEGATIVE_ADJUSTMENT);
+          item.setReason(DEFAULT_NEGATIVE_ADJUSTMENT);
           break;
         case RECEIVE:
-          item.setReason(MovementReasonManager.DEFAULT_RECEIVE);
+          item.setReason(DEFAULT_RECEIVE);
           break;
         case PHYSICAL_INVENTORY:
           item.setReason(MovementReasonManager.INVENTORY);

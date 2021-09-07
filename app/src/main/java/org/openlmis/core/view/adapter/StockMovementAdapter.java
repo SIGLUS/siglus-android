@@ -103,6 +103,6 @@ public class StockMovementAdapter extends BaseQuickAdapter<StockMovementHistoryV
 
   private void setTextAndTextColor(int viewId, String text) {
     holder.setText(viewId, text);
-    holder.setTextColorRes(viewId, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(viewId, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
   }
 }

@@ -5,7 +5,6 @@
     <item>RECEIVE|PROVINCE_DPM|Província (DPM)</item>
     <item>RECEIVE|INTERMEDIATE_WAREHOUSE|Intermediate Warehouse ( AI)</item>
 
-
     <item>ISSUE|PUB_PHARMACY|Farmácia Pública</item>
     <item>ISSUE|MATERNITY|Maternidade-SMI</item>
     <item>ISSUE|GENERAL_WARD|Enfermaria</item>
@@ -32,12 +31,11 @@
     <item>POSITIVE_ADJUST|INVENTORY_POSITIVE|Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)</item>
     <item>POSITIVE_ADJUST|RETURN_FROM_QUARANTINE|Retorno da Quarentena no caso de se confirmar a qualidade do produto</item>
 
-    <!-- Do not change -->
     <item>PHYSICAL_INVENTORY|INVENTORY|Inventario</item>
     <item>PHYSICAL_INVENTORY|INVENTORY_NEGATIVE|Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)</item>
     <item>PHYSICAL_INVENTORY|INVENTORY_POSITIVE|Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)</item>
 
-    <!-- Default Code , Do not change -->
+    <!-- Default Code, For android historical data migration -->
     <item>ISSUE|DEFAULT_ISSUE|Issued</item>
     <item>RECEIVE|DEFAULT_RECEIVE|Received</item>
     <item>NEGATIVE_ADJUST|DEFAULT_NEGATIVE_ADJUSTMENT|Negative adjustment</item>

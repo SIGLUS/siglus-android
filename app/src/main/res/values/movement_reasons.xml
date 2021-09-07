@@ -31,12 +31,11 @@
     <item>POSITIVE_ADJUST|INVENTORY_POSITIVE|Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)</item>
     <item>POSITIVE_ADJUST|RETURN_FROM_QUARANTINE|Returns from Quarantine, in the case of quarantined product being fit for use</item>
 
-    <!-- Do not change -->
     <item>PHYSICAL_INVENTORY|INVENTORY|Inventory</item>
     <item>PHYSICAL_INVENTORY|INVENTORY_NEGATIVE|Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)</item>
     <item>PHYSICAL_INVENTORY|INVENTORY_POSITIVE|Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)</item>
 
-    <!-- Default Code , Do not change -->
+    <!-- Default Code, For android historical data migration -->
     <item>ISSUE|DEFAULT_ISSUE|Issued</item>
     <item>RECEIVE|DEFAULT_RECEIVE|Received</item>
     <item>NEGATIVE_ADJUST|DEFAULT_NEGATIVE_ADJUSTMENT|Negative adjustment</item>
@@ -47,7 +46,6 @@
     <item>REJECTION|RECEIVED_LESS|Received less quantites than expected</item>
     <item>REJECTION|EXPIRED|Expired products</item>
     <item>REJECTION|Inappropriate|Inappropriate for consumption</item>
-
   </string-array>
 </resources>
 

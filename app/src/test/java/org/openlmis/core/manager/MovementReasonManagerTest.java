@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
+import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import roboguice.RoboGuice;
@@ -58,15 +59,15 @@ public class MovementReasonManagerTest {
     assertThat(reasonManager.queryByCode(MovementType.PHYSICAL_INVENTORY, MovementReasonManager.INVENTORY)
         .canBeDisplayOnMovementMenu(), is(false));
     assertThat(
-        reasonManager.queryByCode(MovementType.ISSUE, MovementReasonManager.DEFAULT_ISSUE).canBeDisplayOnMovementMenu(),
+        reasonManager.queryByCode(MovementType.ISSUE, ChangeMovementReasonToCode.DEFAULT_ISSUE).canBeDisplayOnMovementMenu(),
         is(false));
-    assertThat(reasonManager.queryByCode(MovementType.RECEIVE, MovementReasonManager.DEFAULT_RECEIVE)
+    assertThat(reasonManager.queryByCode(MovementType.RECEIVE, ChangeMovementReasonToCode.DEFAULT_RECEIVE)
         .canBeDisplayOnMovementMenu(), is(false));
     assertThat(
-        reasonManager.queryByCode(MovementType.NEGATIVE_ADJUST, MovementReasonManager.DEFAULT_NEGATIVE_ADJUSTMENT)
+        reasonManager.queryByCode(MovementType.NEGATIVE_ADJUST, ChangeMovementReasonToCode.DEFAULT_NEGATIVE_ADJUSTMENT)
             .canBeDisplayOnMovementMenu(), is(false));
     assertThat(
-        reasonManager.queryByCode(MovementType.POSITIVE_ADJUST, MovementReasonManager.DEFAULT_POSITIVE_ADJUSTMENT)
+        reasonManager.queryByCode(MovementType.POSITIVE_ADJUST, ChangeMovementReasonToCode.DEFAULT_POSITIVE_ADJUSTMENT)
             .canBeDisplayOnMovementMenu(), is(false));
     assertThat(
         reasonManager.queryByCode(MovementType.POSITIVE_ADJUST, MovementReasonManager.DONATION)

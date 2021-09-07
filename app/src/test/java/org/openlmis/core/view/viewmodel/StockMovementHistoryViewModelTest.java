@@ -72,10 +72,10 @@ public class StockMovementHistoryViewModelTest {
     StockMovementHistoryViewModel unpackKitViewModel = new StockMovementHistoryViewModel(unpackKitMovementItem);
 
     // when & then
-    Assert.assertTrue(initialInventoryViewModel.needShowRed());
-    Assert.assertTrue(physicalInventoryViewModel.needShowRed());
-    Assert.assertTrue(receiveViewModel.needShowRed());
-    Assert.assertTrue(unpackKitViewModel.needShowRed());
+    Assert.assertTrue(initialInventoryViewModel.shouldShowRed());
+    Assert.assertTrue(physicalInventoryViewModel.shouldShowRed());
+    Assert.assertTrue(receiveViewModel.shouldShowRed());
+    Assert.assertTrue(unpackKitViewModel.shouldShowRed());
   }
 
   @Test

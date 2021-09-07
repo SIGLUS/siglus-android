@@ -31,10 +31,10 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
-import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
+import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
 
 @RunWith(LMISTestRunner.class)
@@ -49,7 +49,7 @@ public class StockMovementAdapterTest {
     // given
     StockMovementItem movementItem = new StockMovementItemBuilder()
         .withMovementType(MovementType.RECEIVE)
-        .withMovementReason(MovementReasonManager.DEFAULT_RECEIVE)
+        .withMovementReason(ChangeMovementReasonToCode.DEFAULT_RECEIVE)
         .build();
     StockMovementHistoryViewModel viewModel = new StockMovementHistoryViewModel(movementItem);
     StockMovementAdapter stockMovementAdapter = new StockMovementAdapter();

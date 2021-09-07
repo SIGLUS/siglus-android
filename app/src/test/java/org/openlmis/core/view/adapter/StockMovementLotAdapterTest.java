@@ -30,12 +30,12 @@ import org.mockito.Mockito;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.LotMovementItemBuilder;
+import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.view.viewmodel.LotMovementHistoryViewModel;
 
 @RunWith(LMISTestRunner.class)
@@ -50,7 +50,7 @@ public class StockMovementLotAdapterTest {
     lotMovementItem = new LotMovementItemBuilder()
         .setLot(mockLot)
         .setMovementQuantity(100L)
-        .setReason(MovementReasonManager.DEFAULT_RECEIVE)
+        .setReason(ChangeMovementReasonToCode.DEFAULT_RECEIVE)
         .setStockOnHand(1000L)
         .setStockMovementItem(Mockito.mock(StockMovementItem.class))
         .build();

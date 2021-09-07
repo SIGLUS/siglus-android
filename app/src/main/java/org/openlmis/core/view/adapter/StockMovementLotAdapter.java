@@ -41,16 +41,16 @@ public class StockMovementLotAdapter extends BaseQuickAdapter<LotMovementHistory
     holder.setText(R.id.tv_issued, model.getIssued());
     holder.setText(R.id.tv_stock_on_hand, model.getStockOnHand());
 
-    holder.setTextColorRes(R.id.tv_reason, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_lot_code, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_document_number, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_received, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_reason, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_lot_code, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_document_number, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_received, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
     holder
-        .setTextColorRes(R.id.tv_negative_adjustment, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+        .setTextColorRes(R.id.tv_negative_adjustment, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
     holder
-        .setTextColorRes(R.id.tv_positive_adjustment, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_issued, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder.setTextColorRes(R.id.tv_stock_on_hand, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+        .setTextColorRes(R.id.tv_positive_adjustment, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_issued, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_stock_on_hand, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
 
     holder.setBackgroundResource(R.id.ll_stock_movement_root, R.color.color_white);
   }

@@ -36,6 +36,7 @@ import lombok.Data;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
+import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -44,13 +45,7 @@ public final class MovementReasonManager {
 
   public static final String INVENTORY_POSITIVE = "INVENTORY_POSITIVE";
   public static final String INVENTORY_NEGATIVE = "INVENTORY_NEGATIVE";
-
-  private static final String DEFAULT_PREFIX = "DEFAULT";
   public static final String INVENTORY = "INVENTORY";
-  public static final String DEFAULT_ISSUE = "DEFAULT_ISSUE";
-  public static final String DEFAULT_RECEIVE = "DEFAULT_RECEIVE";
-  public static final String DEFAULT_NEGATIVE_ADJUSTMENT = "DEFAULT_NEGATIVE_ADJUSTMENT";
-  public static final String DEFAULT_POSITIVE_ADJUSTMENT = "DEFAULT_POSITIVE_ADJUSTMENT";
   public static final String UNPACK_KIT = "UNPACK_KIT";
   public static final String DONATION = "DONATION";
   public static final String DDM = "DISTRICT_DDM";
@@ -128,8 +123,7 @@ public final class MovementReasonManager {
         continue;
       }
 
-      MovementReason reason = new MovementReason(MovementType.valueOf(values[0]), values[1],
-          values[2]);
+      MovementReason reason = new MovementReason(MovementType.valueOf(values[0]), values[1], values[2]);
       reasonList.add(reason);
     }
     return reasonList;
@@ -222,7 +216,7 @@ public final class MovementReasonManager {
       return value;
     }
 
-    public boolean needShowRed(String movementReason) {
+    public boolean shouldShowRed(String movementReason) {
       boolean isPhysicalInventory = this == MovementType.PHYSICAL_INVENTORY
           && MovementReasonManager.INVENTORY.equalsIgnoreCase(movementReason);
       return isPhysicalInventory
@@ -245,12 +239,8 @@ public final class MovementReasonManager {
       this.description = description;
     }
 
-    public boolean isInventoryAdjustment() {
-      return INVENTORY_NEGATIVE.equalsIgnoreCase(code) || INVENTORY_POSITIVE.equalsIgnoreCase(code);
-    }
-
     protected boolean canBeDisplayOnMovementMenu() {
-      return !(code.startsWith(DEFAULT_PREFIX)
+      return !(code.startsWith(ChangeMovementReasonToCode.DEFAULT_PREFIX)
           || code.equalsIgnoreCase(INVENTORY)
           || MovementReasonManager.UNPACK_KIT.equals(code)
           || MovementReasonManager.DONATION.equals(code));

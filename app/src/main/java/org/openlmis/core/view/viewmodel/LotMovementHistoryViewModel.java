@@ -74,8 +74,8 @@ public class LotMovementHistoryViewModel implements Comparable<LotMovementHistor
     return typeQuantityMap.get(MovementType.POSITIVE_ADJUST);
   }
 
-  public boolean needShowRed() {
-    return stockCardMovementType.needShowRed(lotMovementItem.getReason());
+  public boolean shouldShowRed() {
+    return stockCardMovementType.shouldShowRed(lotMovementItem.getReason());
   }
 
   @Override
