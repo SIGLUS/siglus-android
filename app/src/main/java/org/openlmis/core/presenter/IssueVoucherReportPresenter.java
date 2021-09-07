@@ -59,7 +59,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   protected Observable<Pod> getRnrFormObservable(final long formId) {
     return Observable.create((Observable.OnSubscribe<Pod>) subscriber -> {
       try {
-        pod = podRepository.queryPod(formId);
+        pod = podRepository.queryById(formId);
         subscriber.onNext(pod);
         subscriber.onCompleted();
       } catch (LMISException e) {

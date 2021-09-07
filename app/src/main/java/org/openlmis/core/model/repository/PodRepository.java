@@ -66,15 +66,15 @@ public class PodRepository {
     this.context = context;
   }
 
-  public Pod queryPod(long id) throws LMISException {
-    return podGenericDao.getById(String.valueOf(id));
-  }
-
-  public List<Pod> listAllPods() throws LMISException {
+  public List<Pod> list() throws LMISException {
     return dbUtil.withDao(Pod.class, dao -> dao.queryBuilder().query());
   }
 
-  public List<Pod> queryPodsByStatus(OrderStatus status) throws LMISException {
+  public Pod queryById(long id) throws LMISException {
+    return podGenericDao.getById(String.valueOf(id));
+  }
+
+  public List<Pod> queryByStatus(OrderStatus status) throws LMISException {
     return dbUtil.withDao(Pod.class, dao -> dao.queryBuilder().where().eq(ORDER_STATUS, status).query());
   }
 

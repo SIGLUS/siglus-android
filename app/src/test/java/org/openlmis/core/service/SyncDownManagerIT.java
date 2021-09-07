@@ -274,7 +274,7 @@ public class SyncDownManagerIT {
     SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
     syncDownManager.syncDownServerData(subscriber);
     subscriber.awaitTerminalEvent();
-    List<Pod> pods = podRepository.listAllPods();
+    List<Pod> pods = podRepository.list();
 
     // then
     assertEquals("RNR-EM010809070000006", pods.get(0).getRequisitionNumber());

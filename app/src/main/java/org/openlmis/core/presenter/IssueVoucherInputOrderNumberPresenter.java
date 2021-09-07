@@ -61,7 +61,7 @@ public class IssueVoucherInputOrderNumberPresenter extends Presenter {
     return Observable.create((OnSubscribe<List<Program>>) subscriber -> {
       try {
         List<Program> queryActiveProgram = programRepository.queryProgramWithoutML();
-        existingPods = podRepository.listAllPods();
+        existingPods = podRepository.list();
         collectIssueVoucherPrograms(queryActiveProgram);
         subscriber.onNext(queryActiveProgram);
       } catch (LMISException exception) {

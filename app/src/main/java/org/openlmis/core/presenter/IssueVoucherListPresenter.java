@@ -150,7 +150,7 @@ public class IssueVoucherListPresenter extends Presenter {
   }
 
   private void refreshViewModels() throws LMISException {
-    List<Pod> pods = podRepository.queryPodsByStatus(isIssueVoucher ? OrderStatus.SHIPPED : OrderStatus.RECEIVED);
+    List<Pod> pods = podRepository.queryByStatus(isIssueVoucher ? OrderStatus.SHIPPED : OrderStatus.RECEIVED);
     viewModels.clear();
     Map<String, Program> codeToProgramMap = programRepository.codeToProgramMap();
     viewModels.addAll(FluentIterable.from(pods)

@@ -65,13 +65,13 @@ public class PodRepositoryTest {
     podRepository.batchCreatePodsWithItems(pods);
 
     // then
-    Assert.assertNotNull(podRepository.queryPod(2));
+    Assert.assertNotNull(podRepository.queryById(2));
   }
 
   @Test
   public void shouldCorrectListAllPods() throws Exception {
     // when
-    List<Pod> allPods = podRepository.listAllPods();
+    List<Pod> allPods = podRepository.list();
 
     // then
     Assert.assertEquals(1, allPods.size());
@@ -80,8 +80,8 @@ public class PodRepositoryTest {
   @Test
   public void shouldCorrectQueryPodsByStatus() throws Exception {
     // when
-    List<Pod> shippedPods = podRepository.queryPodsByStatus(OrderStatus.SHIPPED);
-    List<Pod> receivedPods = podRepository.queryPodsByStatus(OrderStatus.RECEIVED);
+    List<Pod> shippedPods = podRepository.queryByStatus(OrderStatus.SHIPPED);
+    List<Pod> receivedPods = podRepository.queryByStatus(OrderStatus.RECEIVED);
 
     // then
     Assert.assertEquals(1, shippedPods.size());
@@ -94,7 +94,7 @@ public class PodRepositoryTest {
     podRepository.deleteByOrderCode(FieldConstants.ORDER_CODE);
 
     // then
-    Assert.assertEquals(0, podRepository.listAllPods().size());
+    Assert.assertEquals(0, podRepository.list().size());
   }
 
   @Test

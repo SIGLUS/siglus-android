@@ -90,7 +90,7 @@ public class IssueVoucherListPresenterTest {
     // given
     Program mockProgram = mock(Program.class);
     List<Pod> pods = Collections.singletonList(PodBuilder.generatePod());
-    when(mockPodRepository.queryPodsByStatus(any())).thenReturn(pods);
+    when(mockPodRepository.queryByStatus(any())).thenReturn(pods);
     when(mockProgramRepository.queryByCode(any())).thenReturn(mockProgram);
     when(mockSyncErrorsRepository.getBySyncTypeAndObjectId(any(), anyByte())).thenReturn(null);
     TestSubscriber<Object> testSubscriber = new TestSubscriber<>(presenter.viewModelsSubscribe);
@@ -112,7 +112,7 @@ public class IssueVoucherListPresenterTest {
     // given
     Program mockProgram = mock(Program.class);
     List<Pod> pods = Collections.singletonList(PodBuilder.generatePod());
-    when(mockPodRepository.queryPodsByStatus(any())).thenReturn(pods);
+    when(mockPodRepository.queryByStatus(any())).thenReturn(pods);
     when(mockProgramRepository.queryByCode(any())).thenReturn(mockProgram);
     SyncError syncError = new SyncError("message", SyncType.POD, 1);
     when(mockSyncErrorsRepository.getBySyncTypeAndObjectId(any(), anyByte()))
@@ -135,7 +135,7 @@ public class IssueVoucherListPresenterTest {
   @Test
   public void shouldCallLoadDataFailedAfterThrow() throws Exception {
     // given
-    Mockito.doThrow(LMISException.class).when(mockPodRepository).queryPodsByStatus(any());
+    Mockito.doThrow(LMISException.class).when(mockPodRepository).queryByStatus(any());
     TestSubscriber<Object> testSubscriber = new TestSubscriber<>(presenter.viewModelsSubscribe);
     presenter.viewModelsSubscribe = testSubscriber;
 
