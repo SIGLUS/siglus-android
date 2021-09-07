@@ -37,6 +37,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.LotRepository;
+import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
@@ -101,11 +102,18 @@ public class LoginPresenter extends Presenter {
   SharedPreferenceMgr sharedPreferenceMgr;
   @Inject
   InternetCheck internetCheck;
+
   private boolean hasGoneToNextPage;
+
   @Inject
   private ProgramRepository programRepository;
+
   @Inject
   private DirtyDataRepository dirtyDataRepository;
+
+  @Inject
+  private PodRepository podRepository;
+
   @Inject
   private DirtyDataManager dirtyDataManager;
 

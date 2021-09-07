@@ -45,10 +45,10 @@ public class StockMovementLotAdapter extends BaseQuickAdapter<LotMovementHistory
     holder.setTextColorRes(R.id.tv_lot_code, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
     holder.setTextColorRes(R.id.tv_document_number, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
     holder.setTextColorRes(R.id.tv_received, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder
-        .setTextColorRes(R.id.tv_negative_adjustment, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
-    holder
-        .setTextColorRes(R.id.tv_positive_adjustment, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_negative_adjustment,
+            model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_positive_adjustment,
+            model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
     holder.setTextColorRes(R.id.tv_issued, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
     holder.setTextColorRes(R.id.tv_stock_on_hand, model.shouldShowRed() ? R.color.color_de1313 : R.color.color_black);
 
