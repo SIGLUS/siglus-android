@@ -35,7 +35,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
-import org.openlmis.core.utils.ListViewUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
@@ -94,7 +93,7 @@ public class ViaRequisitionBodyView extends FrameLayout {
     requisitionFormList.setSelection(position);
     requisitionProductList.setSelection(position);
     requisitionFormList.post(() -> {
-      View childAt = ListViewUtil.getViewByPosition(position, requisitionFormList);
+      View childAt = getViewByPosition(position, requisitionFormList);
       EditText requestAmount = childAt.findViewById(R.id.et_request_amount);
       EditText approvedAmount = childAt.findViewById(R.id.et_approved_amount);
       if (requestAmount.isEnabled()) {
@@ -173,6 +172,17 @@ public class ViaRequisitionBodyView extends FrameLayout {
       }
       return false;
     });
+  }
 
+  private View getViewByPosition(int pos, ListView listView) {
+    final int firstListItemPosition = listView.getFirstVisiblePosition();
+    final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+    if (pos < firstListItemPosition || pos > lastListItemPosition) {
+      return listView.getAdapter().getView(pos, null, listView);
+    } else {
+      final int childIndex = pos - firstListItemPosition;
+      return listView.getChildAt(childIndex);
+    }
   }
 }

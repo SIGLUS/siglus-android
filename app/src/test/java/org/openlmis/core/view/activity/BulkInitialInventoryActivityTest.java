@@ -112,10 +112,12 @@ public class BulkInitialInventoryActivityTest {
   @Test
   public void shouldCorrectSetTotal() {
     // given
-    final InventoryViewModel inventoryViewModel1 = new InventoryViewModel(product);
+    final BulkInitialInventoryViewModel inventoryViewModel1 = new BulkInitialInventoryViewModel(product);
     inventoryViewModel1.setViewType(BulkInitialInventoryAdapter.ITEM_BASIC);
-    final InventoryViewModel inventoryViewModel2 = new InventoryViewModel(product);
+    inventoryViewModel1.setDone(true);
+    final BulkInitialInventoryViewModel inventoryViewModel2 = new BulkInitialInventoryViewModel(product);
     inventoryViewModel2.setViewType(BulkInitialInventoryAdapter.ITEM_BASIC);
+    inventoryViewModel2.setDone(false);
     List<InventoryViewModel> data = newArrayList(inventoryViewModel1, inventoryViewModel2);
     when(mockedPresenter.getInventoryViewModelList()).thenReturn(data);
 
@@ -123,7 +125,7 @@ public class BulkInitialInventoryActivityTest {
     bulkInventoryActivity.setTotal();
 
     // then
-    assertEquals(bulkInventoryActivity.getString(R.string.label_total, 2),
+    assertEquals(bulkInventoryActivity.getString(R.string.label_total_complete_counts, 1, 2),
         bulkInventoryActivity.tvTotal.getText().toString());
   }
 
@@ -188,7 +190,7 @@ public class BulkInitialInventoryActivityTest {
     bulkInventoryActivity.onBackPressed();
 
     // then
-    verify(mockSearchView,times(1)).onActionViewCollapsed();
+    verify(mockSearchView, times(1)).onActionViewCollapsed();
   }
 
   @Test
@@ -209,7 +211,7 @@ public class BulkInitialInventoryActivityTest {
   }
 
   @Test
-  public void shouldCorrectSetOnActivityResult(){
+  public void shouldCorrectSetOnActivityResult() {
     // given
     ArrayList<Product> newAddedProduct = new ArrayList<>();
     newAddedProduct.add(product);
@@ -218,14 +220,14 @@ public class BulkInitialInventoryActivityTest {
     when(mockedPresenter.addNonBasicProductsToInventory(any())).thenReturn(Observable.empty());
 
     // when
-    bulkInventoryActivity.onActivityResult(REQUEST_CODE,RESULT_CODE,intent);
+    bulkInventoryActivity.onActivityResult(REQUEST_CODE, RESULT_CODE, intent);
 
     // then
-    verify(mockedPresenter,times(1)).addNonBasicProductsToInventory(newAddedProduct);
+    verify(mockedPresenter, times(1)).addNonBasicProductsToInventory(newAddedProduct);
   }
 
   @Test
-  public void shouldUpdateUiAfterRemoveNonBasicProductListener(){
+  public void shouldUpdateUiAfterRemoveNonBasicProductListener() {
     // given
     final BulkInitialInventoryViewModel mockViewModel = mock(BulkInitialInventoryViewModel.class);
 
@@ -233,9 +235,9 @@ public class BulkInitialInventoryActivityTest {
     bulkInventoryActivity.removeNonBasicProductListener().removeNoneBasicProduct(mockViewModel);
 
     // then
-    verify(mockedPresenter,times(1)).removeNonBasicProductElement(mockViewModel);
-    verify(mockedAdapter,times(1)).refresh();
-    verify(mockedAdapter,times(1)).notifyDataSetChanged();
+    verify(mockedPresenter, times(1)).removeNonBasicProductElement(mockViewModel);
+    verify(mockedAdapter, times(1)).refresh();
+    verify(mockedAdapter, times(1)).notifyDataSetChanged();
   }
 
   public class MyTestModule extends AbstractModule {
