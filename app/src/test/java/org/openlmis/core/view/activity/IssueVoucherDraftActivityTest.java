@@ -78,7 +78,7 @@ public class IssueVoucherDraftActivityTest {
     assertNotNull(intent);
     assertEquals(AddProductsToBulkEntriesActivity.class.getName(), intent.getComponent().getClassName());
     assertFalse(intent.getBooleanExtra(IS_FROM_BULK_ISSUE, false));
-    assertNotNull(intent.getSerializableExtra(IntentConstants.CHOSEN_PROGRAM_CODE));
+    assertNotNull(intent.getSerializableExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE));
   }
 
   @Test

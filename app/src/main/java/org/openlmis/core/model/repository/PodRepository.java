@@ -220,12 +220,15 @@ public class PodRepository {
 
   public void createOrUpdateWithItems(final Pod pod) throws LMISException {
     try {
-      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-          () -> {
-            Pod savedPod = createOrUpdate(pod);
-            podProductItemRepository.batchCreatePodProductsWithItems(pod.getPodProductItemsWrapper(), savedPod);
-            return null;
-          });
+      TransactionManager
+          .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
+              () -> {
+                Pod savedPod = createOrUpdate(pod);
+                if (!pod.getPodProductItemsWrapper().isEmpty()) {
+                  podProductItemRepository.batchCreatePodProductsWithItems(pod.getPodProductItemsWrapper(), savedPod);
+                }
+                return null;
+              });
     } catch (SQLException e) {
       throw new LMISException(e);
     }

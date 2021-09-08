@@ -23,8 +23,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/px_1"
     app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
-    android:background="@color/color_ffa000"
-    />
+    android:background="@color/color_ffa000" />
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/rv_issue_voucher_draft"
@@ -33,36 +32,23 @@
     android:layout_marginBottom="@dimen/px_16"
     android:paddingHorizontal="@dimen/px_16"
     app:layout_constraintTop_toBottomOf="@+id/v_divider_line"
-    app:layout_constraintBottom_toTopOf="@id/cv_next"
-    tools:listitem="@layout/item_issue_voucher_draft_edit"/>
+    app:layout_constraintBottom_toTopOf="@id/action_panel"
+    tools:listitem="@layout/item_issue_voucher_draft_edit" />
 
-  <androidx.cardview.widget.CardView
-    android:id="@+id/cv_next"
-    style="@style/FormAction.Container"
+  <org.openlmis.core.view.widget.ActionPanelView
+    layout="@layout/view_action_panel"
+    android:id="@+id/action_panel"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/px_52"
-    android:layout_marginTop="@dimen/px_8"
-    app:layout_constraintBottom_toBottomOf="parent">
-
-    <androidx.appcompat.widget.AppCompatButton
-      android:id="@+id/bt_next"
-      android:background="@drawable/blue_button"
-      android:layout_width="@dimen/px_220"
-      android:layout_height="@dimen/px_36"
-      android:layout_gravity="center_vertical|center_horizontal"
-      android:text="@string/label_next"
-      android:textColor="@color/color_white"
-      android:textSize="@dimen/px_20" />
-
-  </androidx.cardview.widget.CardView>
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent" />
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/cl_empty"
     android:visibility="gone"
-    android:background="@color/color_eeeeee"
-    >
+    android:background="@color/color_eeeeee">
+
     <ImageView
       android:id="@+id/iv_no_product"
       android:layout_width="@dimen/px_73"

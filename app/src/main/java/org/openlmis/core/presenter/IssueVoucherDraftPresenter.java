@@ -31,10 +31,13 @@ import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseModel;
+import org.openlmis.core.model.DraftIssueVoucherProductItem;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.repository.IssueVoucherDraftRepository;
+import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
@@ -56,11 +59,53 @@ public class IssueVoucherDraftPresenter extends Presenter {
   @Inject
   private StockRepository stockRepository;
 
+  @Inject PodRepository podRepository;
+
+  @Inject
+  private IssueVoucherDraftRepository issueVoucherDraftRepository;
+
   @Setter
   private String orderNumber;
 
   @Setter
   private String movementReasonCode;
+
+  Observer<List<IssueVoucherProductViewModel>> viewModelsSubscribe =
+      new Observer<List<IssueVoucherProductViewModel>>() {
+        @Override
+        public void onCompleted() {
+          issueVoucherDraftView.loaded();
+          issueVoucherDraftView.onRefreshViewModels();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+          issueVoucherDraftView.loaded();
+          issueVoucherDraftView.onLoadViewModelsFailed(e);
+        }
+
+        @Override
+        public void onNext(List<IssueVoucherProductViewModel> issueVoucherProductViewModels) {
+          currentViewModels.addAll(issueVoucherProductViewModels);
+        }
+      };
+
+  Observer<Object> saveDraftSubscribe = new Observer<Object>() {
+    @Override
+    public void onCompleted() {
+      issueVoucherDraftView.loaded();
+    }
+
+    @Override
+    public void onError(Throwable e) {
+      issueVoucherDraftView.loaded();
+    }
+
+    @Override
+    public void onNext(Object o) {
+      // do nothing
+    }
+  };
 
   @Override
   public void attachView(BaseView v) {
@@ -96,7 +141,28 @@ public class IssueVoucherDraftPresenter extends Presenter {
     subscriptions.add(addProductsSubscription);
   }
 
-  public Pod coverToPodFromIssueVoucher(String programCode) {
+  public void saveIssueVoucherDraft(String programCode) {
+    issueVoucherDraftView.loading();
+    Subscription saveDraftSubscription = Observable.create(subscriber -> {
+      try {
+        Pod pod = coverToPodFromIssueVoucher(programCode, false);
+        ImmutableList<DraftIssueVoucherProductItem> productItems = FluentIterable.from(currentViewModels)
+            .transform(productViewModel -> Objects.requireNonNull(productViewModel).covertToDraft(pod))
+            .toList();
+        issueVoucherDraftRepository.saveDraft(productItems, pod);
+        subscriber.onNext(null);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "issue voucher save draft failed").reportToFabric();
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
+        .subscribe(saveDraftSubscribe);
+    subscriptions.add(saveDraftSubscription);
+  }
+
+  public Pod coverToPodFromIssueVoucher(String programCode, boolean needChildrenItem) {
     return Pod.builder()
         .orderCode(orderNumber)
         .requisitionProgramCode(programCode)
@@ -106,35 +172,9 @@ public class IssueVoucherDraftPresenter extends Presenter {
         .isDraft(true)
         .isLocal(true)
         .isSynced(false)
-        .podProductItemsWrapper(buildPodProductItems())
+        .podProductItemsWrapper(needChildrenItem ? buildPodProductItems() : new ArrayList<>())
         .build();
   }
-
-  private List<PodProductItem> buildPodProductItems() {
-    return FluentIterable.from(currentViewModels)
-        .transform(IssueVoucherProductViewModel::from)
-        .toList();
-  }
-
-  protected Observer<List<IssueVoucherProductViewModel>> viewModelsSubscribe =
-      new Observer<List<IssueVoucherProductViewModel>>() {
-        @Override
-        public void onCompleted() {
-          issueVoucherDraftView.loaded();
-          issueVoucherDraftView.onRefreshViewModels();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-          issueVoucherDraftView.loaded();
-          issueVoucherDraftView.onLoadViewModelsFailed(e);
-        }
-
-        @Override
-        public void onNext(List<IssueVoucherProductViewModel> issueVoucherProductViewModels) {
-          currentViewModels.addAll(issueVoucherProductViewModels);
-        }
-      };
 
   private Observable<List<IssueVoucherProductViewModel>> getObservableFromProducts(List<Product> products) {
     return Observable.create(subscriber -> {
@@ -163,6 +203,23 @@ public class IssueVoucherDraftPresenter extends Presenter {
         subscriber.onError(e);
       }
     });
+  }
+
+  private Observable<List<IssueVoucherProductViewModel>> getObservableFromDraft() {
+    return Observable.create(subscriber -> {
+      try {
+        Pod pod = podRepository.queryPod()
+      } catch (LMISException e) {
+       new LMISException(e, "get products from draft failed").reportToFabric();
+       subscriber.onError(e);
+      }
+    });
+  }
+
+  private List<PodProductItem> buildPodProductItems() {
+    return FluentIterable.from(currentViewModels)
+        .transform(IssueVoucherProductViewModel::from)
+        .toList();
   }
 
   public interface IssueVoucherDraftView extends BaseView {

@@ -43,6 +43,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.EditOrderNumberActivity;
+import org.openlmis.core.view.activity.IssueVoucherDraftActivity;
 import org.openlmis.core.view.activity.IssueVoucherInputOrderNumberActivity;
 import org.openlmis.core.view.activity.IssueVoucherReportActivity;
 import org.openlmis.core.view.adapter.IssueVoucherListAdapter;
@@ -172,6 +173,12 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
           null);
       dialogFragment.show(getParentFragmentManager(), "has_unmatched_pod_dialog");
       return;
+    }
+    if (presenter.isIssueVoucherDraftExisted(viewModel.getPod().getId(),
+        viewModel.getPod().getRequisitionProgramCode())) {
+      Intent intent = new Intent(getActivity(), IssueVoucherDraftActivity.class);
+      intent.putExtra(IntentConstants.PARAM_IS_DRAFT_ISSUE_VOUCHER, true);
+      startActivity(intent);
     }
     if (viewModel.isRemoteIssueVoucherOrPod()) {
       handleRemoteIssueOrPod(viewModel);

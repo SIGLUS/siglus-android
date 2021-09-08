@@ -31,6 +31,8 @@ public class IntentConstants {
 
   public static final String PARAM_SELECTED_PRODUCTS = "SELECTED_PRODUCTS";
 
-  public static final String CHOSEN_PROGRAM_CODE = "CHOSEN_PROGRAM_CODE";
+  public static final String PARAM_CHOSEN_PROGRAM_CODE = "CHOSEN_PROGRAM_CODE";
+
+  public static final String PARAM_IS_DRAFT_ISSUE_VOUCHER = "IS_DRAFT_ISSUE_VOUCHER";
 
 }

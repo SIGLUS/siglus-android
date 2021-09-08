@@ -27,6 +27,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.enumeration.IssueVoucherValidationType;
+import org.openlmis.core.model.DraftIssueVoucherProductItem;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.model.Product;
@@ -47,6 +49,7 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
   private StockCard stockCard;
   private IssueVoucherValidationType validationType;
   private boolean shouldShowError;
+  private DraftIssueVoucherProductItem productItem;
 
   public IssueVoucherProductViewModel(Product product) {
     this.product = product;
@@ -109,13 +112,17 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
     }
   }
 
-  private boolean isAllLotValid() {
-    for (IssueVoucherLotViewModel lotViewModel : lotViewModels) {
-      if (!lotViewModel.isValid()) {
-        return false;
-      }
+  public DraftIssueVoucherProductItem covertToDraft(Pod pod) {
+    if (productItem == null) {
+      productItem = new DraftIssueVoucherProductItem();
     }
-    return true;
+    return productItem
+        .setPod(pod)
+        .setProduct(product)
+        .setDone(done)
+        .setDraftLotItemListWrapper(FluentIterable.from(lotViewModels)
+            .transform(lotViewModel -> Objects.requireNonNull(lotViewModel).covertToDraft(productItem))
+            .toList());
   }
 
   public PodProductItem from() {
@@ -123,6 +130,15 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
         .product(product)
         .podProductLotItemsWrapper(buildPodProductLotItems())
         .build();
+  }
+
+  private boolean isAllLotValid() {
+    for (IssueVoucherLotViewModel lotViewModel : lotViewModels) {
+      if (!lotViewModel.isValid()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private List<PodProductLotItem> buildPodProductLotItems() {

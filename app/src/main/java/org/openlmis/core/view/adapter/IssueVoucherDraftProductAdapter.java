@@ -59,8 +59,6 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
   @Setter
   private OnRemoveListener removeListener;
 
-  private RecyclerView rvLots;
-
   public IssueVoucherDraftProductAdapter() {
     addItemType(IssueVoucherProductViewModel.TYPE_EDIT, R.layout.item_issue_voucher_draft_edit);
     addItemType(IssueVoucherProductViewModel.TYPE_DONE, R.layout.item_issue_voucher_draft_done);
@@ -101,6 +99,8 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
     private TextView tvErrorBanner;
 
     private TextView btnAddNewLot;
+
+    private RecyclerView rvLots;
 
     public IssueVoucherProductViewHolder(@NotNull View view) {
       super(view);

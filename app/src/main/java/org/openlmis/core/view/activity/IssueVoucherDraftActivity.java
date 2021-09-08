@@ -50,6 +50,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -65,8 +66,8 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   private RecyclerView rvIssueVoucher;
 
   @Getter(AccessLevel.PACKAGE)
-  @InjectView(R.id.bt_next)
-  private View btNext;
+  @InjectView(R.id.action_panel)
+  private ActionPanelView actionPanelView;
 
   @InjectView(R.id.cl_empty)
   private View emptyView;
@@ -77,7 +78,39 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   @Setter
   private String programCode;
 
-  IssueVoucherDraftProductAdapter issueVoucherDraftProductAdapter = new IssueVoucherDraftProductAdapter();
+  private final IssueVoucherDraftProductAdapter issueVoucherDraftProductAdapter = new IssueVoucherDraftProductAdapter();
+
+  private final SingleClickButtonListener actionPanelClickListener = new SingleClickButtonListener() {
+    @Override
+    public void onSingleClick(View v) {
+      if (v.getId() == R.id.btn_complete) {
+        hideKeyboard(v);
+        int position = issueVoucherDraftProductAdapter.validateAll();
+        if (position >= 0) {
+          LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvIssueVoucher.getLayoutManager();
+          linearLayoutManager.scrollToPositionWithOffset(position, 0);
+        } else {
+          openIssueVoucherReportPage();
+        }
+      } else {
+        issueVoucherDraftPresenter.saveIssueVoucherDraft(programCode);
+      }
+    }
+
+    private void openIssueVoucherReportPage() {
+      Intent intent = new Intent(IssueVoucherDraftActivity.this, IssueVoucherReportActivity.class);
+      intent.putExtra(PARAM_ISSUE_VOUCHER, issueVoucherDraftPresenter.coverToPodFromIssueVoucher(programCode, true));
+      issueVoucherReportLauncher.launch(intent);
+    }
+
+    private void hideKeyboard(View view) {
+      InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
+          Context.INPUT_METHOD_SERVICE);
+      if (inputMethodManager != null) {
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+      }
+    }
+  };
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -128,7 +161,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
 
       @Override
       public void negativeClick(String tag) {
-        // do nothing
+        dialogFragment.dismiss();
       }
     });
   }
@@ -136,10 +169,10 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    programCode = (String) getIntent().getSerializableExtra(IntentConstants.CHOSEN_PROGRAM_CODE);
+    programCode = (String) getIntent().getSerializableExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE);
     rvIssueVoucher.setLayoutManager(new LinearLayoutManager(this));
     issueVoucherDraftProductAdapter.setRemoveListener(this);
-    btNext.setOnClickListener(getNextButtonClickListener);
+    actionPanelView.setListener(actionPanelClickListener, actionPanelClickListener);
     rvIssueVoucher.setAdapter(issueVoucherDraftProductAdapter);
     issueVoucherDraftProductAdapter.registerAdapterDataObserver(dataObserver);
     issueVoucherDraftProductAdapter.setNewInstance(issueVoucherDraftPresenter.getCurrentViewModels());
@@ -159,7 +192,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   private void openAddProducts() {
     Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
     intent.putExtra(IS_FROM_BULK_ISSUE, false);
-    intent.putExtra(IntentConstants.CHOSEN_PROGRAM_CODE, programCode);
+    intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE, programCode);
     intent.putExtra(IntentConstants.PARAM_SELECTED_PRODUCTS,
         (Serializable) issueVoucherDraftPresenter.getAddedProductCodeList());
     addProductsLauncher.launch(intent);
@@ -187,7 +220,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
 
     private void updateUI() {
       int viewModelSize = issueVoucherDraftPresenter.getCurrentViewModels().size();
-      btNext.setVisibility(viewModelSize == 0 ? View.GONE : View.VISIBLE);
+      actionPanelView.setVisibility(viewModelSize == 0 ? View.GONE : View.VISIBLE);
       emptyView.setVisibility(viewModelSize == 0 ? View.VISIBLE : View.GONE);
       tvTotalAmount.setText(getString(R.string.label_total, viewModelSize));
     }
@@ -213,36 +246,6 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
       }
     });
   }
-
-  private final SingleClickButtonListener getNextButtonClickListener = new SingleClickButtonListener() {
-    @Override
-    public void onSingleClick(View v) {
-      if (v.getId() == R.id.bt_next) {
-        hideKeyboard(v);
-        int position = issueVoucherDraftProductAdapter.validateAll();
-        if (position >= 0) {
-          LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvIssueVoucher.getLayoutManager();
-          linearLayoutManager.scrollToPositionWithOffset(position, 0);
-        } else {
-          openIssueVoucherReportPage();
-        }
-      }
-    }
-
-    private void openIssueVoucherReportPage() {
-      Intent intent = new Intent(IssueVoucherDraftActivity.this, IssueVoucherReportActivity.class);
-      intent.putExtra(PARAM_ISSUE_VOUCHER, issueVoucherDraftPresenter.coverToPodFromIssueVoucher(programCode));
-      issueVoucherReportLauncher.launch(intent);
-    }
-
-    private void hideKeyboard(View view) {
-      InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
-          Context.INPUT_METHOD_SERVICE);
-      if (inputMethodManager != null) {
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-      }
-    }
-  };
 
   private final ActivityResultLauncher<Intent> issueVoucherReportLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {

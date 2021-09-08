@@ -272,7 +272,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
         }
         Intent intent = new Intent(this, IssueVoucherDraftActivity.class);
         intent.putExtra(IntentConstants.PARAM_ORDER_NUMBER, orderNumber);
-        intent.putExtra(IntentConstants.CHOSEN_PROGRAM_CODE, chosenProgram.getProgramCode());
+        intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE, chosenProgram.getProgramCode());
         intent.putExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE, chosenReason.getCode());
         intent.putExtra(SELECTED_PRODUCTS, result.getData().getSerializableExtra(SELECTED_PRODUCTS));
         issueVoucherActivityResultLauncher.launch(intent);

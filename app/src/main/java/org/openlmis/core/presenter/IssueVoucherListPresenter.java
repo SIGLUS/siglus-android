@@ -32,6 +32,7 @@ import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
+import org.openlmis.core.model.repository.IssueVoucherDraftRepository;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
@@ -56,6 +57,9 @@ public class IssueVoucherListPresenter extends Presenter {
 
   @Inject
   private SyncErrorsRepository syncErrorsRepository;
+
+  @Inject
+  private IssueVoucherDraftRepository issueVoucherDraftRepository;
 
   @Setter
   private boolean isIssueVoucher;
@@ -147,6 +151,16 @@ public class IssueVoucherListPresenter extends Presenter {
 
   public boolean hasUnmatchedPod(String programCode) {
     return podRepository.hasUnmatchedPodByProgram(programCode);
+  }
+
+  public boolean isIssueVoucherDraftExisted(long podId, String programCode) {
+    boolean hasDraft = false;
+    try {
+       hasDraft = issueVoucherDraftRepository.hasDraft(podId, programCode);
+    } catch (LMISException e) {
+      new LMISException(e, "judge issue voucher has draft failed").reportToFabric();
+    }
+    return hasDraft;
   }
 
   private void refreshViewModels() throws LMISException {

@@ -24,6 +24,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.openlmis.core.model.DraftIssueVoucherProductItem;
+import org.openlmis.core.model.DraftIssueVoucherProductLotItem;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.PodProductLotItem;
@@ -60,6 +62,8 @@ public class IssueVoucherLotViewModel implements MultiItemEntity {
   private boolean shouldShowError;
 
   private Lot lot;
+
+  private DraftIssueVoucherProductLotItem productLotItem;
 
   public IssueVoucherLotViewModel(String lotNumber, String expiryDate, Product product) {
     this.lotNumber = lotNumber;
@@ -130,6 +134,19 @@ public class IssueVoucherLotViewModel implements MultiItemEntity {
         .shippedQuantity(shippedQuantity)
         .acceptedQuantity(acceptedQuantity)
         .lot(lot)
+        .build();
+  }
+
+  public DraftIssueVoucherProductLotItem covertToDraft(DraftIssueVoucherProductItem productItem) {
+    return DraftIssueVoucherProductLotItem.builder()
+        .draftIssueVoucherProductItem(productItem)
+        .shippedQuantity(shippedQuantity)
+        .acceptedQuantity(acceptedQuantity)
+        .done(done)
+        .expirationDate(DateUtil.getActualMaximumDate(DateUtil
+            .parseString(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)))
+        .lotNumber(lotNumber)
+        .newAdded(isNewAdd)
         .build();
   }
 }
