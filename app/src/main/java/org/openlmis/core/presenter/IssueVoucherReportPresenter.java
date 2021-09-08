@@ -21,20 +21,36 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Objects;
+=======
+>>>>>>> [jingzhao] #166 update the save stock movement process
 import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.LotMovementItem;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
+<<<<<<< HEAD
+=======
+import org.openlmis.core.model.PodProductLotItem;
+import org.openlmis.core.model.Product;
+>>>>>>> [jingzhao] #166 update the save stock movement process
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableMap;
 import roboguice.inject.ContextSingleton;
 import rx.Observable;
 import rx.Subscription;
@@ -47,6 +63,9 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
   @Inject
   PodRepository podRepository;
+
+  @Inject
+  StockRepository stockRepository;
 
   @Inject
   private ProgramRepository programRepository;
@@ -117,10 +136,6 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     }
   }
 
-  protected Action1<Pod> loadDataOnNextAction = podContent -> {
-    loadViewModelByPod(podContent, false);
-  };
-
   public void deleteIssueVoucher() {
     try {
       podRepository.deleteByOrderCode(pod.getOrderCode());
@@ -158,6 +173,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
         }
         setPodItems();
         podRepository.createOrUpdateWithItems(pod);
+        saveStockManagement(pod);
         subscriber.onCompleted();
       } catch (LMISException e) {
         new LMISException(e, "Pod.getCompleteFormObservable").reportToFabric();
@@ -187,4 +203,81 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
     void refreshIssueVoucherForm(Pod pod);
   }
+
+  protected Action1<Pod> loadDataOnNextAction = podContent -> {
+    loadViewModelByPod(podContent);
+  };
+
+  private void saveStockManagement(Pod pod) throws LMISException {
+    List<StockCard> stockCards = stockRepository.getStockCardsAndLotsOnHandForProgram(pod.getRequisitionProgramCode());
+    List<Long> needUpdatedArchived = new ArrayList<>();
+    List<StockMovementItem> stockMovementItems = new ArrayList<>();
+    ImmutableMap<Long, StockCard> productIdToStockCard = FluentIterable.from(stockCards)
+        .uniqueIndex(stockCard -> stockCard.getProduct().getId());
+    for (PodProductItem podProductItem : pod.getPodProductItemsWrapper()) {
+      Product product = podProductItem.getProduct();
+      long productId = podProductItem.getProduct().getId();
+      StockCard stockCard;
+      if (productIdToStockCard.containsKey(productId)) {
+        stockCard = productIdToStockCard.get(productId);
+      } else {
+        stockCard = new StockCard();
+      }
+      needUpdatedArchived.add(product.getId());
+      stockCard.setProduct(podProductItem.getProduct());
+      long soh = stockCard.getStockOnHand();
+      long changeQuality = getChangeQuality(podProductItem);
+      stockCard.setStockOnHand(soh + changeQuality);
+      StockMovementItem movementItem = buildStockMovementItem(stockCard, podProductItem, changeQuality);
+      stockMovementItems.add(movementItem);
+    }
+    stockRepository.addStockMovementsAndUpdateStockCard(stockMovementItems);
+  }
+
+  private long getChangeQuality(PodProductItem podProductItem) {
+    long acceptedQuantity = 0;
+    for (PodProductLotItem lotItem : podProductItem.getPodProductLotItemsWrapper()) {
+      acceptedQuantity += lotItem.getAcceptedQuantity();
+    }
+    return acceptedQuantity;
+  }
+
+  private StockMovementItem buildStockMovementItem(StockCard stockCard, PodProductItem podProductItem,
+      long changeQuality) {
+    StockMovementItem stockMovementItem = new StockMovementItem();
+    stockMovementItem.setMovementDate(DateUtil.getCurrentDate());
+    stockMovementItem.setStockCard(stockCard);
+    stockMovementItem.setMovementType(MovementType.RECEIVE);
+    stockMovementItem.setReason(pod.getStockManagementReason());
+    stockMovementItem.setMovementQuantity(changeQuality);
+    stockMovementItem.setDocumentNumber(pod.getDocumentNo());
+    stockMovementItem.setStockOnHand(stockCard.getStockOnHand());
+    stockMovementItem.setSignature(pod.getReceivedBy());
+    ImmutableMap<Long, LotOnHand> lotIdToLotOnHands = FluentIterable.from(stockCard.getLotOnHandListWrapper())
+        .uniqueIndex(lotOnHand -> lotOnHand.getId());
+    stockMovementItem.setLotMovementItemListWrapper(
+        FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
+            .transform(podLotItem -> buildLotMovementItem(stockMovementItem, podLotItem, lotIdToLotOnHands)).toList());
+    return stockMovementItem;
+  }
+
+  private LotMovementItem buildLotMovementItem(StockMovementItem stockMovementItem, PodProductLotItem podLotItem,
+      ImmutableMap<Long, LotOnHand> idToLotOnHand) {
+    LotMovementItem lotMovementItem = new LotMovementItem();
+    Lot lot = podLotItem.getLot();
+    lotMovementItem.setLot(podLotItem.getLot());
+    long acceptedQuantity = podLotItem.getAcceptedQuantity();
+    if (idToLotOnHand.containsKey(lot.getId())) {
+      long lotOnHand = lotMovementItem.getStockOnHand();
+      lotMovementItem.setStockOnHand(lotOnHand + acceptedQuantity);
+    } else {
+      lotMovementItem.setStockOnHand(acceptedQuantity);
+    }
+    lotMovementItem.setMovementQuantity(podLotItem.getAcceptedQuantity());
+    lotMovementItem.setReason(stockMovementItem.getReason());
+    lotMovementItem.setStockMovementItem(stockMovementItem);
+    lotMovementItem.setDocumentNumber(stockMovementItem.getDocumentNumber());
+    return lotMovementItem;
+  }
+
 }
