@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.viewmodel.IssueVoucherLotViewModel;
 
 @Setter
 @Getter
@@ -41,6 +42,17 @@ public class DraftIssueVoucherProductLotItem  extends BaseModel {
 
   @DatabaseField
   boolean done;
+
+  public IssueVoucherLotViewModel from() {
+    return IssueVoucherLotViewModel.builder()
+        .product(draftIssueVoucherProductItem.getProduct())
+        .done(done)
+        .shippedQuantity(shippedQuantity)
+        .acceptedQuantity(acceptedQuantity)
+        .lotNumber(lotNumber)
+        .expiryDate(DateUtil.formatDate(expirationDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR))
+        .build();
+  }
 
 
 

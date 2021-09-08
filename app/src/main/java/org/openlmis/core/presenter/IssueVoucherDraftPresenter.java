@@ -115,10 +115,16 @@ public class IssueVoucherDraftPresenter extends Presenter {
   public void initialViewModels(Intent intent) {
     orderNumber = (String) intent.getSerializableExtra(IntentConstants.PARAM_ORDER_NUMBER);
     movementReasonCode = (String) intent.getSerializableExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE);
+    Pod pod = (Pod) intent.getSerializableExtra(IntentConstants.PARAM_DRAFT_ISSUE_VOUCHER);
     issueVoucherDraftView.loading();
     currentViewModels.clear();
-    Observable<List<IssueVoucherProductViewModel>> initObservable = getObservableFromProducts(
-        (List<Product>) intent.getSerializableExtra(IntentConstants.PARAM_SELECTED_PRODUCTS));
+    Observable<List<IssueVoucherProductViewModel>> initObservable;
+    if (pod != null) {
+      initObservable = getObservableFromDraft(pod.getId());
+    } else {
+      initObservable = getObservableFromProducts(
+          (List<Product>) intent.getSerializableExtra(IntentConstants.PARAM_SELECTED_PRODUCTS));
+    }
     Subscription subscription = initObservable
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -205,10 +211,17 @@ public class IssueVoucherDraftPresenter extends Presenter {
     });
   }
 
-  private Observable<List<IssueVoucherProductViewModel>> getObservableFromDraft() {
+  private Observable<List<IssueVoucherProductViewModel>> getObservableFromDraft(Long podId) {
     return Observable.create(subscriber -> {
       try {
-        Pod pod = podRepository.queryPod()
+        Pod pod = podRepository.queryById(podId);
+        orderNumber = pod.getOrderCode();
+        movementReasonCode = pod.getStockManagementReason();
+        List<DraftIssueVoucherProductItem> productItems = issueVoucherDraftRepository.queryByPodId(podId);
+        List<IssueVoucherProductViewModel> productViewModels = FluentIterable.from(productItems)
+            .transform(DraftIssueVoucherProductItem::from).toList();
+        subscriber.onNext(productViewModels);
+        subscriber.onCompleted();
       } catch (LMISException e) {
        new LMISException(e, "get products from draft failed").reportToFabric();
        subscriber.onError(e);

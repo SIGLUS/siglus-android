@@ -43,7 +43,7 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
 
   public static final int TYPE_EDIT = 1;
   public static final int TYPE_DONE = 2;
-  private final List<IssueVoucherLotViewModel> lotViewModels = new ArrayList<>();
+  private List<IssueVoucherLotViewModel> lotViewModels = new ArrayList<>();
   private boolean done;
   private Product product;
   private StockCard stockCard;

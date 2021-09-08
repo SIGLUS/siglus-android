@@ -12,6 +12,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.openlmis.core.utils.ListUtil;
+import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Setter
 @Getter
@@ -36,5 +39,21 @@ public class DraftIssueVoucherProductItem extends BaseModel{
   private ForeignCollection<DraftIssueVoucherProductLotItem> foreignDraftLotItems;
 
   private List<DraftIssueVoucherProductLotItem> draftLotItemListWrapper;
+
+  public List<DraftIssueVoucherProductLotItem> getDraftLotItemListWrapper() {
+    draftLotItemListWrapper = ListUtil.wrapOrEmpty(foreignDraftLotItems, draftLotItemListWrapper);
+    return draftLotItemListWrapper;
+  }
+
+  public IssueVoucherProductViewModel from() {
+    return IssueVoucherProductViewModel.builder()
+        .product(product)
+        .done(done)
+        .productItem(this)
+        .lotViewModels(FluentIterable.from(getDraftLotItemListWrapper())
+            .transform(DraftIssueVoucherProductLotItem::from)
+            .toList())
+        .build();
+  }
 
 }

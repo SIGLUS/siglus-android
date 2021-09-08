@@ -50,17 +50,20 @@ public class IssueVoucherDraftRepository {
     });
   }
 
-  public List<DraftIssueVoucherProductItem> queryAllDraftIssueVoucherProductItem() throws LMISException {
+  public List<DraftIssueVoucherProductItem> listAll() throws LMISException {
     return productItemGenericDao.queryForAll();
   }
 
-  public boolean hasDraft(long podId, String programCode) throws LMISException {
+  public List<DraftIssueVoucherProductItem> queryByPodId(long podId) throws LMISException {
+    return dbUtil.withDao(DraftIssueVoucherProductItem.class, dao ->
+        dao.queryBuilder().where().eq("pod_id", podId).query());
+  }
+
+  public boolean hasDraft(long podId) throws LMISException {
     DraftIssueVoucherProductItem productItem = dbUtil.withDao(DraftIssueVoucherProductItem.class, dao ->
         dao.queryBuilder()
             .where()
             .eq("pod_id", podId)
-            .and()
-            .eq("requisitionProgramCode", programCode)
             .queryForFirst());
     return productItem != null;
   }

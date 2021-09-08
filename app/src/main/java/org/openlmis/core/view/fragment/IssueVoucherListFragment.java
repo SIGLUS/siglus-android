@@ -174,11 +174,8 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
       dialogFragment.show(getParentFragmentManager(), "has_unmatched_pod_dialog");
       return;
     }
-    if (presenter.isIssueVoucherDraftExisted(viewModel.getPod().getId(),
-        viewModel.getPod().getRequisitionProgramCode())) {
-      Intent intent = new Intent(getActivity(), IssueVoucherDraftActivity.class);
-      intent.putExtra(IntentConstants.PARAM_IS_DRAFT_ISSUE_VOUCHER, true);
-      startActivity(intent);
+    if (presenter.isIssueVoucherDraftExisted(viewModel.getPod().getId())) {
+      handleLocalDraftIssueVoucher(viewModel);
     }
     if (viewModel.isRemoteIssueVoucherOrPod()) {
       handleRemoteIssueOrPod(viewModel);
@@ -196,6 +193,13 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
         requireActivity().getResources().getDimensionPixelOffset(R.dimen.px_16));
     view.setLayoutParams(layoutParams);
     return view;
+  }
+
+  private void handleLocalDraftIssueVoucher(IssueVoucherListViewModel viewModel) {
+    Intent intent = new Intent(getActivity(), IssueVoucherDraftActivity.class);
+    intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE, viewModel.getPod().getRequisitionProgramCode());
+    intent.putExtra(IntentConstants.PARAM_DRAFT_ISSUE_VOUCHER, viewModel.getPod());
+    startActivity(intent);
   }
 
   private void handleRemoteIssueOrPod(IssueVoucherListViewModel viewModel) {

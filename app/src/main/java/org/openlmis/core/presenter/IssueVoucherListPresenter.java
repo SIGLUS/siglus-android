@@ -153,10 +153,10 @@ public class IssueVoucherListPresenter extends Presenter {
     return podRepository.hasUnmatchedPodByProgram(programCode);
   }
 
-  public boolean isIssueVoucherDraftExisted(long podId, String programCode) {
+  public boolean isIssueVoucherDraftExisted(long podId) {
     boolean hasDraft = false;
     try {
-       hasDraft = issueVoucherDraftRepository.hasDraft(podId, programCode);
+       hasDraft = issueVoucherDraftRepository.hasDraft(podId);
     } catch (LMISException e) {
       new LMISException(e, "judge issue voucher has draft failed").reportToFabric();
     }
