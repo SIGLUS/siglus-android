@@ -31,6 +31,7 @@ import org.openlmis.core.presenter.BulkInitialInventoryPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
@@ -133,14 +134,18 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
   @Override
   protected void setTotal() {
     int total = 0;
+    int completed = 0;
     for (InventoryViewModel model : presenter.getInventoryViewModelList()) {
       if (model.getProductId() != 0
           && (model.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC
           || model.getViewType() == BulkInitialInventoryAdapter.ITEM_NO_BASIC)) {
+        if (model instanceof BulkInitialInventoryViewModel && ((BulkInitialInventoryViewModel) model).isDone()) {
+          completed++;
+        }
         total++;
       }
     }
-    tvTotal.setText(getString(R.string.label_total, total));
+    tvTotal.setText(getString(R.string.label_total_complete_counts, completed, total));
   }
 
   @Override
