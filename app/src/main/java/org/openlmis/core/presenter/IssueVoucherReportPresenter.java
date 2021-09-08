@@ -138,7 +138,13 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
   public void deleteIssueVoucher() {
     try {
-      podRepository.deleteByOrderCode(pod.getOrderCode());
+      if (pod.isLocal()) {
+        podRepository.deleteByOrderCode(pod.getOrderCode());
+      } else {
+        pod.setPodProductItemsWrapper(FluentIterable.from(issueVoucherReportViewModel.getProductViewModels())
+            .transform(productViewModel -> productViewModel.restoreToPodProductModelForRemote()).toList());
+        podRepository.createOrUpdateWithItems(pod);
+      }
     } catch (Exception e) {
       new LMISException(e, "deleteIssueVoucher").reportToFabric();
     }

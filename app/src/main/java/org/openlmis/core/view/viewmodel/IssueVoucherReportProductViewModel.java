@@ -65,6 +65,19 @@ public class IssueVoucherReportProductViewModel {
     return podProductItem;
   }
 
+  public PodProductItem restoreToPodProductModelForRemote() {
+    List<PodProductLotItem> lotItems = FluentIterable.from(lotViewModelList).transform(lotViewModel -> {
+      PodProductLotItem lotItem = lotViewModel.convertToModel();
+      lotItem.setPodProductItem(podProductItem);
+      lotItem.setAcceptedQuantity(null);
+      lotItem.setRejectedReason(null);
+      lotItem.setNotes(null);
+      return lotItem;
+    }).toList();
+    podProductItem.setPodProductLotItemsWrapper(lotItems);
+    return podProductItem;
+  }
+
   public boolean validate() {
     for (IssueVoucherReportLotViewModel lotViewModel : lotViewModelList) {
       if (lotViewModel.getOrderStatus() == OrderStatus.SHIPPED && isContainInvalidateQuantity(lotViewModel)) {
