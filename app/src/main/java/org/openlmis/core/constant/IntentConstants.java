@@ -35,4 +35,10 @@ public class IntentConstants {
 
   public static final String PARAM_DRAFT_ISSUE_VOUCHER = "DRAFT_ISSUE_VOUCHER";
 
+  public static final String IS_FROM_BULK_ISSUE = "IS_FROM_ISSUE";
+
+  public static final String FROM_PAGE = "FROM_PAGE";
+
+  public static final String PARAM_PREVIOUS_SELECTED_PRODUCTS = "PARAM_PREVIOUS_SELECTED_PRODUCTS";
+
 }

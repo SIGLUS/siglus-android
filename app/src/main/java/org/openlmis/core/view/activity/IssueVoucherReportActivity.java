@@ -23,11 +23,14 @@ import static org.openlmis.core.view.widget.DoubleRecycleViewScrollListener.scro
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.Setter;
 import org.openlmis.core.R;
@@ -84,6 +87,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   private Long podId;
   private Pod pod;
   private String pageName;
+  private boolean isBackToCurrentPage;
   private IssueVoucherProductAdapter productAdapter;
   private IssueVoucherReportAdapter issueVoucherReportAdapter;
   private RecyclerView.OnScrollListener[] listeners;
@@ -96,6 +100,8 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     pageName = toPage == null ? Constants.PARAM_ISSUE_VOUCHER : toPage;
     if (getIntent().getExtras() != null) {
       pod = (Pod) getIntent().getExtras().getSerializable(Constants.PARAM_ISSUE_VOUCHER);
+      isBackToCurrentPage = ScreenName.ISSUE_VOUCHER_REPORT_SCREEN
+          == getIntent().getExtras().getSerializable(IntentConstants.FROM_PAGE);
     }
     String reason = getIntent().getStringExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE);
     if (reason != null) {
@@ -108,7 +114,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     if (savedInstanceState != null && presenter.getIssueVoucherReportViewModel() != null) {
       refreshIssueVoucherForm(presenter.pod);
     } else if (pod != null) {
-      presenter.loadViewModelByPod(pod);
+      presenter.loadViewModelByPod(pod, isBackToCurrentPage);
     } else {
       presenter.loadData(podId);
     }
@@ -152,6 +158,34 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
       actionPanelView.setVisibility(View.VISIBLE);
       actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
     }
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    super.onCreateOptionsMenu(menu);
+    getMenuInflater().inflate(R.menu.menu_issue_voucher_draft, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == R.id.action_add_product) {
+      openAddProducts();
+      return true;
+    } else {
+      return super.onOptionsItemSelected(item);
+    }
+  }
+
+  private void openAddProducts() {
+    Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
+    intent.putExtra(IntentConstants.IS_FROM_BULK_ISSUE, false);
+    intent.putExtra(IntentConstants.FROM_PAGE, getScreenName());
+    intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE,
+        presenter.getIssueVoucherReportViewModel().getProgram().getProgramCode());
+    intent.putExtra(IntentConstants.PARAM_SELECTED_PRODUCTS,
+        (Serializable) presenter.getAddedProductCodeList());
+    startActivity(intent);
   }
 
   private void initIssueVoucherList() {

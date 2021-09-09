@@ -19,10 +19,14 @@
 package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -52,6 +56,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   IssueVoucherView issueVoucherView;
   @Getter
   IssueVoucherReportViewModel issueVoucherReportViewModel;
+
   public Pod pod;
 
   public void loadData(long podId) {
@@ -93,8 +98,14 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     issueVoucherView = (IssueVoucherView) v;
   }
 
-  public void loadViewModelByPod(Pod podContent) {
-    pod = podContent;
+  public void loadViewModelByPod(Pod podContent, boolean isBackToCurrentPage) {
+    if (isBackToCurrentPage) {
+      List<PodProductItem> existedProducts = new ArrayList<>(pod.getPodProductItemsWrapper());
+      existedProducts.addAll(podContent.getPodProductItemsWrapper());
+      pod.setPodProductItemsWrapper(existedProducts);
+    } else {
+      pod = podContent;
+    }
     try {
       Program program = programRepository.queryByCode(pod.getRequisitionProgramCode());
       issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
@@ -107,7 +118,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   }
 
   protected Action1<Pod> loadDataOnNextAction = podContent -> {
-    loadViewModelByPod(podContent);
+    loadViewModelByPod(podContent, false);
   };
 
   public void deleteIssueVoucher() {
@@ -159,6 +170,12 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     pod.setPodProductItemsWrapper(FluentIterable.from(
         issueVoucherReportViewModel.getProductViewModels())
         .transform(productViewModel -> productViewModel.convertToPodProductModel()).toList());
+  }
+
+  public List<String> getAddedProductCodeList() {
+    return FluentIterable.from(issueVoucherReportViewModel.getProductViewModels())
+        .transform(viewModel -> Objects.requireNonNull(viewModel).getProduct().getCode())
+        .toList();
   }
 
   protected Action1<Throwable> loadDataOnErrorAction = throwable -> {

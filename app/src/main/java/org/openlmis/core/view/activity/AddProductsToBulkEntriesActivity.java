@@ -24,6 +24,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +36,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.R;
+import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.AddProductsToBulkEntriesPresenter;
@@ -74,10 +77,13 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
 
   private String programCode;
 
+  private ScreenName fromPage;
+
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_PRODUCTS);
     programCode = (String) getIntent().getSerializableExtra(CHOSEN_PROGRAM_CODE);
+    fromPage = (ScreenName) getIntent().getSerializableExtra(IntentConstants.FROM_PAGE);
     super.onCreate(savedInstanceState);
     initRecyclerView();
     loading(getString(R.string.add_all_products_loading_message));
@@ -154,13 +160,29 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
       if (selectedProducts.isEmpty()) {
         ToastUtil.show(R.string.msg_no_product_added);
       } else {
-        Intent intent = new Intent();
-        intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+        if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
+          Intent intent = new Intent(this, IssueVoucherDraftActivity.class);
+          intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
+          intent.putExtra(IntentConstants.PARAM_PREVIOUS_SELECTED_PRODUCTS, (Serializable) previouslyProductCodes);
+          intent.putExtra(CHOSEN_PROGRAM_CODE, programCode);
+          intent.putExtra(IntentConstants.FROM_PAGE, fromPage);
+          issueVoucherDraftLauncher.launch(intent);
+        } else {
+          Intent intent = new Intent();
+          intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
+          setResult(Activity.RESULT_OK, intent);
+          finish();
+        }
       }
     };
   }
+
+  private final ActivityResultLauncher<Intent> issueVoucherDraftLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null) {
+          finish();
+        }
+      });
 
   private void setUpFastScroller(List<ProductsToBulkEntriesViewModel> viewModels) {
     fastScroller.setVisibility(View.VISIBLE);

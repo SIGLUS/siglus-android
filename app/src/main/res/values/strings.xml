@@ -693,5 +693,6 @@
   <string name="msg_title_for_signature">Proof of Delivery for</string>
   <string name="msg_receive_for_signature">Received By</string>
   <string name="msg_delivered_for_signature">Delivered By</string>
+  <string name="btn_next">NEXT</string>
 
 </resources>

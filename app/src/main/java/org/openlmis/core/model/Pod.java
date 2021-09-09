@@ -34,6 +34,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.utils.ListUtil;
 
@@ -114,6 +115,7 @@ public class Pod extends BaseModel implements Serializable {
   @ForeignCollectionField
   private ForeignCollection<PodProductItem> podProductItemForeignCollection;
 
+  @Setter
   private List<PodProductItem> podProductItemsWrapper;
 
   public List<PodProductItem> getPodProductItemsWrapper() {

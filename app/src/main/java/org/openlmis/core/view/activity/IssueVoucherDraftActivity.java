@@ -36,6 +36,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -79,6 +80,12 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   @Setter
   private String programCode;
 
+  private ScreenName fromPage;
+
+  private List<String> productsInReport = new ArrayList<>();
+
+  private List<String> selectedProductCodes;
+
   IssueVoucherDraftProductAdapter issueVoucherDraftProductAdapter = new IssueVoucherDraftProductAdapter();
 
   private final SingleClickButtonListener actionPanelClickListener = new SingleClickButtonListener() {
@@ -102,7 +109,10 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
     private void openIssueVoucherReportPage() {
       Intent intent = new Intent(IssueVoucherDraftActivity.this, IssueVoucherReportActivity.class);
       intent.putExtra(PARAM_ISSUE_VOUCHER, issueVoucherDraftPresenter.coverToPodFromIssueVoucher(programCode, true));
-      issueVoucherReportLauncher.launch(intent);
+      if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
+        intent.putExtra(IntentConstants.FROM_PAGE, fromPage);
+      }
+      startActivity(intent);
     }
 
     private void hideKeyboard(View view) {
@@ -111,6 +121,34 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
       if (inputMethodManager != null) {
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
       }
+    }
+  };
+
+  private final ActivityResultLauncher<Intent> addProductsLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null) {
+          return;
+        }
+        issueVoucherDraftPresenter.addProducts((List<Product>)
+            result.getData().getSerializableExtra(IntentConstants.PARAM_SELECTED_PRODUCTS));
+      });
+
+  private final RecyclerView.AdapterDataObserver dataObserver = new AdapterDataObserver() {
+    @Override
+    public void onChanged() {
+      updateUI();
+    }
+
+    @Override
+    public void onItemRangeChanged(int positionStart, int itemCount) {
+      updateUI();
+    }
+
+    private void updateUI() {
+      int viewModelSize = issueVoucherDraftPresenter.getCurrentViewModels().size();
+      actionPanelView.setVisibility(viewModelSize == 0 ? View.GONE : View.VISIBLE);
+      emptyView.setVisibility(viewModelSize == 0 ? View.VISIBLE : View.GONE);
+      tvTotalAmount.setText(getString(R.string.label_total, viewModelSize));
     }
   };
 
@@ -153,7 +191,9 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
 
   @Override
   public void onBackPressed() {
-    if (issueVoucherDraftPresenter.needConfirm()) {
+    if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
+      finish();
+    } else if (issueVoucherDraftPresenter.needConfirm()) {
       showConfirmDialog();
     } else {
       backToIssueVoucherListActivity();
@@ -186,9 +226,17 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     programCode = (String) getIntent().getSerializableExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE);
+    fromPage = (ScreenName) getIntent().getSerializableExtra(IntentConstants.FROM_PAGE);
+    productsInReport = (List<String>) getIntent().getSerializableExtra(
+        IntentConstants.PARAM_PREVIOUS_SELECTED_PRODUCTS);
+    if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
+      actionPanelView.setNegativeButtonVisibility(View.GONE);
+      actionPanelView.getBtnComplete().setWidth((int) getResources().getDimension(R.dimen.px_220));
+    }
+    actionPanelView.setListener(actionPanelClickListener, actionPanelClickListener);
+    actionPanelView.setPositiveButtonText(getString(R.string.btn_next));
     rvIssueVoucher.setLayoutManager(new LinearLayoutManager(this));
     issueVoucherDraftProductAdapter.setRemoveListener(this);
-    actionPanelView.setListener(actionPanelClickListener, actionPanelClickListener);
     rvIssueVoucher.setAdapter(issueVoucherDraftProductAdapter);
     issueVoucherDraftProductAdapter.registerAdapterDataObserver(dataObserver);
     issueVoucherDraftProductAdapter.setNewInstance(issueVoucherDraftPresenter.getCurrentViewModels());
@@ -209,38 +257,15 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
     Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
     intent.putExtra(IS_FROM_BULK_ISSUE, false);
     intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE, programCode);
-    intent.putExtra(IntentConstants.PARAM_SELECTED_PRODUCTS,
-        (Serializable) issueVoucherDraftPresenter.getAddedProductCodeList());
+    if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
+      productsInReport.addAll(issueVoucherDraftPresenter.getAddedProductCodeList());
+      selectedProductCodes = new ArrayList<>(productsInReport);
+    } else {
+      selectedProductCodes = issueVoucherDraftPresenter.getAddedProductCodeList();
+    }
+    intent.putExtra(IntentConstants.PARAM_SELECTED_PRODUCTS, (Serializable) selectedProductCodes);
     addProductsLauncher.launch(intent);
   }
-
-  private final ActivityResultLauncher<Intent> addProductsLauncher = registerForActivityResult(
-      new StartActivityForResult(), result -> {
-        if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null) {
-          return;
-        }
-        issueVoucherDraftPresenter.addProducts((List<Product>)
-            result.getData().getSerializableExtra(IntentConstants.PARAM_SELECTED_PRODUCTS));
-      });
-
-  private final RecyclerView.AdapterDataObserver dataObserver = new AdapterDataObserver() {
-    @Override
-    public void onChanged() {
-      updateUI();
-    }
-
-    @Override
-    public void onItemRangeChanged(int positionStart, int itemCount) {
-      updateUI();
-    }
-
-    private void updateUI() {
-      int viewModelSize = issueVoucherDraftPresenter.getCurrentViewModels().size();
-      actionPanelView.setVisibility(viewModelSize == 0 ? View.GONE : View.VISIBLE);
-      emptyView.setVisibility(viewModelSize == 0 ? View.VISIBLE : View.GONE);
-      tvTotalAmount.setText(getString(R.string.label_total, viewModelSize));
-    }
-  };
 
   private void showConfirmDialog() {
     SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
@@ -264,13 +289,6 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
       }
     });
   }
-
-  private final ActivityResultLauncher<Intent> issueVoucherReportLauncher = registerForActivityResult(
-      new StartActivityForResult(), result -> {
-        if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null) {
-          return;
-        }
-      });
 
   private void backToIssueVoucherListActivity() {
     Intent intent = new Intent(this, IssueVoucherListActivity.class);
