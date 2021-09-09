@@ -84,8 +84,6 @@ public class IssueVoucherDraftPresenterTest {
 
     // then
     assertEquals(1, presenter.getCurrentViewModels().size());
-    verify(mockView, times(1)).loading();
-    verify(mockView, times(1)).loaded();
     verify(mockView, times(1)).onRefreshViewModels();
   }
 
