@@ -16,21 +16,18 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.network.model;
+package org.openlmis.core.annotation;
 
-import java.util.List;
-import lombok.Data;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Data
-public class DirtyDataItemEntry {
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import retrofit.http.RestMethod;
 
-  private String productCode;
-  private List<StockMovementEntry> clientMovements;
-  private boolean fullyDelete = true;
-
-  public DirtyDataItemEntry(String productCode, List<StockMovementEntry> clientMovements, boolean fullyDelete) {
-    this.productCode = productCode;
-    this.clientMovements = clientMovements;
-    this.fullyDelete = fullyDelete;
-  }
+@Target(METHOD)
+@Retention(RUNTIME)
+@RestMethod(value = "DELETE", hasBody = true)
+public @interface DeleteWithBody {
+  String value();
 }

@@ -22,8 +22,11 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.text.TextUtils;
 import android.util.Log;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nullable;
@@ -347,10 +350,11 @@ public class SyncUpManager {
 
   public boolean syncDeleteMovement() {
     int unitCount = 30;
-    String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
     List<DirtyDataItemInfo> itemInfos = dirtyDataRepository.listunSyced();
-
     if (!CollectionUtils.isEmpty(itemInfos)) {
+      Gson gson = new Gson();
+      Type type = new TypeToken<List<StockMovementEntry>>() {
+      }.getType();
       List<DirtyDataItemEntry> entries = FluentIterable.from(itemInfos)
           .transform(new Function<DirtyDataItemInfo, DirtyDataItemEntry>() {
             @Nullable
@@ -358,24 +362,23 @@ public class SyncUpManager {
             public DirtyDataItemEntry apply(@Nullable DirtyDataItemInfo dirtyDataItemInfo) {
               Objects.requireNonNull(dirtyDataItemInfo);
               return new DirtyDataItemEntry(dirtyDataItemInfo.getProductCode(),
-                  dirtyDataItemInfo.getJsonData(), dirtyDataItemInfo.isFullyDelete());
+                  gson.fromJson(dirtyDataItemInfo.getJsonData(), type), dirtyDataItemInfo.isFullyDelete());
             }
           }).toList();
       boolean isSyncedSuccessed = true;
       for (int start = 0; start < entries.size(); ) {
-        int end = (start + unitCount) >= entries.size() ? entries.size() : start + unitCount;
+        int end = Math.min((start + unitCount), entries.size());
         List<DirtyDataItemEntry> sub = entries.subList(start, end);
         try {
-          lmisRestApi.syncUpDeletedData(Long.parseLong(facilityId), sub);
+          lmisRestApi.syncUpDeletedData(sub);
           List<DirtyDataItemInfo> itemInfoList = itemInfos.subList(start, end);
-          dbUtil.withDaoAsBatch(DirtyDataItemInfo.class,
-              (DbUtil.Operation<DirtyDataItemInfo, Void>) dao -> {
-                for (DirtyDataItemInfo item : itemInfoList) {
-                  item.setSynced(true);
-                  dao.createOrUpdate(item);
-                }
-                return null;
-              });
+          dbUtil.withDaoAsBatch(DirtyDataItemInfo.class, (DbUtil.Operation<DirtyDataItemInfo, Void>) dao -> {
+            for (DirtyDataItemInfo item : itemInfoList) {
+              item.setSynced(true);
+              dao.createOrUpdate(item);
+            }
+            return null;
+          });
         } catch (LMISException e) {
           isSyncedSuccessed = false;
           new LMISException(e, "SyncUpManager.syncUpDeletedData").reportToFabric();

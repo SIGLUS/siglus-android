@@ -1,1 +1,247 @@
-"[{\"createdTime\":\"20190522T022700.000-0400\",\"customProps\":{\"signature\":\"MA\",\"SOH\":\"0\"},\"facilityId\":\"61\",\"lotEventList\":[],\"occurred\":\"2019-05-22\",\"productCode\":\"08N04Z\",\"quantity\":0,\"reasonName\":\"INVENTORY\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20190618T031250.000-0400\",\"customProps\":{\"signature\":\"MA\",\"SOH\":\"100\"},\"facilityId\":\"61\",\"lotEventList\":[{\"customProps\":{\"SOH\":\"100\"},\"expirationDate\":\"2019-07-30\",\"lotNumber\":\"ET378E5030\",\"quantity\":100}],\"occurred\":\"2019-06-14\",\"productCode\":\"08N04Z\",\"quantity\":100,\"reasonName\":\"DISTRICT_DDM\",\"referenceNumber\":\"731\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20190623T144427.000-0400\",\"customProps\":{\"signature\":\"ma\",\"SOH\":\"100\"},\"facilityId\":\"61\",\"lotEventList\":[{\"customProps\":{\"SOH\":\"100\"},\"expirationDate\":\"2019-07-30\",\"lotNumber\":\"ET378E5030\",\"quantity\":0}],\"occurred\":\"2019-06-23\",\"productCode\":\"08N04Z\",\"quantity\":0,\"reasonName\":\"INVENTORY\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20190718T020052.000-0400\",\"customProps\":{\"signature\":\"MA\",\"SOH\":\"0\"},\"facilityId\":\"61\",\"lotEventList\":[{\"customProps\":{\"SOH\":\"0\"},\"expirationDate\":\"2019-07-30\",\"lotNumber\":\"ET378E5030\",\"quantity\":-100}],\"occurred\":\"2019-07-02\",\"productCode\":\"08N04Z\",\"quantity\":100,\"reasonName\":\"ACC_EMERGENCY\",\"referenceNumber\":\"731\",\"requestedQuantity\":100,\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20190720T231445.000-0400\",\"customProps\":{\"signature\":\"ma\",\"SOH\":\"0\"},\"facilityId\":\"61\",\"lotEventList\":[],\"occurred\":\"2019-07-21\",\"productCode\":\"08N04Z\",\"quantity\":0,\"reasonName\":\"INVENTORY\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20190822T061439.000-0400\",\"customProps\":{\"signature\":\"ma\",\"SOH\":\"0\"},\"facilityId\":\"61\",\"lotEventList\":[],\"occurred\":\"2019-08-22\",\"productCode\":\"08N04Z\",\"quantity\":0,\"reasonName\":\"INVENTORY\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20190921T144341.000-0400\",\"customProps\":{\"signature\":\"ma\",\"SOH\":\"0\"},\"facilityId\":\"61\",\"lotEventList\":[],\"occurred\":\"2019-09-21\",\"productCode\":\"08N04Z\",\"quantity\":0,\"reasonName\":\"INVENTORY\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20191025T094022.000-0400\",\"customProps\":{\"signature\":\"auro\",\"SOH\":\"0\"},\"facilityId\":\"61\",\"lotEventList\":[],\"occurred\":\"2019-10-25\",\"productCode\":\"08N04Z\",\"quantity\":0,\"reasonName\":\"INVENTORY\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20191123T073506.000-0500\",\"customProps\":{\"signature\":\"auro\",\"SOH\":\"0\"},\"facilityId\":\"61\",\"lotEventList\":[],\"occurred\":\"2019-11-23\",\"productCode\":\"08N04Z\",\"quantity\":0,\"reasonName\":\"INVENTORY\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20200125T155850.000-0500\",\"customProps\":{\"signature\":\"massu\",\"SOH\":\"0\"},\"facilityId\":\"61\",\"lotEventList\":[],\"occurred\":\"2020-01-25\",\"productCode\":\"08N04Z\",\"quantity\":0,\"reasonName\":\"INVENTORY\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20200301T102220.000-0500\",\"customProps\":{\"signature\":\"auro\",\"SOH\":\"0\"},\"facilityId\":\"61\",\"lotEventList\":[],\"occurred\":\"2020-03-01\",\"productCode\":\"08N04Z\",\"quantity\":0,\"reasonName\":\"INVENTORY\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20200322T143239.000-0400\",\"customProps\":{\"signature\":\"nvf\",\"SOH\":\"0\"},\"facilityId\":\"61\",\"lotEventList\":[],\"occurred\":\"2020-03-22\",\"productCode\":\"08N04Z\",\"quantity\":0,\"reasonName\":\"INVENTORY\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20200423T073740.000-0400\",\"customProps\":{\"signature\":\"auro\",\"SOH\":\"1001\"},\"facilityId\":\"61\",\"lotEventList\":[{\"customProps\":{\"SOH\":\"1000\"},\"expirationDate\":\"2021-10-30\",\"lotNumber\":\"MID\",\"quantity\":1000}],\"occurred\":\"2020-04-17\",\"productCode\":\"08N04Z\",\"quantity\":1000,\"reasonName\":\"DISTRICT_DDM\",\"referenceNumber\":\"2173\",\"type\":\"ADJUSTMENT\"},{\"createdTime\":\"20200423T082201.000-0400\",\"customProps\":{\"signature\":\"auro\",\"SOH\":\"1000\"},\"facilityId\":\"61\",\"lotEventList\":[{\"customProps\":{\"SOH\":\"1000\"},\"expirationDate\":\"2021-10-30\",\"lotNumber\":\"MID\",\"quantity\":0}],\"occurred\":\"2020-04-23\",\"productCode\":\"08N04Z\",\"quantity\":0,\"reasonName\":\"INVENTORY\",\"type\":\"ADJUSTMENT\"}]"
+[
+  {
+    "createdTime": "20190522T022700.000-0400",
+    "customProps": {
+      "signature": "MA",
+      "SOH": "0"
+    },
+    "facilityId": "61",
+    "lotEventList": [],
+    "occurred": "2019-05-22",
+    "productCode": "08N04Z",
+    "quantity": 0,
+    "reasonName": "INVENTORY",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20190618T031250.000-0400",
+    "customProps": {
+      "signature": "MA",
+      "SOH": "100"
+    },
+    "facilityId": "61",
+    "lotEventList": [
+      {
+        "customProps": {
+          "SOH": "100"
+        },
+        "expirationDate": "2019-07-30",
+        "lotNumber": "ET378E5030",
+        "quantity": 100
+      }
+    ],
+    "occurred": "2019-06-14",
+    "productCode": "08N04Z",
+    "quantity": 100,
+    "reasonName": "DISTRICT_DDM",
+    "referenceNumber": "731",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20190623T144427.000-0400",
+    "customProps": {
+      "signature": "ma",
+      "SOH": "100"
+    },
+    "facilityId": "61",
+    "lotEventList": [
+      {
+        "customProps": {
+          "SOH": "100"
+        },
+        "expirationDate": "2019-07-30",
+        "lotNumber": "ET378E5030",
+        "quantity": 0
+      }
+    ],
+    "occurred": "2019-06-23",
+    "productCode": "08N04Z",
+    "quantity": 0,
+    "reasonName": "INVENTORY",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20190718T020052.000-0400",
+    "customProps": {
+      "signature": "MA",
+      "SOH": "0"
+    },
+    "facilityId": "61",
+    "lotEventList": [
+      {
+        "customProps": {
+          "SOH": "0"
+        },
+        "expirationDate": "2019-07-30",
+        "lotNumber": "ET378E5030",
+        "quantity": -100
+      }
+    ],
+    "occurred": "2019-07-02",
+    "productCode": "08N04Z",
+    "quantity": 100,
+    "reasonName": "ACC_EMERGENCY",
+    "referenceNumber": "731",
+    "requestedQuantity": 100,
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20190720T231445.000-0400",
+    "customProps": {
+      "signature": "ma",
+      "SOH": "0"
+    },
+    "facilityId": "61",
+    "lotEventList": [],
+    "occurred": "2019-07-21",
+    "productCode": "08N04Z",
+    "quantity": 0,
+    "reasonName": "INVENTORY",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20190822T061439.000-0400",
+    "customProps": {
+      "signature": "ma",
+      "SOH": "0"
+    },
+    "facilityId": "61",
+    "lotEventList": [],
+    "occurred": "2019-08-22",
+    "productCode": "08N04Z",
+    "quantity": 0,
+    "reasonName": "INVENTORY",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20190921T144341.000-0400",
+    "customProps": {
+      "signature": "ma",
+      "SOH": "0"
+    },
+    "facilityId": "61",
+    "lotEventList": [],
+    "occurred": "2019-09-21",
+    "productCode": "08N04Z",
+    "quantity": 0,
+    "reasonName": "INVENTORY",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20191025T094022.000-0400",
+    "customProps": {
+      "signature": "auro",
+      "SOH": "0"
+    },
+    "facilityId": "61",
+    "lotEventList": [],
+    "occurred": "2019-10-25",
+    "productCode": "08N04Z",
+    "quantity": 0,
+    "reasonName": "INVENTORY",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20191123T073506.000-0500",
+    "customProps": {
+      "signature": "auro",
+      "SOH": "0"
+    },
+    "facilityId": "61",
+    "lotEventList": [],
+    "occurred": "2019-11-23",
+    "productCode": "08N04Z",
+    "quantity": 0,
+    "reasonName": "INVENTORY",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20200125T155850.000-0500",
+    "customProps": {
+      "signature": "massu",
+      "SOH": "0"
+    },
+    "facilityId": "61",
+    "lotEventList": [],
+    "occurred": "2020-01-25",
+    "productCode": "08N04Z",
+    "quantity": 0,
+    "reasonName": "INVENTORY",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20200301T102220.000-0500",
+    "customProps": {
+      "signature": "auro",
+      "SOH": "0"
+    },
+    "facilityId": "61",
+    "lotEventList": [],
+    "occurred": "2020-03-01",
+    "productCode": "08N04Z",
+    "quantity": 0,
+    "reasonName": "INVENTORY",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20200322T143239.000-0400",
+    "customProps": {
+      "signature": "nvf",
+      "SOH": "0"
+    },
+    "facilityId": "61",
+    "lotEventList": [],
+    "occurred": "2020-03-22",
+    "productCode": "08N04Z",
+    "quantity": 0,
+    "reasonName": "INVENTORY",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20200423T073740.000-0400",
+    "customProps": {
+      "signature": "auro",
+      "SOH": "1001"
+    },
+    "facilityId": "61",
+    "lotEventList": [
+      {
+        "customProps": {
+          "SOH": "1000"
+        },
+        "expirationDate": "2021-10-30",
+        "lotNumber": "MID",
+        "quantity": 1000
+      }
+    ],
+    "occurred": "2020-04-17",
+    "productCode": "08N04Z",
+    "quantity": 1000,
+    "reasonName": "DISTRICT_DDM",
+    "referenceNumber": "2173",
+    "type": "ADJUSTMENT"
+  },
+  {
+    "createdTime": "20200423T082201.000-0400",
+    "customProps": {
+      "signature": "auro",
+      "SOH": "1000"
+    },
+    "facilityId": "61",
+    "lotEventList": [
+      {
+        "customProps": {
+          "SOH": "1000"
+        },
+        "expirationDate": "2021-10-30",
+        "lotNumber": "MID",
+        "quantity": 0
+      }
+    ],
+    "occurred": "2020-04-23",
+    "productCode": "08N04Z",
+    "quantity": 0,
+    "reasonName": "INVENTORY",
+    "type": "ADJUSTMENT"
+  }
+]

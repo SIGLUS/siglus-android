@@ -19,6 +19,7 @@
 package org.openlmis.core.network;
 
 import java.util.List;
+import org.openlmis.core.annotation.DeleteWithBody;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.network.model.AppInfoRequest;
@@ -40,7 +41,6 @@ import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 @SuppressWarnings("PMD")
@@ -86,9 +86,8 @@ public interface LMISRestApi {
   SyncUpStockMovementDataSplitResponse syncUpStockMovementDataSplit(@Body List<StockMovementEntry> entries)
       throws LMISException;
 
-  @POST("/api/siglusapi/android/me/facility/deleteStockCards")
-  SyncUpDeletedMovementResponse syncUpDeletedData(@Path("facilityId") Long facilityId,
-      @Body List<DirtyDataItemEntry> entryList) throws LMISException;
+  @DeleteWithBody("/api/siglusapi/android/me/facility/stockCards")
+  SyncUpDeletedMovementResponse syncUpDeletedData(@Body List<DirtyDataItemEntry> entryList) throws LMISException;
 
   @PUT("/api/siglusapi/android/me/facility/cmms")
   Void syncUpCmms(@Body List<CmmEntry> cmms) throws LMISException;

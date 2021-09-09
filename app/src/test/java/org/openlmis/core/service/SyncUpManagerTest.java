@@ -383,7 +383,7 @@ public class SyncUpManagerTest {
     List<DirtyDataItemInfo> dirtyDataItems = createDirtyDateItem();
     DirtyDataItemInfo item = dirtyDataItems.get(0);
     when(mockedDirtyDataRepository.listunSyced()).thenReturn(dirtyDataItems);
-    when(mockedLmisRestApi.syncUpDeletedData(any(Long.class), anyList())).thenReturn(response);
+    when(mockedLmisRestApi.syncUpDeletedData(anyList())).thenReturn(response);
 
     assertThat(item.isSynced(), is(false));
 
@@ -410,7 +410,7 @@ public class SyncUpManagerTest {
     DirtyDataItemInfo item = dirtyDataItems.get(0);
     when(mockedDirtyDataRepository.listunSyced()).thenReturn(dirtyDataItems);
     doThrow(new SyncServerException(LMISApp.getContext().getString(R.string.sync_server_error)))
-        .when(mockedLmisRestApi).syncUpDeletedData(any(Long.class), anyList());
+        .when(mockedLmisRestApi).syncUpDeletedData(anyList());
 
     assertThat(item.isSynced(), is(false));
 
