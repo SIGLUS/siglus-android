@@ -112,7 +112,7 @@ public class IssueVoucherDraftPresenterTest {
     presenter.setMovementReasonCode("movementReasonCode");
 
     // when
-    Pod pod =presenter.coverToPodFromIssueVoucher("VC");
+    Pod pod =presenter.coverToPodFromIssueVoucher("VC", true);
 
     // then
     assertEquals("orderNumber", pod.getOrderCode());

@@ -681,7 +681,7 @@
   <string name="hint_quantity_shipped">Quantity shipped</string>
   <string name="hint_quantity_accepted">Quantity accepted</string>
   <string name="alert_issue_voucher_can_not_be_blank">Enter the quantity for at least one lot or remove the product</string>
-  <string name="msg_issue_voucher_back_confirm">Are you sure you want to go back to the previous page? If you click ‘yes’, the products you added will be removed.</string>
+  <string name="msg_issue_voucher_back_confirm">Are you sure you want to quit without saving your work? If you click ‘yes’, your draft will be deleted.</string>
   <string name="msg_shipped_quantity_less_than_accepted_quantity">You can\'t accept more stock than was shipped</string>
   <string name="msg_shipped_quantity_can_not_be_blank">Quantity shipped cannot be blank</string>
   <string name="msg_accepted_quantity_can_not_be_blank">Quantity accepted cannot be blank</string>

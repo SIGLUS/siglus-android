@@ -24,6 +24,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.openlmis.core.model.DraftIssueVoucherProductItem;
 import org.openlmis.core.model.DraftIssueVoucherProductLotItem;
 import org.openlmis.core.model.Lot;
@@ -36,7 +37,7 @@ import org.openlmis.core.utils.DateUtil;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class IssueVoucherLotViewModel implements MultiItemEntity {
+public class IssueVoucherLotViewModel implements MultiItemEntity, Comparable<IssueVoucherLotViewModel> {
 
   public static final int TYPE_EDIT = 1;
 
@@ -148,5 +149,23 @@ public class IssueVoucherLotViewModel implements MultiItemEntity {
         .lotNumber(lotNumber)
         .newAdded(isNewAdd)
         .build();
+  }
+
+  public boolean hasChanged() {
+    if (ObjectUtils.notEqual(shippedQuantity, productLotItem.getShippedQuantity())
+        || ObjectUtils.notEqual(acceptedQuantity, productLotItem.getAcceptedQuantity())) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public int compareTo(IssueVoucherLotViewModel another) {
+    if (this.isNewAdd) {
+      return 1;
+    } else {
+      return -1;
+    }
   }
 }

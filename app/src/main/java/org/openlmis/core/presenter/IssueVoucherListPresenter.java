@@ -47,26 +47,9 @@ import rx.schedulers.Schedulers;
 
 public class IssueVoucherListPresenter extends Presenter {
 
-  private IssueVoucherListView view;
-
-  @Inject
-  private PodRepository podRepository;
-
-  @Inject
-  private ProgramRepository programRepository;
-
-  @Inject
-  private SyncErrorsRepository syncErrorsRepository;
-
-  @Inject
-  private IssueVoucherDraftRepository issueVoucherDraftRepository;
-
-  @Setter
-  private boolean isIssueVoucher;
-
   @Getter
   private final List<IssueVoucherListViewModel> viewModels = new ArrayList<>();
-
+  private IssueVoucherListView view;
   Observer<Object> viewModelsSubscribe = new Observer<Object>() {
     @Override
     public void onCompleted() {
@@ -88,7 +71,6 @@ public class IssueVoucherListPresenter extends Presenter {
       // do nothing
     }
   };
-
   Observer<Object> deleteIssueVoucherSubscribe = new Observer<Object>() {
     @Override
     public void onCompleted() {
@@ -107,6 +89,16 @@ public class IssueVoucherListPresenter extends Presenter {
       // do nothing
     }
   };
+  @Inject
+  private PodRepository podRepository;
+  @Inject
+  private ProgramRepository programRepository;
+  @Inject
+  private SyncErrorsRepository syncErrorsRepository;
+  @Inject
+  private IssueVoucherDraftRepository issueVoucherDraftRepository;
+  @Setter
+  private boolean isIssueVoucher;
 
   @Override
   public void attachView(BaseView v) {
@@ -156,7 +148,7 @@ public class IssueVoucherListPresenter extends Presenter {
   public boolean isIssueVoucherDraftExisted(long podId) {
     boolean hasDraft = false;
     try {
-       hasDraft = issueVoucherDraftRepository.hasDraft(podId);
+      hasDraft = issueVoucherDraftRepository.hasDraft(podId);
     } catch (LMISException e) {
       new LMISException(e, "judge issue voucher has draft failed").reportToFabric();
     }

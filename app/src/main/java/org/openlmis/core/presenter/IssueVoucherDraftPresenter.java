@@ -32,6 +32,7 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseModel;
 import org.openlmis.core.model.DraftIssueVoucherProductItem;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.Product;
@@ -40,6 +41,7 @@ import org.openlmis.core.model.repository.IssueVoucherDraftRepository;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.viewmodel.IssueVoucherLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
@@ -53,23 +55,9 @@ public class IssueVoucherDraftPresenter extends Presenter {
 
   @Getter
   private final List<IssueVoucherProductViewModel> currentViewModels = new ArrayList<>();
-
+  @Inject
+  PodRepository podRepository;
   private IssueVoucherDraftView issueVoucherDraftView;
-
-  @Inject
-  private StockRepository stockRepository;
-
-  @Inject PodRepository podRepository;
-
-  @Inject
-  private IssueVoucherDraftRepository issueVoucherDraftRepository;
-
-  @Setter
-  private String orderNumber;
-
-  @Setter
-  private String movementReasonCode;
-
   Observer<List<IssueVoucherProductViewModel>> viewModelsSubscribe =
       new Observer<List<IssueVoucherProductViewModel>>() {
         @Override
@@ -89,8 +77,23 @@ public class IssueVoucherDraftPresenter extends Presenter {
           currentViewModels.addAll(issueVoucherProductViewModels);
         }
       };
-
   Observer<Object> saveDraftSubscribe = new Observer<Object>() {
+    @Override
+    public void onCompleted() {
+      issueVoucherDraftView.onSaveDraftFinished(true);
+    }
+
+    @Override
+    public void onError(Throwable e) {
+      issueVoucherDraftView.onSaveDraftFinished(false);
+    }
+
+    @Override
+    public void onNext(Object o) {
+      // do nothing
+    }
+  };
+  Observer<Object> deleteDraftSubscribe = new Observer<Object>() {
     @Override
     public void onCompleted() {
       issueVoucherDraftView.loaded();
@@ -106,6 +109,16 @@ public class IssueVoucherDraftPresenter extends Presenter {
       // do nothing
     }
   };
+  @Inject
+  private StockRepository stockRepository;
+  @Inject
+  private IssueVoucherDraftRepository issueVoucherDraftRepository;
+  @Setter
+  private String orderNumber;
+  @Setter
+  private String movementReasonCode;
+  @Getter
+  private Pod pod;
 
   @Override
   public void attachView(BaseView v) {
@@ -115,8 +128,7 @@ public class IssueVoucherDraftPresenter extends Presenter {
   public void initialViewModels(Intent intent) {
     orderNumber = (String) intent.getSerializableExtra(IntentConstants.PARAM_ORDER_NUMBER);
     movementReasonCode = (String) intent.getSerializableExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE);
-    Pod pod = (Pod) intent.getSerializableExtra(IntentConstants.PARAM_DRAFT_ISSUE_VOUCHER);
-    issueVoucherDraftView.loading();
+    pod = (Pod) intent.getSerializableExtra(IntentConstants.PARAM_DRAFT_ISSUE_VOUCHER);
     currentViewModels.clear();
     Observable<List<IssueVoucherProductViewModel>> initObservable;
     if (pod != null) {
@@ -151,7 +163,9 @@ public class IssueVoucherDraftPresenter extends Presenter {
     issueVoucherDraftView.loading();
     Subscription saveDraftSubscription = Observable.create(subscriber -> {
       try {
-        Pod pod = coverToPodFromIssueVoucher(programCode, false);
+        if (pod == null) {
+          pod = coverToPodFromIssueVoucher(programCode, false);
+        }
         ImmutableList<DraftIssueVoucherProductItem> productItems = FluentIterable.from(currentViewModels)
             .transform(productViewModel -> Objects.requireNonNull(productViewModel).covertToDraft(pod))
             .toList();
@@ -168,6 +182,20 @@ public class IssueVoucherDraftPresenter extends Presenter {
     subscriptions.add(saveDraftSubscription);
   }
 
+  public void deleteDraftPod() {
+    issueVoucherDraftView.loading();
+    Subscription deleteDraftSubscription = Observable.create(subscriber -> {
+      if (pod.getId() != 0) {
+        deleteDraft();
+      }
+      subscriber.onNext(null);
+      subscriber.onCompleted();
+    }).observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
+        .subscribe(deleteDraftSubscribe);
+    subscriptions.add(deleteDraftSubscription);
+  }
+
   public Pod coverToPodFromIssueVoucher(String programCode, boolean needChildrenItem) {
     return Pod.builder()
         .orderCode(orderNumber)
@@ -180,6 +208,22 @@ public class IssueVoucherDraftPresenter extends Presenter {
         .isSynced(false)
         .podProductItemsWrapper(needChildrenItem ? buildPodProductItems() : new ArrayList<>())
         .build();
+  }
+
+  public boolean needConfirm() {
+    if (pod == null) {
+      return !currentViewModels.isEmpty();
+    }
+    for (IssueVoucherProductViewModel productViewModel : currentViewModels) {
+      if (productViewModel.hasChanged()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public void deleteDraft() {
+    podRepository.deleteLocalDraftPod(pod.getId());
   }
 
   private Observable<List<IssueVoucherProductViewModel>> getObservableFromProducts(List<Product> products) {
@@ -220,13 +264,34 @@ public class IssueVoucherDraftPresenter extends Presenter {
         List<DraftIssueVoucherProductItem> productItems = issueVoucherDraftRepository.queryByPodId(podId);
         List<IssueVoucherProductViewModel> productViewModels = FluentIterable.from(productItems)
             .transform(DraftIssueVoucherProductItem::from).toList();
+        ImmutableList<Long> productIds = FluentIterable.from(productViewModels).transform(productViewModel -> Objects
+            .requireNonNull(productViewModel).getProduct().getId()).toList();
+        List<StockCard> stockCards = stockRepository.listStockCardsByProductIds(productIds);
+        for (IssueVoucherProductViewModel productViewModel : productViewModels) {
+          for (StockCard stockCard : stockCards) {
+            if (productViewModel.getProduct().equals(stockCard.getProduct())) {
+              addNewLotToDraftProductViewModel(productViewModel, stockCard);
+            }
+          }
+        }
         subscriber.onNext(productViewModels);
         subscriber.onCompleted();
       } catch (LMISException e) {
-       new LMISException(e, "get products from draft failed").reportToFabric();
-       subscriber.onError(e);
+        new LMISException(e, "get products from draft failed").reportToFabric();
+        subscriber.onError(e);
       }
     });
+  }
+
+  private void addNewLotToDraftProductViewModel(IssueVoucherProductViewModel productViewModel, StockCard stockCard) {
+    List<String> viewModelLotNumbers = FluentIterable.from(productViewModel.getLotViewModels())
+        .transform(lotViewModel -> Objects.requireNonNull(lotViewModel).getLotNumber())
+        .toList();
+    for (LotOnHand lotOnHand : stockCard.getLotOnHandListWrapper()) {
+      if (!viewModelLotNumbers.contains(lotOnHand.getLot().getLotNumber()) && lotOnHand.getQuantityOnHand() > 0) {
+        productViewModel.getLotViewModels().add(IssueVoucherLotViewModel.build(lotOnHand));
+      }
+    }
   }
 
   private List<PodProductItem> buildPodProductItems() {
@@ -240,6 +305,9 @@ public class IssueVoucherDraftPresenter extends Presenter {
     void onRefreshViewModels();
 
     void onLoadViewModelsFailed(Throwable throwable);
+
+    void onSaveDraftFinished(boolean succeeded);
+
   }
 
 }

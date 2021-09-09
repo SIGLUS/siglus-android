@@ -19,6 +19,7 @@
 package org.openlmis.core.model.repository;
 
 import static org.openlmis.core.constant.FieldConstants.ORDER_STATUS;
+import static org.openlmis.core.constant.FieldConstants.POD_ID;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -60,6 +61,9 @@ public class PodRepository {
 
   @Inject
   SyncErrorsRepository syncErrorsRepository;
+
+  @Inject
+  IssueVoucherDraftRepository issueVoucherDraftRepository;
 
   @Inject
   public PodRepository(Context context, DbUtil dbUtil) {
@@ -154,6 +158,9 @@ public class PodRepository {
       if (pod == null) {
         return null;
       }
+      if (issueVoucherDraftRepository.hasDraft(pod.getId())) {
+        deleteLocalDraftPod(pod.getId());
+      }
       for (PodProductItem podProductItem : pod.getPodProductItemsWrapper()) {
         podProductItemRepository.delete(podProductItem);
       }
@@ -200,6 +207,20 @@ public class PodRepository {
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeletePod);
   }
 
+  public void deleteLocalDraftPod(long podId) {
+    String rawSqlDeletePod = "DELETE FROM pods WHERE id = " + podId;
+
+    String rawSqlDeleteDraftProductItems = "DELETE FROM draft_issue_voucher_product_items"
+        + " WHERE " + POD_ID + " = " + podId;
+
+    String rawSqlDeleteProductLotItems = "DELETE FROM draft_issue_voucher_product_lot_items"
+        + " WHERE draftIssueVoucherProductItem_id IN (SELECT id FROM draft_issue_voucher_product_items WHERE pod_id = "
+        + podId + ")";
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteProductLotItems);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteDraftProductItems);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeletePod);
+  }
+
   public void batchCreatePodsWithItems(@Nullable final List<Pod> pods) throws LMISException {
     if (pods == null) {
       return;
@@ -224,9 +245,7 @@ public class PodRepository {
           .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
               () -> {
                 Pod savedPod = createOrUpdate(pod);
-                if (!pod.getPodProductItemsWrapper().isEmpty()) {
-                  podProductItemRepository.batchCreatePodProductsWithItems(pod.getPodProductItemsWrapper(), savedPod);
-                }
+                podProductItemRepository.batchCreatePodProductsWithItems(pod.getPodProductItemsWrapper(), savedPod);
                 return null;
               });
     } catch (SQLException e) {

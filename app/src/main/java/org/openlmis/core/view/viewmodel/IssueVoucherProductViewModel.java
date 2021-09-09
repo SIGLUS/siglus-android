@@ -43,7 +43,7 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
 
   public static final int TYPE_EDIT = 1;
   public static final int TYPE_DONE = 2;
-  private List<IssueVoucherLotViewModel> lotViewModels = new ArrayList<>();
+  private final List<IssueVoucherLotViewModel> lotViewModels = new ArrayList<>();
   private boolean done;
   private Product product;
   private StockCard stockCard;
@@ -130,6 +130,19 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
         .product(product)
         .podProductLotItemsWrapper(buildPodProductLotItems())
         .build();
+  }
+
+  public boolean hasChanged() {
+    if (lotViewModels.size() != productItem.getDraftLotItemListWrapper().size()
+        || isDone() != productItem.isDone()) {
+      return true;
+    }
+    for (IssueVoucherLotViewModel lotViewModel : lotViewModels) {
+      if (lotViewModel.hasChanged()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private boolean isAllLotValid() {

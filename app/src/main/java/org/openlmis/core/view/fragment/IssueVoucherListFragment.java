@@ -174,11 +174,11 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
       dialogFragment.show(getParentFragmentManager(), "has_unmatched_pod_dialog");
       return;
     }
-    if (presenter.isIssueVoucherDraftExisted(viewModel.getPod().getId())) {
-      handleLocalDraftIssueVoucher(viewModel);
-    }
+
     if (viewModel.isRemoteIssueVoucherOrPod()) {
       handleRemoteIssueOrPod(viewModel);
+    } else {
+      handleLocalDraftIssueVoucher(viewModel);
     }
   }
 
@@ -196,10 +196,17 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
   }
 
   private void handleLocalDraftIssueVoucher(IssueVoucherListViewModel viewModel) {
-    Intent intent = new Intent(getActivity(), IssueVoucherDraftActivity.class);
-    intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE, viewModel.getPod().getRequisitionProgramCode());
-    intent.putExtra(IntentConstants.PARAM_DRAFT_ISSUE_VOUCHER, viewModel.getPod());
-    startActivity(intent);
+    if (presenter.isIssueVoucherDraftExisted(viewModel.getPod().getId())) {
+      Intent intent = new Intent(getActivity(), IssueVoucherDraftActivity.class);
+      intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE, viewModel.getPod().getRequisitionProgramCode());
+      intent.putExtra(IntentConstants.PARAM_DRAFT_ISSUE_VOUCHER, viewModel.getPod());
+      startActivity(intent);
+    } else {
+      Intent intent = new Intent(getActivity(), IssueVoucherReportActivity.class);
+      intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, viewModel.getPod().getId());
+      intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_OR_POD, Constants.PARAM_ISSUE_VOUCHER);
+      startActivity(intent);
+    }
   }
 
   private void handleRemoteIssueOrPod(IssueVoucherListViewModel viewModel) {

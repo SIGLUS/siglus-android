@@ -47,6 +47,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.IssueVoucherDraftPresenter;
 import org.openlmis.core.presenter.IssueVoucherDraftPresenter.IssueVoucherDraftView;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.OnRemoveListener;
@@ -78,7 +79,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   @Setter
   private String programCode;
 
-  private final IssueVoucherDraftProductAdapter issueVoucherDraftProductAdapter = new IssueVoucherDraftProductAdapter();
+  IssueVoucherDraftProductAdapter issueVoucherDraftProductAdapter = new IssueVoucherDraftProductAdapter();
 
   private final SingleClickButtonListener actionPanelClickListener = new SingleClickButtonListener() {
     @Override
@@ -90,6 +91,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
           LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvIssueVoucher.getLayoutManager();
           linearLayoutManager.scrollToPositionWithOffset(position, 0);
         } else {
+          issueVoucherDraftPresenter.deleteDraftPod();
           openIssueVoucherReportPage();
         }
       } else {
@@ -140,8 +142,22 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   }
 
   @Override
+  public void onSaveDraftFinished(boolean succeeded) {
+    if (succeeded) {
+      ToastUtil.show(getString(R.string.successfully_saved));
+      backToIssueVoucherListActivity();
+    } else {
+      ToastUtil.show(getString(R.string.unsuccessfully_saved));
+    }
+  }
+
+  @Override
   public void onBackPressed() {
-    showConfirmDialog();
+    if (issueVoucherDraftPresenter.needConfirm()) {
+      showConfirmDialog();
+    } else {
+      backToIssueVoucherListActivity();
+    }
   }
 
   @Override
@@ -237,7 +253,9 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
     dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
       @Override
       public void positiveClick(String tag) {
+        issueVoucherDraftPresenter.deleteDraftPod();
         finish();
+        backToIssueVoucherListActivity();
       }
 
       @Override
@@ -253,5 +271,11 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
           return;
         }
       });
+
+  private void backToIssueVoucherListActivity() {
+    Intent intent = new Intent(this, IssueVoucherListActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    startActivity(intent);
+  }
 
 }

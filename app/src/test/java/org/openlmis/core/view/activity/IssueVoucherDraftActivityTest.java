@@ -84,12 +84,12 @@ public class IssueVoucherDraftActivityTest {
   @Test
   public void shouldCorrectOpenIssueVoucherReportPage() {
     // given
-    when(mockedPresenter.coverToPodFromIssueVoucher(anyString())).thenReturn(new Pod());
+    when(mockedPresenter.coverToPodFromIssueVoucher(anyString(), true)).thenReturn(new Pod());
     when(mockAdapter.validateAll()).thenReturn(-1);
     RobolectricUtils.resetNextClickTime();
 
     // when
-    issueVoucherDraftActivity.getBtNext().performClick();
+    issueVoucherDraftActivity.getActionPanelView().getBtnComplete().performClick();
     RobolectricUtils.waitLooperIdle();
 
     // then
@@ -126,7 +126,7 @@ public class IssueVoucherDraftActivityTest {
   @Test
   public void shouldClickListenerCorrectSet() {
     // given
-    boolean nextButtonListener = issueVoucherDraftActivity.getBtNext().hasOnClickListeners();
+    boolean nextButtonListener = issueVoucherDraftActivity.getActionPanelView().getBtnComplete().hasOnClickListeners();
 
     // then
     Assert.assertTrue(nextButtonListener);
