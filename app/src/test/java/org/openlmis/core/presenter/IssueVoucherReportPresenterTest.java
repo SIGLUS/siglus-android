@@ -65,7 +65,7 @@ public class IssueVoucherReportPresenterTest {
     when(programRepository.queryByCode(any())).thenReturn(program);
 
     // when
-    presenter.loadViewModelByPod(PodBuilder.generatePod());
+    presenter.loadViewModelByPod(PodBuilder.generatePod(), false);
 
     //then
     assertEquals(program.getProgramName(), presenter.getIssueVoucherReportViewModel().getProgram().getProgramName());

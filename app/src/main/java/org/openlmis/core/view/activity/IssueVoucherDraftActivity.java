@@ -29,6 +29,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
@@ -231,7 +233,10 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
         IntentConstants.PARAM_PREVIOUS_SELECTED_PRODUCTS);
     if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
       actionPanelView.setNegativeButtonVisibility(View.GONE);
-      actionPanelView.getBtnComplete().setWidth((int) getResources().getDimension(R.dimen.px_220));
+      LinearLayout.LayoutParams layoutParams = (LayoutParams) actionPanelView.getBtnComplete().getLayoutParams();
+      layoutParams.weight = 0;
+      layoutParams.width = (int) getResources().getDimension(R.dimen.px_220);
+      actionPanelView.getBtnComplete().setLayoutParams(layoutParams);
     }
     actionPanelView.setListener(actionPanelClickListener, actionPanelClickListener);
     actionPanelView.setPositiveButtonText(getString(R.string.btn_next));
