@@ -130,8 +130,13 @@ public class StockMovementRepository {
 
   public void batchCreateStockMovementItemAndLotItemsForProductOperation(final StockMovementItem stockMovementItem)
       throws LMISException {
-    stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
-    // Create Stock Movement history list
+    batchCreateStockMovementItemAndLotItemsForProductOperation(stockMovementItem,
+        new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+  }
+
+  public void batchCreateStockMovementItemAndLotItemsForProductOperation(final StockMovementItem stockMovementItem,
+      Date date) throws LMISException {
+    stockMovementItem.setCreatedTime(date);
     create(stockMovementItem);
     if (CollectionUtils.isNotEmpty(stockMovementItem.getLotMovementItemListWrapper())
         || CollectionUtils.isNotEmpty(stockMovementItem.getNewAddedLotMovementItemListWrapper())) {

@@ -41,8 +41,10 @@ import com.j256.ormlite.stmt.Where;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.KitProduct;
@@ -369,6 +371,17 @@ public class ProductRepository {
       cursor.close();
     }
     return products;
+  }
+
+  public void updateProductInArchived(List<Long> productIds) {
+    if (productIds.isEmpty()) {
+      return;
+    }
+    String ids = StringUtils
+        .join(productIds != null ? productIds : new HashSet<>(), ',');
+    String updateArchive = "UPDATE products SET isArchived = 'true' where id in ('" + ids + "')";
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
+        .getWritableDatabase().execSQL(updateArchive, null);
   }
 
   @NonNull

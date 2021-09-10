@@ -174,13 +174,28 @@ public class StockRepository {
     }
   }
 
-  public synchronized void addStockMovementsAndUpdateStockCard(final List<StockMovementItem> stockMovementItems) {
+  public synchronized void addStockMovementsAndUpdateStockCards(final List<StockCard> needInitialStockCards,
+      final List<StockCard> stockCards) {
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
-        for (StockMovementItem stockMovementItem: stockMovementItems) {
-          StockCard stockcard = stockMovementItem.getStockCard();
-          createOrUpdate(stockcard);
-          stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(stockMovementItem);
+        if (!needInitialStockCards.isEmpty()) {
+          for (StockCard stockCard : needInitialStockCards) {
+            createOrUpdate(stockCard);
+            stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(
+                stockCard.generateInitialStockMovementItem());
+          }
+        }
+        for (StockCard stockCard: stockCards) {
+          long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
+          if (!needInitialStockCards.isEmpty()) {
+            currentTimeMillis = currentTimeMillis + 1;
+          }
+          createOrUpdate(stockCard);
+          for (StockMovementItem movementItem: stockCard.getStockMovementItemsWrapper()) {
+            stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(
+                movementItem, new Date(currentTimeMillis));
+
+          }
         }
         return null;
       });
@@ -301,7 +316,7 @@ public class StockRepository {
 
   public List<StockCard> getStockCardsAndLotsOnHandForProgram(String programCode)
       throws LMISException {
-    String codeBelongPrograms =  " SELECT productCode FROM product_programs WHERE programCode = '" + programCode + "'";
+    String codeBelongPrograms = " SELECT productCode FROM product_programs WHERE programCode = '" + programCode + "'";
     String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
         + " SELECT id FROM products AND code IN ("
         + codeBelongPrograms

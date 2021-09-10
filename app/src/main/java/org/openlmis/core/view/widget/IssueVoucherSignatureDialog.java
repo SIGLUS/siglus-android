@@ -88,7 +88,7 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     Bundle arguments = getArguments();
     if (arguments != null) {
       etProcessDate.setText(arguments.getString("Date"));
-      title.setText(getResources().getString(R.string.msg_title_for_signature) + arguments.getString("programName"));
+      title.setText(getResources().getString(R.string.msg_title_for_signature) + " " + arguments.getString("programName"));
     }
   }
 
@@ -139,10 +139,10 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     String received = etReceived.getText().toString().trim();
     String delivered = etDelivered.getText().toString().trim();
 
-    if (!checkSignature(received)) {
-      lyReceived.setError(getString(R.string.hint_signature_error_message));
-    } else if (!checkSignature(delivered)) {
+    if (!checkSignature(delivered)) {
       lyDelivered.setError(getString(R.string.hint_signature_error_message));
+    } else if (!checkSignature(received)) {
+      lyReceived.setError(getString(R.string.hint_signature_error_message));
     } else {
       btnSign.setEnabled(false);
       btnCancel.setEnabled(false);

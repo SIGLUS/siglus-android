@@ -43,6 +43,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.PodRepository;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
@@ -69,6 +70,9 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
   @Inject
   private ProgramRepository programRepository;
+
+  @Inject
+  private ProductRepository productRepository;
 
   public String reasonCode;
 
@@ -220,6 +224,8 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     List<StockMovementItem> stockMovementItems = new ArrayList<>();
     ImmutableMap<Long, StockCard> productIdToStockCard = FluentIterable.from(stockCards)
         .uniqueIndex(stockCard -> stockCard.getProduct().getId());
+    List<StockCard> toUpdateStockCard = new ArrayList<>();
+    List<StockCard> needInitialStockCards = new ArrayList<>();
     for (PodProductItem podProductItem : pod.getPodProductItemsWrapper()) {
       Product product = podProductItem.getProduct();
       long productId = podProductItem.getProduct().getId();
@@ -228,6 +234,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
         stockCard = productIdToStockCard.get(productId);
       } else {
         stockCard = new StockCard();
+        needInitialStockCards.add(stockCard);
       }
       needUpdatedArchived.add(product.getId());
       stockCard.setProduct(podProductItem.getProduct());
@@ -236,8 +243,11 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
       stockCard.setStockOnHand(soh + changeQuality);
       StockMovementItem movementItem = buildStockMovementItem(stockCard, podProductItem, changeQuality);
       stockMovementItems.add(movementItem);
+      stockCard.setStockMovementItemsWrapper(stockMovementItems);
+      toUpdateStockCard.add(stockCard);
     }
-    stockRepository.addStockMovementsAndUpdateStockCard(stockMovementItems);
+    productRepository.updateProductInArchived(needUpdatedArchived);
+    stockRepository.addStockMovementsAndUpdateStockCards(needInitialStockCards, stockCards);
   }
 
   private long getChangeQuality(PodProductItem podProductItem) {

@@ -35,6 +35,9 @@ import roboguice.inject.InjectView;
 
 public class OrderInfoView extends LinearLayout {
 
+  @InjectView(R.id.tv_order_name)
+  private TextView orderName;
+
   @InjectView(R.id.tv_order_facility)
   private TextView tvOrderFacility;
 
@@ -77,6 +80,7 @@ public class OrderInfoView extends LinearLayout {
   }
 
   public void refresh(Pod pod, IssueVoucherReportViewModel reportViewModel) {
+    orderName.setText(reportViewModel.getPod().getOrderCode());
     tvOrderFacility.setText(SharedPreferenceMgr.getInstance().getCurrentUserFacility());
     tvProgram.setText(reportViewModel.getProgram().getProgramName());
     String supplyingName = pod.getOrderSupplyFacilityName();
