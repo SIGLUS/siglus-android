@@ -61,6 +61,11 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
+  @Override
+  public Observable<List<InventoryViewModel>> getInflatedInventory() {
+    return loadInventory();
+  }
+
   public Observable<List<InventoryViewModel>> loadInventoryWithBasicProducts() {
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
 
