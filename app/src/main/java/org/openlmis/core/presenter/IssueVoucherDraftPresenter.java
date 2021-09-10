@@ -117,6 +117,7 @@ public class IssueVoucherDraftPresenter extends Presenter {
   private String orderNumber;
   @Setter
   private String movementReasonCode;
+  @Setter
   @Getter
   private Pod pod;
 

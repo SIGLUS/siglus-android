@@ -74,6 +74,8 @@
       android:textSize="@dimen/px_20"
       android:singleLine="true"
       android:focusableInTouchMode="false"
+      android:focusable="false"
+      android:longClickable="false"
       android:textColorHint="@color/color_6b6b6b"
       android:textColor="@color/color_black"
       android:gravity="center_vertical" />
@@ -99,6 +101,8 @@
       android:hint="@string/hint_origin_of_movement"
       android:textSize="@dimen/px_20"
       android:focusableInTouchMode="false"
+      android:focusable="false"
+      android:longClickable="false"
       android:singleLine="true"
       android:textColorHint="@color/color_6b6b6b"
       android:textColor="@color/color_black"
