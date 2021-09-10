@@ -112,7 +112,7 @@ public class Pod extends BaseModel implements Serializable {
   @DatabaseField
   private boolean isSynced;
 
-  @ForeignCollectionField
+  @ForeignCollectionField(eager = true)
   private ForeignCollection<PodProductItem> podProductItemForeignCollection;
 
   @Setter

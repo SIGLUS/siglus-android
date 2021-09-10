@@ -211,15 +211,23 @@ public class IssueVoucherDraftPresenter extends Presenter {
   }
 
   public boolean needConfirm() {
-    if (pod == null) {
-      return !currentViewModels.isEmpty();
-    }
-    for (IssueVoucherProductViewModel productViewModel : currentViewModels) {
-      if (productViewModel.hasChanged()) {
+    try {
+      if (pod == null) {
+        return !currentViewModels.isEmpty();
+      }
+      List<DraftIssueVoucherProductItem> productItems = issueVoucherDraftRepository.queryByPodId(pod.getId());
+      if (productItems.size() != currentViewModels.size()) {
         return true;
       }
+      for (IssueVoucherProductViewModel productViewModel : currentViewModels) {
+        if (productViewModel.hasChanged()) {
+          return true;
+        }
+      }
+      return false;
+    } catch (LMISException e) {
+      return true;
     }
-    return false;
   }
 
   public void deleteDraft() {
