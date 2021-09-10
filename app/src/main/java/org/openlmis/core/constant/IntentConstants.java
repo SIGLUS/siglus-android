@@ -41,4 +41,5 @@ public class IntentConstants {
 
   public static final String PARAM_PREVIOUS_SELECTED_PRODUCTS = "PARAM_PREVIOUS_SELECTED_PRODUCTS";
 
+  public static final String PARAM_ISSUE_VOUCHER_LIST_PAGE =  "PARAM_ISSUE_VOUCHER_LIST_PAGE";
 }

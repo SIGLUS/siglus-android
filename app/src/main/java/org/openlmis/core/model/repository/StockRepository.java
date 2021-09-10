@@ -181,8 +181,8 @@ public class StockRepository {
         if (!needInitialStockCards.isEmpty()) {
           for (StockCard stockCard : needInitialStockCards) {
             createOrUpdate(stockCard);
-            stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(
-                stockCard.generateInitialStockMovementItem());
+            StockMovementItem item =  stockCard.generateInitialStockMovementItem(0);
+            stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(item);
           }
         }
         for (StockCard stockCard: stockCards) {
@@ -318,7 +318,7 @@ public class StockRepository {
       throws LMISException {
     String codeBelongPrograms = " SELECT productCode FROM product_programs WHERE programCode = '" + programCode + "'";
     String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
-        + " SELECT id FROM products AND code IN ("
+        + " SELECT id FROM products WHERE code IN ("
         + codeBelongPrograms
         + " ))";
 

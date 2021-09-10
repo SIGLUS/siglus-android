@@ -20,12 +20,11 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-<<<<<<< HEAD
 import java.util.Objects;
-=======
->>>>>>> [jingzhao] #166 update the save stock movement process
 import lombok.Getter;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
@@ -34,11 +33,8 @@ import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
-<<<<<<< HEAD
-=======
 import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.model.Product;
->>>>>>> [jingzhao] #166 update the save stock movement process
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -178,6 +174,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
         pod.setReceivedBy(receivedBy);
         pod.setDeliveredBy(deliveredBy);
         pod.setReceivedDate(DateUtil.getCurrentDate());
+        pod.setOrderStatus(OrderStatus.RECEIVED);
         if (reasonCode != null) {
           pod.setStockManagementReason(reasonCode);
         }
@@ -215,16 +212,15 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   }
 
   protected Action1<Pod> loadDataOnNextAction = podContent -> {
-    loadViewModelByPod(podContent);
+    loadViewModelByPod(podContent, false);
   };
 
   private void saveStockManagement(Pod pod) throws LMISException {
     List<StockCard> stockCards = stockRepository.getStockCardsAndLotsOnHandForProgram(pod.getRequisitionProgramCode());
     List<Long> needUpdatedArchived = new ArrayList<>();
-    List<StockMovementItem> stockMovementItems = new ArrayList<>();
     ImmutableMap<Long, StockCard> productIdToStockCard = FluentIterable.from(stockCards)
         .uniqueIndex(stockCard -> stockCard.getProduct().getId());
-    List<StockCard> toUpdateStockCard = new ArrayList<>();
+    List<StockCard> toUpdateStockCards = new ArrayList<>();
     List<StockCard> needInitialStockCards = new ArrayList<>();
     for (PodProductItem podProductItem : pod.getPodProductItemsWrapper()) {
       Product product = podProductItem.getProduct();
@@ -242,12 +238,11 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
       long changeQuality = getChangeQuality(podProductItem);
       stockCard.setStockOnHand(soh + changeQuality);
       StockMovementItem movementItem = buildStockMovementItem(stockCard, podProductItem, changeQuality);
-      stockMovementItems.add(movementItem);
-      stockCard.setStockMovementItemsWrapper(stockMovementItems);
-      toUpdateStockCard.add(stockCard);
+      stockCard.setStockMovementItemsWrapper(Arrays.asList(movementItem));
+      toUpdateStockCards.add(stockCard);
     }
     productRepository.updateProductInArchived(needUpdatedArchived);
-    stockRepository.addStockMovementsAndUpdateStockCards(needInitialStockCards, stockCards);
+    stockRepository.addStockMovementsAndUpdateStockCards(needInitialStockCards, toUpdateStockCards);
   }
 
   private long getChangeQuality(PodProductItem podProductItem) {
@@ -266,7 +261,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     stockMovementItem.setMovementType(MovementType.RECEIVE);
     stockMovementItem.setReason(pod.getStockManagementReason());
     stockMovementItem.setMovementQuantity(changeQuality);
-    stockMovementItem.setDocumentNumber(pod.getDocumentNo());
+    stockMovementItem.setDocumentNumber(pod.getOrderCode());
     stockMovementItem.setStockOnHand(stockCard.getStockOnHand());
     stockMovementItem.setSignature(pod.getReceivedBy());
     ImmutableMap<Long, LotOnHand> lotIdToLotOnHands = FluentIterable.from(stockCard.getLotOnHandListWrapper())

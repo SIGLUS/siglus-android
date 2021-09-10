@@ -380,8 +380,7 @@ public class ProductRepository {
     String ids = StringUtils
         .join(productIds != null ? productIds : new HashSet<>(), ',');
     String updateArchive = "UPDATE products SET isArchived = 'true' where id in ('" + ids + "')";
-    LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
-        .getWritableDatabase().execSQL(updateArchive, null);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateArchive);
   }
 
   @NonNull

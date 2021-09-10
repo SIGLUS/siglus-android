@@ -42,6 +42,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.view.fragment.IssueVoucherListFragment;
 import org.openlmis.core.view.widget.FillPageIndicator;
@@ -110,6 +111,11 @@ public class IssueVoucherListActivity extends BaseActivity {
     magicIndicator.setNavigator(commonNavigator);
 
     viewPager.registerOnPageChangeCallback(pageChangeCallback);
+    if (getIntent().getExtras() != null) {
+      int page = getIntent().getIntExtra(IntentConstants.PARAM_ISSUE_VOUCHER_LIST_PAGE, 0);
+      viewPager.setCurrentItem(page);
+    }
+
   }
 
   @Override

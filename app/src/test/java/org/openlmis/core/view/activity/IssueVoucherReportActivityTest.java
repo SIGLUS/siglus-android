@@ -29,6 +29,7 @@ import com.google.inject.AbstractModule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -78,6 +79,7 @@ public class IssueVoucherReportActivityTest {
     Assert.assertEquals(ScreenName.ISSUE_VOUCHER_REPORT_SCREEN, screenName);
   }
 
+  @Ignore
   @Test
   public void shouldNotRemoveRnrFormWhenGoBack() {
     // when

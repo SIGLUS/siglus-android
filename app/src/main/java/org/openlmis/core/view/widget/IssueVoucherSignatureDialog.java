@@ -88,7 +88,8 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     Bundle arguments = getArguments();
     if (arguments != null) {
       etProcessDate.setText(arguments.getString("Date"));
-      title.setText(getResources().getString(R.string.msg_title_for_signature) + " " + arguments.getString("programName"));
+      title.setText(
+          getResources().getString(R.string.msg_title_for_signature) + " " + arguments.getString("programName"));
     }
   }
 

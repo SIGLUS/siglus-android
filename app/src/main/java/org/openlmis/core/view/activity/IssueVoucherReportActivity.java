@@ -139,7 +139,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   @Override
   public void onBackPressed() {
-    if (pageName.equals(Constants.PARAM_ISSUE_VOUCHER)) {
+    if (pageName.equals(Constants.PARAM_ISSUE_VOUCHER) && presenter.pod.getOrderStatus() == OrderStatus.SHIPPED) {
       showConfirmDialog();
     } else {
       super.onBackPressed();
@@ -304,6 +304,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
         loaded();
         ToastUtil.show(R.string.msg_complete_successfully);
         internetCheck.execute(checkInternetListener());
+        backToPodListActivity();
       }
 
       @Override
@@ -334,4 +335,12 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     startActivity(intent);
   }
+
+  private void backToPodListActivity() {
+    Intent intent = new Intent(this, IssueVoucherListActivity.class);
+    intent.putExtra(IntentConstants.PARAM_ISSUE_VOUCHER_LIST_PAGE, 1);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    startActivity(intent);
+  }
+
 }
