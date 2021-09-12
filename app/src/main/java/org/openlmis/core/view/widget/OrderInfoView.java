@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.Date;
+import lombok.Getter;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -53,6 +54,7 @@ public class OrderInfoView extends LinearLayout {
   @InjectView(R.id.tv_shipping_date)
   private TextView tvShippingDate;
 
+  @Getter
   @InjectView(R.id.ll_pod_receive_info)
   private LinearLayout linearLayout;
 

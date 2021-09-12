@@ -73,10 +73,12 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   public String reasonCode;
 
   IssueVoucherView issueVoucherView;
+
   @Getter
   IssueVoucherReportViewModel issueVoucherReportViewModel;
 
-  public Pod pod;
+  @Getter
+  Pod pod;
 
   public void loadData(long podId) {
     Subscription subscription = getRnrFormObservable(podId)

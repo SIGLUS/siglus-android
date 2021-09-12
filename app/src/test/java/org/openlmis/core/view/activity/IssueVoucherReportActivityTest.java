@@ -18,25 +18,32 @@
 
 package org.openlmis.core.view.activity;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.view.View;
+import androidx.fragment.app.DialogFragment;
 import com.google.inject.AbstractModule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import org.openlmis.core.view.widget.OrderInfoView;
 import org.robolectric.Robolectric;
@@ -79,9 +86,28 @@ public class IssueVoucherReportActivityTest {
     Assert.assertEquals(ScreenName.ISSUE_VOUCHER_REPORT_SCREEN, screenName);
   }
 
-  @Ignore
+
   @Test
-  public void shouldNotRemoveRnrFormWhenGoBack() {
+  public void shouldNotHavePopUpWhenGoBack() throws Exception {
+    // given
+    Pod pod = PodBuilder.generatePod();
+    pod.setOrderStatus(OrderStatus.RECEIVED);
+    when(mockedPresenter.getPod()).thenReturn(pod);
+
+    // when
+    reportActivity.onBackPressed();
+
+    // then
+    assertTrue(reportActivity.isFinishing());
+  }
+
+  @Test
+  public void shouldHavePopUpWhenGoBack() throws Exception {
+    // given
+    Pod pod = PodBuilder.generatePod();
+    pod.setOrderStatus(OrderStatus.SHIPPED);
+    when(mockedPresenter.getPod()).thenReturn(pod);
+
     // when
     reportActivity.onBackPressed();
 
@@ -89,8 +115,9 @@ public class IssueVoucherReportActivityTest {
     assertFalse(reportActivity.isFinishing());
   }
 
+
   @Test
-  public void shouldCorrectWhenRefresh() throws Exception {
+  public void shouldCorrectUIWhenRefreshForShipped() throws Exception {
     // given
     OrderInfoView orderInfoView = mock(OrderInfoView.class);
     when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(mock(IssueVoucherReportViewModel.class));
@@ -101,6 +128,45 @@ public class IssueVoucherReportActivityTest {
 
     // then
     verify(orderInfoView, times(1)).refresh(any(Pod.class), any(IssueVoucherReportViewModel.class));
+  }
+
+  @Test
+  public void shouldCorrectUIWhenRefreshForReceived() throws Exception {
+    // given
+    OrderInfoView orderInfoView = mock(OrderInfoView.class);
+    when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(mock(IssueVoucherReportViewModel.class));
+    reportActivity.setOrderInfo(orderInfoView);
+    Pod pod = PodBuilder.generatePod();
+    pod.setOrderStatus(OrderStatus.RECEIVED);
+    IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
+    when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(issueVoucherReportViewModel);
+
+    // when
+    reportActivity.refreshIssueVoucherForm(pod);
+
+    // then
+    assertEquals(View.GONE, reportActivity.getActionPanelView().getVisibility());
+    verify(orderInfoView, times(1)).refresh(any(Pod.class), any(IssueVoucherReportViewModel.class));
+  }
+
+  @Test
+  public void shouldShowSubmitSignatureDialog() throws Exception {
+    // given
+    Pod pod = PodBuilder.generatePod();
+    IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
+    Program program = new Program();
+    program.setProgramName("VIA");
+    issueVoucherReportViewModel.setProgram(program);
+    when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(issueVoucherReportViewModel);
+
+    // when
+    reportActivity.showSignDialog();
+    RobolectricUtils.waitLooperIdle();
+
+    // then
+    DialogFragment fragment = (DialogFragment) (reportActivity
+        .getSupportFragmentManager().findFragmentByTag("signature_dialog"));
+    assertThat(fragment).isNotNull();
   }
 
 }

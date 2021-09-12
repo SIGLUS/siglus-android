@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
@@ -72,6 +73,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @InjectView(R.id.form_list_view)
   private RecyclerView rvIssueVoucherList;
 
+  @Getter
   @InjectView(R.id.action_panel)
   private ActionPanelView actionPanelView;
 
@@ -112,7 +114,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     listeners = scrollInSync(rvIssueVoucherList, rvProductList);
 
     if (savedInstanceState != null && presenter.getIssueVoucherReportViewModel() != null) {
-      refreshIssueVoucherForm(presenter.pod);
+      refreshIssueVoucherForm(presenter.getPod());
     } else if (pod != null) {
       presenter.loadViewModelByPod(pod, isBackToCurrentPage);
     } else {
@@ -132,14 +134,16 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   @Override
   protected void onDestroy() {
-    rvProductList.removeOnScrollListener(listeners[0]);
-    rvIssueVoucherList.removeOnScrollListener(listeners[1]);
+    if (listeners != null) {
+      rvProductList.removeOnScrollListener(listeners[0]);
+      rvIssueVoucherList.removeOnScrollListener(listeners[1]);
+    }
     super.onDestroy();
   }
 
   @Override
   public void onBackPressed() {
-    if (pageName.equals(Constants.PARAM_ISSUE_VOUCHER) && presenter.pod.getOrderStatus() == OrderStatus.SHIPPED) {
+    if (pageName.equals(Constants.PARAM_ISSUE_VOUCHER) && presenter.getPod().getOrderStatus() == OrderStatus.SHIPPED) {
       showConfirmDialog();
     } else {
       super.onBackPressed();
@@ -277,7 +281,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     };
   }
 
-  private void showSignDialog() {
+  protected void showSignDialog() {
     IssueVoucherSignatureDialog signatureDialog = new IssueVoucherSignatureDialog();
     signatureDialog.setArguments(IssueVoucherSignatureDialog.getBundleToMe(DateUtil.formatDate(new Date()),
         presenter.getIssueVoucherReportViewModel().getProgram().getProgramName()));

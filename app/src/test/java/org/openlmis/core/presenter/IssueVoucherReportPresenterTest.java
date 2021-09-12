@@ -32,17 +32,29 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.model.repository.PodRepository;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
+import rx.Observable;
+import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)
 public class IssueVoucherReportPresenterTest {
   @Mock
   PodRepository podRepository;
+
+  @Mock
+  StockRepository stockRepository;
+
+  @Mock
+  ProductRepository productRepository;
 
   @Mock
   ProgramRepository programRepository;
@@ -81,6 +93,104 @@ public class IssueVoucherReportPresenterTest {
     program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
     program.setProgramName(programName);
     return program;
+  }
+
+  @Test
+  public void shouldDeleteDraftForLocal() throws Exception {
+    // given
+    Pod pod = PodBuilder.generatePod();
+    pod.setLocal(true);
+    presenter.pod = pod;
+
+    // when
+    presenter.deleteIssueVoucher();
+
+    // then
+    verify(podRepository,times(1)).deleteByOrderCode(pod.getOrderCode());
+  }
+
+  @Test
+  public void shouldSearchPod() throws Exception {
+    // given
+    long podId = 122;
+
+    // when
+    TestSubscriber<Pod> subscriber = new TestSubscriber<>();
+    Observable<Pod> loadObservable = presenter.getRnrFormObservable(podId);
+    loadObservable.subscribe(subscriber);
+    subscriber.awaitTerminalEvent();
+
+    // then
+    verify(podRepository,times(1)).queryById(any(long.class));
+  }
+
+  @Test
+  public void shouldloadAddPodItemForAddButton() throws Exception {
+    // given
+    Pod pod = PodBuilder.generatePod();
+    pod.setLocal(false);
+    presenter.pod = pod;
+
+    // when
+    presenter.loadViewModelByPod(pod, true);
+
+    // then
+    assertEquals(2, presenter.getPod().getPodProductItemsWrapper().size());
+  }
+
+  @Test
+  public void shouldDeleteDraftForRemote() throws Exception {
+    // given
+    Pod pod = PodBuilder.generatePod();
+    pod.setLocal(false);
+    presenter.pod = pod;
+    presenter.issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
+
+    // when
+    presenter.deleteIssueVoucher();
+
+    // then
+    verify(podRepository,times(1)).createOrUpdateWithItems(any(Pod.class));
+  }
+
+  @Test
+  public void shouldDraftForSave() throws Exception {
+    // given
+    Pod pod = PodBuilder.generatePod();
+    pod.setLocal(false);
+    presenter.pod = pod;
+    presenter.issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
+
+    // when
+    TestSubscriber<Void> subscriber = new TestSubscriber<>();
+    Observable<Void> saveObservable  = presenter.getSaveFormObservable();
+    saveObservable.subscribe(subscriber);
+    subscriber.awaitTerminalEvent();
+
+    // then
+    verify(podRepository,times(1)).createOrUpdateWithItems(any(Pod.class));
+  }
+
+  @Test
+  public void shouldDraftForComplete() throws Exception {
+    // given
+    Pod pod = PodBuilder.generatePod();
+    pod.setLocal(false);
+    pod.getPodProductItemsWrapper().get(0).getPodProductLotItemsWrapper().get(0).setAcceptedQuantity(Long.valueOf(1));
+    presenter.pod = pod;
+    presenter.issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
+
+    // when
+    TestSubscriber<Void> subscriber = new TestSubscriber<>();
+    Observable<Void> completeObservable  = presenter
+        .getCompleteFormObservable("testOne", "received");
+    completeObservable.subscribe(subscriber);
+    subscriber.awaitTerminalEvent();
+
+    // then
+    verify(podRepository,times(1)).createOrUpdateWithItems(any(Pod.class));
+    verify(productRepository,times(1)).updateProductInArchived(any());
+    verify(stockRepository,times(1)).addStockMovementsAndUpdateStockCards(any(), any());
   }
 
 }

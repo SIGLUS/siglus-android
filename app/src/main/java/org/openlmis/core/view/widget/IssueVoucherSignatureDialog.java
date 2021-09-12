@@ -147,7 +147,7 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     } else {
       btnSign.setEnabled(false);
       btnCancel.setEnabled(false);
-      delegate.onSign(received, delivered);
+      delegate.onSign(delivered, received);
       dismiss();
     }
   }
