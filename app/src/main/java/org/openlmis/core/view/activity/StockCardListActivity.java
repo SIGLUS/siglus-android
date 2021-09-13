@@ -134,8 +134,6 @@ public class StockCardListActivity extends SearchBarActivity {
           .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
       menu.add(Menu.NONE, MENU_ID_BULK_ISSUES, 400, getString(R.string.action_bulk_issues))
           .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-      menu.add(Menu.NONE, MENU_ID_BULK_ENTRIES, 500, getString(R.string.action_bulk_entries))
-          .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
   }
 }
