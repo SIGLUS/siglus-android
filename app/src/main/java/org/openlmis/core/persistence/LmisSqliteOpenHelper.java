@@ -56,6 +56,7 @@ import org.openlmis.core.persistence.migrations.AddMalariaSignature;
 import org.openlmis.core.persistence.migrations.AddManualAddColumnToRnrFormItemsTable;
 import org.openlmis.core.persistence.migrations.AddNewPrograms;
 import org.openlmis.core.persistence.migrations.AddParentCodeToProgramTable;
+import org.openlmis.core.persistence.migrations.AddProductPrice;
 import org.openlmis.core.persistence.migrations.AddProgramToRegimen;
 import org.openlmis.core.persistence.migrations.AddRapidTestColumnsTemplate;
 import org.openlmis.core.persistence.migrations.AddRapidTestProgram;
@@ -225,6 +226,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new UpdateUsageColumnsMap());
     MIGRATIONS.add(new CreateAdditionalProductProgramTable());
     MIGRATIONS.add(new CreateIssueVoucherDraftTables());
+    MIGRATIONS.add(new AddProductPrice());
   }
 
   private LmisSqliteOpenHelper(Context context) {

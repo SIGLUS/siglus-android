@@ -16,6 +16,8 @@ public class CreatePodTable extends Migration {
         "`orderCode` VARCHAR NOT NULL, " +
         "`originOrderCode` VARCHAR, " +
         "`orderSupplyFacilityName` VARCHAR, " +
+        "`orderSupplyFacilityDistrict` VARCHAR, " +
+        "`orderSupplyFacilityProvince` VARCHAR, " +
         "`orderStatus` VARCHAR NOT NULL, " +
         "`orderCreatedDate` VARCHAR, " +
         "`orderLastModifiedDate` VARCHAR, " +

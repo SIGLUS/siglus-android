@@ -51,6 +51,8 @@ public class PodRemoteResponse {
         .receivedDate(receivedDate == null ? null : DateUtil.parseString(receivedDate, DateUtil.DB_DATE_FORMAT))
         .orderCode(order.getCode())
         .orderSupplyFacilityName(order.getSupplyFacilityName())
+        .orderSupplyFacilityDistrict(order.getSupplyFacilityDistrict())
+        .orderSupplyFacilityProvince(order.getSupplyFacilityProvince())
         .orderStatus(OrderStatus.covertToOrderStatus(order.getStatus()))
         .orderCreatedDate(new Date(order.getCreatedDate()))
         .orderLastModifiedDate(new Date(order.getLastModifiedDate()))
