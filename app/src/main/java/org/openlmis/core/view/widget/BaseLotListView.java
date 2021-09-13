@@ -142,6 +142,8 @@ public class BaseLotListView extends FrameLayout {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
+        existingLotListView.clearFocus();
+        newLotListView.clearFocus();
         showAddLotDialogFragment();
       }
     };

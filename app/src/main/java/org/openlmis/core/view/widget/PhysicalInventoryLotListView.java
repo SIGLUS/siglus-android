@@ -122,19 +122,24 @@ public class PhysicalInventoryLotListView extends BaseLotListView {
   }
 
   public boolean validateLotList() {
-    int position1 = ((PhysicalInventoryLotMovementAdapter) existingLotMovementAdapter)
-        .validateLotNonEmptyQuantity();
+    int position1 = ((PhysicalInventoryLotMovementAdapter) existingLotMovementAdapter).validateLotNonEmptyQuantity();
+    int position2 = ((PhysicalInventoryLotMovementAdapter) newLotMovementAdapter).validateLotPositiveQuantity();
+
     if (position1 >= 0) {
-      existingLotListView.scrollToPosition(position1);
-      return false;
+      viewModel.getExistingLotMovementViewModelList().get(position1).setNeedRequestFocus(true);
+      existingLotListView.post(() -> {
+        existingLotListView.scrollToPosition(position1);
+        viewModel.getExistingLotMovementViewModelList().get(position1).setNeedRequestFocus(false);
+      });
+
+    } else if (position2 >= 0) {
+      viewModel.getNewLotMovementViewModelList().get(position2).setNeedRequestFocus(true);
+      newLotListView.post(() -> {
+        newLotListView.scrollToPosition(position2);
+        viewModel.getNewLotMovementViewModelList().get(position2).setNeedRequestFocus(false);
+      });
     }
-    int position2 = ((PhysicalInventoryLotMovementAdapter) newLotMovementAdapter)
-        .validateLotPositiveQuantity();
-    if (position2 >= 0) {
-      newLotListView.scrollToPosition(position2);
-      return false;
-    }
-    return true;
+    return position1 < 0 && position2 < 0;
   }
 
   @Override

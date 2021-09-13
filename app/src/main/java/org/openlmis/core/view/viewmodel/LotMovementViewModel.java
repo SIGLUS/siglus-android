@@ -56,6 +56,7 @@ public class LotMovementViewModel {
   boolean quantityLessThanSoh = true;
   boolean isDataChanged = false;
   private String from;
+  boolean needRequestFocus;
 
   public LotMovementViewModel(String lotNumber, String expiryDate, MovementReasonManager.MovementType movementType) {
     this.lotNumber = lotNumber;

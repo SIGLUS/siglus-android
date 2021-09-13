@@ -19,6 +19,7 @@
 package org.openlmis.core.view.adapter;
 
 import java.util.List;
+import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
 public class PhysicalInventoryLotMovementAdapter extends LotMovementAdapter {
@@ -36,15 +37,17 @@ public class PhysicalInventoryLotMovementAdapter extends LotMovementAdapter {
     for (LotMovementViewModel lotMovementViewModel : lotList) {
       lotMovementViewModel.setValid(true);
       lotMovementViewModel.setQuantityLessThanSoh(true);
+      lotMovementViewModel.setFrom(PhysicalInventoryActivity.KEY_FROM_PHYSICAL_VERIFY);
+      lotMovementViewModel.setNeedRequestFocus(false);
     }
     for (int i = 0; i < lotList.size(); i++) {
       if (!lotList.get(i).validateLotWithNoEmptyFields()) {
-        position = i;
-        break;
+        if (position == -1) {
+          position = i;
+        }
+        notifyItemChanged(i);
       }
     }
-
-    this.notifyDataSetChanged();
     return position;
   }
 
@@ -53,15 +56,17 @@ public class PhysicalInventoryLotMovementAdapter extends LotMovementAdapter {
     for (LotMovementViewModel lotMovementViewModel : lotList) {
       lotMovementViewModel.setValid(true);
       lotMovementViewModel.setQuantityLessThanSoh(true);
+      lotMovementViewModel.setFrom(PhysicalInventoryActivity.KEY_FROM_PHYSICAL_VERIFY);
+      lotMovementViewModel.setNeedRequestFocus(false);
     }
     for (int i = 0; i < lotList.size(); i++) {
       if (!lotList.get(i).validateLotWithPositiveQuantity()) {
-        position = i;
-        break;
+        if (position == -1) {
+          position = i;
+        }
+        notifyItemChanged(i);
       }
     }
-
-    this.notifyDataSetChanged();
     return position;
   }
 }

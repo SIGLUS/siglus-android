@@ -39,6 +39,8 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
 
   public static final String KEY_FROM_PHYSICAL_COMPLETED = "Physical-Completed";
 
+  public static final String KEY_FROM_PHYSICAL_VERIFY = "Physical-Verify";
+
   final SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
     public void onSign(String sign) {
       loading();

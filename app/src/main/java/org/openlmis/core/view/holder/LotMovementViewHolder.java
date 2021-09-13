@@ -139,13 +139,18 @@ public class LotMovementViewHolder extends BaseViewHolder {
       lyLotAmount.setErrorEnabled(false);
     }
 
+    if (viewModel.isNeedRequestFocus()) {
+      etLotAmount.requestFocus();
+    }
+
     if (!viewModel.isValid()) {
       setQuantityError(getString(R.string.msg_empty_quantity));
     }
     if (!viewModel.isQuantityLessThanSoh()) {
       setQuantityError(getString(R.string.msg_invalid_quantity));
     } else {
-      if (PhysicalInventoryActivity.KEY_FROM_PHYSICAL_COMPLETED.equals(viewModel.getFrom())
+      if ((PhysicalInventoryActivity.KEY_FROM_PHYSICAL_COMPLETED.equals(viewModel.getFrom())
+          || PhysicalInventoryActivity.KEY_FROM_PHYSICAL_VERIFY.equals(viewModel.getFrom()))
           && StringUtils.isBlank(etLotAmount.getText())) {
         lyLotAmount.setError(getString(R.string.msg_empty_quantity) + etLotAmount.getText());
       } else {
