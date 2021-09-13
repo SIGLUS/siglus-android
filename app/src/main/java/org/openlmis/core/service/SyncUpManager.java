@@ -42,12 +42,14 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.DirtyDataItemInfo;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.DirtyDataRepository;
+import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -57,6 +59,7 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.DirtyDataItemEntry;
+import org.openlmis.core.network.model.PodEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.persistence.DbUtil;
@@ -105,6 +108,9 @@ public class SyncUpManager {
   private DirtyDataRepository dirtyDataRepository;
 
   @Inject
+  private PodRepository podRepository;
+
+  @Inject
   DbUtil dbUtil;
 
   protected LMISRestApi lmisRestApi;
@@ -130,6 +136,11 @@ public class SyncUpManager {
       if (isSyncRnrSuccessful) {
         sharedPreferenceMgr.setRnrLastSyncTime();
         EventBus.getDefault().post(new SyncRnrFinishEvent());
+      }
+
+      boolean isSyncPodSuccessful = syncPod();
+      if (isSyncPodSuccessful) {
+        sharedPreferenceMgr.setPodLastSyncTime();
       }
 
       boolean isSyncStockSuccessful = syncStockCards();
@@ -195,6 +206,20 @@ public class SyncUpManager {
     }).subscribe(this::markRnrFormSynced);
 
     return from(forms).allMatch(RnRForm::isSynced);
+  }
+
+  public boolean syncPod() {
+    List<Pod> pods;
+    try {
+      pods = podRepository.queryUnsyncedPods();
+      if (pods.isEmpty()) {
+        return false;
+      }
+    } catch (Exception e) {
+      new LMISException(e, "SyncUpManager:syncPod").reportToFabric();
+      return false;
+    }
+    return from(pods).transform(this::submitPod).allMatch(Pod::isSynced);
   }
 
   public boolean syncStockCards() {
@@ -425,12 +450,8 @@ public class SyncUpManager {
     }).toList();
   }
 
-  private void markStockDataSynced(List<StockMovementItem> stockMovementItems)
-      throws LMISException {
-
-    Observable.from(stockMovementItems)
-        .forEach(stockMovementItem -> stockMovementItem.setSynced(true));
-
+  private void markStockDataSynced(List<StockMovementItem> stockMovementItems) throws LMISException {
+    Observable.from(stockMovementItems).forEach(stockMovementItem -> stockMovementItem.setSynced(true));
     stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockMovementItems);
   }
 
@@ -444,4 +465,19 @@ public class SyncUpManager {
     }
   }
 
+  private Pod submitPod(Pod localPod) {
+    try {
+      Pod remotePod = lmisRestApi.submitPod(new PodEntry(localPod));
+      remotePod.setId(localPod.getId());
+      remotePod.setOriginOrderCode(localPod.getOriginOrderCode());
+      remotePod.setSynced(podRepository.markSynced(remotePod));
+      return remotePod;
+    } catch (NetWorkException e) {
+      new LMISException(e, "SyncUpManager.submitPod.network").reportToFabric();
+    } catch (LMISException e) {
+      new LMISException(e, "SyncUpManager.submitPod.lmis").reportToFabric();
+      syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.POD, localPod.getId()));
+    }
+    return localPod;
+  }
 }

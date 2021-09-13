@@ -101,6 +101,8 @@ public class FieldConstants {
 
   public static final String IS_DRAFT = "isDraft";
 
+  public static final String IS_SYNCED = "isSynced";
+
   public static final String ERROR_MESSAGE = "errorMessage";
 
   // id

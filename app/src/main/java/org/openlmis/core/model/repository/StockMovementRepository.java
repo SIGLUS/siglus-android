@@ -561,6 +561,21 @@ public class StockMovementRepository {
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateSql);
   }
 
+  public void updateDocumentNumberForPod(String originOrderCode, String newOrderCode) {
+    String updateStockMovementItemsSql = "UPDATE stock_items set documentNumber = '"
+        + newOrderCode
+        + "' WHERE documentNumber = '"
+        + originOrderCode
+        + "' ";
+    String updateLotMovementItemsSql = "UPDATE lot_movement_items set documentNumber = '"
+        + newOrderCode
+        + "' WHERE documentNumber = '"
+        + originOrderCode
+        + "' ";
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateStockMovementItemsSql);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateLotMovementItemsSql);
+  }
+
   public static class SortClass implements Comparator<StockMovementItem> {
 
     @Override

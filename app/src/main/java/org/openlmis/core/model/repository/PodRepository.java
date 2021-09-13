@@ -18,6 +18,7 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.IS_SYNCED;
 import static org.openlmis.core.constant.FieldConstants.ORDER_STATUS;
 import static org.openlmis.core.constant.FieldConstants.POD_ID;
 
@@ -66,6 +67,9 @@ public class PodRepository {
   IssueVoucherDraftRepository issueVoucherDraftRepository;
 
   @Inject
+  StockMovementRepository stockMovementRepository;
+
+  @Inject
   public PodRepository(Context context, DbUtil dbUtil) {
     this.podGenericDao = new GenericDao<>(Pod.class, context);
     this.dbUtil = dbUtil;
@@ -105,6 +109,13 @@ public class PodRepository {
       cursor.close();
     }
     return matchedOrderCodes;
+  }
+
+  public List<Pod> queryUnsyncedPods() throws LMISException {
+    return dbUtil.withDao(Pod.class, dao -> dao.queryBuilder()
+        .where().eq(ORDER_STATUS, OrderStatus.RECEIVED)
+        .and().eq(IS_SYNCED, false)
+        .query());
   }
 
   public boolean hasUnmatchedPodByProgram(String programCode) {
@@ -259,5 +270,22 @@ public class PodRepository {
       pod.setId(existingPod.getId());
     }
     return podGenericDao.createOrUpdate(pod);
+  }
+
+  public boolean markSynced(Pod pod) {
+    try {
+      dbUtil.withDaoAsBatch(Pod.class, dao -> {
+        syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.POD, pod.getId());
+        pod.setSynced(true);
+        dao.update(pod);
+        if (StringUtils.isNotEmpty(pod.getOriginOrderCode())) {
+          stockMovementRepository.updateDocumentNumberForPod(pod.getOriginOrderCode(), pod.getOrderCode());
+        }
+        return null;
+      });
+    } catch (LMISException e) {
+      return false;
+    }
+    return true;
   }
 }

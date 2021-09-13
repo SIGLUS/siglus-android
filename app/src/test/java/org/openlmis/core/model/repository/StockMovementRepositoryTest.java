@@ -3,6 +3,7 @@ package org.openlmis.core.model.repository;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
@@ -192,30 +193,6 @@ public class StockMovementRepositoryTest {
     assertEquals(stockCard.getStockMovementItemsWrapper().get(0), stockMovementItem);
   }
 
-  private StockMovementItem createMovementItem(MovementReasonManager.MovementType type,
-      long quantity, StockCard stockCard, Date createdTime, Date movementDate, boolean synced)
-      throws LMISException {
-    StockMovementItem stockMovementItem = new StockMovementItem();
-    stockMovementItem.setMovementQuantity(quantity);
-    stockMovementItem.setMovementType(type);
-    stockMovementItem.setMovementDate(movementDate);
-    stockMovementItem.setStockCard(stockCard);
-    stockMovementItem.setSynced(synced);
-    LMISTestApp.getInstance().setCurrentTimeMillis(createdTime.getTime());
-
-    if (stockMovementItem.isPositiveMovement()) {
-      stockMovementItem.setStockOnHand(stockCard.getStockOnHand() + quantity);
-    } else {
-      stockMovementItem.setStockOnHand(stockCard.getStockOnHand() - quantity);
-    }
-
-    stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
-    stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
-    stockRepository.refresh(stockCard);
-
-    return stockMovementItem;
-  }
-
   @Test
   public void shouldQueryEarliestStockMovementItemCreatedTimeByProgram() throws Exception {
     Program mmia = new ProgramBuilder().setProgramCode("MMIA").build();
@@ -346,5 +323,46 @@ public class StockMovementRepositoryTest {
     stockRepository.refresh(stockCard);
     stockCard.setStockMovementItemsWrapper(null);
     assertTrue(stockCard.getStockMovementItemsWrapper().get(1).isSynced());
+  }
+
+  @Test
+  public void shouldCorrectUpdateDocumentNumber() throws Exception {
+    // given
+    StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
+    StockMovementItem movementItem = createMovementItem(ISSUE, 10, stockCard, new DateTime("2017-01-01").toDate(),
+        new DateTime("2017-01-01").toDate(), false);
+    String originOrderCode = "originOrderCode";
+    String newOrderCode = "newOrderCode";
+    movementItem.setDocumentNumber(originOrderCode);
+
+    // when
+    stockMovementRepository.updateDocumentNumberForPod(originOrderCode, newOrderCode);
+
+    // then
+    assertNotNull(stockMovementRepository.genericDao.getById(String.valueOf(movementItem.getId())));
+  }
+
+  private StockMovementItem createMovementItem(MovementReasonManager.MovementType type,
+      long quantity, StockCard stockCard, Date createdTime, Date movementDate, boolean synced)
+      throws LMISException {
+    StockMovementItem stockMovementItem = new StockMovementItem();
+    stockMovementItem.setMovementQuantity(quantity);
+    stockMovementItem.setMovementType(type);
+    stockMovementItem.setMovementDate(movementDate);
+    stockMovementItem.setStockCard(stockCard);
+    stockMovementItem.setSynced(synced);
+    LMISTestApp.getInstance().setCurrentTimeMillis(createdTime.getTime());
+
+    if (stockMovementItem.isPositiveMovement()) {
+      stockMovementItem.setStockOnHand(stockCard.getStockOnHand() + quantity);
+    } else {
+      stockMovementItem.setStockOnHand(stockCard.getStockOnHand() - quantity);
+    }
+
+    stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+    stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+    stockRepository.refresh(stockCard);
+
+    return stockMovementItem;
   }
 }

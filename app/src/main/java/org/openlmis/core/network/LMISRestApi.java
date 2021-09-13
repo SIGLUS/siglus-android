@@ -21,11 +21,13 @@ package org.openlmis.core.network;
 import java.util.List;
 import org.openlmis.core.annotation.DeleteWithBody;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.DirtyDataItemEntry;
 import org.openlmis.core.network.model.FacilityInfoResponse;
+import org.openlmis.core.network.model.PodEntry;
 import org.openlmis.core.network.model.PodsLocalResponse;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
@@ -39,6 +41,7 @@ import org.openlmis.core.network.model.UserResponse;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Query;
@@ -65,6 +68,9 @@ public interface LMISRestApi {
 
   @GET("/api/siglusapi/android/me/facility/pods")
   PodsLocalResponse fetchPods(@Query("shippedOnly") boolean shippedOnly) throws LMISException;
+
+  @PATCH("/api/siglusapi/android/me/facility/pod")
+  Pod submitPod(@Body PodEntry podEntry) throws LMISException;
 
   @POST("/api/oauth/token")
   void login(@Query("grant_type") String grantType, @Query("username") String username,

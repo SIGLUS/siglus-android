@@ -18,29 +18,16 @@
 
 package org.openlmis.core.network.model;
 
-import lombok.Data;
-import org.openlmis.core.model.PodProductLotItem;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class PodLotMovementItemResponse {
+@Getter
+@Setter
+public class ErrorHandlingResponse {
 
-  private LotResponse lot;
+  int status;
 
-  private Long shippedQuantity;
+  String message;
 
-  private Long acceptedQuantity;
-
-  private String rejectedReason;
-
-  private String notes;
-
-  public PodProductLotItem from() {
-    return PodProductLotItem.builder()
-        .lot(lot.from())
-        .shippedQuantity(shippedQuantity)
-        .acceptedQuantity(acceptedQuantity)
-        .rejectedReason(rejectedReason)
-        .notes(notes)
-        .build();
-  }
+  String messageInPortuguese;
 }

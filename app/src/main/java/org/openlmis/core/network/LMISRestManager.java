@@ -67,6 +67,7 @@ import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.ServiceAdapter;
 import org.openlmis.core.network.adapter.StockCardsResponseAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
+import org.openlmis.core.network.model.ErrorHandlingResponse;
 import org.openlmis.core.network.model.PodsLocalResponse;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
@@ -206,6 +207,10 @@ public class LMISRestManager {
           SharedPreferenceMgr.getInstance().setLastLoginUser(StringUtils.EMPTY);
           return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
         }
+      }
+      if (r != null && r.getStatus() == 404) {
+        ErrorHandlingResponse response = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
+        return new LMISException(response.getMessage());
       }
       if (r != null && r.getStatus() == 500) {
         return new SyncServerException(LMISApp.getContext().getString(R.string.sync_server_error));

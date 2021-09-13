@@ -52,6 +52,7 @@ public class SharedPreferenceMgr {
   SharedPreferences sharedPreferences;
 
   private static final String KEY_LAST_SYNCED_TIME_RNR_FORM = "lastSyncedDate";
+  private static final String KEY_LAST_SYNCED_TIME_POD = "lastSyncedDatePOD";
   private static final String KEY_LAST_SYNCED_TIME_STOCKCARD = "lastSyncedDateStockCard";
   public static final String KEY_LAST_LOGIN_USER = "last_user";
   public static final String KEY_USER_FACILITY = "user_facility";
@@ -323,6 +324,16 @@ public class SharedPreferenceMgr {
     sharedPreferences.edit()
         .putLong(KEY_LAST_SYNCED_TIME_RNR_FORM, LMISApp.getInstance().getCurrentTimeMillis())
         .apply();
+  }
+
+  public void setPodLastSyncTime() {
+    sharedPreferences.edit()
+        .putLong(KEY_LAST_SYNCED_TIME_POD, LMISApp.getInstance().getCurrentTimeMillis())
+        .apply();
+  }
+
+  public long getPodLastSyncTime() {
+    return sharedPreferences.getLong(KEY_LAST_SYNCED_TIME_POD, 0);
   }
 
   public long getStockLastSyncTime() {

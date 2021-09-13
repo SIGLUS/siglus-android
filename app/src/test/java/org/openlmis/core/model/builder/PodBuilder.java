@@ -60,6 +60,7 @@ public class PodBuilder {
         .podProductItem(podProductItem)
         .lot(lot)
         .shippedQuantity(quantity)
+        .acceptedQuantity(quantity)
         .build();
     podProductLotItemsWrapper.add(podProductLotItem);
     podProductItemsWrapper.add(podProductItem);

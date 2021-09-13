@@ -222,4 +222,29 @@ public class PodRepositoryTest {
     // then
     Assert.assertEquals(1, podRepository.list().size());
   }
+
+  @Test
+  public void shouldCorrectQueryUnsyncedPodsAndMarkSynced() throws Exception {
+    // given
+    Pod pod = PodBuilder.generatePod();
+    pod.setSynced(false);
+    pod.setOrderStatus(OrderStatus.RECEIVED);
+    ArrayList<Pod> pods = new ArrayList<>();
+    pods.add(pod);
+    podRepository.batchCreatePodsWithItems(pods);
+
+    // when
+    List<Pod> unsyncedPods = podRepository.queryUnsyncedPods();
+
+    // then
+    Assert.assertEquals(1, unsyncedPods.size());
+    Assert.assertEquals(pod.getId(), unsyncedPods.get(0).getId());
+
+    // when
+    boolean result = podRepository.markSynced(pod);
+
+    // then
+    Assert.assertTrue(result);
+    Assert.assertTrue(pod.isSynced());
+  }
 }

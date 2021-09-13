@@ -58,6 +58,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.DirtyDataItemInfo;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
@@ -65,9 +66,11 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.DirtyDataRepository;
+import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -101,6 +104,7 @@ public class SyncUpManagerTest {
   private SyncUpManager syncUpManager;
   private ProgramDataFormRepository mockedProgramDataFormRepository;
   private DirtyDataRepository mockedDirtyDataRepository;
+  private PodRepository mockedPodRepository;
   private final String facilityID = "1";
   private final String productCode = "08N04Z";
 
@@ -114,6 +118,7 @@ public class SyncUpManagerTest {
     mockedSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
     mockedLmisRestApi = mock(LMISRestApi.class);
     mockedDirtyDataRepository = mock(DirtyDataRepository.class);
+    mockedPodRepository = mock(PodRepository.class);
 
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
@@ -154,8 +159,7 @@ public class SyncUpManagerTest {
     syncUpManager.syncRnr();
     verify(mockedLmisRestApi, times(10)).submitRequisition(any(RnRForm.class));
     verify(mockedRnrFormRepository, times(10)).createOrUpdateWithItems(any(RnRForm.class));
-    verify(mockedSyncErrorsRepository, times(10))
-        .deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
+    verify(mockedSyncErrorsRepository, times(10)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
   }
 
   @Test
@@ -208,8 +212,7 @@ public class SyncUpManagerTest {
     // given
     LMISTestApp.getInstance().setCurrentTimeMillis(DateTime.parse("2021-07-20").getMillis());
     StockCard stockCard = createTestStockCardData();
-    doThrow(new RuntimeException("Sync Failed")).when(mockedLmisRestApi)
-        .syncUpStockMovementDataSplit(anyList());
+    doThrow(new RuntimeException("Sync Failed")).when(mockedLmisRestApi).syncUpStockMovementDataSplit(anyList());
 
     // when
     try {
@@ -423,6 +426,25 @@ public class SyncUpManagerTest {
     assertEquals(response, response1);
   }
 
+  @Test
+  public void shouldSyncUpAllUnSyncedPod() throws Exception {
+    // given
+    Pod pod = PodBuilder.generatePod();
+    ArrayList<Pod> unsyncedPods = new ArrayList<>();
+    unsyncedPods.add(pod);
+    when(mockedLmisRestApi.submitPod(any())).thenReturn(pod);
+    when(mockedPodRepository.queryUnsyncedPods()).thenReturn(unsyncedPods);
+    when(mockedPodRepository.markSynced(any())).thenReturn(true);
+
+    // when
+    boolean result = syncUpManager.syncPod();
+
+    // then
+    verify(mockedLmisRestApi, times(1)).submitPod(any());
+    verify(mockedPodRepository, times(1)).markSynced(any());
+    assertTrue(result);
+  }
+
   private List<DirtyDataItemInfo> createDirtyDateItem() {
     List<DirtyDataItemInfo> list = new ArrayList<>();
     DirtyDataItemInfo dirtyDataItemInfo = new DirtyDataItemInfo();
@@ -477,6 +499,7 @@ public class SyncUpManagerTest {
       bind(CmmRepository.class).toInstance(mockedCmmRepository);
       bind(ProgramDataFormRepository.class).toInstance(mockedProgramDataFormRepository);
       bind(DirtyDataRepository.class).toInstance(mockedDirtyDataRepository);
+      bind(PodRepository.class).toInstance(mockedPodRepository);
     }
   }
 }
