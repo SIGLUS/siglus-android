@@ -32,7 +32,6 @@
       style="@style/Dialog.EditText"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:maxLength="@integer/signature_length"
       android:drawableStart="@drawable/ic_sign_date"
       android:drawablePadding="@dimen/padding_normal"
       android:focusableInTouchMode="false"
