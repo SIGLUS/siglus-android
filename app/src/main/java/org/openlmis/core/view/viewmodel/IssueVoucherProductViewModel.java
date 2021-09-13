@@ -25,6 +25,7 @@ import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.enumeration.IssueVoucherValidationType;
 import org.openlmis.core.model.DraftIssueVoucherProductItem;
@@ -42,13 +43,22 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 public class IssueVoucherProductViewModel implements MultiItemEntity {
 
   public static final int TYPE_EDIT = 1;
+
   public static final int TYPE_DONE = 2;
+
+  @Getter
   private final List<IssueVoucherLotViewModel> lotViewModels = new ArrayList<>();
+
   private boolean done;
+
   private Product product;
+
   private StockCard stockCard;
+
   private IssueVoucherValidationType validationType;
+
   private boolean shouldShowError;
+
   private DraftIssueVoucherProductItem productItem;
 
   public IssueVoucherProductViewModel(Product product) {

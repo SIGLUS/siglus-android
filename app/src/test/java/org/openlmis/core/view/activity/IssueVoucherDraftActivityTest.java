@@ -1,5 +1,6 @@
 package org.openlmis.core.view.activity;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -19,7 +20,6 @@ import java.util.Collections;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -113,9 +113,11 @@ public class IssueVoucherDraftActivityTest {
     Assert.assertNotNull(dialog);
   }
 
-  @Ignore
   @Test
   public void shouldShowConfirmDialogWhenBackPressed() {
+    // given
+    when(mockedPresenter.needConfirm()).thenReturn(true);
+
     // when
     issueVoucherDraftActivity.onBackPressed();
     RobolectricUtils.waitLooperIdle();
@@ -124,6 +126,22 @@ public class IssueVoucherDraftActivityTest {
     Fragment confirmDialog = issueVoucherDraftActivity.getSupportFragmentManager()
         .findFragmentByTag("issue_voucher_back_confirm_dialog");
     Assert.assertNotNull(confirmDialog);
+  }
+
+  @Test
+  public void shouldBackToIssueVoucherListPageWhenBackPressed() {
+    // given
+    when(mockedPresenter.needConfirm()).thenReturn(false);
+
+    // when
+    issueVoucherDraftActivity.onBackPressed();
+    RobolectricUtils.waitLooperIdle();
+
+    // then
+    Intent intent = shadowOf(issueVoucherDraftActivity).getNextStartedActivity();
+
+    assertThat(intent).isNotNull();
+    assertThat(intent.getComponent().getClassName()).isEqualTo(IssueVoucherListActivity.class.getName());
   }
 
   @Test
