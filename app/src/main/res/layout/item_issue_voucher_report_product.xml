@@ -17,7 +17,7 @@
       android:id="@+id/tv_partial_fulfilled" />
     <TextView style="@style/Pod.list.product" />
     <TextView style="@style/Pod.list.product"
-      android:layout_width="@dimen/px_200"/>
+      android:layout_width="@dimen/px_230"/>
     <TextView style="@style/Pod.list.product" />
     <TextView style="@style/Pod.list.product" />
     <TextView style="@style/Pod.list.product"

@@ -17,7 +17,7 @@
 
   <LinearLayout
     android:id="@+id/products_list"
-    android:layout_width="@dimen/px_160"
+    android:layout_width="@dimen/px_190"
     android:layout_height="0dp"
     android:layout_marginTop="@dimen/px_12"
     android:layout_marginLeft="@dimen/px_12"
@@ -44,7 +44,7 @@
     android:layout_marginTop="@dimen/px_12"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:layout_marginLeft="@dimen/px_172"
+    android:layout_marginLeft="@dimen/px_202"
     android:layout_marginRight="@dimen/px_12"
     android:layout_above="@+id/action_panel"
     android:layout_toRightOf="@id/products_list"
@@ -79,7 +79,7 @@
           android:text="@string/label_quantity_shipped"/>
         <TextView
           style="@style/Pod.list.header"
-          android:layout_width="@dimen/px_200"
+          android:layout_width="@dimen/px_230"
           android:text="@string/label_stockcard_lot_code"/>
         <TextView
           style="@style/Pod.list.header"

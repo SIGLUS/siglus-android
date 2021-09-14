@@ -28,10 +28,25 @@
         android:gravity="right|center_vertical"
         android:inputType="numberSigned" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <TextView
+
+    <LinearLayout
       style="@style/Pod.list.lot"
-      android:layout_width="@dimen/px_200"
-      android:id="@+id/tv_lot_code" />
+      android:layout_width="@dimen/px_230">
+
+      <TextView
+        style="@style/Pod.list.lot"
+        android:layout_width="@dimen/px_200"
+        android:id="@+id/tv_lot_code" />
+
+      <ImageView
+        android:id="@+id/iv_clear"
+        android:layout_width="@dimen/px_30"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/px_5"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/bitmap_close_red" />
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot">
       <EditText
         android:id="@+id/et_quantity_accepted"
