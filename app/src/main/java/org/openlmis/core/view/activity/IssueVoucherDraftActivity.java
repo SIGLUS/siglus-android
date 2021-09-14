@@ -22,13 +22,11 @@ import static org.openlmis.core.utils.Constants.PARAM_ISSUE_VOUCHER;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.IS_FROM_BULK_ISSUE;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -51,6 +49,7 @@ import org.openlmis.core.presenter.IssueVoucherDraftPresenter;
 import org.openlmis.core.presenter.IssueVoucherDraftPresenter.IssueVoucherDraftView;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.utils.keyboard.KeyboardUtil;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.OnRemoveListener;
@@ -94,7 +93,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
     @Override
     public void onSingleClick(View v) {
       if (v.getId() == R.id.btn_complete) {
-        hideKeyboard(v);
+        KeyboardUtil.hideKeyboard(v);
         int position = issueVoucherDraftProductAdapter.validateAll();
         if (position >= 0) {
           LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvIssueVoucher.getLayoutManager();
@@ -115,14 +114,6 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
         intent.putExtra(IntentConstants.FROM_PAGE, fromPage);
       }
       startActivity(intent);
-    }
-
-    private void hideKeyboard(View view) {
-      InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
-          Context.INPUT_METHOD_SERVICE);
-      if (inputMethodManager != null) {
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-      }
     }
   };
 

@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
@@ -30,7 +29,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -53,6 +51,7 @@ import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.utils.keyboard.KeyboardUtil;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -175,7 +174,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     switch (v.getId()) {
       case R.id.btn_login:
         startLogin(false);
-        hideKeyboard(btnLogin);
+        KeyboardUtil.hideKeyboard(btnLogin);
         break;
       case R.id.iv_visibility_pwd:
         setPwdVisibility();
@@ -287,7 +286,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     etPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
     etPassword.setOnEditorActionListener((v, actionId, event) -> {
       if (actionId == EditorInfo.IME_ACTION_DONE) {
-        hideImm();
+        KeyboardUtil.hideKeyboard(this);
         startLogin(false);
         return true;
       }
@@ -296,14 +295,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     if (BuildConfig.DEBUG) {
       setDeveloperMode();
-    }
-  }
-
-  private void hideKeyboard(View view) {
-    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
-        Context.INPUT_METHOD_SERVICE);
-    if (inputMethodManager != null) {
-      inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
   }
 

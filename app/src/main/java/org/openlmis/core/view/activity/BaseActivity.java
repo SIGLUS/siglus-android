@@ -23,13 +23,11 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.StyleRes;
 import androidx.fragment.app.FragmentManager;
 import com.google.inject.Inject;
@@ -305,14 +303,6 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
       return true;
     } else {
       return super.onOptionsItemSelected(item);
-    }
-  }
-
-  public void hideImm() {
-    InputMethodManager mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-    if (mImm != null && mImm.isActive() && this.getCurrentFocus() != null) {
-      mImm.hideSoftInputFromWindow(this.getCurrentFocus()
-          .getWindowToken(), 0);
     }
   }
 

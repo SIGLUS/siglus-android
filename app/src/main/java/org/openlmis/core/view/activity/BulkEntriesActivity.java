@@ -21,13 +21,11 @@ package org.openlmis.core.view.activity;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,6 +50,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.utils.keyboard.KeyboardUtil;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
@@ -229,7 +228,7 @@ public class BulkEntriesActivity extends BaseActivity {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        hideKeyboard(btnSave);
+        KeyboardUtil.hideKeyboard(btnSave);
         Subscription subscription = bulkEntriesPresenter.saveDraftBulkEntriesObservable()
             .subscribe(getReloadSubscriber());
         subscriptions.add(subscription);
@@ -243,7 +242,7 @@ public class BulkEntriesActivity extends BaseActivity {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        hideKeyboard(btnComplete);
+        KeyboardUtil.hideKeyboard(btnComplete);
         if (doValidation()) {
           showSignDialog();
         }
@@ -324,14 +323,6 @@ public class BulkEntriesActivity extends BaseActivity {
     Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
     intent.putExtra(SELECTED_PRODUCTS, (Serializable) bulkEntriesPresenter.getAddedProductCodes());
     addProductsActivityResultLauncher.launch(intent);
-  }
-
-  private void hideKeyboard(View view) {
-    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
-        Context.INPUT_METHOD_SERVICE);
-    if (inputMethodManager != null) {
-      inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
   }
 
   private SignatureDialog.DialogDelegate getSignatureDialogDelegate() {

@@ -18,6 +18,7 @@
 
 package org.openlmis.core.utils.keyboard;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -29,6 +30,13 @@ public class KeyboardUtil {
         Context.INPUT_METHOD_SERVICE);
     if (inputMethodManager != null) {
       inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+  }
+
+  public static void hideKeyboard(Activity activity) {
+    InputMethodManager mImm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+    if (mImm != null && mImm.isActive() && activity.getCurrentFocus() != null) {
+      mImm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
   }
 }

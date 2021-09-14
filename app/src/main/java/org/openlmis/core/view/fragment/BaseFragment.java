@@ -109,12 +109,6 @@ public abstract class BaseFragment extends RoboMigrationAndroidXFragment impleme
     }
   }
 
-  protected void hideImm() {
-    if (getActivity() instanceof BaseActivity) {
-      ((BaseActivity) getActivity()).hideImm();
-    }
-  }
-
   @Override
   public void onDestroy() {
     unSubscribeSubscriptions();

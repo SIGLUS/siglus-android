@@ -35,7 +35,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
-import org.openlmis.core.view.activity.BaseActivity;
+import org.openlmis.core.utils.keyboard.KeyboardUtil;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import roboguice.RoboGuice;
@@ -167,9 +167,7 @@ public class ViaRequisitionBodyView extends FrameLayout {
 
   public void setHideImmOnTouchListener() {
     formLayout.setOnTouchListener((v, event) -> {
-      if (context instanceof BaseActivity) {
-        ((BaseActivity) context).hideImm();
-      }
+      KeyboardUtil.hideKeyboard(v);
       return false;
     });
   }

@@ -49,6 +49,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
+import org.openlmis.core.utils.keyboard.KeyboardUtil;
 import org.openlmis.core.view.widget.MMIADispensedInfoList;
 import org.openlmis.core.view.widget.MMIAPatientInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
@@ -254,7 +255,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
     scrollView.setOnTouchListener((v, event) -> {
       scrollView.requestFocus();
-      hideImm();
+      KeyboardUtil.hideKeyboard(requireActivity());
       return false;
     });
 
