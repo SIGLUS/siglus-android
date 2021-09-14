@@ -177,6 +177,15 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   }
 
   @Override
+  public boolean onPrepareOptionsMenu(Menu menu) {
+    boolean isPrepared = super.onPrepareOptionsMenu(menu);
+    boolean isVisible = presenter.getIssueVoucherReportViewModel().getPod().isLocal()
+        && presenter.getIssueVoucherReportViewModel().getPod().isDraft();
+    menu.findItem(R.id.action_add_product).setVisible(isVisible);
+    return isPrepared;
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     if (item.getItemId() == R.id.action_add_product) {
       openAddProducts();
