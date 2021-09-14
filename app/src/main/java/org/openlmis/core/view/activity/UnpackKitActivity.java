@@ -26,8 +26,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
@@ -35,6 +37,7 @@ import org.openlmis.core.presenter.UnpackKitPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.utils.keyboard.KeyboardUtil;
 import org.openlmis.core.view.adapter.UnpackKitAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -101,9 +104,23 @@ public class UnpackKitActivity extends BaseActivity {
     productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
     mAdapter = new UnpackKitAdapter(presenter.getInventoryViewModels(), signDialogListener);
     productListRecycleView.setAdapter(mAdapter);
-    productListRecycleView.setOnTouchListener((v, event) -> {
-      v.requestFocus();
-      return false;
+    productListRecycleView.addOnScrollListener(new OnScrollListener() {
+
+      int previousState = RecyclerView.SCROLL_STATE_SETTLING;
+
+      @Override
+      public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+        previousState = newState;
+      }
+
+      @Override
+      public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+        super.onScrolled(recyclerView, dx, dy);
+        if (previousState == RecyclerView.SCROLL_STATE_DRAGGING && dy != 0) {
+          KeyboardUtil.hideKeyboard(recyclerView);
+        }
+      }
     });
   }
 
