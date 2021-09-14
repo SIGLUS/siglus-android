@@ -9,7 +9,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.presenter.AddDrugsToVIAPresenter;
 import org.openlmis.core.view.adapter.AddDrugsToVIAAdapter;
 import org.robolectric.Robolectric;
@@ -24,8 +26,9 @@ public class AddDrugsToVIAActivityTest {
 
   @Before
   public void setUp() throws Exception {
+    LMISTestApp.getContext().setTheme(R.style.AppTheme);
     activityController = Robolectric.buildActivity(AddDrugsToVIAActivity.class);
-    addDrugsToVIAActivity = activityController.create().get();
+    addDrugsToVIAActivity = activityController.create().start().resume().get();
   }
 
   @After

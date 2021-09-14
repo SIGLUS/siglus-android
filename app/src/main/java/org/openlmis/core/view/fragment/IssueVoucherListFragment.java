@@ -18,12 +18,16 @@
 
 package org.openlmis.core.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
@@ -35,11 +39,13 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
-import org.openlmis.core.event.ChangeOrderNumberEvent;
+import org.openlmis.core.event.SyncPodFinishEvent;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.openlmis.core.presenter.IssueVoucherListPresenter.IssueVoucherListView;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.EditOrderNumberActivity;
@@ -53,6 +59,12 @@ import roboguice.inject.InjectView;
 
 public class IssueVoucherListFragment extends BaseFragment implements IssueVoucherListView, OrderOperationListener {
 
+  @Inject
+  SyncService syncService;
+
+  @Inject
+  InternetCheck internetCheck;
+
   @InjectView(R.id.rv_issue_voucher)
   private RecyclerView rvIssueVoucher;
 
@@ -62,7 +74,14 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
   @Inject
   private IssueVoucherListPresenter presenter;
 
-  private boolean shouldRefreshList;
+  private final ActivityResultLauncher<Intent> editOrderNumberLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() != Activity.RESULT_OK) {
+          return;
+        }
+        presenter.loadData();
+        internetCheck.execute(checkInternetListener());
+      });
 
   public static IssueVoucherListFragment newInstance(boolean isIssueVoucher) {
     final IssueVoucherListFragment issueVoucherListFragment = new IssueVoucherListFragment();
@@ -100,14 +119,6 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
   }
 
   @Override
-  public void onResume() {
-    super.onResume();
-    if (shouldRefreshList) {
-      presenter.loadData();
-    }
-  }
-
-  @Override
   public void onDestroyView() {
     super.onDestroyView();
     EventBus.getDefault().unregister(this);
@@ -115,7 +126,6 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
 
   @Override
   public void onRefreshList() {
-    shouldRefreshList = false;
     adapter.notifyDataSetChanged();
   }
 
@@ -159,7 +169,7 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
       }
       Intent intent = new Intent(requireContext(), EditOrderNumberActivity.class);
       intent.putExtra(IntentConstants.PARAM_ORDER_NUMBER, orderCode);
-      startActivity(intent);
+      editOrderNumberLauncher.launch(intent);
     }
   }
 
@@ -183,8 +193,8 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveChangeOrderNumberEvent(ChangeOrderNumberEvent event) {
-    shouldRefreshList = true;
+  public void onReceiveSyncPodFinishEvent(SyncPodFinishEvent event) {
+    presenter.loadData();
   }
 
   private View generateHeaderView() {
@@ -223,5 +233,15 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
               : Constants.PARAM_POD);
       startActivity(intent);
     }
+  }
+
+  private InternetCheck.Callback checkInternetListener() {
+    return internet -> {
+      if (Boolean.TRUE.equals(internet)) {
+        syncService.requestSyncImmediatelyByTask();
+      } else {
+        Log.d("Internet", "No hay conexion");
+      }
+    };
   }
 }

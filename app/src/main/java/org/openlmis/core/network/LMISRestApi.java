@@ -28,7 +28,6 @@ import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.DirtyDataItemEntry;
 import org.openlmis.core.network.model.FacilityInfoResponse;
 import org.openlmis.core.network.model.PodEntry;
-import org.openlmis.core.network.model.PodsLocalResponse;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
@@ -67,7 +66,7 @@ public interface LMISRestApi {
   SyncDownRequisitionsResponse fetchRequisitions(@Query("startDate") String startDate) throws LMISException;
 
   @GET("/api/siglusapi/android/me/facility/pods")
-  PodsLocalResponse fetchPods(@Query("shippedOnly") boolean shippedOnly) throws LMISException;
+  List<Pod> fetchPods(@Query("shippedOnly") boolean shippedOnly) throws LMISException;
 
   @PATCH("/api/siglusapi/android/me/facility/pod")
   Pod submitPod(@Body PodEntry podEntry) throws LMISException;

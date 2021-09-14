@@ -19,6 +19,6 @@
 package org.openlmis.core.event;
 
 @SuppressWarnings("squid:S2094")
-public class ChangeOrderNumberEvent {
+public class SyncPodFinishEvent {
 
 }

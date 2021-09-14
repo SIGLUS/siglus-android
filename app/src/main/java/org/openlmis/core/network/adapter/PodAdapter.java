@@ -25,38 +25,26 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Objects;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.network.model.PodRemoteResponse;
-import org.openlmis.core.network.model.PodsLocalResponse;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-public class PodAdapter implements JsonDeserializer<PodsLocalResponse> {
+public class PodAdapter implements JsonDeserializer<Pod> {
 
   @Override
-  public PodsLocalResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-      throws JsonParseException {
+  public Pod deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
     Gson gson = new Gson();
-    List<PodRemoteResponse> podRemoteResponses = gson.fromJson(json, new TypeToken<List<PodRemoteResponse>>() {
-    }.getType());
-    PodsLocalResponse podsLocalResponse = new PodsLocalResponse();
-    podsLocalResponse.setPods(FluentIterable.from(podRemoteResponses).transform(podRemoteResponse -> {
-      try {
-        Pod pod = Objects.requireNonNull(podRemoteResponse).from();
-        pod.setLocal(false);
-        pod.setDraft(false);
-        pod.setSynced(pod.getOrderStatus() == RECEIVED);
-        return pod;
-      } catch (LMISException e) {
-        new LMISException(e, "PodAdapter.deserialize").reportToFabric();
-        throw new JsonParseException("Pod deserialize fail", e);
-      }
-    }).toList());
-    return podsLocalResponse;
+    PodRemoteResponse podRemoteResponse = gson.fromJson(json, PodRemoteResponse.class);
+    try {
+      Pod pod = podRemoteResponse.from();
+      pod.setLocal(false);
+      pod.setDraft(false);
+      pod.setSynced(pod.getOrderStatus() == RECEIVED);
+      return pod;
+    } catch (LMISException e) {
+      new LMISException(e, "PodAdapter.deserialize").reportToFabric();
+      throw new JsonParseException("Pod deserialize fail", e);
+    }
   }
-
 }

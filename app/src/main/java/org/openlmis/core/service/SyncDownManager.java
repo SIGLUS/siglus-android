@@ -59,7 +59,6 @@ import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.ProgramCacheManager;
 import org.openlmis.core.network.model.FacilityInfoResponse;
-import org.openlmis.core.network.model.PodsLocalResponse;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.SupportedProgram;
@@ -231,18 +230,18 @@ public class SyncDownManager {
   }
 
   private void fetchAndSavePods() throws LMISException {
-    PodsLocalResponse podsLocalResponse;
+    List<Pod> pods;
     if (sharedPreferenceMgr.isPodDataInitialSynced()) {
-      podsLocalResponse = lmisRestApi.fetchPods(true);
+      pods = lmisRestApi.fetchPods(true);
     } else {
-      podsLocalResponse = lmisRestApi.fetchPods(false);
+      pods = lmisRestApi.fetchPods(false);
     }
-    if (podsLocalResponse == null) {
+    if (pods == null) {
       LMISException e = new LMISException("fetch pods info exception");
       e.reportToFabric();
       throw e;
     }
-    ImmutableList<Pod> filteredPods = FluentIterable.from(podsLocalResponse.getPods())
+    ImmutableList<Pod> filteredPods = FluentIterable.from(pods)
         .filter(pod -> {
           try {
             return podRepository.queryByOrderCode(pod.getOrderCode()) == null;

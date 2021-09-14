@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -25,10 +26,8 @@ import android.widget.TextView;
 import com.google.android.material.textfield.TextInputLayout;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
-import org.openlmis.core.event.ChangeOrderNumberEvent;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.presenter.EditOrderNumberPresenter;
 import org.openlmis.core.presenter.EditOrderNumberPresenter.EditOrderNumberView;
@@ -148,7 +147,7 @@ public class EditOrderNumberActivity extends BaseActivity implements EditOrderNu
 
   @Override
   public void updateOrderNumberSuccess() {
-    EventBus.getDefault().post(new ChangeOrderNumberEvent());
+    setResult(Activity.RESULT_OK);
     finish();
   }
 }

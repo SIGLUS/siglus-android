@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.event.SyncPodFinishEvent;
 import org.openlmis.core.event.SyncRnrFinishEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
@@ -142,6 +143,7 @@ public class SyncUpManager {
       if (isSyncPodSuccessful) {
         sharedPreferenceMgr.setPodLastSyncTime();
       }
+      EventBus.getDefault().post(new SyncPodFinishEvent());
 
       boolean isSyncStockSuccessful = syncStockCards();
       if (isSyncStockSuccessful) {
@@ -476,6 +478,7 @@ public class SyncUpManager {
       new LMISException(e, "SyncUpManager.submitPod.network").reportToFabric();
     } catch (LMISException e) {
       new LMISException(e, "SyncUpManager.submitPod.lmis").reportToFabric();
+      syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.POD, localPod.getId());
       syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.POD, localPod.getId()));
     }
     return localPod;

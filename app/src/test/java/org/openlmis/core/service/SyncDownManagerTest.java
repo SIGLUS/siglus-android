@@ -60,13 +60,12 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.FacilityInfoResponse;
-import org.openlmis.core.network.model.PodsLocalResponse;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
+import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.SupportedProgram;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
-import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
@@ -394,9 +393,9 @@ public class SyncDownManagerTest {
   }
 
   private void mockFetchPodsResponse() throws LMISException {
-    PodsLocalResponse podsLocalResponse = buildPodsResponse();
-    when(lmisRestApi.fetchPods(false)).thenReturn(podsLocalResponse);
-    when(lmisRestApi.fetchPods(true)).thenReturn(podsLocalResponse);
+    List<Pod> pods = new ArrayList<>();
+    when(lmisRestApi.fetchPods(false)).thenReturn(pods);
+    when(lmisRestApi.fetchPods(true)).thenReturn(pods);
   }
 
   private FacilityInfoResponse getFacilityInfoResponse() {
@@ -416,13 +415,6 @@ public class SyncDownManagerTest {
     List<Regimen> regimenList = new ArrayList<>();
     syncDownRegimensResponse.setRegimenList(regimenList);
     return syncDownRegimensResponse;
-  }
-
-  private PodsLocalResponse buildPodsResponse() {
-    PodsLocalResponse podsLocalResponse = new PodsLocalResponse();
-    List<Pod> pods = new ArrayList<>();
-    podsLocalResponse.setPods(pods);
-    return podsLocalResponse;
   }
 
   private void verifyLastMonthStockCardsSynced() throws LMISException, SQLException {

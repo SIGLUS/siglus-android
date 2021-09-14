@@ -50,6 +50,7 @@ import org.openlmis.core.exceptions.SyncServerException;
 import org.openlmis.core.exceptions.UnauthorizedException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ReportTypeForm;
@@ -68,7 +69,6 @@ import org.openlmis.core.network.adapter.ServiceAdapter;
 import org.openlmis.core.network.adapter.StockCardsResponseAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
 import org.openlmis.core.network.model.ErrorHandlingResponse;
-import org.openlmis.core.network.model.PodsLocalResponse;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
@@ -178,7 +178,7 @@ public class LMISRestManager {
         .registerTypeAdapter(Program.class, new ProgramAdapter())
         .registerTypeAdapter(SyncDownLatestProductsResponse.class, new ProductsResponseAdapter())
         .registerTypeAdapter(SyncDownRegimensResponse.class, new RegimenAdapter())
-        .registerTypeAdapter(PodsLocalResponse.class, new PodAdapter())
+        .registerTypeAdapter(Pod.class, new PodAdapter())
         .create());
   }
 
