@@ -429,16 +429,12 @@ public class SyncDownManager {
   }
 
   public Observable<Void> saveStockCardsFromLastYear(final List<StockCard> stockCards) {
-
     List<Observable<Void>> observables = new ArrayList<>();
     if (stockCards.isEmpty()) {
-      return zipObservables(observables);
+      return Observable.merge(observables);
     }
-
     Scheduler scheduler = SchedulerBuilder.createScheduler();
-
     int threadNumber = Runtime.getRuntime().availableProcessors();
-
     int numberOfElementsInAListForAnObservable = stockCards.size() / threadNumber;
     int startPosition = 0;
     for (int arrayNumber = 1; arrayNumber <= threadNumber; arrayNumber++) {
@@ -448,13 +444,8 @@ public class SyncDownManager {
       startPosition = endPosition;
     }
     EventBus.getDefault().post(new CmmCalculateEvent(true));
-    return zipObservables(observables).doOnCompleted(() -> EventBus.getDefault().post(new CmmCalculateEvent(false)));
+    return Observable.merge(observables).doOnTerminate(() -> EventBus.getDefault().post(new CmmCalculateEvent(false)));
   }
-
-  private Observable<Void> zipObservables(List<Observable<Void>> tasks) {
-    return Observable.zip(tasks, args -> null);
-  }
-
 
   public Observable<Void> saveStockCards(final List<StockCard> stockCards, Scheduler scheduler) {
 

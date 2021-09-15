@@ -440,9 +440,11 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private void refreshDashboard() {
     if (sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
-      dvProductDashboard.showLoading(syncedCount, Constants.STOCK_CARD_MAX_SYNC_MONTH);
-    } else if (isCmmCalculating) {
-      dvProductDashboard.showCalculating();
+      if (isCmmCalculating) {
+        dvProductDashboard.showCalculating();
+      } else {
+        dvProductDashboard.showLoading(syncedCount, Constants.STOCK_CARD_MAX_SYNC_MONTH);
+      }
     } else {
       homePresenter.getDashboardData();
     }
