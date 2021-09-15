@@ -21,20 +21,26 @@ package org.openlmis.core.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.List;
+import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.view.adapter.IssueVoucherProductAdapter.IssueVoucherProductViewHolder;
-
+import org.openlmis.core.view.listener.OnRemoveListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherReportProductViewModel,
     IssueVoucherProductViewHolder> {
+
+  @Setter
+  private OnRemoveListener productRemoveListener;
 
   public IssueVoucherProductAdapter() {
     super(R.layout.item_issue_voucher_report_product_info);
@@ -51,6 +57,7 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
     private TextView productName;
     private LinearLayout productList;
     private LinearLayout lotList;
+    private ImageView btnProductClear;
 
     public IssueVoucherProductViewHolder(View itemView) {
       super(itemView);
@@ -60,9 +67,10 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
       productName = itemView.findViewById(R.id.products_name);
       productList = itemView.findViewById(R.id.products_list_item);
       lotList = itemView.findViewById(R.id.ll_lot_list);
-      productName.setText(issueVoucherReportProductViewModel.getPodProductItem()
-          .getProduct().getPrimaryName());
+      btnProductClear = itemView.findViewById(R.id.iv_clear);
+      productName.setText(issueVoucherReportProductViewModel.getPodProductItem().getProduct().getPrimaryName());
       lotList.removeAllViews();
+      btnProductClear.setOnClickListener(getRemoveClickListener());
       List<IssueVoucherReportLotViewModel> lotViewModels = issueVoucherReportProductViewModel.getLotViewModelList();
       if (lotViewModels.isEmpty()) {
         return;
@@ -80,6 +88,17 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
         }
         lotList.addView(inflate);
       }
+    }
+
+    private SingleClickButtonListener getRemoveClickListener() {
+      return new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          if (productRemoveListener != null) {
+            productRemoveListener.onRemove(getLayoutPosition());
+          }
+        }
+      };
     }
   }
 }

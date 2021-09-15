@@ -31,7 +31,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.R;
@@ -39,6 +41,7 @@ import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
@@ -50,18 +53,21 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.IssueVoucherProductAdapter;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.IssueVoucherSignatureDialog;
 import org.openlmis.core.view.widget.OrderInfoView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_issue_voucher_report)
-public class IssueVoucherReportActivity extends BaseActivity implements IssueVoucherView {
+public class IssueVoucherReportActivity extends BaseActivity implements IssueVoucherView, OnRemoveListener {
 
   @Setter
   @InjectView(R.id.view_orderInfo)
@@ -111,6 +117,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     }
     initProductList();
     initIssueVoucherList();
+    productAdapter.setProductRemoveListener(this);
     listeners = scrollInSync(rvIssueVoucherList, rvProductList);
 
     if (savedInstanceState != null && presenter.getIssueVoucherReportViewModel() != null) {
@@ -295,6 +302,28 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     };
   }
 
+  @Override
+  public void onRemove(int position) {
+    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+        null,
+        getString(R.string.msg_remove_confirm),
+        getString(R.string.btn_positive),
+        getString(R.string.btn_negative),
+        null);
+    dialogFragment.show(getSupportFragmentManager(), "issue_voucher_delete_confirm_dialog");
+    dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+      @Override
+      public void positiveClick(String tag) {
+        removeProduct(position);
+      }
+
+      @Override
+      public void negativeClick(String tag) {
+        dialogFragment.dismiss();
+      }
+    });
+  }
+
   protected void showSignDialog() {
     IssueVoucherSignatureDialog signatureDialog = new IssueVoucherSignatureDialog();
     signatureDialog.setArguments(IssueVoucherSignatureDialog.getBundleToMe(DateUtil.formatDate(new Date()),
@@ -359,6 +388,20 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     intent.putExtra(IntentConstants.PARAM_ISSUE_VOUCHER_LIST_PAGE, 1);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     startActivity(intent);
+  }
+
+  private void removeProduct(int position) {
+    productAdapter.removeAt(position);
+    issueVoucherReportAdapter.removeAt(position);
+    List<IssueVoucherReportProductViewModel> existedProducts = new ArrayList<>(
+        presenter.getIssueVoucherReportViewModel().getProductViewModels());
+    List<PodProductItem> productItems = new ArrayList<>(presenter.getPod().getPodProductItemsWrapper());
+    List<PodProductItem> filterProducts = FluentIterable.from(productItems).filter(podProductItem -> !podProductItem
+        .getProduct().getCode().equals(
+            presenter.getPod().getPodProductItemsWrapper().get(position).getProduct().getCode())).toList();
+    presenter.getPod().setPodProductItemsWrapper(filterProducts);
+    existedProducts.remove(position);
+    presenter.getIssueVoucherReportViewModel().setProductViewModels(existedProducts);
   }
 
 }
