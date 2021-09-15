@@ -307,15 +307,15 @@ public class HomeActivityTest {
     // given
     final SyncStatusEvent finishEvent = new SyncStatusEvent(SyncStatus.FINISH);
     final CmmCalculateEvent cmmCalculateEvent = new CmmCalculateEvent(true);
-    when(mockSharedPreferenceMgr.shouldSyncLastYearStockData()).thenReturn(false);
-    when(mockSharedPreferenceMgr.isSyncingLastYearStockCards()).thenReturn(false);
+    when(mockSharedPreferenceMgr.shouldSyncLastYearStockData()).thenReturn(true);
+    when(mockSharedPreferenceMgr.isSyncingLastYearStockCards()).thenReturn(true);
 
     // when
     homeActivity.onReceiveSyncStatusEvent(finishEvent);
     homeActivity.onReceiveCmmCalculateEvent(cmmCalculateEvent);
 
     // then
-    verify(syncTimeView, times(1)).showLastSyncTime();
+    verify(syncTimeView, times(1)).setSyncStockCardLastYearText();
     verify(dashboardView, times(1)).showCalculating();
   }
 }
