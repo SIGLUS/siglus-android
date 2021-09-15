@@ -110,6 +110,12 @@ public class Pod extends BaseModel implements Serializable {
   private Date requisitionActualEndDate;
 
   @DatabaseField
+  private Date processedDate;
+
+  @DatabaseField
+  private Date serverProcessedDate;
+
+  @DatabaseField
   private boolean isLocal;
 
   @DatabaseField

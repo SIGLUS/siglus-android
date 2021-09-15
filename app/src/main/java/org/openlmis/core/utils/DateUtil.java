@@ -52,6 +52,7 @@ public final class DateUtil {
   public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
   public static final String DATE_DIGIT_FORMAT_ONLY_MONTH_AND_YEAR = "MMyyyy";
   public static final String ISO_BASIC_DATE_TIME_FORMAT = "yyyyMMdd'T'HHmmss.SSSZ";
+  public static final String ISO_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
   public static final int DAY_PERIOD_END = 20;
   public static final String DATE_TIME_FORMAT_WITH_MS = "yyyy-MM-dd HH:mm:ss:SSS";
 

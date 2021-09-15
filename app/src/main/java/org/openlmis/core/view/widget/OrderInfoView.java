@@ -53,6 +53,9 @@ public class OrderInfoView extends LinearLayout {
   @InjectView(R.id.tv_requisition_number)
   private TextView tvRequisitionNumber;
 
+  @InjectView(R.id.tv_requisition_date)
+  private TextView tvRequisitionDate;
+
   @InjectView(R.id.tv_issue_voucher_date)
   private TextView tvIssueVoucherDate;
 
@@ -113,6 +116,9 @@ public class OrderInfoView extends LinearLayout {
     tvPodNumber.setText(getValueNotNull(pod.getOrderCode()));
     if (pod.getReceivedDate() != null) {
       tvReceptionDate.setText(DateUtil.formatDate(pod.getReceivedDate(), DateUtil.DEFAULT_DATE_FORMAT));
+    }
+    if (pod.getProcessedDate() != null) {
+      tvRequisitionDate.setText(DateUtil.formatDate(pod.getProcessedDate(), DateUtil.SIMPLE_DATE_FORMAT));
     }
 
   }

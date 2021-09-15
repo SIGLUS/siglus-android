@@ -28,6 +28,8 @@ public class CreatePodTable extends Migration {
         "`requisitionEndDate` VARCHAR, " +
         "`requisitionActualStartDate` VARCHAR, " +
         "`requisitionActualEndDate` VARCHAR, " +
+        "`processedDate` VARCHAR, " +
+        "`serverProcessedDate` VARCHAR, " +
         "`stockManagementReason` VARCHAR, " +
         "`isLocal` BOOLEAN DEFAULT 0, " +
         "`isDraft` BOOLEAN DEFAULT 0, " +

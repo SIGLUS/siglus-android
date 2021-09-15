@@ -30,6 +30,7 @@ public class PodRequisitionItemResponse {
   private String  endDate;
   private String actualStartDate;
   private String actualEndDate;
-
+  private String processedDate;
+  private String serverProcessedDate;
 
 }

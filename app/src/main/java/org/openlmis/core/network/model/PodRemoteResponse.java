@@ -65,6 +65,9 @@ public class PodRemoteResponse {
             DateUtil.parseString(order.getRequisition().getActualStartDate(), DateUtil.DB_DATE_FORMAT))
         .requisitionActualEndDate(
             DateUtil.parseString(order.getRequisition().getActualEndDate(), DateUtil.DB_DATE_FORMAT))
+        .processedDate(DateUtil.parseString(order.getRequisition().getProcessedDate(), DateUtil.ISO_DATE_TIME_FORMAT))
+        .serverProcessedDate(DateUtil.parseString(order.getRequisition().getServerProcessedDate(),
+            DateUtil.ISO_DATE_TIME_FORMAT))
         .podProductItemsWrapper(buildPodProductItems())
         .build();
   }
