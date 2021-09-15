@@ -21,14 +21,16 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import java.util.Date;
 import lombok.Getter;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
-import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.User;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import roboguice.RoboGuice;
@@ -36,33 +38,42 @@ import roboguice.inject.InjectView;
 
 public class OrderInfoView extends LinearLayout {
 
-  @InjectView(R.id.tv_order_name)
-  private TextView orderName;
+  @InjectView(R.id.tv_supplier)
+  private TextView tvSupplier;
 
-  @InjectView(R.id.tv_order_facility)
-  private TextView tvOrderFacility;
+  @InjectView(R.id.tv_district)
+  private TextView tvDistrictName;
 
-  @InjectView(R.id.tv_period_info)
-  private TextView tvPeriodInfo;
+  @InjectView(R.id.tv_province)
+  private TextView tvProvince;
 
-  @InjectView(R.id.tv_program)
-  private TextView tvProgram;
+  @InjectView(R.id.tv_client)
+  private TextView tvClient;
 
-  @InjectView(R.id.tv_supplying_depot)
-  private TextView tvSupplyingDepot;
+  @InjectView(R.id.tv_requisition_number)
+  private TextView tvRequisitionNumber;
 
-  @InjectView(R.id.tv_shipping_date)
-  private TextView tvShippingDate;
+  @InjectView(R.id.tv_issue_voucher_date)
+  private TextView tvIssueVoucherDate;
 
   @Getter
-  @InjectView(R.id.ll_pod_receive_info)
-  private LinearLayout linearLayout;
+  @InjectView(R.id.ll_pod_header_title)
+  private LinearLayout llPodHeaderTitle;
 
-  @InjectView(R.id.tv_delivered_by)
-  private TextView tvDeliveredBy;
+  @InjectView(R.id.ll_pod_header_detail)
+  private LinearLayout llPodHeaderDetail;
 
-  @InjectView(R.id.tv_received_by)
-  private TextView tvReceivedBy;
+  @InjectView(R.id.tv_issue_voucher_number)
+  private TextView tvIssueVoucherNumber;
+
+  @InjectView(R.id.tv_pod_number)
+  private TextView tvPodNumber;
+
+  @InjectView(R.id.tv_reception_date_value)
+  private TextView tvReceptionDate;
+
+  @InjectView(R.id.bt_supply)
+  private Button btSupply;
 
 
   public OrderInfoView(Context context) {
@@ -82,41 +93,31 @@ public class OrderInfoView extends LinearLayout {
   }
 
   public void refresh(Pod pod, IssueVoucherReportViewModel reportViewModel) {
-    orderName.setText(reportViewModel.getPod().getOrderCode());
-    tvOrderFacility.setText(SharedPreferenceMgr.getInstance().getCurrentUserFacility());
-    tvProgram.setText(reportViewModel.getProgram().getProgramName());
-    String supplyingName = pod.getOrderSupplyFacilityName();
-    tvSupplyingDepot.setText(supplyingName == null ? "" : supplyingName);
+    if (reportViewModel.getPodStatus() == OrderStatus.SHIPPED) {
+      llPodHeaderTitle.setVisibility(View.GONE);
+      llPodHeaderDetail.setVisibility(View.GONE);
+    }
+    btSupply.setActivated(true);
+    tvSupplier.setText(getValueNotNull(pod.getOrderSupplyFacilityName()));
+    tvDistrictName.setText(getValueNotNull(pod.getOrderSupplyFacilityDistrict()));
+    tvProvince.setText(getValueNotNull(pod.getOrderSupplyFacilityProvince()));
+    User user = UserInfoMgr.getInstance().getUser();
+    if (user != null) {
+      tvClient.setText(user.getFacilityName());
+    }
+    tvRequisitionNumber.setText(getValueNotNull(pod.getRequisitionNumber()));
     if (pod.getShippedDate() != null) {
-      tvShippingDate.setText(DateUtil.formatDate(pod.getShippedDate(), DateUtil.SIMPLE_DATE_FORMAT));
+      tvIssueVoucherDate.setText(DateUtil.formatDate(pod.getShippedDate(), DateUtil.SIMPLE_DATE_FORMAT));
     }
-    setPeriodInfo(pod);
-    if (pod.getOrderStatus() == OrderStatus.SHIPPED) {
-      linearLayout.setVisibility(GONE);
-    } else {
-      tvDeliveredBy.setText(pod.getDeliveredBy());
-      tvReceivedBy.setText(pod.getReceivedBy());
+    tvIssueVoucherNumber.setText(getValueNotNull(pod.getOrderCode()));
+    tvPodNumber.setText(getValueNotNull(pod.getOrderCode()));
+    if (pod.getReceivedDate() != null) {
+      tvReceptionDate.setText(DateUtil.formatDate(pod.getReceivedDate(), DateUtil.DEFAULT_DATE_FORMAT));
     }
+
   }
 
-  private void setPeriodInfo(Pod pod) {
-    String periodInfo = getReportingPeriod(pod);
-    if (periodInfo.isEmpty()) {
-      tvPeriodInfo.setVisibility(GONE);
-    } else {
-      tvPeriodInfo.setText(periodInfo);
-    }
+  private String getValueNotNull(String value) {
+    return value == null ? "" : value;
   }
-
-  private String getReportingPeriod(Pod pod) {
-    Date requisitionActualStartDate = pod.getRequisitionActualStartDate();
-    Date requisitionActualEndDate = pod.getRequisitionActualEndDate();
-    if (requisitionActualStartDate == null || requisitionActualEndDate == null) {
-      return "";
-    }
-    String startDate = DateUtil.formatDate(requisitionActualStartDate, DateUtil.SIMPLE_DATE_FORMAT);
-    String endDate = DateUtil.formatDate(requisitionActualEndDate, DateUtil.SIMPLE_DATE_FORMAT);
-    return startDate + " - " + endDate;
-  }
-
 }

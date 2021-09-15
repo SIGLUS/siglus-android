@@ -1,87 +1,374 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   style="@style/Divider.Horizontal"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:background="@drawable/border_bg"
   android:divider="@drawable/divider_horizontal"
   android:orientation="vertical">
-
-  <RelativeLayout
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="@dimen/px_80"
+    android:layout_height="@dimen/px_50"
+    android:showDividers="middle"
+    android:divider="@drawable/divider_vertical"
     android:orientation="horizontal">
-    <ImageView
-      android:id="@+id/iv_icon"
-      android:layout_width="@dimen/px_66"
-      android:layout_height="@dimen/px_71"
-      android:layout_marginLeft="@dimen/px_28"
-      android:layout_centerVertical="true"
-      android:src="@drawable/stock_card_icon" />
-
     <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:orientation="vertical">
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="9">
+      <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="@dimen/px_40"
+        android:layout_height="@dimen/px_40"
+        android:layout_marginLeft="@dimen/px_8"
+        android:layout_gravity="center"
+        android:src="@drawable/stock_card_icon" />
       <TextView
         android:id="@+id/tv_order_name"
         android:textStyle="bold"
-        android:layout_width="wrap_content"
+        android:paddingLeft="@dimen/px_5"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="ORDER-AS5J7B1RR"
+        android:layout_gravity="center"
+        android:gravity="left"
+        android:text="@string/label_issue_voucher_number_title"
+        android:textAlignment="center"
         android:textColor="@color/color_black"
-        android:textSize="@dimen/px_28" />
-      <TextView
-        android:id="@+id/tv_period_info"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="01/06/2020 - 30/06/2020"
-        android:textColor="@color/color_black"
-        android:textSize="@dimen/px_20" />
+        android:textSize="@dimen/px_10" />
     </LinearLayout>
-  </RelativeLayout>
-  <LinearLayout style="@style/Pod.header.line">
-    <TextView style="@style/Pod.header.text.title"
-      android:text= "@string/label_ordering_facility" />
-    <TextView style="@style/Pod.header.text.value"
-      android:id="@+id/tv_order_facility" />
-  </LinearLayout>
-  <LinearLayout style="@style/Pod.header.line">
-    <TextView style="@style/Pod.header.text.title"
-      android:text="@string/label_program"/>
-    <TextView style="@style/Pod.header.text.value"
-      android:id="@+id/tv_program" />
-  </LinearLayout>
-  <LinearLayout style="@style/Pod.header.line">
-    <TextView style="@style/Pod.header.text.title"
-      android:text="@string/label_supplying_depot"/>
-    <TextView style="@style/Pod.header.text.value"
-      android:id="@+id/tv_supplying_depot" />
-  </LinearLayout>
-  <LinearLayout style="@style/Pod.header.line">
-    <TextView style="@style/Pod.header.text.title"
-      android:text="@string/label_shipping_date"/>
-    <TextView style="@style/Pod.header.text.value"
-      android:id="@+id/tv_shipping_date" />
-  </LinearLayout>
-  <LinearLayout android:id="@+id/ll_pod_receive_info"
-    style="@style/Pod.header.line">
-    <TextView style="@style/Pod.header.text.title"
-      android:layout_weight="1"
-      android:text="@string/label_delivered_by"/>
-    <TextView style="@style/Pod.header.text.title"
-      android:id="@+id/tv_delivered_by"
-      android:layout_weight="1"/>
-    <TextView style="@style/Pod.header.text.title"
-      android:text="@string/label_received_by"
-      android:layout_weight="1"/>
-    <TextView style="@style/Pod.header.text.title"
-      android:id="@+id/tv_received_by"
-      android:layout_weight="1"/>
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_marginTop="@dimen/px_1"
+      android:background="@color/color_D8D8D8"
+      android:padding="@dimen/px_4"
+      android:layout_weight="2">
+      <TextView
+        android:id="@+id/tv_issue_voucher_number"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/px_16"
+        android:textStyle="bold"
+        android:textColor="@color/color_black"
+        android:text="@string/label_issue_voucher_number">
+      </TextView>
+    </LinearLayout>
+    <LinearLayout
+      android:id="@+id/ll_pod_header_title"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_marginRight="@dimen/px_1"
+      android:layout_marginTop="@dimen/px_1"
+      android:background="@color/color_D8D8D8"
+      android:padding="@dimen/px_4"
+      android:layout_weight="2">
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="@dimen/px_16"
+        android:textColor="@color/color_black"
+        android:text="@string/label_pod_header">
+      </TextView>
+    </LinearLayout>
   </LinearLayout>
 
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_120"
+    android:showDividers="middle"
+    android:divider="@drawable/divider_vertical">
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="@dimen/px_120"
+      android:layout_weight="9"
+      android:showDividers="middle"
+      android:divider="@drawable/divider_horizontal"
+      android:orientation="vertical">
+      <LinearLayout
+        style="@style/Pod.header.line"
+        android:layout_weight="2">
+        <LinearLayout
+          style="@style/Pod.header.item">
+          <TextView
+            style="@style/Pod.header.title"
+            android:text="@string/label_supplier">
+          </TextView>
+          <TextView
+            android:id="@+id/tv_supplier"
+            style="@style/Pod.header.title.value"
+            android:layout_weight="10">
+          </TextView>
+        </LinearLayout>
+        <LinearLayout
+          style="@style/Pod.header.item"
+          android:showDividers="middle"
+          android:divider="@drawable/divider_horizontal"
+          android:orientation="vertical"
+          android:layout_weight="5">
+          <LinearLayout android:layout_width="match_parent"
+            android:showDividers="middle"
+            android:divider="@drawable/divider_vertical"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+              style="@style/Pod.header.title"
+              android:layout_weight="5.5"
+              android:text="@string/label_Client">
+            </TextView>
+            <TextView
+              android:id="@+id/tv_client"
+              style="@style/Pod.header.title.value"
+              android:layout_weight="8">
+            </TextView>
+          </LinearLayout>
+          <LinearLayout android:layout_width="match_parent"
+            android:showDividers="middle"
+            android:divider="@drawable/divider_vertical"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+              style="@style/Pod.header.title"
+              android:layout_weight="5.5"
+              android:text="@string/label_requisition_number">
+            </TextView>
+            <TextView
+              android:id="@+id/tv_requisition_number"
+              style="@style/Pod.header.title.value"
+              android:layout_weight="8">
+            </TextView>
+          </LinearLayout>
+        </LinearLayout>
+      </LinearLayout>
+      <LinearLayout
+        style="@style/Pod.header.line"
+        android:layout_weight="1">
+        <LinearLayout
+          style="@style/Pod.header.item">
+          <TextView
+            style="@style/Pod.header.title"
+            android:text="@string/label_district">
+          </TextView>
+          <TextView
+            android:id="@+id/tv_district"
+            style="@style/Pod.header.title.value"
+            android:layout_weight="10"
+            android:text="CIDADE DE NACALA-PORTO">
+          </TextView>
+        </LinearLayout>
+        <LinearLayout
+          style="@style/Pod.header.item"
+          android:layout_weight="5">
+          <TextView
+            style="@style/Pod.header.title"
+            android:layout_weight="5.5"
+            android:text="@string/label_total_of_volume">
+          </TextView>
+          <TextView
+            android:id="@+id/tv_volume"
+            style="@style/Pod.header.title.value"
+            android:layout_weight="8">
+          </TextView>
+        </LinearLayout>
+      </LinearLayout>
+      <LinearLayout
+        style="@style/Pod.header.line"
+        android:layout_weight="1">
+        <LinearLayout
+          style="@style/Pod.header.item">
+          <TextView
+            style="@style/Pod.header.title"
+            android:text="@string/label_province">
+          </TextView>
+          <TextView
+            android:id="@+id/tv_province"
+            style="@style/Pod.header.title.value"
+            android:layout_weight="10">
+          </TextView>
+        </LinearLayout>
+        <LinearLayout
+          style="@style/Pod.header.item"
+          android:layout_weight="5">
+          <TextView
+            style="@style/Pod.header.title"
+            android:layout_weight="5.5"
+            android:text="@string/label_requisition_date">
+          </TextView>
+          <TextView
+            android:id="@+id/tv_requisition_date"
+            style="@style/Pod.header.title.value"
+            android:layout_weight="8">
+          </TextView>
+        </LinearLayout>
+      </LinearLayout>
+      <LinearLayout
+        style="@style/Pod.header.line"
+        android:layout_weight="1">
+        <LinearLayout
+          style="@style/Pod.header.item">
+          <TextView
+            style="@style/Pod.header.title">
+          </TextView>
+          <TextView
+            style="@style/Pod.header.title.value"
+            android:layout_weight="10">
+          </TextView>
+        </LinearLayout>
+        <LinearLayout
+          style="@style/Pod.header.item"
+          android:layout_weight="5">
+          <TextView
+            style="@style/Pod.header.title"
+            android:layout_weight="5.5"
+            android:text="@string/label_issue_voucher_date">
+          </TextView>
+          <TextView
+            android:id="@+id/tv_issue_voucher_date"
+            style="@style/Pod.header.title.value"
+            android:layout_weight="8">
+          </TextView>
+        </LinearLayout>
+      </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:divider="@drawable/divider_horizontal"
+      android:showDividers="middle"
+      android:orientation="vertical"
+      android:layout_weight="2">
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+        <TextView
+          style="@style/Pod.header.title"
+          android:layout_width="wrap_content"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          android:text="@string/label_supply"></TextView>
+        <Button
+          android:id="@+id/bt_supply"
+          android:background="@drawable/pod_selector_button"
+          android:layout_height="@dimen/px_18"
+          android:layout_width="@dimen/px_18"
+          android:layout_marginTop="@dimen/px_13"
+          android:layout_marginRight="@dimen/px_6"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+          style="@style/Pod.header.title"
+          android:background="@color/color_fbdd6d"
+          android:textStyle="bold"
+          android:text="@string/label_returned"></TextView>
+      </LinearLayout>
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+          style="@style/Pod.header.title"
+          android:layout_width="wrap_content"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          android:text="@string/label_expired"></TextView>
+        <Button
+          android:id="@+id/bt_expired"
+          android:background="@drawable/pod_selector_button"
+          android:layout_height="@dimen/px_18"
+          android:layout_width="@dimen/px_18"
+          android:layout_marginTop="@dimen/px_3"
+          android:layout_marginRight="@dimen/px_6"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+          style="@style/Pod.header.title"
+          android:layout_width="wrap_content"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          android:text="@string/label_overstocked"></TextView>
+        <Button
+          android:id="@+id/bt_over_stock"
+          android:background="@drawable/pod_selector_button"
+          android:layout_height="@dimen/px_18"
+          android:layout_width="@dimen/px_18"
+          android:layout_marginTop="@dimen/px_3"
+          android:layout_marginRight="@dimen/px_6"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+    <LinearLayout
+      android:id="@+id/ll_pod_header_detail"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:divider="@drawable/divider_horizontal"
+      android:showDividers="middle"
+      android:orientation="vertical"
+      android:layout_weight="2">
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3">
+        <TextView
+          android:id="@+id/textView"
+          style="@style/Pod.header.title"
+          android:textStyle="bold"
+          android:layout_width="wrap_content"
+          android:text="@string/label_number"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintTop_toTopOf="parent"></TextView>
+        <TextView
+          android:id="@+id/tv_pod_number"
+          style="@style/Pod.header.title"
+          android:layout_width="0dp"
+          android:layout_height="@dimen/px_32"
+          android:layout_marginTop="@dimen/px_10"
+          android:layout_marginLeft="@dimen/px_20"
+          android:layout_marginRight="@dimen/px_5"
+          android:paddingVertical="@dimen/px_2"
+          android:paddingHorizontal="@dimen/px_4"
+          android:background="@drawable/border_bg_corner"
+          android:state_pressed="true"
+          android:text="ORDER-AS5J7B1RR"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+        <TextView
+          android:id="@+id/tv_reception_date"
+          style="@style/Pod.header.title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/px_10"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          android:text="@string/label_reception_date"></TextView>
+        <TextView
+          android:id="@+id/tv_reception_date_value"
+          style="@style/Pod.header.title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          app:layout_constraintTop_toBottomOf="@+id/tv_reception_date"
+          app:layout_constraintLeft_toLeftOf="parent"/>
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+  </LinearLayout>
 </LinearLayout>

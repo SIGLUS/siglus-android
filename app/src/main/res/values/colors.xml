@@ -29,6 +29,7 @@
 
   <color name="color_white">#FFFFFFFF</color>
   <color name="color_black">#F000</color>
+  <color name="color_black_light">#333333</color>
   <color name="color_gray">#616161</color>
   <color name="color_green_light">#C2FFC1</color>
   <color name="color_white_alpha">#90FFFFFF</color>
@@ -109,5 +110,6 @@
   <color name="color_d7d4d4">#d7d4d4</color>
   <color name="color_d4d4d4">#d4d4d4</color>
   <color name="color_ffa000">#ffa000</color>
+  <color name="color_fbdd6d">#fbdd6d</color>
 
 </resources>

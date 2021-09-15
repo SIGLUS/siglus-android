@@ -45,7 +45,7 @@ public class OrderInfoViewTest {
     orderInfoView.refresh(pod, viewModel);
 
     //then
-    assertEquals(View.GONE, orderInfoView.getLinearLayout().getVisibility());
+    assertEquals(View.GONE, orderInfoView.getLlPodHeaderTitle().getVisibility());
 
   }
 
@@ -63,7 +63,7 @@ public class OrderInfoViewTest {
     orderInfoView.refresh(pod, viewModel);
 
     //then
-    assertEquals(View.VISIBLE, orderInfoView.getLinearLayout().getVisibility());
+    assertEquals(View.VISIBLE, orderInfoView.getLlPodHeaderTitle().getVisibility());
 
   }
 

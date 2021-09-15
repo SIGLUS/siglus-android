@@ -694,5 +694,21 @@
   <string name="msg_receive_for_signature">Received By</string>
   <string name="msg_delivered_for_signature">Delivered By</string>
   <string name="btn_next">NEXT</string>
-
+  <string name="label_issue_voucher_number">Issue \nVoucher Nº</string>
+  <string name="label_supplier">Supplier</string>
+  <string name="label_district">District</string>
+  <string name="label_province">Province</string>
+  <string name="label_Client">Client</string>
+  <string name="label_requisition_number">Requisition Nr</string>
+  <string name="label_total_of_volume">Total of volume</string>
+  <string name="label_requisition_date">Requisition date</string>
+  <string name="label_issue_voucher_date">Issue voucher date</string>
+  <string name="label_supply">Supply</string>
+  <string name="label_returned">Returned</string>
+  <string name="label_expired">Expired</string>
+  <string name="label_reception_date">Reception date:</string>
+  <string name="label_overstocked">Overstocked</string>
+  <string name="label_issue_voucher_number_title">REPÚBLICA DE MOÇAMBIQUE \nMINISTRY OF HEALTH\nCENTRAL MEDICAL STORES AND MEDICAL SUPPLIES</string>
+  <string name="label_pod_header">pod</string>
+  <string name="label_number">N°</string>
 </resources>

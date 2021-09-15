@@ -44,4 +44,9 @@ public class IssueVoucherReportViewModel {
     return pod.getOrderStatus();
   }
 
+  public boolean getIsLocal() {
+    return pod.isLocal();
+  }
+
+
 }
