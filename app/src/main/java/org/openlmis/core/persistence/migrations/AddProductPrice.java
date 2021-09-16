@@ -6,6 +6,6 @@ public class AddProductPrice extends Migration {
 
   @Override
   public void up() {
-    execSQL("ALTER TABLE 'products' ADD COLUMN price double");
+    execSQL("ALTER TABLE 'products' ADD COLUMN price VARCHAR");
   }
 }

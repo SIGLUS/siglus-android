@@ -81,7 +81,7 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
   boolean isBasic;
 
   @DatabaseField
-  Double price;
+  String price;
 
   @DatabaseField(defaultValue = "false")
   boolean isHiv;

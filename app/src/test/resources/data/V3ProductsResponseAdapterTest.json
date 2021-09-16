@@ -3,6 +3,7 @@
   "products": [
     {
       "productCode": "22A07",
+      "pricePerPack": 8.0,
       "archived": false,
       "fullProductName": "TDR de Unigold; kit de 20; Tests",
       "description": "TDR de Unigold; teste (kit de 20)",
@@ -20,6 +21,7 @@
     },
     {
       "productCode": "26B01",
+      "pricePerPack": 8.0,
       "archived": false,
       "fullProductName": "KIT AL/US (Artemeter+Lumefantrina); 170 Tratamentos+ 400 Testes; KIT",
       "description": "KIT AL/US (Artemeter+Lumefantrina)TDRm;KIT",
