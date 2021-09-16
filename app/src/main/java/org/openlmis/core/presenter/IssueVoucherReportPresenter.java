@@ -172,7 +172,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   public Observable<Void> getCompleteFormObservable(String deliveredBy, String receivedBy) {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {
-        pod.setDraft(true);
+        pod.setDraft(false);
         pod.setReceivedBy(receivedBy);
         pod.setDeliveredBy(deliveredBy);
         pod.setReceivedDate(DateUtil.getCurrentDate());
