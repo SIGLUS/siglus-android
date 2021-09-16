@@ -3,6 +3,7 @@
   "products": [
     {
       "productCode": "07A06",
+      "pricePerPack": 8.0,
       "active": true,
       "archived": false,
       "fullProductName": "Paracetamol; 120mg/5mL; Susp",
@@ -21,6 +22,7 @@
     },
     {
       "productCode": "08O05",
+      "pricePerPack": 8.0,
       "active": true,
       "archived": false,
       "fullProductName": "Artemeter+Lumefantrina; 120mg+20mg 1x6; Comp testyby",
