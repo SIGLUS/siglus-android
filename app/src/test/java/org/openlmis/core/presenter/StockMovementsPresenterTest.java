@@ -19,6 +19,8 @@
 package org.openlmis.core.presenter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyByte;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -157,6 +159,14 @@ public class StockMovementsPresenterTest extends LMISRepositoryUnitTest {
     verify(mockStockRepository).updateProductOfStockCard(stockCard.getProduct());
   }
 
+  @Test
+  public void testIsKitChildrenProduct() {
+    // given
+    when(productRepository.isKitChildrenProduct(anyByte())).thenReturn(true);
+
+    // then
+    assertTrue(stockMovementsPresenter.isKitChildrenProduct(1));
+  }
 
   public class MyTestModule extends AbstractModule {
 

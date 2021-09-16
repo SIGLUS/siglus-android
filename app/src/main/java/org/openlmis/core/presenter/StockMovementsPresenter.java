@@ -134,6 +134,10 @@ public class StockMovementsPresenter extends Presenter {
     stockRepository.updateProductOfStockCard(stockCard.getProduct());
   }
 
+  public boolean isKitChildrenProduct(long stockCardId) {
+    return productRepository.isKitChildrenProduct(stockCardId);
+  }
+
   public interface StockMovementView extends BaseView {
 
     void refreshStockMovement();

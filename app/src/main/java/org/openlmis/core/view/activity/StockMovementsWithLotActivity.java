@@ -202,7 +202,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
     boolean isPrepared = super.onPrepareOptionsMenu(menu);
-    menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
+    menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable && !presenter.isKitChildrenProduct(stockId));
     return isPrepared;
   }
 
@@ -273,7 +273,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
                 .transform(MovementType::getDescription)
                 .toArray(String.class);
             newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), selections);
-            newMovementDialog.show(getSupportFragmentManager(), "");
+            newMovementDialog.show(getSupportFragmentManager(), "new_movement_type_select__dialog");
             break;
           default:
             // do nothing

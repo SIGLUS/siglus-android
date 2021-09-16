@@ -381,6 +381,19 @@ public class ProductRepository {
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateArchive);
   }
 
+  public boolean isKitChildrenProduct(long stockCardId) {
+    String rawSql = "SELECT * FROM kit_products "
+        + "WHERE productCode IN "
+        + "(SELECT code FROM products WHERE id IN "
+        + "(SELECT product_id FROM stock_cards WHERE id = '"
+        + stockCardId
+        + "'))";
+    try (Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
+        .rawQuery(rawSql, null)) {
+      return cursor.getCount() != 0;
+    }
+  }
+
   @NonNull
   private Product buildProductFromCursor(Cursor cursor) {
     Product product = new Product();
