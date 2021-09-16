@@ -23,7 +23,7 @@
     android:layout_marginLeft="@dimen/px_12"
     android:background="@drawable/border_bg_gray_left_right"
     android:orientation="vertical"
-    app:layout_constraintBottom_toTopOf="@+id/action_panel"
+    app:layout_constraintBottom_toTopOf="@+id/ll_total_line"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/view_orderInfo">
     <TextView
@@ -49,7 +49,7 @@
     android:layout_above="@+id/action_panel"
     android:layout_toRightOf="@id/products_list"
     android:background="@drawable/border_bg_gray_bottom"
-    app:layout_constraintBottom_toTopOf="@+id/action_panel"
+    app:layout_constraintBottom_toTopOf="@+id/ll_total_line"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/view_orderInfo">
@@ -104,6 +104,25 @@
         android:scrollbars="vertical" />
     </LinearLayout>
   </org.openlmis.core.view.widget.RequisitionBodyHorizontalScrollView>
+  <LinearLayout
+    android:id="@+id/ll_total_line"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_30"
+    android:layout_marginLeft="@dimen/px_12"
+    android:layout_marginRight="@dimen/px_12"
+    android:orientation="horizontal"
+    android:background="@drawable/border_bg_gray_bottom"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintBottom_toTopOf="@id/action_panel">
+
+    <TextView
+      android:id="@+id/tv_total_price"
+      android:layout_width="@dimen/px_100"
+      android:layout_height="match_parent" />
+
+  </LinearLayout>
+
   <org.openlmis.core.view.widget.ActionPanelView
     android:id="@+id/action_panel"
     layout="@layout/view_action_panel"

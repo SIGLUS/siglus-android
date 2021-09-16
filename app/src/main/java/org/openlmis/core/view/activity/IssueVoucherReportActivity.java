@@ -26,11 +26,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -86,6 +88,9 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @InjectView(R.id.action_panel)
   private ActionPanelView actionPanelView;
 
+  @InjectView(R.id.tv_total_price)
+  private TextView tvTotalPrice;
+
   @InjectPresenter(IssueVoucherReportPresenter.class)
   IssueVoucherReportPresenter presenter;
 
@@ -131,6 +136,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     } else {
       presenter.loadData(podId);
     }
+    updateTotal();
   }
 
   @Override
@@ -227,6 +233,16 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     rvProductList.setLayoutManager(new LinearLayoutManager(this));
     productAdapter = new IssueVoucherProductAdapter();
     rvProductList.setAdapter(productAdapter);
+  }
+
+  private void updateTotal() {
+    Long total = 0L;
+    for (IssueVoucherReportProductViewModel productViewModel : issueVoucherReportAdapter.getData()) {
+      for (IssueVoucherReportLotViewModel lotViewModel : productViewModel.getLotViewModelList()) {
+        total += lotViewModel.getShippedQuantity();
+      }
+    }
+    tvTotalPrice.setText(MessageFormat.format("Total :{0}", total));
   }
 
   private void showConfirmDialog() {
@@ -414,11 +430,11 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     presenter.getPod().setPodProductItemsWrapper(filterProducts);
     existedProducts.remove(position);
     presenter.getIssueVoucherReportViewModel().setProductViewModels(existedProducts);
+    updateTotal();
   }
 
   private void removeLot(int productPosition, int lotPosition) {
-    productAdapter.removeLot(lotPosition);
-    productAdapter.notifyItemChanged(productPosition);
+    productAdapter.notifyDataSetChanged();
     List<IssueVoucherReportLotViewModel> existedLots = new ArrayList<>(presenter.getIssueVoucherReportViewModel()
         .getProductViewModels().get(productPosition).getLotViewModelList());
     List<PodProductLotItem> podProductLotItems = presenter.getPod().getPodProductItemsWrapper().get(productPosition)
@@ -430,6 +446,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     presenter.getIssueVoucherReportViewModel().getProductViewModels().get(productPosition)
         .setLotViewModelList(existedLots);
     presenter.getPod().getPodProductItemsWrapper().get(productPosition).setPodProductLotItemsWrapper(filterLots);
+    updateTotal();
   }
 
 }
