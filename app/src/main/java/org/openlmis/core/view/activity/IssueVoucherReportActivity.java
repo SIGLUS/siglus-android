@@ -34,6 +34,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.R;
@@ -42,6 +43,7 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
+import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
@@ -54,6 +56,7 @@ import org.openlmis.core.view.adapter.IssueVoucherProductAdapter;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import org.openlmis.core.view.widget.ActionPanelView;
@@ -117,6 +120,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     }
     initProductList();
     initIssueVoucherList();
+    issueVoucherReportAdapter.setOnRemoveListener(this);
     productAdapter.setProductRemoveListener(this);
     listeners = scrollInSync(rvIssueVoucherList, rvProductList);
 
@@ -324,6 +328,14 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     });
   }
 
+  @Override
+  public void onRemove(int productPosition, int lotPosition) {
+    removeLot(productPosition, lotPosition);
+    if (issueVoucherReportAdapter.isThisProductNoLot(productPosition)) {
+      removeProduct(productPosition);
+    }
+  }
+
   protected void showSignDialog() {
     IssueVoucherSignatureDialog signatureDialog = new IssueVoucherSignatureDialog();
     signatureDialog.setArguments(IssueVoucherSignatureDialog.getBundleToMe(DateUtil.formatDate(new Date()),
@@ -396,12 +408,28 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     List<IssueVoucherReportProductViewModel> existedProducts = new ArrayList<>(
         presenter.getIssueVoucherReportViewModel().getProductViewModels());
     List<PodProductItem> productItems = new ArrayList<>(presenter.getPod().getPodProductItemsWrapper());
-    List<PodProductItem> filterProducts = FluentIterable.from(productItems).filter(podProductItem -> !podProductItem
-        .getProduct().getCode().equals(
+    List<PodProductItem> filterProducts = FluentIterable.from(productItems).filter(podProductItem -> !Objects
+        .requireNonNull(podProductItem).getProduct().getCode().equals(
             presenter.getPod().getPodProductItemsWrapper().get(position).getProduct().getCode())).toList();
     presenter.getPod().setPodProductItemsWrapper(filterProducts);
     existedProducts.remove(position);
     presenter.getIssueVoucherReportViewModel().setProductViewModels(existedProducts);
+  }
+
+  private void removeLot(int productPosition, int lotPosition) {
+    productAdapter.removeLot(lotPosition);
+    productAdapter.notifyItemChanged(productPosition);
+    List<IssueVoucherReportLotViewModel> existedLots = new ArrayList<>(presenter.getIssueVoucherReportViewModel()
+        .getProductViewModels().get(productPosition).getLotViewModelList());
+    List<PodProductLotItem> podProductLotItems = presenter.getPod().getPodProductItemsWrapper().get(productPosition)
+        .getPodProductLotItemsWrapper();
+    List<PodProductLotItem> filterLots = FluentIterable.from(podProductLotItems).filter(lotItem ->
+        !Objects.requireNonNull(lotItem).getLot().getLotNumber().equals(existedLots.get(lotPosition).getLot()
+            .getLotNumber())).toList();
+    existedLots.remove(lotPosition);
+    presenter.getIssueVoucherReportViewModel().getProductViewModels().get(productPosition)
+        .setLotViewModelList(existedLots);
+    presenter.getPod().getPodProductItemsWrapper().get(productPosition).setPodProductLotItemsWrapper(filterLots);
   }
 
 }

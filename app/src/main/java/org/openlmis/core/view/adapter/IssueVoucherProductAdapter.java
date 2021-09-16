@@ -42,6 +42,8 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
   @Setter
   private OnRemoveListener productRemoveListener;
 
+  private IssueVoucherProductViewHolder holder;
+
   public IssueVoucherProductAdapter() {
     super(R.layout.item_issue_voucher_report_product_info);
   }
@@ -50,6 +52,11 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
   protected void convert(@NonNull IssueVoucherProductViewHolder holder,
       IssueVoucherReportProductViewModel viewModel) {
     holder.populate(viewModel);
+    this.holder = holder;
+  }
+
+  public void removeLot(int position) {
+    holder.removeLotLeftHeader(position);
   }
 
   protected class IssueVoucherProductViewHolder extends BaseViewHolder {
@@ -99,6 +106,10 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
           }
         }
       };
+    }
+
+    private void removeLotLeftHeader(int position) {
+      lotList.removeViewAt(position);
     }
   }
 }

@@ -27,9 +27,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.List;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -41,12 +43,17 @@ import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.adapter.IssueVoucherReportLotAdapter.IssueVoucherReportLotViewHolder;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
+import org.openlmis.core.view.listener.OnRemoveListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherReportLotViewModel,
     IssueVoucherReportLotViewHolder> {
+
+  @Setter
+  private OnRemoveListener onRemoveListener;
 
   public IssueVoucherReportLotAdapter() {
     super(R.layout.item_issue_voucher_report_lot);
@@ -69,6 +76,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
     private View vRejectionReason;
     private TextView tvRejectionReason;
     private ImageView ivRejectionReason;
+    private ImageView icLotClear;
 
     public IssueVoucherReportLotViewHolder(View itemView) {
       super(itemView);
@@ -82,6 +90,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
       etQuantityAccepted.setText(convertLongValueToString(lotViewModel.getAcceptedQuantity()));
       tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
       etNote.setText(lotViewModel.getNotes() == null ? "" : lotViewModel.getNotes());
+      icLotClear.setOnClickListener(getOnClickListenerForDeleteIcon());
       if (lotViewModel.getOrderStatus() == OrderStatus.SHIPPED) {
         setViewForShipped();
       } else {
@@ -243,6 +252,7 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
       tvRejectionReason = itemView.findViewById(R.id.tv_rejection_reason);
       ivRejectionReason = itemView.findViewById(R.id.iv_rejection_reason);
       etNote = itemView.findViewById(R.id.et_note);
+      icLotClear = itemView.findViewById(R.id.iv_clear);
     }
 
     private String convertLongValueToString(Long value) {
@@ -263,6 +273,38 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
       etQuantityAccepted.setError(null);
       tvRejectionReason.setError(null);
       etNote.setError(null);
+    }
+
+    @NonNull
+    private View.OnClickListener getOnClickListenerForDeleteIcon() {
+      return v -> {
+        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+            HtmlCompat.fromHtml(getString(R.string.msg_remove_new_lot_title),
+                HtmlCompat.FROM_HTML_MODE_LEGACY),
+            HtmlCompat.fromHtml(getContext().getResources()
+                    .getString(R.string.msg_remove_new_lot, lotViewModel.getLot().getLotNumber(),
+                        lotViewModel.getLot().getExpirationDate(), lotViewModel.getLot().getProduct().getPrimaryName()),
+                HtmlCompat.FROM_HTML_MODE_LEGACY),
+            getString(R.string.btn_remove_lot),
+            getString(R.string.btn_cancel), "confirm_dialog");
+        dialogFragment.show(((BaseActivity) getContext()).getSupportFragmentManager(), "confirm_dialog");
+        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+          @Override
+          public void positiveClick(String tag) {
+            IssueVoucherReportLotAdapter.this.removeAt(getLayoutPosition());
+            onRemoveListener.onRemove(getLayoutPosition());
+          }
+
+          @Override
+          public void negativeClick(String tag) {
+            dialogFragment.dismiss();
+          }
+        });
+      };
+    }
+
+    private String getString(int id) {
+      return getContext().getResources().getString(id);
     }
 
     class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {

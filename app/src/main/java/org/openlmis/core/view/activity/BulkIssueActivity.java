@@ -213,6 +213,11 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView, On
   }
 
   @Override
+  public void onRemove(int productPosition, int lotPosition) {
+    // do nothing
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     findViewById(R.id.btn_save).setOnClickListener(clickListener);

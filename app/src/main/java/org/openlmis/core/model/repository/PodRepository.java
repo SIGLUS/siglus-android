@@ -256,6 +256,7 @@ public class PodRepository {
           .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
               () -> {
                 Pod savedPod = createOrUpdate(pod);
+                podProductItemRepository.deleteByPodId(savedPod.getId());
                 podProductItemRepository.batchCreatePodProductsWithItems(pod.getPodProductItemsWrapper(), savedPod);
                 return null;
               });

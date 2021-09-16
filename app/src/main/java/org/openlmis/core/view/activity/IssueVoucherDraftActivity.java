@@ -216,6 +216,11 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   }
 
   @Override
+  public void onRemove(int productPosition, int lotPosition) {
+    // do nothing
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     programCode = (String) getIntent().getSerializableExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE);

@@ -25,6 +25,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
 import java.util.List;
 import lombok.Setter;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
@@ -93,6 +94,19 @@ public class PodProductItemRepository {
     });
   }
 
+  public void deleteByPodId(long podId) {
+
+    String rawSqlDeletePodProductItems = "DELETE FROM pod_product_items"
+        + " WHERE pod_id = " + podId;
+
+    String rawSqlDeletePodLotItems = "DELETE FROM pod_product_lot_items"
+        + " WHERE podProductItem_id IN (SELECT id FROM pod_product_items"
+        + " WHERE pod_id = " + podId + ")";
+
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeletePodLotItems);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeletePodProductItems);
+  }
+
   private void createOrUpdateWithItems(final PodProductItem podProductItem) throws LMISException {
     try {
       TransactionManager
@@ -108,7 +122,6 @@ public class PodProductItemRepository {
       throw new LMISException(e);
     }
   }
-
 
   private PodProductItem createOrUpdate(PodProductItem podProductItem) throws LMISException {
     PodProductItem existingPodProductItem = queryByPodIdAndProductId(podProductItem.getPod().getId(),
