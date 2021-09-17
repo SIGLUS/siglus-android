@@ -166,6 +166,7 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
 
   private List<PodProductLotItem> buildPodProductLotItems() {
     return FluentIterable.from(lotViewModels)
+        .filter(lotViewModel -> Objects.requireNonNull(lotViewModel).getShippedQuantity() != null)
         .transform(IssueVoucherLotViewModel::from)
         .toList();
   }

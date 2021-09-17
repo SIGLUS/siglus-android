@@ -288,10 +288,10 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
     private View.OnClickListener getOnClickListenerForDeleteIcon() {
       return v -> {
         final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-            HtmlCompat.fromHtml(getString(R.string.msg_remove_new_lot_title),
+            HtmlCompat.fromHtml(getString(R.string.msg_remove_lot_title),
                 HtmlCompat.FROM_HTML_MODE_LEGACY),
             HtmlCompat.fromHtml(getContext().getResources()
-                    .getString(R.string.msg_remove_new_lot, lotViewModel.getLot().getLotNumber(),
+                    .getString(R.string.msg_remove_lot, lotViewModel.getLot().getLotNumber(),
                         lotViewModel.getLot().getExpirationDate(), lotViewModel.getLot().getProduct().getPrimaryName()),
                 HtmlCompat.FROM_HTML_MODE_LEGACY),
             getString(R.string.btn_remove_lot),

@@ -133,7 +133,6 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
       issueVoucherReportViewModel.setProgram(program);
       issueVoucherView.loaded();
       issueVoucherView.refreshIssueVoucherForm(pod);
-      issueVoucherView.refreshTotalPrice();
     } catch (LMISException e) {
       new LMISException(e, "IssueVoucherReport.getProgram").reportToFabric();
     }
@@ -212,8 +211,6 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   public interface IssueVoucherView extends BaseView {
 
     void refreshIssueVoucherForm(Pod pod);
-
-    void refreshTotalPrice();
   }
 
   protected Action1<Pod> loadDataOnNextAction = podContent -> {

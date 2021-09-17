@@ -184,10 +184,6 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
       actionPanelView.setVisibility(View.VISIBLE);
       actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
     }
-  }
-
-  @Override
-  public void refreshTotalPrice() {
     updateTotal();
   }
 

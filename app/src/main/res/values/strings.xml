@@ -711,4 +711,6 @@
   <string name="label_issue_voucher_number_title">REPÚBLICA DE MOÇAMBIQUE \nMINISTRY OF HEALTH\nCENTRAL MEDICAL STORES AND MEDICAL SUPPLIES</string>
   <string name="label_pod_header">pod</string>
   <string name="label_number">N°</string>
+  <string name="msg_remove_lot_title"><![CDATA[<b>Remove lot</b>]]></string>
+  <string name="msg_remove_lot"><![CDATA[Remove the lot <b>%1$s</b> which is expiring in %2$s from <b>%3$s</b>]]></string>
 </resources>
