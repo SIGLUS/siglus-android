@@ -45,6 +45,7 @@ import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
@@ -64,6 +65,7 @@ import org.openlmis.core.network.model.PodEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.persistence.DbUtil;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import rx.Observable;
@@ -460,6 +462,12 @@ public class SyncUpManager {
   private void markRnrFormSynced(RnRForm rnRForm) {
     rnRForm.setSynced(true);
     try {
+      for (RnrFormItem rnrFormItem : rnRForm.getRnrFormItemListWrapper()) {
+        if (rnrFormItem.getValidate() != null) {
+          rnrFormItem.setValidate(DateUtil.convertDate(rnrFormItem.getValidate(), DateUtil.DB_DATE_FORMAT,
+              DateUtil.SIMPLE_DATE_FORMAT));
+        }
+      }
       rnrFormRepository.createOrUpdateWithItems(rnRForm);
     } catch (LMISException e) {
       new LMISException(e, "SyncUpManager.markRnrFormSynced").reportToFabric();
