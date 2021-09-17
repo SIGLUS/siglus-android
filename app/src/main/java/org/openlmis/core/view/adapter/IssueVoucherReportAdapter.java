@@ -88,7 +88,17 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
 
     private void initView() {
       rvLotList = itemView.findViewById(R.id.rv_issue_voucher_lot_list);
-      rvLotList.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+      rvLotList.setLayoutManager(new LinearLayoutManager(itemView.getContext()) {
+        @Override
+        public boolean canScrollHorizontally() {
+          return false;
+        }
+
+        @Override
+        public boolean canScrollVertically() {
+          return false;
+        }
+      });
       lotAdapter = new IssueVoucherReportLotAdapter();
       lotAdapter.setOnRemoveListener(this);
       rvLotList.setAdapter(lotAdapter);
