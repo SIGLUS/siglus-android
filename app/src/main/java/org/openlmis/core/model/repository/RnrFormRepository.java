@@ -582,7 +582,7 @@ public class RnrFormRepository {
     regimenItemRepository.batchCreateOrUpdate(form.getRegimenItemListWrapper());
     regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
     baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
-    testConsumptionLineItemRepository.batchCreateOrUpdate(form.getTestConsumptionItemListWrapper());
+    testConsumptionLineItemRepository.batchCreateOrUpdate(form.getTestConsumptionItemListWrapper(), form.getId());
   }
 
   public void deleteOldData() {

@@ -22,6 +22,7 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.content.Context;
 import com.google.inject.Inject;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.TestConsumptionItem;
@@ -44,8 +45,9 @@ public class TestConsumptionLineItemRepository {
     this.genericDao = new GenericDao<>(TestConsumptionItem.class, context);
   }
 
-  public void batchCreateOrUpdate(final List<TestConsumptionItem> testConsumptionLineItems)
+  public void batchCreateOrUpdate(final List<TestConsumptionItem> testConsumptionLineItems, long formId)
       throws LMISException {
+    deleteFormBasicItems(formId);
     List<UsageColumnsMap> usageColumnsMaps = usageColumnsMapRepository.list();
     dbUtil.withDaoAsBatch(TestConsumptionItem.class, (DbUtil.Operation<TestConsumptionItem, Void>) dao -> {
       for (TestConsumptionItem item : testConsumptionLineItems) {
@@ -62,6 +64,15 @@ public class TestConsumptionLineItemRepository {
       for (TestConsumptionItem item : testConsumptionLineItemListWrapper) {
         dao.delete(item);
       }
+      return null;
+    });
+  }
+
+  private void deleteFormBasicItems(final long formId) throws LMISException {
+    dbUtil.withDao(TestConsumptionItem.class, (DbUtil.Operation<TestConsumptionItem, Void>) dao -> {
+      DeleteBuilder<TestConsumptionItem, String> deleteBuilder = dao.deleteBuilder();
+      deleteBuilder.where().eq("form_id", formId);
+      deleteBuilder.delete();
       return null;
     });
   }
