@@ -31,6 +31,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -55,6 +57,7 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_stock_movements)
 public class StockMovementsWithLotActivity extends BaseActivity implements
     StockMovementsPresenter.StockMovementView {
+  private static final List<String> codes = Arrays.asList("26A01", "26B01");
 
   @InjectView(R.id.rv_stock_movement)
   RecyclerView rvStockMovement;
@@ -91,6 +94,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   private boolean isActivated;
   private boolean isKit;
 
+
   List<MovementReasonManager.MovementType> movementTypes;
   SimpleSelectDialogFragment newMovementDialog;
 
@@ -106,7 +110,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
     stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
     isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
     isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
-    movementTypes = MovementReasonManager.getInstance().getMovementTypes();
+    movementTypes = new ArrayList<>(MovementReasonManager.getInstance().getMovementTypes());
     super.onCreate(savedInstanceState);
     loadStockCard();
     initUI();
@@ -139,7 +143,9 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
     SingleClickButtonListener singleClickButtonListener = getSingleClickButtonListener();
     btnUnpack.setOnClickListener(singleClickButtonListener);
     btnNewMovement.setOnClickListener(singleClickButtonListener);
-
+    if (codes.contains(presenter.getStockCard().getProduct().getCode()) && movementTypes.contains(MovementType.ISSUE)) {
+      movementTypes.remove(MovementType.ISSUE);
+    }
     if (isKit) {
       tvLabelStockCardInfo.setText(getString(R.string.label_validate_period));
     } else {

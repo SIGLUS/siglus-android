@@ -175,7 +175,7 @@ public class StockMovementsWithLotActivityTest {
     movementWithLotActivity.getSingleClickButtonListener().onClick(mockView);
 
     // then
-    verify(mockPresenter, times(5)).getStockCard();
+    verify(mockPresenter, times(6)).getStockCard();
     Intent intent = shadowOf(movementWithLotActivity).getNextStartedActivity();
     assertNotNull(intent);
     assertEquals(SelectUnpackKitNumActivity.class.getName(), intent.getComponent().getClassName());
