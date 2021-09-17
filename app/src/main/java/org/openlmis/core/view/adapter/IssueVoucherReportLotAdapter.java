@@ -91,10 +91,19 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
       tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
       etNote.setText(lotViewModel.getNotes() == null ? "" : lotViewModel.getNotes());
       icLotClear.setOnClickListener(getOnClickListenerForDeleteIcon());
+      updateClearButtonStatus(lotViewModel);
       if (lotViewModel.getOrderStatus() == OrderStatus.SHIPPED) {
         setViewForShipped();
       } else {
         setViewForReceived();
+      }
+    }
+
+    private void updateClearButtonStatus(IssueVoucherReportLotViewModel viewModel) {
+      if (viewModel.isLocal() && viewModel.isDraft()) {
+        icLotClear.setVisibility(View.VISIBLE);
+      } else {
+        icLotClear.setVisibility(View.GONE);
       }
     }
 

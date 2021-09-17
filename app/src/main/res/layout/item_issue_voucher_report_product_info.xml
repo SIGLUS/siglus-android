@@ -7,13 +7,13 @@
   android:orientation="vertical">
 
   <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/color_d4d4d4">
+    style="@style/Pod.list.header.product"
+    android:layout_width="@dimen/px_190">
 
     <TextView
       style="@style/Pod.list.header.product"
       android:id="@+id/products_name"
+      android:layout_width="@dimen/px_160"
       android:text="Kit KWATMHOSO2- M6dulo Mangueiras adicionais; N/A;"/>
 
     <ImageView

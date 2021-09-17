@@ -37,10 +37,12 @@ public class IssueVoucherReportProductViewModel {
   private PodProductItem podProductItem;
   private List<IssueVoucherReportLotViewModel> lotViewModelList;
   private boolean isLocal;
+  private boolean isDraft;
   private boolean isValidate = true;
 
   public IssueVoucherReportProductViewModel(PodProductItem podProductItem,
-      OrderStatus orderStatus, boolean isLocal) {
+      OrderStatus orderStatus, boolean isLocal, boolean isDraft) {
+    this.isDraft = isDraft;
     this.isLocal = isLocal;
     this.podProductItem = podProductItem;
     product = podProductItem.getProduct();
@@ -51,7 +53,7 @@ public class IssueVoucherReportProductViewModel {
         : String.valueOf(podProductItem.getPartialFulfilledQuantity());
     this.orderStatus = orderStatus;
     lotViewModelList = FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
-        .transform(podLotItem -> new IssueVoucherReportLotViewModel(podLotItem, orderStatus, isLocal))
+        .transform(podLotItem -> new IssueVoucherReportLotViewModel(podLotItem, orderStatus, isLocal, isDraft))
         .toList();
   }
 

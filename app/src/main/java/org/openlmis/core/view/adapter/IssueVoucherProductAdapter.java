@@ -69,6 +69,7 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
       productList = itemView.findViewById(R.id.products_list_item);
       lotList = itemView.findViewById(R.id.ll_lot_list);
       btnProductClear = itemView.findViewById(R.id.iv_clear);
+      updateClearButtonStatus(issueVoucherReportProductViewModel);
       productName.setText(issueVoucherReportProductViewModel.getPodProductItem().getProduct().getPrimaryName());
       lotList.removeAllViews();
       btnProductClear.setOnClickListener(getRemoveClickListener());
@@ -77,6 +78,14 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
         return;
       }
       addEmptyLotView(lotViewModels);
+    }
+
+    private void updateClearButtonStatus(IssueVoucherReportProductViewModel viewModel) {
+      if (viewModel.isLocal() && viewModel.isDraft()) {
+        btnProductClear.setVisibility(View.VISIBLE);
+      } else {
+        btnProductClear.setVisibility(View.GONE);
+      }
     }
 
     private void addEmptyLotView(List<IssueVoucherReportLotViewModel> lotViewModels) {

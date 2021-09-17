@@ -53,7 +53,7 @@ public class IssueVoucherProductAdapterTest {
         .orderedQuantity(10L)
         .partialFulfilledQuantity(5L)
         .build();
-    productViewModel = new IssueVoucherReportProductViewModel(podProductItem, OrderStatus.SHIPPED, true);
+    productViewModel = new IssueVoucherReportProductViewModel(podProductItem, OrderStatus.SHIPPED, true, true);
   }
 
   @Test

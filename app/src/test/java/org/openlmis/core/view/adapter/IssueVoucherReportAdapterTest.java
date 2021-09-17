@@ -51,7 +51,7 @@ public class IssueVoucherReportAdapterTest {
         LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_issue_voucher_report_product, null));
     Pod VCPod = PodBuilder.generatePod();
     IssueVoucherReportProductViewModel model = new IssueVoucherReportProductViewModel(VCPod.getPodProductItemsWrapper()
-        .get(0), OrderStatus.SHIPPED, true);
+        .get(0), OrderStatus.SHIPPED, true, true);
 
     // when
     adapter.convert(holder, model);

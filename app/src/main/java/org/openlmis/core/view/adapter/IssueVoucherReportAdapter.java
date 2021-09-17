@@ -73,14 +73,12 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
     private TextView tvPartialFulfilled;
     private RecyclerView rvLotList;
     private IssueVoucherReportLotAdapter lotAdapter;
-    private IssueVoucherReportProductViewModel viewModel;
 
     public IssueVoucherReportViewHolder(@NonNull View itemView) {
       super(itemView);
     }
 
     public void populate(IssueVoucherReportProductViewModel productViewModel) {
-      this.viewModel = productViewModel;
       initView();
       lotAdapter.setList(productViewModel.getLotViewModelList());
       tvProductUnit.setText(productViewModel.getProductUnitName());

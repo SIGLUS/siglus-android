@@ -63,7 +63,7 @@ public class IssueVoucherReportLotAdapterTest {
         .lot(lot)
         .shippedQuantity(10L)
         .build();
-    lotViewModel = new IssueVoucherReportLotViewModel(podProductLotItem, OrderStatus.SHIPPED, true);
+    lotViewModel = new IssueVoucherReportLotViewModel(podProductLotItem, OrderStatus.SHIPPED, true, true);
   }
 
   @Test

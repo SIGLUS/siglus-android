@@ -36,7 +36,7 @@ public class IssueVoucherReportViewModel {
     this.pod = pod;
     productViewModels = FluentIterable.from(pod.getPodProductItemsWrapper())
         .transform(podProductItem ->
-            new IssueVoucherReportProductViewModel(podProductItem, pod.getOrderStatus(), pod.isLocal()))
+            new IssueVoucherReportProductViewModel(podProductItem, pod.getOrderStatus(), pod.isLocal(), pod.isDraft()))
         .toList();
   }
 

@@ -34,9 +34,12 @@ public class IssueVoucherReportLotViewModel {
   private PodProductLotItem lotItem;
   private OrderStatus orderStatus;
   private boolean isLocal;
+  private boolean isDraft;
   private boolean isValidate = true;
 
-  public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, OrderStatus orderStatus, boolean isLocal) {
+  public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, OrderStatus orderStatus, boolean isLocal,
+      boolean isDraft) {
+    this.isDraft = isDraft;
     this.isLocal = isLocal;
     this.lotItem = lotItem;
     lot = lotItem.getLot();
