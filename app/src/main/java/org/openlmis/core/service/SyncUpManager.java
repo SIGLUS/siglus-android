@@ -223,7 +223,14 @@ public class SyncUpManager {
       new LMISException(e, "SyncUpManager:syncPod").reportToFabric();
       return false;
     }
-    return from(pods).transform(this::submitPod).allMatch(Pod::isSynced);
+    boolean allSubmitSuccess = true;
+    for (Pod pod : pods) {
+      Pod submittedPod = submitPod(pod);
+      if (!submittedPod.isSynced()) {
+        allSubmitSuccess = false;
+      }
+    }
+    return allSubmitSuccess;
   }
 
   public boolean syncStockCards() {
