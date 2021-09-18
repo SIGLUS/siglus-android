@@ -19,16 +19,17 @@
 package org.openlmis.core.view.adapter;
 
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import java.util.List;
 import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter.IssueVoucherReportViewHolder;
 import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 
 public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherReportProductViewModel,
@@ -71,7 +72,7 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
     private TextView tvProductUnit;
     private TextView tvQuantityOrdered;
     private TextView tvPartialFulfilled;
-    private RecyclerView rvLotList;
+    private ListView lvLotList;
     private IssueVoucherReportLotAdapter lotAdapter;
 
     public IssueVoucherReportViewHolder(@NonNull View itemView) {
@@ -79,29 +80,20 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
     }
 
     public void populate(IssueVoucherReportProductViewModel productViewModel) {
-      initView();
-      lotAdapter.setList(productViewModel.getLotViewModelList());
+      initView(productViewModel);
       tvProductUnit.setText(productViewModel.getProductUnitName());
       tvPartialFulfilled.setText(productViewModel.getPartialFulfilledQuantity());
       tvQuantityOrdered.setText(productViewModel.getOrderedQuantity());
     }
 
-    private void initView() {
-      rvLotList = itemView.findViewById(R.id.rv_issue_voucher_lot_list);
-      rvLotList.setLayoutManager(new LinearLayoutManager(itemView.getContext()) {
-        @Override
-        public boolean canScrollHorizontally() {
-          return false;
-        }
-
-        @Override
-        public boolean canScrollVertically() {
-          return false;
-        }
-      });
-      lotAdapter = new IssueVoucherReportLotAdapter();
+    private void initView(IssueVoucherReportProductViewModel productViewModel) {
+      lvLotList = itemView.findViewById(R.id.lv_issue_voucher_lot_list);
+      List<IssueVoucherReportLotViewModel> lotViewModels = productViewModel.getLotViewModelList();
+      lvLotList.getLayoutParams().height =
+          (int) itemView.getResources().getDimension(R.dimen.px_50) * lotViewModels.size();
+      lotAdapter = new IssueVoucherReportLotAdapter(itemView.getContext(), lotViewModels);
       lotAdapter.setOnRemoveListener(this);
-      rvLotList.setAdapter(lotAdapter);
+      lvLotList.setAdapter(lotAdapter);
       tvProductUnit = itemView.findViewById(R.id.tv_product_unit);
       tvPartialFulfilled = itemView.findViewById(R.id.tv_partial_fulfilled);
       tvQuantityOrdered = itemView.findViewById(R.id.tv_quantity_ordered);
@@ -109,6 +101,7 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
 
     @Override
     public void onRemove(int position) {
+      notifyDataSetChanged();
       onRemoveListener.onRemove(getLayoutPosition(), position);
     }
 

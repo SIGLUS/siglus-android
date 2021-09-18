@@ -18,22 +18,26 @@
 
 package org.openlmis.core.view.adapter;
 
+import static org.openlmis.core.LMISApp.getContext;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.List;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
@@ -42,27 +46,54 @@ import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
-import org.openlmis.core.view.adapter.IssueVoucherReportLotAdapter.IssueVoucherReportLotViewHolder;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.listener.OnRemoveListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherReportLotViewModel,
-    IssueVoucherReportLotViewHolder> {
+public class IssueVoucherReportLotAdapter extends BaseAdapter {
+
+  private final Context context;
+
+  private List<IssueVoucherReportLotViewModel> lotViewModelList;
 
   @Setter
   private OnRemoveListener onRemoveListener;
 
-  public IssueVoucherReportLotAdapter() {
-    super(R.layout.item_issue_voucher_report_lot);
+
+  public IssueVoucherReportLotAdapter(Context context, List<IssueVoucherReportLotViewModel> lotViewModelList) {
+    this.context = context;
+    this.lotViewModelList = lotViewModelList;
   }
 
   @Override
-  protected void convert(@NonNull IssueVoucherReportLotViewHolder holder,
-      IssueVoucherReportLotViewModel viewModel) {
-    holder.populate(viewModel);
+  public int getCount() {
+    return lotViewModelList.size();
+  }
+
+  @Override
+  public IssueVoucherReportLotViewModel getItem(int position) {
+    return lotViewModelList.get(position);
+  }
+
+  @Override
+  public long getItemId(int position) {
+    return position;
+  }
+
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
+    IssueVoucherReportLotViewHolder viewHolder;
+    if (convertView == null) {
+      convertView = LayoutInflater.from(context).inflate(R.layout.item_issue_voucher_report_lot, parent, false);
+      viewHolder = new IssueVoucherReportLotViewHolder(convertView);
+      convertView.setTag(viewHolder);
+    } else {
+      viewHolder = (IssueVoucherReportLotViewHolder) convertView.getTag();
+    }
+    viewHolder.populate(lotViewModelList.get(position), position);
+    return convertView;
   }
 
   protected class IssueVoucherReportLotViewHolder extends BaseViewHolder {
@@ -77,12 +108,14 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
     private TextView tvRejectionReason;
     private ImageView ivRejectionReason;
     private ImageView icLotClear;
+    private int position;
 
     public IssueVoucherReportLotViewHolder(View itemView) {
       super(itemView);
     }
 
-    public void populate(IssueVoucherReportLotViewModel lotViewModel) {
+    public void populate(IssueVoucherReportLotViewModel lotViewModel, int position) {
+      this.position = position;
       this.lotViewModel = lotViewModel;
       initView();
       tvLotCode.setText(lotViewModel.getLot().getLotNumber());
@@ -193,13 +226,13 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
         return;
       }
       if (lotViewModel.isLocal() && lotViewModel.getShippedQuantity() == null) {
-        etQuantityShipped.setError(LMISApp.getContext().getString(R.string.hint_error_field_required));
+        etQuantityShipped.setError(getContext().getString(R.string.hint_error_field_required));
         etQuantityShipped.requestFocus();
       } else if (lotViewModel.getAcceptedQuantity() == null) {
-        etQuantityAccepted.setError(LMISApp.getContext().getString(R.string.hint_error_field_required));
+        etQuantityAccepted.setError(getContext().getString(R.string.hint_error_field_required));
         etQuantityAccepted.requestFocus();
       } else if (lotViewModel.getAcceptedQuantity().longValue() > lotViewModel.getShippedQuantity().longValue()) {
-        etQuantityAccepted.setError(LMISApp.getContext().getString(R.string.hint_error_more_than_shipped));
+        etQuantityAccepted.setError(getContext().getString(R.string.hint_error_more_than_shipped));
         etQuantityAccepted.requestFocus();
       } else if (lotViewModel.getReturnedQuality().longValue() > 0 && lotViewModel.getRejectedReason() == null) {
         tvRejectionReason.setError("");
@@ -296,12 +329,11 @@ public class IssueVoucherReportLotAdapter extends BaseQuickAdapter<IssueVoucherR
                 HtmlCompat.FROM_HTML_MODE_LEGACY),
             getString(R.string.btn_remove_lot),
             getString(R.string.btn_cancel), "confirm_dialog");
-        dialogFragment.show(((BaseActivity) getContext()).getSupportFragmentManager(), "confirm_dialog");
+        dialogFragment.show(((BaseActivity) itemView.getContext()).getSupportFragmentManager(), "confirm_dialog");
         dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
           @Override
           public void positiveClick(String tag) {
-            IssueVoucherReportLotAdapter.this.removeAt(getLayoutPosition());
-            onRemoveListener.onRemove(getLayoutPosition());
+            onRemoveListener.onRemove(position);
           }
 
           @Override

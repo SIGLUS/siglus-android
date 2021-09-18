@@ -25,10 +25,11 @@
     <TextView style="@style/Pod.list.product" />
   </LinearLayout>
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/rv_issue_voucher_lot_list"
+  <ListView
+    android:id="@+id/lv_issue_voucher_lot_list"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@drawable/border_bg_gray_bottom"
     android:nestedScrollingEnabled="false"
     android:overScrollMode="never"
     android:scrollbars="none" />

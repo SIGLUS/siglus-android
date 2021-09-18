@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.util.Arrays;
 import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,9 +51,6 @@ public class IssueVoucherReportLotAdapterTest {
 
   @Before
   public void setup() {
-    adapter = new IssueVoucherReportLotAdapter();
-    holder = adapter.new IssueVoucherReportLotViewHolder(
-        LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_issue_voucher_report_lot, null));
     Lot lot = new LotBuilder()
         .setProduct(ProductBuilder.buildAdultProduct())
         .setLotNumber(FieldConstants.LOT_NUMBER)
@@ -64,6 +62,9 @@ public class IssueVoucherReportLotAdapterTest {
         .shippedQuantity(10L)
         .build();
     lotViewModel = new IssueVoucherReportLotViewModel(podProductLotItem, OrderStatus.SHIPPED, true, true);
+    adapter = new IssueVoucherReportLotAdapter(LMISTestApp.getContext(), Arrays.asList(lotViewModel));
+    holder = adapter.new IssueVoucherReportLotViewHolder(
+        LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_issue_voucher_report_lot, null));
   }
 
   @Test
@@ -73,7 +74,7 @@ public class IssueVoucherReportLotAdapterTest {
     lotViewModel.setNotes(notes);
 
     // when
-    adapter.convert(holder, lotViewModel);
+    holder.populate(lotViewModel, 0);
 
     // then
     assertEquals(true, holder.getView(R.id.et_quantity_accepted).isFocusable());
@@ -89,7 +90,7 @@ public class IssueVoucherReportLotAdapterTest {
     lotViewModel.setLocal(false);
 
     // when
-    adapter.convert(holder, lotViewModel);
+    holder.populate(lotViewModel, 0);
 
     // then
     assertEquals(true, holder.getView(R.id.et_quantity_accepted).isFocusable());
@@ -104,7 +105,7 @@ public class IssueVoucherReportLotAdapterTest {
     lotViewModel.setOrderStatus(OrderStatus.RECEIVED);
 
     // when
-    adapter.convert(holder, lotViewModel);
+    holder.populate(lotViewModel, 0);
 
     // then
     assertEquals(false, holder.getView(R.id.et_quantity_accepted).isFocusable());
@@ -119,7 +120,7 @@ public class IssueVoucherReportLotAdapterTest {
     lotViewModel.setRejectedReason("test");
 
     // when
-    adapter.convert(holder, lotViewModel);
+    holder.populate(lotViewModel, 0);
 
     // then
     assertEquals("3", ((EditText)holder.getView(R.id.et_quantity_accepted)).getText().toString());
@@ -138,7 +139,7 @@ public class IssueVoucherReportLotAdapterTest {
     lotViewModel.setOrderStatus(OrderStatus.RECEIVED);
 
     // when
-    adapter.convert(holder, lotViewModel);
+    holder.populate(lotViewModel, 0);
 
     // then
     assertEquals("4", ((EditText)holder.getView(R.id.et_quantity_accepted)).getText().toString());
@@ -160,7 +161,7 @@ public class IssueVoucherReportLotAdapterTest {
     lotViewModel.setOrderStatus(OrderStatus.RECEIVED);
 
     // when
-    adapter.convert(holder, lotViewModel);
+    holder.populate(lotViewModel, 0);
 
     // then
     assertEquals("", ((EditText)holder.getView(R.id.et_quantity_accepted)).getText().toString());
