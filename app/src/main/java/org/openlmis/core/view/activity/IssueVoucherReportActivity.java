@@ -241,7 +241,9 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     Long total = 0L;
     for (IssueVoucherReportProductViewModel productViewModel : issueVoucherReportAdapter.getData()) {
       for (IssueVoucherReportLotViewModel lotViewModel : productViewModel.getLotViewModelList()) {
-        total += lotViewModel.getShippedQuantity();
+        if (lotViewModel.getShippedQuantity() != null) {
+          total += lotViewModel.getShippedQuantity();
+        }
       }
     }
     tvTotalPrice.setText(MessageFormat.format("Total :{0}", total));
