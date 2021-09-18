@@ -281,7 +281,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     lotMovementItem.setLot(podLotItem.getLot());
     long acceptedQuantity = podLotItem.getAcceptedQuantity();
     if (idToLotOnHand.containsKey(lot.getId())) {
-      long lotOnHand = lotMovementItem.getStockOnHand();
+      long lotOnHand = idToLotOnHand.get(lot.getId()).getQuantityOnHand();
       lotMovementItem.setStockOnHand(lotOnHand + acceptedQuantity);
     } else {
       lotMovementItem.setStockOnHand(acceptedQuantity);
