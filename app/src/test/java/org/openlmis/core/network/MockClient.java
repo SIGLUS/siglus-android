@@ -21,7 +21,7 @@ public class MockClient implements Client {
     String requestUrl = request.getUrl();
     System.out.println("1 +++++++++++ request = [" + requestUrl + "]");
     // The following port number should be same with the ENV which you running
-    requestUrl = requestUrl.split(LMISApp.getInstance().getResources().getString(R.integer.server_base_url_port))[1];
+    requestUrl = requestUrl.replace(LMISApp.getInstance().getResources().getString(R.string.server_base_url), "");
     System.out.println("+++++++++++ request = [" + requestUrl + "]");
     if (urlToResponseMap.containsKey(requestUrl)) {
       return urlToResponseMap.get(requestUrl);
