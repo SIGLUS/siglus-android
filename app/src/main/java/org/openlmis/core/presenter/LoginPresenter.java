@@ -45,6 +45,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.InternetCheck;
+import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.service.SyncDownManager;
@@ -101,6 +102,7 @@ public class LoginPresenter extends Presenter {
 
   @Inject
   SharedPreferenceMgr sharedPreferenceMgr;
+
   @Inject
   InternetCheck internetCheck;
 
@@ -136,19 +138,15 @@ public class LoginPresenter extends Presenter {
     view.loading();
 
     User user = new User(userName.trim(), password);
-    if (!LMISApp.getInstance().isRoboUniTest()) {
-      new InternetCheck().execute(checkNetworkConnected(user, fromReSync));
-    } else {
-      internetCheck.execute(checkNetworkConnected(user, fromReSync));
-    }
+    internetCheck.check(checkNetworkConnected(user, fromReSync));
   }
 
-  public void onLoginFailed(LoginErrorType loginErrorType) {
+  protected void onLoginFailed(LoginErrorType loginErrorType) {
     view.loaded();
     view.showInvalidAlert(loginErrorType);
   }
 
-  public void syncLocalUserData(Subscriber<SyncLocalUserProgress> subscriber) {
+  protected void syncLocalUserData() {
     Observable.create((Observable.OnSubscribe<SyncLocalUserProgress>) subscriber1 -> {
       if (SharedPreferenceMgr.getInstance().getLastSyncProductTime() == null) {
         subscriber1.onNext(SyncLocalUserProgress.SYNC_LAST_SYNC_PRODUCT_FAIL);
@@ -159,20 +157,15 @@ public class LoginPresenter extends Presenter {
         subscriber1.onNext(SyncLocalUserProgress.SYNC_LAST_MONTH_STOCK_DATA_FAIL);
         return;
       }
-      // TODO: change back to the original check after end the development of sync down requisitions
-      // if (!SharedPreferenceMgr.getInstance().isRequisitionDataSynced()) {
-      //   subscriber1.onNext(SyncLocalUserProgress.SyncRequisitionDataFail);
-      //   return;
-      // }
+      if (!SharedPreferenceMgr.getInstance().isRequisitionDataSynced()) {
+        subscriber1.onNext(SyncLocalUserProgress.SYNC_REQUISITION_DATA_FAIL);
+        return;
+      }
       subscriber1.onNext(SyncLocalUserProgress.SYNC_LAST_DATA_SUCCESS);
-    }).subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(subscriber);
-
+    }).subscribe(getSyncLocalUserDataSubscriber());
   }
 
-  @NonNull
-  public Subscriber<SyncLocalUserProgress> getSyncLocalUserDataSubscriber() {
+  private Subscriber<SyncLocalUserProgress> getSyncLocalUserDataSubscriber() {
     return new Subscriber<SyncLocalUserProgress>() {
       @Override
       public void onCompleted() {
@@ -258,11 +251,11 @@ public class LoginPresenter extends Presenter {
     };
   }
 
-  protected void saveUserDataToLocalDatabase(final User user) throws LMISException {
+  private void saveUserDataToLocalDatabase(final User user) throws LMISException {
     userRepository.createOrUpdate(user);
   }
 
-  private InternetCheck.Callback checkNetworkConnected(User user, boolean fromReSync) {
+  protected InternetCheckListener checkNetworkConnected(User user, boolean fromReSync) {
     return internet -> {
       if (internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
         loginRemote(user, fromReSync);
@@ -288,9 +281,8 @@ public class LoginPresenter extends Presenter {
       onLoginFailed(LoginErrorType.WRONG_PASSWORD);
       return;
     }
-
     UserInfoMgr.getInstance().setUser(localUser);
-    syncLocalUserData(getSyncLocalUserDataSubscriber());
+    syncLocalUserData();
   }
 
   private void setDefaultReportType() {
@@ -339,7 +331,7 @@ public class LoginPresenter extends Presenter {
         });
   }
 
-  private void onLoginSuccess(final User user, final boolean fromReSync) {
+  protected void onLoginSuccess(final User user, final boolean fromReSync) {
     Log.d(TAG, "Log in successful, setting up sync account");
     syncService.createSyncAccount(user);
 

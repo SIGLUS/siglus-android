@@ -56,6 +56,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.InternetCheck;
+import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.persistence.ExportSqliteOpenHelper;
 import org.openlmis.core.presenter.HomePresenter;
 import org.openlmis.core.service.DirtyDataManager;
@@ -295,7 +296,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     super.onDestroy();
   }
 
-  protected final InternetCheck.Callback validateConnectionListener = internet -> {
+  protected final InternetCheckListener validateConnectionListener = internet -> {
     if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
       ToastUtil.show(R.string.message_wipe_no_connection);
     } else {
@@ -404,7 +405,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   }
 
   private void alertWipeData() {
-    new InternetCheck().execute(validateConnectionListener);
+    new InternetCheck().check(validateConnectionListener);
   }
 
   private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {

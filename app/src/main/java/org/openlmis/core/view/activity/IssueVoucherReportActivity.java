@@ -47,6 +47,7 @@ import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.network.InternetCheck;
+import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
 import org.openlmis.core.service.SyncService;
@@ -377,10 +378,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     return new Subscriber<Void>() {
       @Override
       public void onCompleted() {
-        loaded();
-        ToastUtil.show(R.string.msg_complete_successfully);
-        internetCheck.execute(checkInternetListener());
-        backToPodListActivity();
+        internetCheck.check(checkInternetListener());
       }
 
       @Override
@@ -391,18 +389,21 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
       @Override
       public void onNext(Void aVoid) {
+        // do nothing
       }
     };
   }
 
-  private InternetCheck.Callback checkInternetListener() {
-
+  private InternetCheckListener checkInternetListener() {
     return internet -> {
-      if (Boolean.TRUE.equals(internet)) {
+      if (internet) {
         syncService.requestSyncImmediatelyByTask();
       } else {
         Log.d("Internet", "No hay conexion");
       }
+      loaded();
+      ToastUtil.show(R.string.msg_complete_successfully);
+      backToPodListActivity();
     };
   }
 
@@ -449,5 +450,4 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     presenter.getPod().getPodProductItemsWrapper().get(productPosition).setPodProductLotItemsWrapper(filterLots);
     updateTotal();
   }
-
 }

@@ -27,6 +27,7 @@ import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
 import org.openlmis.core.network.InternetCheck;
+import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.service.SyncService;
 import roboguice.RoboGuice;
 
@@ -41,24 +42,20 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
   public void onReceive(Context context, Intent intent) {
     SyncService syncService = RoboGuice.getInjector(context).getInstance(SyncService.class);
     if (internetCheck != null) {
-      internetCheck.execute(synchronizeListener(syncService));
+      internetCheck.check(synchronizeListener(syncService));
     }
   }
 
-  private InternetCheck.Callback synchronizeListener(final SyncService syncService) {
-
+  protected InternetCheckListener synchronizeListener(final SyncService syncService) {
     return internet -> {
       if (internet) {
         Log.d(TAG, "network connected, start sync service...");
-        AnalyticsTracker.getInstance()
-            .trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_CONNECTED);
+        AnalyticsTracker.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_CONNECTED);
         syncService.requestSyncImmediatelyByTask();
         syncService.kickOff();
       } else {
         Log.d(TAG, "there is no internet connection in network receiver");
-        Log.d(TAG, "network disconnect, stop sync service...");
-        AnalyticsTracker.getInstance()
-            .trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_DISCONNECTED);
+        AnalyticsTracker.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_DISCONNECTED);
         syncService.shutDown();
       }
     };

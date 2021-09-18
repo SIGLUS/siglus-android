@@ -18,61 +18,66 @@
 
 package org.openlmis.core.network;
 
-import android.os.AsyncTask;
 import android.util.Log;
-import com.google.inject.Inject;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
+import rx.Observable;
+import rx.Observable.OnSubscribe;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, InternetListener> {
+public class InternetCheck {
 
   private static final String TAG = InternetCheck.class.getSimpleName();
+
   private static final int TIMEOUT = 5 * 1000;
 
-  @Inject
-  public InternetCheck() {
-    // do nothing
-  }
-
-  public interface Callback {
-
-    void launchResponse(Boolean internet);
-  }
-
-  @Override
-  public InternetListener doInBackground(Callback... callbacks) {
-    Callback callback = null;
-    try (Socket sock = new Socket()) {
-      if (callbacks.length > 0) {
-        callback = callbacks[0];
-      } else {
-        throw new LMISException("No callback supplied");
-      }
-      sock.connect(new InetSocketAddress(getAddress(), getPORT()), TIMEOUT);
-      return new InternetListener(true, callback, null);
-    } catch (Exception e) {
-      Log.w(TAG, e);
-      return new InternetListener(false, callback, e);
+  protected Observer<Boolean> resultObserver = new Observer<Boolean>() {
+    @Override
+    public void onCompleted() {
+      // do nothing
     }
-  }
 
-  private String getAddress() {
+    @Override
+    public void onError(Throwable throwable) {
+      Log.w(TAG, throwable);
+      listener.onResult(false);
+    }
+
+    @Override
+    public void onNext(Boolean result) {
+      listener.onResult(Boolean.TRUE == result);
+    }
+  };
+
+  private InternetCheckListener listener;
+
+  private static String getAddress() {
     return LMISApp.getContext().getString(R.string.server_base_url_host);
   }
 
-  private int getPORT() {
+  private static int getPORT() {
     return LMISApp.getContext().getResources().getInteger(R.integer.server_base_url_port);
   }
 
-  @Override
-  protected void onPostExecute(InternetListener internetListener) {
-    if (internetListener.getCallback() != null) {
-      internetListener.launchCallback();
-    } else {
-      Log.w(TAG, internetListener.getException());
-    }
+  public void check(InternetCheckListener listener) {
+    this.listener = listener;
+    Observable.create((OnSubscribe<Boolean>) subscriber -> {
+      try (Socket sock = new Socket()) {
+        sock.connect(new InetSocketAddress(getAddress(), getPORT()));
+        subscriber.onNext(true);
+      } catch (Exception e) {
+        subscriber.onError(e);
+      } finally {
+        subscriber.onCompleted();
+      }
+    }).timeout(TIMEOUT, TimeUnit.MILLISECONDS)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(resultObserver);
   }
 }

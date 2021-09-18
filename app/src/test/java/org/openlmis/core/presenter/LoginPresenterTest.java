@@ -18,54 +18,39 @@
 
 package org.openlmis.core.presenter;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SHOULD_GO_TO_INITIAL_INVENTORY;
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import com.google.inject.AbstractModule;
-import java.util.List;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.enumeration.LoginErrorType;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.builder.ProgramBuilder;
-import org.openlmis.core.model.builder.UserBuilder;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.network.InternetCheck;
-import org.openlmis.core.network.LMISRestApi;
-import org.openlmis.core.network.LMISRestManagerMock;
-import org.openlmis.core.network.model.UserResponse;
+import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
-import retrofit.Callback;
-import retrofit.client.Response;
+import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Subscriber;
 
 @RunWith(LMISTestRunner.class)
-@SuppressWarnings("PMD")
 public class LoginPresenterTest {
 
   UserRepository userRepository;
@@ -74,158 +59,117 @@ public class LoginPresenterTest {
   LoginPresenter presenter;
   SyncService syncService;
 
-  @Captor
-  private ArgumentCaptor<Callback<UserResponse>> loginCB;
-  @Captor
-  private ArgumentCaptor<InternetCheck.Callback> internetCheckCallBack;
-
-  private LMISTestApp appInject;
   private Subscriber<SyncProgress> syncSubscriber;
   private SyncDownManager syncDownManager;
   private ProgramRepository programRepository;
-  private LMISRestApi mockedApi;
-  private Response retrofitResponse;
-  private UserResponse userResponse;
-  private InternetCheck internetCheck1;
 
   @Before
   public void setup() {
-    appInject = (LMISTestApp) RuntimeEnvironment.application;
-
     userRepository = mock(UserRepository.class);
     programRepository = mock(ProgramRepository.class);
     rnrFormRepository = mock(RnrFormRepository.class);
     mockActivity = mock(LoginActivity.class);
     syncService = mock(SyncService.class);
     syncDownManager = mock(SyncDownManager.class);
-
-    mockedApi = mock(LMISRestApi.class);
-    internetCheck1 = mock(InternetCheck.class);
-    appInject.setRestApi(mockedApi);
-
-    retrofitResponse = LMISRestManagerMock
-        .createDummyJsonResponse("http://unknown.com", 200, "", "");
-    userResponse = new UserResponse();
-    userResponse.setAccessToken("e771dc4c-3df0-40be-a963-f5d4d1a201a6");
-    userResponse.setExpiresIn(43199);
-    userResponse.setTokenType("bearer");
-    userResponse.setReferenceDataUserId("eaed4b29-0ece-457f-b64f-5d49a929d13d");
-    userResponse.setUsername("CS_Role1");
-
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    MockitoAnnotations.initMocks(this);
-
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(LoginPresenter.class);
+    presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LoginPresenter.class);
     presenter.attachView(mockActivity);
     syncSubscriber = presenter.getSyncSubscriber();
     presenter = spy(presenter);
   }
 
   @Test
-  public void shouldSaveUserToLocalDBWhenSuccess() {
-    presenter.startLogin("username", "password", false);
-    verify(internetCheck1).execute(internetCheckCallBack.capture());
-    internetCheckCallBack.getValue().launchResponse(true);
-    verify(mockActivity).loading();
-    verify(mockedApi).login(eq("password"), eq("username"), eq("password"), loginCB.capture());
+  public void shouldShowUserNameEmptyWhenUserNameIsEmpty() {
 
-    loginCB.getValue().success(userResponse, retrofitResponse);
+    // when
+    presenter.startLogin("", "password", false);
 
-    verify(userRepository).createOrUpdate(any(User.class));
-  }
-
-  @Ignore
-  public void shouldSaveUserSupportedProgramsToLocalDBWhenSuccess() {
-    presenter.startLogin("user", "password", false);
-    verify(internetCheck1).execute(internetCheckCallBack.capture());
-    internetCheckCallBack.getValue().launchResponse(true);
-    verify(mockActivity).loading();
-
-    verify(mockedApi).login(eq("password"), eq("username"), eq("password"), loginCB.capture());
-
-    List<Program> supportedPrograms = newArrayList(new ProgramBuilder().build(),
-        new ProgramBuilder().build());
-
-//        userResponse.setFacilitySupportedPrograms(supportedPrograms);
-    loginCB.getValue().success(userResponse, retrofitResponse);
-
-    verify(userRepository).createOrUpdate(any(User.class));
+    // then
+    verify(mockActivity).showUserNameEmpty();
   }
 
   @Test
-  public void shouldCreateSyncAccountWhenLoginSuccess() {
+  public void shouldShowPasswordEmptyWhenPasswordIsEmpty() {
+
+    // when
+    presenter.startLogin("123", "", false);
+
+    // then
+    verify(mockActivity).showPasswordEmpty();
+  }
+
+  @Test
+  public void shouldShowInvalidAlertAfterLoginFailed() {
+    // when
+    presenter.onLoginFailed(LoginErrorType.NO_INTERNET);
+
+    // then
+    verify(mockActivity, times(1)).loaded();
+    verify(mockActivity, times(1)).showInvalidAlert(LoginErrorType.NO_INTERNET);
+  }
+
+  @Test
+  public void shouldToastSyncProductFailWhenNotSyncProduct() {
     // given
-    User user = User
-        .builder()
-        .username(userResponse.getUsername())
-        .password("password1")
-        .accessToken(userResponse.getAccessToken())
-        .tokenType(userResponse.getTokenType())
-        .referenceDataUserId(userResponse.getReferenceDataUserId())
-        .isTokenExpired(false)
-        .build();
+    SharedPreferenceMgr.getInstance().setLastSyncProductTime(null);
 
     // when
-    presenter.startLogin("CS_Role1", "password1", false);
-    // then
-    verify(internetCheck1).execute(internetCheckCallBack.capture());
+    presenter.syncLocalUserData();
 
-    // when
-    internetCheckCallBack.getValue().launchResponse(true);
     // then
-    verify(mockedApi).login(eq("password"), eq("CS_Role1"), eq("password1"), loginCB.capture());
-
-    // when
-    loginCB.getValue().success(userResponse, retrofitResponse);
-    // then
-    verify(syncService).createSyncAccount(user);
+    verify(mockActivity, times(1)).loaded();
+    assertEquals(LMISTestApp.getInstance().getString(R.string.msg_sync_products_list_failed),
+        ShadowToast.getTextOfLatestToast());
   }
 
   @Test
-  public void shouldSaveUserInfoWhenLoginSuccess() {
+  public void shouldToastSyncStockFailWhenNotSyncStock() {
     // given
-    User user = User
-        .builder()
-        .username(userResponse.getUsername())
-        .password("password1")
-        .accessToken(userResponse.getAccessToken())
-        .tokenType(userResponse.getTokenType())
-        .referenceDataUserId(userResponse.getReferenceDataUserId())
-        .isTokenExpired(false)
-        .build();
+    SharedPreferenceMgr.getInstance().setLastSyncProductTime("1");
+    SharedPreferenceMgr.getInstance().setIsSyncingLastYearStockCards(false);
 
     // when
-    presenter.startLogin("CS_Role1", "password1", false);
-    // then
-    verify(internetCheck1).execute(internetCheckCallBack.capture());
+    presenter.syncLocalUserData();
 
-    // when
-    internetCheckCallBack.getValue().launchResponse(true);
     // then
-    verify(mockedApi).login(eq("password"), eq("CS_Role1"), eq("password1"), loginCB.capture());
-
-    // when
-    loginCB.getValue().success(userResponse, retrofitResponse);
-    // then
-    verify(userRepository).createOrUpdate(user);
-    assertThat(UserInfoMgr.getInstance().getUser()).isEqualTo(user);
-    verify(mockActivity).clearErrorAlerts();
+    verify(mockActivity, times(1)).loaded();
+    assertEquals(LMISTestApp.getInstance().getString(R.string.msg_sync_stock_movement_failed),
+        ShadowToast.getTextOfLatestToast());
   }
 
   @Test
-  public void shouldSyncServerDataWhenLoginSuccessFromNet() {
-    presenter.startLogin("username", "password", false);
-    verify(internetCheck1).execute(internetCheckCallBack.capture());
-    internetCheckCallBack.getValue().launchResponse(true);
-    verify(mockedApi).login(eq("password"), eq("username"), eq("password"), loginCB.capture());
-    loginCB.getValue().success(userResponse, retrofitResponse);
+  public void shouldToastSyncRequisitionFailWhenNotSyncRequisition() {
+    // given
+    SharedPreferenceMgr.getInstance().setLastSyncProductTime("1");
+    SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
+    SharedPreferenceMgr.getInstance().setRequisitionDataSynced(false);
 
-    verify(syncDownManager).syncDownServerData(any(Subscriber.class));
+    // when
+    presenter.syncLocalUserData();
+
+    // then
+    verify(mockActivity, times(1)).loaded();
+    assertEquals(LMISTestApp.getInstance().getString(R.string.msg_sync_requisition_failed),
+        ShadowToast.getTextOfLatestToast());
   }
 
   @Test
-  public void shouldGoToInventoryPageAndKickOffPeriodicSyncIfSyncServerDataSuccess() {
+  public void shouldGotoNextPageWithLocalLogin() {
+    // given
+    SharedPreferenceMgr.getInstance().setLastSyncProductTime("1");
+    SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
+    SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
+
+    // when
+    presenter.syncLocalUserData();
+
+    // then
+    verify(mockActivity, times(1)).loaded();
+    verify(mockActivity, times(1)).goToHomePage();
+  }
+
+  @Test
+  public void shouldGoToInventoryPageAndKickOffPeriodicSyncWhenSyncComplete() {
     // given
     when(mockActivity.needInitInventory()).thenReturn(true);
 
@@ -239,71 +183,12 @@ public class LoginPresenterTest {
   }
 
   @Test
-  public void shouldDoOfflineLoginWhenNoConnectionAndHasSyncedData() {
-    when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
-    when(userRepository.getLocalUser()).thenReturn(new User("user", "password"));
-    when(mockActivity.needInitInventory()).thenReturn(false);
-
-    SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
-    SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
-    SharedPreferenceMgr.getInstance().setLastSyncProductTime("time");
-
-    presenter.startLogin("user", "password", false);
-
-    verify(internetCheck1).execute(internetCheckCallBack.capture());
-    internetCheckCallBack.getValue().launchResponse(false);
-    verify(userRepository).getLocalUser();
-    assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
-
-  }
-
-  @Test
-  public void shouldShowMessageWhenNoConnectionAndHasNotGetProducts() {
-
-    when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
-    when(userRepository.getLocalUser()).thenReturn(new User("user", "password"));
-    when(mockActivity.needInitInventory()).thenReturn(false);
-
-    presenter.startLogin("user", "password", false);
-    verify(internetCheck1).execute(internetCheckCallBack.capture());
-    internetCheckCallBack.getValue().launchResponse(false);
-    verify(userRepository).getLocalUser();
-    assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
-
-  }
-
-  @Test
-  public void shouldShowLoginFailErrorMsgWhenNoConnectionAndNoLocalCache() {
-    when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(null);
-
-    presenter.startLogin("user", "password", false);
-    InternetCheck internetCheck = mock(InternetCheck.class);
-    verify(internetCheck1).execute(internetCheckCallBack.capture());
-    verify(internetCheck1).execute(internetCheckCallBack.capture());
-    internetCheckCallBack.getValue().launchResponse(false);
-    verify(userRepository).getLocalUser();
-
-    verify(mockActivity).loaded();
-    verify(mockActivity).showInvalidAlert(any());
-  }
-
-  @Test
-  public void shouldShowUserNameEmptyErrorMessage() {
-    presenter.startLogin("", "password1", false);
-    verify(mockActivity).showUserNameEmpty();
-  }
-
-  @Test
-  public void shouldShowPasswordEmptyErrorMessage() {
-    presenter.startLogin("user", "", false);
-    verify(mockActivity).showPasswordEmpty();
-  }
-
-  @Test
   public void shouldShowSyncingStockCardsMessage() {
+    // when
     syncSubscriber.onNext(SyncProgress.SYNCING_STOCK_CARDS_LAST_MONTH);
-    verify(mockActivity)
-        .loading(RuntimeEnvironment.application.getString(R.string.msg_sync_stock_movements_data));
+
+    // then
+    verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_stock_movements_data));
   }
 
   @Test
@@ -325,11 +210,33 @@ public class LoginPresenterTest {
     verify(mockActivity, times(0)).goToHomePage();
   }
 
-  @Ignore
-  public void shouldSaveUserDataAndSupportedFacilityCodeToDBWhenMultipleProgramToggleON() {
-    User user = UserBuilder.defaultUser();
+  @Test
+  public void shouldCorrectLoginRemote() {
+    // given
+    User user = new User("CS_Role1", "password1");
 
-    verify(userRepository).createOrUpdate(user);
+    // when
+    presenter.onLoginSuccess(user, true);
+
+    // then
+    verify(syncService, times(1)).createSyncAccount(user);
+    verify(syncDownManager, times(1)).syncDownServerData(any());
+    verify(mockActivity, times(1)).clearErrorAlerts();
+    verify(mockActivity, times(1)).sendScreenToGoogleAnalyticsAfterLogin();
+  }
+
+  @Test
+  public void shouldCorrectLoginLocal() {
+    // given
+    User user = new User("CS_Role1", "password1");
+    when(userRepository.getLocalUser()).thenReturn(user);
+    InternetCheckListener internetCheckListener = presenter.checkNetworkConnected(user, false);
+
+    // when
+    internetCheckListener.onResult(false);
+
+    // then
+    verify(userRepository, times(1)).mapUserFromLocal(any());
   }
 
   public class MyTestModule extends AbstractModule {
@@ -341,7 +248,6 @@ public class LoginPresenterTest {
       bind(SyncDownManager.class).toInstance(syncDownManager);
       bind(RnrFormRepository.class).toInstance(rnrFormRepository);
       bind(ProgramRepository.class).toInstance(programRepository);
-      bind(InternetCheck.class).toInstance(internetCheck1);
     }
   }
 }

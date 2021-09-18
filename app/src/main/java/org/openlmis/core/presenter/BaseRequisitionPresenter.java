@@ -32,10 +32,10 @@ import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.InternetCheck;
+import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.BaseView;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -175,15 +175,15 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
         view.completeSuccess();
         Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.AUTHORISE_RNR, rnRForm.getProgram().getProgramCode());
-        internetCheck.execute(checkInternetListener());
+        internetCheck.check(checkInternetListener());
       }
     };
   }
 
-  private InternetCheck.Callback checkInternetListener() {
+  private InternetCheckListener checkInternetListener() {
 
-    return internet -> {
-      if (Boolean.TRUE.equals(internet)) {
+    return result -> {
+      if (result) {
         syncService.requestSyncImmediatelyByTask();
       } else {
         Log.d("Internet", "No hay conexion");

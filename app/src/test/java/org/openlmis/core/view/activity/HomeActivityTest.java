@@ -239,7 +239,7 @@ public class HomeActivityTest {
   @Test
   public void shouldShowWarningDialogWhenWipeDataWiped() {
     // when
-    homeActivity.validateConnectionListener.launchResponse(true);
+    homeActivity.validateConnectionListener.onResult(true);
     RobolectricUtils.waitLooperIdle();
 
     // then
@@ -252,7 +252,7 @@ public class HomeActivityTest {
     // given
     String expectedMessage = "The network is unavailable, please try again when you have the network";
     // when
-    homeActivity.validateConnectionListener.launchResponse(false);
+    homeActivity.validateConnectionListener.onResult(false);
 
     // then
     String warningMessage = ShadowToast.getTextOfLatestToast();

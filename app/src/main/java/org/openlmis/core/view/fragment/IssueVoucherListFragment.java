@@ -42,6 +42,7 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.event.SyncPodFinishEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.network.InternetCheck;
+import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.openlmis.core.presenter.IssueVoucherListPresenter.IssueVoucherListView;
 import org.openlmis.core.presenter.Presenter;
@@ -80,7 +81,7 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
           return;
         }
         presenter.loadData();
-        internetCheck.execute(checkInternetListener());
+        internetCheck.check(checkInternetListener());
       });
 
   public static IssueVoucherListFragment newInstance(boolean isIssueVoucher) {
@@ -235,9 +236,9 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
     }
   }
 
-  private InternetCheck.Callback checkInternetListener() {
+  private InternetCheckListener checkInternetListener() {
     return internet -> {
-      if (Boolean.TRUE.equals(internet)) {
+      if (internet) {
         syncService.requestSyncImmediatelyByTask();
       } else {
         Log.d("Internet", "No hay conexion");

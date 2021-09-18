@@ -18,23 +18,37 @@
 
 package org.openlmis.core.network;
 
-import lombok.Getter;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.openlmis.core.LMISTestRunner;
+import rx.observers.TestSubscriber;
 
-@Getter
-public class InternetListener {
+@RunWith(LMISTestRunner.class)
+public class InternetCheckTest {
 
-  private final boolean internet;
-  private final InternetCheck.Callback callback;
-  private final Exception
-      exception;
+  InternetCheck internetCheck;
 
-  public InternetListener(boolean internet, InternetCheck.Callback callback, Exception exception) {
-    this.internet = internet;
-    this.callback = callback;
-    this.exception = exception;
+  InternetCheckListener mockListener;
+
+  @Before
+  public void setUp() {
+    internetCheck = new InternetCheck();
+    mockListener = Mockito.mock(InternetCheckListener.class);
   }
 
-  public void launchCallback() {
-    callback.launchResponse(internet);
+  @Test
+  public void shouldCorrectTestInternet() {
+    // given
+    TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>(internetCheck.resultObserver);
+    internetCheck.resultObserver = testSubscriber;
+
+    // when
+    internetCheck.check(mockListener);
+    testSubscriber.awaitTerminalEvent();
+
+    // then
+    Mockito.verify(mockListener, Mockito.times(1)).onResult(true);
   }
 }
