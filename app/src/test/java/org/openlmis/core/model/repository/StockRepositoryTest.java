@@ -22,7 +22,6 @@ package org.openlmis.core.model.repository;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.openlmis.core.model.builder.StockCardBuilder.saveStockCardWithOneMovement;
 
 import androidx.annotation.NonNull;
 import java.util.Arrays;
@@ -433,6 +432,38 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     stockCard.setStockOnHand(stockOnHand);
     stockCard.setAvgMonthlyConsumption(avg);
     stockRepository.createOrUpdate(stockCard);
+    return stockCard;
+  }
+
+  private StockCard saveStockCardWithOneMovement(StockRepository stockRepository,
+      ProductRepository productRepository) throws LMISException {
+    StockCard stockCard = new StockCard();
+    Product product = new Product();
+    int random = (int) (Math.random() * 10000000);
+    product.setId(random);
+    product.setCode(String.valueOf(random));
+    Program program = new Program("MMIA", "MMIA", null, false, null, null);
+    product.setProgram(program);
+    productRepository.createOrUpdate(product);
+
+    stockCard.setProduct(product);
+    stockCard.setStockOnHand(90L);
+    stockRepository.createOrUpdate(stockCard);
+
+    StockMovementItem stockMovementItem = new StockMovementItem();
+    stockMovementItem.setStockCard(stockCard);
+    stockMovementItem.setMovementQuantity(10L);
+    stockMovementItem.setStockOnHand(100L);
+    stockMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
+    stockMovementItem.setDocumentNumber("XXX123456");
+    stockMovementItem.setReason("some reason");
+    stockMovementItem.setMovementDate(DateUtil.parseString("2015-11-11", "yyyy-MM-dd"));
+    stockMovementItem.setSynced(true);
+
+    stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+    stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+    stockRepository.refresh(stockCard);
+
     return stockCard;
   }
 }

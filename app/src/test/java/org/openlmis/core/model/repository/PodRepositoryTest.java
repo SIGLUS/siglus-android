@@ -209,6 +209,7 @@ public class PodRepositoryTest {
     issueVoucher.setOrderStatus(OrderStatus.SHIPPED);
     issueVoucher.setRequisitionProgramCode(Program.VIA_PROGRAM.getCode());
     issueVoucher.setRequisitionEndDate(DateUtil.parseString("2020-01-01", DateUtil.DB_DATE_FORMAT));
+    issueVoucher.setSynced(true);
     ArrayList<Pod> pods = new ArrayList<>();
     pods.add(issueVoucher);
     podRepository.batchCreatePodsWithItems(pods);
