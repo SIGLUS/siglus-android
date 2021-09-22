@@ -76,7 +76,7 @@ public class RnrFormRepository {
 
   public static final String WHERE_PERIOD_END = "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '";
   public static final String WHERE_PROGRAM_CODE = "WHERE programCode='";
-  public static final String END_STRING = "' );";
+  public static final String END_STRING = "' AND synced = 1 );";
 
   @Inject
   DbUtil dbUtil;
@@ -600,7 +600,8 @@ public class RnrFormRepository {
         + WHERE_PERIOD_END + dueDateShouldDataLivedInDB + END_STRING;
     String rawSqlDeleteBaseInfoItems = "DELETE FROM rnr_baseInfo_items "
         + "WHERE rnRForm_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '" + dueDateShouldDataLivedInDB + END_STRING;
-    String rawSqlDeleteRnrForms = "DELETE FROM rnr_forms " + "WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "'; ";
+    String rawSqlDeleteRnrForms = "DELETE FROM rnr_forms " + "WHERE periodEnd < '" + dueDateShouldDataLivedInDB +
+        "' AND synced = 1;";
 
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
         .execSQL(rawSqlDeleteRnrFormItems);

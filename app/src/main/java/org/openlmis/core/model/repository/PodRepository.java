@@ -201,17 +201,17 @@ public class PodRepository {
     String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(DateUtil.getCurrentDate(),
         SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData()), DateUtil.DB_DATE_FORMAT);
 
-    String rawSqlDeletePod = "DELETE FROM pods"
-        + " WHERE requisitionEndDate NOT NULL AND requisitionEndDate < '" + dueDateShouldDataLivedInDB + "'";
+    String rawSqlDeletePod = "DELETE FROM pods" + " WHERE requisitionEndDate NOT NULL AND requisitionEndDate < "
+        + "'" + dueDateShouldDataLivedInDB + "' AND isSynced = 1";
 
     String rawSqlDeletePodProductItems = "DELETE FROM pod_product_items"
         + " WHERE pod_id IN (SELECT id FROM pods WHERE requisitionEndDate NOT NULL AND requisitionEndDate < '"
-        + dueDateShouldDataLivedInDB + "')";
+        + dueDateShouldDataLivedInDB + "' AND isSynced = 1)";
 
     String rawSqlDeletePodLotItems = "DELETE FROM pod_product_lot_items"
         + " WHERE podProductItem_id IN (SELECT id FROM pod_product_items"
         + " WHERE pod_id IN (SELECT id FROM pods WHERE requisitionEndDate NOT NULL AND requisitionEndDate < '"
-        + dueDateShouldDataLivedInDB + "'))";
+        + dueDateShouldDataLivedInDB + "'AND isSynced = 1))";
 
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeletePodLotItems);
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeletePodProductItems);

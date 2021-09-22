@@ -147,7 +147,7 @@ public class DirtyDataRepository {
     try {
       dbUtil.withDao(DirtyDataItemInfo.class, dao -> {
         DeleteBuilder<DirtyDataItemInfo, String> deleteBuilder = dao.deleteBuilder();
-        deleteBuilder.where().le(FieldConstants.CREATED_AT, dueDateShouldDataLivedInDB);
+        deleteBuilder.where().le(FieldConstants.CREATED_AT, dueDateShouldDataLivedInDB).and().eq("synced", 1);
         deleteBuilder.delete();
         return null;
       });
