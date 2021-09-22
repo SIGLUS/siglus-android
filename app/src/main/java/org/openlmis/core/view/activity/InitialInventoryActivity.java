@@ -69,6 +69,11 @@ public class InitialInventoryActivity extends InventoryActivity<InitialInventory
   }
 
   @Override
+  protected boolean enableFilter() {
+    return false;
+  }
+
+  @Override
   protected InitialInventoryPresenter initPresenter() {
     return RoboGuice.getInjector(this).getInstance(InitialInventoryPresenter.class);
   }
@@ -94,7 +99,7 @@ public class InitialInventoryActivity extends InventoryActivity<InitialInventory
 
   @Override
   protected void setTotal() {
-    tvTotal.setText(getString(R.string.label_total, presenter.getInventoryViewModelList().size()));
+    tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
   }
 
   @Override

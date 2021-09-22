@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import com.viethoa.RecyclerViewFastScroller;
 import com.viethoa.models.AlphabetItem;
 import java.util.ArrayList;
@@ -89,6 +90,18 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
     showErrorMessage(throwable.getMessage());
   };
 
+  private final RecyclerView.AdapterDataObserver dataObserver = new AdapterDataObserver() {
+    @Override
+    public void onChanged() {
+      setTotal();
+    }
+
+    @Override
+    public void onItemRangeChanged(int positionStart, int itemCount) {
+      setTotal();
+    }
+  };
+
   private static final int INVENTORY_MENU_GROUP = 1;
 
   private final ArrayList<OptionsItem> optionsItems = new ArrayList<>();
@@ -140,7 +153,6 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
   @Override
   public boolean validateInventory() {
     int position = mAdapter.validateAll();
-    setTotal();
     if (position >= 0) {
       clearSearch();
       productListRecycleView.scrollToPosition(position);
@@ -194,6 +206,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
     initRecyclerView();
     btnSave.setOnClickListener(v -> onSaveClick());
     btnDone.setOnClickListener(v -> onCompleteClick());
+    mAdapter.registerAdapterDataObserver(dataObserver);
   }
 
   protected void onSaveClick() {
@@ -256,7 +269,6 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
       public void onNext(List<InventoryViewModel> inventoryViewModels) {
         setUpFastScroller(inventoryViewModels);
         mAdapter.refresh();
-        setTotal();
         loaded();
       }
     };
@@ -292,6 +304,10 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
 
   protected String getValidateFailedTips() {
     return getString(R.string.msg_validate_failed_tips);
+  }
+
+  protected boolean isInSearching() {
+    return StringUtils.isNotEmpty(mAdapter.getQueryKeyWord());
   }
 
   private void buildOptionsItem(List<Program> programs) {

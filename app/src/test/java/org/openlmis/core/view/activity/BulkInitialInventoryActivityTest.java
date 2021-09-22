@@ -119,7 +119,7 @@ public class BulkInitialInventoryActivityTest {
     inventoryViewModel2.setViewType(BulkInitialInventoryAdapter.ITEM_BASIC);
     inventoryViewModel2.setDone(false);
     List<InventoryViewModel> data = newArrayList(inventoryViewModel1, inventoryViewModel2);
-    when(mockedPresenter.getInventoryViewModelList()).thenReturn(data);
+    when(mockedAdapter.getData()).thenReturn(data);
 
     // when
     bulkInventoryActivity.setTotal();
@@ -237,7 +237,6 @@ public class BulkInitialInventoryActivityTest {
     // then
     verify(mockedPresenter, times(1)).removeNonBasicProductElement(mockViewModel);
     verify(mockedAdapter, times(1)).refresh();
-    verify(mockedAdapter, times(1)).notifyDataSetChanged();
   }
 
   public class MyTestModule extends AbstractModule {

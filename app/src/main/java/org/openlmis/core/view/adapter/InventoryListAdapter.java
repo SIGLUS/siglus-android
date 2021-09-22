@@ -45,6 +45,7 @@ public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> ex
   @Setter
   List<InventoryViewModel> filteredList;
 
+  @Getter
   String queryKeyWord;
 
   @Getter
@@ -124,7 +125,6 @@ public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> ex
         position = i;
       }
     }
-
     this.notifyDataSetChanged();
     return position;
   }

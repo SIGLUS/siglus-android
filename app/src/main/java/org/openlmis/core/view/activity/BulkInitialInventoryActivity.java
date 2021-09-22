@@ -32,7 +32,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -50,7 +50,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
   @Override
   public boolean validateInventory() {
     int position = ((BulkInitialInventoryAdapter) mAdapter).validateAllForCompletedClick();
-    setTotal();
     if (position >= 0) {
       clearSearch();
       productListRecycleView.scrollToPosition(position);
@@ -124,28 +123,19 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
           bulkInitialInventoryViewModels -> {
             mAdapter.refresh();
             setUpFastScroller(mAdapter.getFilteredList());
-            mAdapter.notifyDataSetChanged();
-            setTotal();
           });
-
     }
   }
 
   @Override
   protected void setTotal() {
-    int total = 0;
-    int completed = 0;
-    for (InventoryViewModel model : presenter.getInventoryViewModelList()) {
-      if (model.getProductId() != 0
-          && (model.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC
-          || model.getViewType() == BulkInitialInventoryAdapter.ITEM_NO_BASIC)) {
-        if (model instanceof BulkInitialInventoryViewModel && ((BulkInitialInventoryViewModel) model).isDone()) {
-          completed++;
-        }
-        total++;
-      }
+    String formattedTotal;
+    if (isInSearching()) {
+      formattedTotal = getString(R.string.label_total, getTotalCount());
+    } else {
+      formattedTotal = getString(R.string.label_total_complete_counts, getCompleteCount(), getTotalCount());
     }
-    tvTotal.setText(getString(R.string.label_total_complete_counts, completed, total));
+    tvTotal.setText(formattedTotal);
   }
 
   @Override
@@ -175,8 +165,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     return viewModel -> {
       presenter.removeNonBasicProductElement(viewModel);
       mAdapter.refresh();
-      mAdapter.notifyDataSetChanged();
-      setTotal();
     };
   }
 
@@ -221,5 +209,33 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
         && resultCode == AddNonBasicProductsActivity.RESULT_CODE
         && data.getExtras() != null
         && data.getExtras().containsKey(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS);
+  }
+
+  private int getCompleteCount() {
+    return FluentIterable.from(mAdapter.getData())
+        .filter(inventoryViewModel -> inventoryViewModel != null
+            && inventoryViewModel.getProductId() != 0
+            && inventoryViewModel.getViewType() != BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
+            && inventoryViewModel.getViewType() != BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER
+            && ((BulkInitialInventoryViewModel) inventoryViewModel).isDone())
+        .toList().size();
+  }
+
+  private int getTotalCount() {
+    if (isInSearching()) {
+      return FluentIterable.from(mAdapter.getFilteredList())
+          .filter(inventoryViewModel -> inventoryViewModel != null
+              && inventoryViewModel.getProductId() != 0
+              && inventoryViewModel.getViewType() != BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
+              && inventoryViewModel.getViewType() != BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER)
+          .toList().size();
+    } else {
+      return FluentIterable.from(mAdapter.getData())
+          .filter(inventoryViewModel -> inventoryViewModel != null
+              && inventoryViewModel.getProductId() != 0
+              && inventoryViewModel.getViewType() != BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
+              && inventoryViewModel.getViewType() != BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER)
+          .toList().size();
+    }
   }
 }

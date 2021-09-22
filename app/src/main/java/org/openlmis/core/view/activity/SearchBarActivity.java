@@ -62,15 +62,12 @@ public abstract class SearchBarActivity extends BaseActivity {
         return onSearchStart(newText);
       }
     });
-
     searchView.setOnCloseListener(() -> true);
-
     return super.onCreateOptionsMenu(menu);
   }
 
   private void changeSearchButtonUI() {
-    final View searchButton = searchView.findViewById(R.id.search_button);
-
+    View searchButton = searchView.findViewById(R.id.search_button);
     LayoutParams params = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
     params.width = (int) getResources().getDimension(R.dimen.search_button_width);
     params.setMargins(0, 0, (int) getResources().getDimension(R.dimen.search_button_right_margin), 0);

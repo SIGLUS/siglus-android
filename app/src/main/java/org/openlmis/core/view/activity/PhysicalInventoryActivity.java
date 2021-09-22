@@ -120,8 +120,15 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
 
   @Override
   protected void setTotal() {
-    tvTotal.setText(getString(R.string.label_total_complete_counts, presenter.getCompleteCount(),
-        presenter.getInventoryViewModelList().size()));
+    String formattedTotal;
+    if (isInSearching()) {
+      formattedTotal = getString(R.string.label_total, mAdapter.getItemCount());
+    } else {
+      formattedTotal = getString(R.string.label_total_complete_counts,
+          presenter.getCompleteCount(),
+          mAdapter.getItemCount());
+    }
+    tvTotal.setText(formattedTotal);
   }
 
   private void showDataChangeConfirmDialog() {
