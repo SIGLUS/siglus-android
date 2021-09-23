@@ -9,7 +9,7 @@
   <View
     android:id="@+id/v_lot_info_divider"
     android:layout_width="match_parent"
-    android:layout_height="1dp"
+    android:layout_height="@dimen/px_1"
     android:background="@color/color_bfbfbf"
     />
 

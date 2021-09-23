@@ -34,7 +34,7 @@
     <LinearLayout
       android:id="@+id/layout_action_buttons"
       style="@style/FormAction.SaveContainer"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="@dimen/button_height_default"
       android:layout_weight="1"
       android:tag="btn_save_bottom">
@@ -50,7 +50,7 @@
     <Button
       android:id="@+id/btn_add_products"
       style="@style/FormAction.CompleteBtn"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="@dimen/button_height_default"
       android:layout_weight="1"
       android:tag="btn_action_complete"

@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
   android:shape="rectangle">
   <stroke
-    android:width="2dp"
+    android:width="@dimen/px_2"
     android:color="@color/color_requisition_banner_border" />
   <solid android:color="@color/color_requisition_banner_background" />
 </shape>

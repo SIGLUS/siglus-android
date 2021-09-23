@@ -19,12 +19,12 @@
         style="@style/Login.Container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="30dp">
+        android:layout_marginBottom="@dimen/px_30">
 
         <ImageView
           android:id="@+id/iv_logo"
-          android:layout_width="200dp"
-          android:layout_height="200dp"
+          android:layout_width="@dimen/px_200"
+          android:layout_height="@dimen/px_200"
           android:src="@mipmap/logo" />
 
         <LinearLayout
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_password"
                 android:inputType="textPassword"
-                android:paddingEnd="35dp" />
+                android:paddingEnd="@dimen/px_35" />
 
               <ImageView
                 android:id="@+id/iv_visibility_pwd"
@@ -80,7 +80,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:layout_marginTop="-32dp"
-                android:padding="0dp"
+                android:padding="@dimen/px_0"
                 android:src="@drawable/ic_visibility_off" />
             </com.google.android.material.textfield.TextInputLayout>
           </FrameLayout>

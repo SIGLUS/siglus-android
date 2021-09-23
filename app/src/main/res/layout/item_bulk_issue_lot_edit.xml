@@ -28,7 +28,7 @@
 
   <TextView
     android:id="@+id/tv_lot_number_and_date"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintTop_toBottomOf="@id/tv_lot_label"
@@ -44,7 +44,7 @@
 
   <TextView
     android:id="@+id/tv_expired_tips"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     app:layout_constraintTop_toTopOf="@id/tv_lot_number_and_date"
     android:textColor="@color/color_fc2b2a"
@@ -56,7 +56,7 @@
 
   <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/til_amount"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     app:layout_constraintLeft_toLeftOf="@id/guideline"
     app:layout_constraintTop_toTopOf="parent"
@@ -70,7 +70,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:theme="@style/EditText.Gray"
-      android:drawablePadding="5dp"
+      android:drawablePadding="@dimen/px_5"
       android:hint="@string/hint_lot_amount"
       android:textSize="@dimen/px_18"
       android:maxLength="@integer/edit_amount_length"

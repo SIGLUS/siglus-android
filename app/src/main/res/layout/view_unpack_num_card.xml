@@ -9,7 +9,7 @@
 
     <ImageView
       android:id="@+id/iv_checkmark"
-      android:layout_width="90dp"
+      android:layout_width="@dimen/px_90"
       android:layout_height="match_parent"
       android:layout_above="@+id/unpack_num_line"
       android:layout_centerInParent="true"
@@ -24,7 +24,7 @@
       android:layout_above="@+id/unpack_num_line"
       android:gravity="center"
       android:textColor="@color/color_text_primary"
-      android:textSize="45sp"
+      android:textSize="@dimen/px_45"
       tools:text="11" />
 
     <View

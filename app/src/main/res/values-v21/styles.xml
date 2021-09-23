@@ -10,6 +10,8 @@
     <!--   theme UI controls like checkboxes and text fields -->
     <item name="colorAccent">@color/color_accent</item>
     <item name="android:windowBackground">@color/general_background_color</item>
+    <item name="android:actionBarSize">@dimen/px_64</item>
+    <item name="actionBarSize">@dimen/px_64</item>
   </style>
 
   <style name="AppTheme.AMBER">

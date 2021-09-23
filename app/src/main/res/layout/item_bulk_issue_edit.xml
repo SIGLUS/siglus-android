@@ -17,7 +17,7 @@
 
     <TextView
       android:id="@+id/tv_product_title"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_weight="1"
       android:textStyle="bold"
       android:layout_marginRight="@dimen/px_36"

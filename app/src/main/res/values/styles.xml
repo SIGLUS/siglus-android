@@ -24,14 +24,13 @@
     <item name="android:divider">@drawable/divider_horizontal</item>
   </style>
 
-
   <style name="Card" />
 
   <style name="Card.Padded">
     <item name="android:layout_marginLeft">@dimen/margin_small</item>
     <item name="android:layout_marginRight">@dimen/margin_small</item>
-    <item name="android:layout_marginTop">4dp</item>
-    <item name="android:layout_marginBottom">4dp</item>
+    <item name="android:layout_marginTop">@dimen/px_4</item>
+    <item name="android:layout_marginBottom">@dimen/px_4</item>
   </style>
 
   <style name="Card.Container">
@@ -68,7 +67,7 @@
     <item name="android:layout_gravity">center_vertical</item>
     <item name="android:layout_marginStart">@dimen/margin_normal</item>
     <item name="android:orientation">vertical</item>
-    <item name="android:layout_marginLeft">0dp</item>
+    <item name="android:layout_marginLeft">@dimen/px_0</item>
     <item name="android:paddingTop">@dimen/padding_normal</item>
     <item name="android:paddingBottom">@dimen/padding_normal</item>
     <item name="android:paddingRight">@dimen/padding_normal</item>
@@ -91,7 +90,7 @@
 
   <style name="Inventory.TextTotal" parent="Text.Gray.Normal">
     <item name="android:paddingEnd">@dimen/padding_normal</item>
-    <item name="android:paddingStart">0dp</item>
+    <item name="android:paddingStart">@dimen/px_0</item>
     <item name="android:gravity">end</item>
   </style>
 
@@ -108,8 +107,8 @@
     <item name="android:gravity">center</item>
     <item name="android:orientation">vertical</item>
     <item name="android:paddingBottom">@dimen/padding_large</item>
-    <item name="android:paddingLeft">72dp</item>
-    <item name="android:paddingRight">72dp</item>
+    <item name="android:paddingLeft">@dimen/px_72</item>
+    <item name="android:paddingRight">@dimen/px_72</item>
     <item name="android:paddingTop">@dimen/padding_large</item>
   </style>
 
@@ -181,9 +180,8 @@
     <item name="android:paddingTop">@dimen/padding_normal</item>
     <item name="android:paddingLeft">@dimen/padding_normal</item>
     <item name="android:paddingRight">@dimen/padding_normal</item>
-    <item name="android:paddingBottom">0dp</item>
+    <item name="android:paddingBottom">@dimen/px_0</item>
   </style>
-
 
   <style name="Dialog.Title" parent="Text.Black.Medium">
     <item name="android:gravity">center</item>
@@ -230,15 +228,19 @@
     <item name="android:textStyle">bold</item>
   </style>
 
-
   <style name="Dialog.EditText" parent="Text.Black.Normal">
     <item name="android:inputType">text</item>
+  </style>
+
+  <style name="AlertDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+    <item name="android:windowMinWidthMinor">@dimen/px_480</item>
+    <item name="windowFixedWidthMinor">@dimen/px_480</item>
   </style>
 
   <style name="MMIA" />
 
   <style name="MMIA.Type.Dispensed.Column.Generic" parent="MMIA">
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_weight">1</item>
     <item name="android:orientation">vertical</item>
   </style>
@@ -256,21 +258,21 @@
   <style name="MMIA.Type.Dispensed.Left.Header" parent="MMIA">
     <item name="android:gravity">end|center_vertical</item>
     <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">48dp</item>
-    <item name="android:layout_marginEnd">2dp</item>
+    <item name="android:layout_height">@dimen/px_48</item>
+    <item name="android:layout_marginEnd">@dimen/px_2</item>
   </style>
 
   <style name="MMIA.Type.Dispensed.Generic.Header" parent="MMIA">
     <item name="android:gravity">center</item>
     <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">48dp</item>
+    <item name="android:layout_height">@dimen/px_48</item>
     <item name="android:background">@color/color_text_secondary</item>
   </style>
 
   <style name="MMIA.Type.Dispensed.Generic.Edit" parent="MMIA">
     <item name="android:gravity">center</item>
     <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">48dp</item>
+    <item name="android:layout_height">@dimen/px_48</item>
     <item name="android:background">@drawable/border_bg_bottom_right_gray</item>
     <item name="android:maxLength">7</item>
     <item name="android:inputType">number</item>
@@ -279,7 +281,7 @@
   <style name="MMIA.Type.Dispensed.Generic.Total" parent="MMIA">
     <item name="android:gravity">center</item>
     <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">48dp</item>
+    <item name="android:layout_height">@dimen/px_48</item>
     <item name="android:background">@drawable/border_bg_bottom_gray</item>
     <item name="android:maxLength">7</item>
     <item name="android:inputType">number</item>
@@ -306,7 +308,7 @@
     <item name="android:background">@null</item>
     <item name="android:gravity">center_vertical|center_horizontal</item>
     <item name="android:layout_height">match_parent</item>
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">@dimen/px_0</item>
   </style>
 
   <style name="MMIA.Regime.Total" parent="MMIA.Regime" />
@@ -314,7 +316,7 @@
   <style name="MMIA.Regime.Total.Label">
     <item name="android:gravity">end</item>
     <item name="android:layout_centerInParent">true</item>
-    <item name="android:paddingEnd">6dp</item>
+    <item name="android:paddingEnd">@dimen/px_6</item>
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
   </style>
@@ -323,7 +325,7 @@
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
     <item name="android:inputType">number</item>
-    <item name="android:paddingStart">6dp</item>
+    <item name="android:paddingStart">@dimen/px_6</item>
     <item name="android:gravity">center</item>
     <item name="android:maxLength">6</item>
     <item name="android:background">@drawable/border_bg_light_right_gray</item>
@@ -378,10 +380,10 @@
   </style>
 
   <style name="MMIA.RegimeTotalLabel">
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_weight">5</item>
-    <item name="android:minHeight">30dp</item>
+    <item name="android:minHeight">@dimen/px_30</item>
     <item name="android:text">@string/total</item>
     <item name="android:background">@color/color_divider</item>
     <item name="android:gravity">end|center_vertical</item>
@@ -392,7 +394,7 @@
   <style name="MMIA.RegimeThreeLineTotalLabel">
     <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
     <item name="android:layout_height">match_parent</item>
-    <item name="android:minHeight">30dp</item>
+    <item name="android:minHeight">@dimen/px_30</item>
     <item name="android:text">@string/total</item>
     <item name="android:background">@color/color_divider</item>
     <item name="android:gravity">end|center_vertical</item>
@@ -404,33 +406,33 @@
     <item name="android:background">@color/color_page_gray</item>
     <item name="android:freezesText">true</item>
     <item name="android:gravity">center</item>
-    <item name="android:padding">4dp</item>
-    <item name="android:layout_width">0dp</item>
+    <item name="android:padding">@dimen/px_4</item>
+    <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
-    <item name="android:minHeight">30dp</item>
+    <item name="android:minHeight">@dimen/px_30</item>
   </style>
 
   <style name="MMIA.RegimeThreeLineTotalText">
     <item name="android:background">@color/color_page_gray</item>
     <item name="android:freezesText">true</item>
     <item name="android:gravity">center</item>
-    <item name="android:padding">4dp</item>
+    <item name="android:padding">@dimen/px_4</item>
     <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
     <item name="android:layout_height">match_parent</item>
-    <item name="android:minHeight">30dp</item>
+    <item name="android:minHeight">@dimen/px_30</item>
   </style>
 
   <style name="MMIA.SpreadList">
-    <item name="android:minHeight">35dp</item>
-    <item name="android:padding">4dp</item>
+    <item name="android:minHeight">@dimen/px_35</item>
+    <item name="android:padding">@dimen/px_4</item>
     <item name="android:gravity">center_vertical</item>
   </style>
 
   <style name="MMIA.SpreadHeader" parent="Text.White.Regular">
-    <item name="android:padding">4dp</item>
+    <item name="android:padding">@dimen/px_4</item>
     <item name="android:background">@color/color_black</item>
     <item name="android:gravity">center</item>
-    <item name="android:minHeight">38dp</item>
+    <item name="android:minHeight">@dimen/px_38</item>
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
   </style>
@@ -447,7 +449,7 @@
 
   <style name="StockList.TotalText" parent="Text.Gray.Normal">
     <item name="android:layout_gravity">end</item>
-    <item name="android:paddingStart">0dp</item>
+    <item name="android:paddingStart">@dimen/px_0</item>
     <item name="android:paddingEnd">@dimen/padding_normal</item>
   </style>
 
@@ -463,8 +465,8 @@
   </style>
 
   <style name="LotInfo.LotText" parent="Text.Black.Regular">
-    <item name="android:layout_marginStart">5dp</item>
-    <item name="android:padding">5dp</item>
+    <item name="android:layout_marginStart">@dimen/px_5</item>
+    <item name="android:padding">@dimen/px_5</item>
     <item name="android:textColor">@color/color_black</item>
   </style>
 
@@ -496,7 +498,7 @@
 
 
   <style name="ItemMovement.CellText" parent="Text.Black.Regular">
-    <item name="android:minWidth">60dp</item>
+    <item name="android:minWidth">@dimen/px_60</item>
     <item name="android:padding">@dimen/padding_small</item>
     <item name="android:gravity">center</item>
   </style>
@@ -507,7 +509,7 @@
   </style>
 
   <style name="ItemMovement.SheetText" parent="Text.Black.Regular">
-    <item name="android:minWidth">60dp</item>
+    <item name="android:minWidth">@dimen/px_60</item>
     <item name="android:padding">@dimen/padding_small</item>
     <item name="android:gravity">center</item>
   </style>
@@ -556,12 +558,12 @@
 
   <style name="ItemRequisition.Container.BodyRight" parent="Divider.Vertical">
     <item name="android:orientation">horizontal</item>
-    <item name="android:paddingEnd">1dp</item>
+    <item name="android:paddingEnd">@dimen/px_1</item>
     <item name="android:showDividers">middle|end</item>
   </style>
 
   <style name="ItemRequisition.Text" parent="Text.Black.Regular">
-    <item name="android:minWidth">60dp</item>
+    <item name="android:minWidth">@dimen/px_60</item>
     <item name="android:padding">@dimen/padding_small</item>
     <item name="android:gravity">center</item>
   </style>
@@ -573,16 +575,16 @@
   </style>
 
   <style name="ItemRequisition.ReportHeader" parent="Text.Black.Small">
-    <item name="android:maxWidth">500dp</item>
-    <item name="android:padding">4dp</item>
-    <item name="android:minWidth">350dp</item>
+    <item name="android:maxWidth">@dimen/px_500</item>
+    <item name="android:padding">@dimen/px_4</item>
+    <item name="android:minWidth">@dimen/px_350</item>
     <item name="android:gravity">center</item>
   </style>
 
   <style name="ItemRequisition.Kit.Text" parent="Text.Black.Small">
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:minHeight">35dp</item>
+    <item name="android:minHeight">@dimen/px_35</item>
     <item name="android:gravity">center</item>
   </style>
 
@@ -596,13 +598,13 @@
     <item name="android:ems">4</item>
     <item name="android:gravity">center_horizontal</item>
     <item name="android:inputType">text</item>
-    <item name="android:padding">4dp</item>
+    <item name="android:padding">@dimen/px_4</item>
   </style>
 
   <style name="ItemRequisition.Kit.Edit" parent="ItemRequisition.ReportEdit">
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:minHeight">35dp</item>
+    <item name="android:minHeight">@dimen/px_35</item>
     <item name="android:gravity">center</item>
     <item name="android:inputType">number</item>
     <item name="android:layout_weight">1.2</item>
@@ -620,11 +622,11 @@
 
   <style name="ItemRnr.AmountText" parent="Text.Gray.Regular">
     <item name="android:gravity">center</item>
-    <item name="android:padding">4dp</item>
+    <item name="android:padding">@dimen/px_4</item>
     <item name="android:layout_gravity">center</item>
     <item name="android:layout_weight">1</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_width">70dp</item>
+    <item name="android:layout_width">@dimen/px_70</item>
   </style>
 
   <style name="ItemRnr.PrimaryName" parent="Text.Gray.Regular">
@@ -676,7 +678,7 @@
     <item name="android:background">@color/color_item_bg</item>
     <item name="android:gravity">center_vertical</item>
     <item name="android:orientation">horizontal</item>
-    <item name="android:paddingBottom">1dp</item>
+    <item name="android:paddingBottom">@dimen/px_1</item>
   </style>
 
   <style name="ItemStock.ProductContainer">
@@ -695,8 +697,8 @@
 
   <style name="FormAction.Container">
     <item name="android:orientation">horizontal</item>
-    <item name="android:paddingLeft">55dp</item>
-    <item name="android:paddingRight">55dp</item>
+    <item name="android:paddingLeft">@dimen/px_55</item>
+    <item name="android:paddingRight">@dimen/px_55</item>
     <item name="android:paddingBottom">@dimen/padding_small</item>
     <item name="android:paddingTop">@dimen/padding_small</item>
     <item name="android:gravity">center</item>
@@ -714,13 +716,13 @@
     <item name="android:background">@null</item>
     <item name="android:clickable">false</item>
     <item name="android:drawableStart">@drawable/ic_save</item>
-    <item name="android:padding">2dp</item>
+    <item name="android:padding">@dimen/px_2</item>
   </style>
 
   <style name="FormAction.CompleteBtn" parent="Text.White.Regular">
     <item name="android:layout_marginEnd">@dimen/margin_small</item>
     <item name="android:background">@drawable/blue_button</item>
-    <item name="android:padding">2dp</item>
+    <item name="android:padding">@dimen/px_2</item>
   </style>
 
   <style name="FormAction.CancelBtn" parent="Text.Blue.Regular">
@@ -739,7 +741,7 @@
     <item name="android:background">@drawable/blue_button</item>
     <item name="android:layout_marginStart">@dimen/margin_small</item>
     <item name="android:clickable">false</item>
-    <item name="android:padding">2dp</item>
+    <item name="android:padding">@dimen/px_2</item>
   </style>
 
   <style name="LayoutRequisition.HeaderRightContainer" parent="Divider.Vertical">
@@ -760,7 +762,7 @@
   </style>
 
   <style name="LayoutRequisition.CellText" parent="Text.Black.Regular">
-    <item name="android:minWidth">60dp</item>
+    <item name="android:minWidth">@dimen/px_60</item>
     <item name="android:padding">@dimen/padding_small</item>
     <item name="android:gravity">center</item>
   </style>
@@ -778,7 +780,7 @@
     <item name="android:textSize">@dimen/font_size_regular</item>
     <item name="android:textColor">@color/color_black</item>
     <item name="android:gravity">center</item>
-    <item name="android:padding">4dp</item>
+    <item name="android:padding">@dimen/px_4</item>
     <item name="android:layout_gravity">center</item>
 
   </style>
@@ -791,7 +793,7 @@
   </style>
 
   <style name="RapidTestForm.SecondPartGridItem">
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_weight">1</item>
     <item name="android:background">@drawable/border_right_black</item>
@@ -801,7 +803,7 @@
   </style>
 
   <style name="RapidTestForm.SecondPartGridItemTotal">
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_weight">1</item>
     <item name="android:background">@drawable/border_right_black</item>
@@ -820,7 +822,7 @@
   </style>
 
   <style name="PatientDataForm.ItemLayout">
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_weight">1</item>
     <item name="android:background">@drawable/border_right_black</item>
@@ -866,9 +868,9 @@
   <style name="Base.Widget.Design.TabLayout" parent="android:Widget">
     <item name="tabMaxWidth">@dimen/tab_max_width</item>
     <item name="tabIndicatorColor">?attr/colorAccent</item>
-    <item name="tabIndicatorHeight">2dp</item>
-    <item name="tabPaddingStart">12dp</item>
-    <item name="tabPaddingEnd">12dp</item>
+    <item name="tabIndicatorHeight">@dimen/px_2</item>
+    <item name="tabPaddingStart">@dimen/px_12</item>
+    <item name="tabPaddingEnd">@dimen/px_12</item>
     <item name="tabBackground">?attr/selectableItemBackground</item>
     <item name="tabTextAppearance">@style/TextAppearance.Design.Tab</item>
     <item name="tabSelectedTextColor">?android:textColorPrimary</item>
@@ -926,7 +928,7 @@
 
   <style name="AlReportList.age">
     <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">0dp</item>
+    <item name="android:layout_height">@dimen/px_0</item>
     <item name="android:layout_weight">1</item>
     <item name="android:gravity">center</item>
     <item name="android:textSize">@dimen/font_size_regular</item>
@@ -974,7 +976,7 @@
   </style>
 
   <style name="AlReportList.editText">
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_weight">1</item>
     <item name="android:gravity">left|center</item>
@@ -993,17 +995,17 @@
   <style name="Pod.header" />
   <style name="Pod.header.line" parent="Divider.Vertical">
     <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">0dp</item>
+    <item name="android:layout_height">@dimen/px_0</item>
     <item name="android:orientation">horizontal</item>
   </style>
   <style name="Pod.header.item" parent="Divider.Vertical">
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:divider">@drawable/divider_vertical</item>
     <item name="android:layout_weight">4</item>
   </style>
   <style name="Pod.header.title" >
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:paddingLeft">@dimen/px_4</item>
     <item name="android:layout_weight">3</item>

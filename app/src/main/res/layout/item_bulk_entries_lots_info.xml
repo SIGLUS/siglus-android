@@ -8,7 +8,7 @@
 
   <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/ly_lot_amount"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_normal"
     app:layout_constraintRight_toLeftOf="@id/gl_lots_info"
@@ -27,7 +27,7 @@
 
   <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/ly_movement_reason"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/px_20"
     android:layout_marginRight="@dimen/margin_normal"
@@ -40,7 +40,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:drawableLeft="@drawable/ic_movement_origin"
-      android:drawablePadding="5dp"
+      android:drawablePadding="@dimen/px_5"
       android:focusableInTouchMode="false"
       android:hint="@string/hint_movement_reason_receive"
       android:inputType="textMultiLine"
@@ -50,7 +50,7 @@
 
   <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/ly_document_number"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     app:layout_constraintEnd_toEndOf="@id/ly_movement_reason"
     app:layout_constraintStart_toStartOf="@id/ly_movement_reason"
@@ -61,7 +61,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:drawableLeft="@drawable/ic_document"
-      android:drawablePadding="5dp"
+      android:drawablePadding="@dimen/px_5"
       android:hint="@string/hint_document_number"
       android:textSize="@dimen/font_large"
       android:maxLength="@integer/edit_amount_length"
@@ -71,7 +71,7 @@
 
   <ImageButton
     android:id="@+id/btn_delete_lot"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="match_parent"
     android:layout_weight="1"
     android:layout_marginRight="@dimen/margin_tiny_tiny"
@@ -85,7 +85,7 @@
   <LinearLayout
     android:id="@+id/vg_lot_soh"
     style="@style/ItemPhysical.SOHText"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/px_33"
     android:padding="@dimen/padding_small"
@@ -116,7 +116,7 @@
 
   <TextView
     android:id="@+id/tv_hint_lot_info"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_normal"
     android:text="@string/hint_lot_info"
@@ -127,7 +127,7 @@
 
   <TextView
     android:id="@+id/tv_lot_number"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_normal"
     android:layout_marginRight="@dimen/margin_normal"

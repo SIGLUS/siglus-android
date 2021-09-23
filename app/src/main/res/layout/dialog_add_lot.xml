@@ -23,7 +23,7 @@
 
     <TextView
       android:id="@+id/drug_name"
-      android:layout_width="@dimen/lot_dialog_page_common_width"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/margin_normal"
       android:layout_marginTop="@dimen/margin_small"
@@ -107,7 +107,7 @@
         style="@style/Dialog.Btn.Positive"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/button_height_default"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/px_16"
         android:text="@string/btn_complete"
         android:tag="btn_lot_complete" />
     </LinearLayout>

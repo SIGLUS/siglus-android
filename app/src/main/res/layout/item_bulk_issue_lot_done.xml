@@ -22,7 +22,7 @@
 
   <LinearLayout
     android:id="@+id/ll_issued_amount"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     app:layout_constraintTop_toTopOf="parent"
@@ -47,7 +47,7 @@
 
   <TextView
     android:id="@+id/tv_expired_tips"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:textColor="@color/color_fc2b2a"
     android:textSize="@dimen/px_18"

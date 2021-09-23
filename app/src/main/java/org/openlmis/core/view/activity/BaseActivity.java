@@ -24,6 +24,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -51,6 +52,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.utils.AutoSizeUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -247,7 +249,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
   public void loading(String message) {
     loaded();
 
-    loadingDialog = new ProgressDialog(this);
+    loadingDialog = new ProgressDialog(this, R.style.AlertDialog);
     loadingDialog.setMessage(message);
     loadingDialog.setIndeterminate(false);
     loadingDialog.setCanceledOnTouchOutside(false);
@@ -316,16 +318,12 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
         deleteStockCardIds.add(String.valueOf(item.getStockCard().getId()));
       }
     }
-    Map<String, String> productCodeMap = stockMovementRepository
-        .queryStockCardIdAndProductCode(deleteStockCardIds);
+    Map<String, String> productCodeMap = stockMovementRepository.queryStockCardIdAndProductCode(deleteStockCardIds);
     productCodes.addAll(productCodeMap.values());
     productCodes.addAll(deleteProductCodes);
-    ImmutableList<String> deletedList = FluentIterable.from(productCodes)
-        .limit(3)
-        .transform((productCode) -> productCode).toList();
+    ImmutableList<String> deletedList = FluentIterable.from(productCodes).limit(3).toList();
     return deletedList.toString();
   }
-
 
   public void showDeletedWarningDialog(WarningDialogFragment.DialogDelegate dialogDelegate) {
     WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder
@@ -336,6 +334,12 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
             getString(R.string.dialog_cancel));
     getSupportFragmentManager().beginTransaction()
         .add(warningDialogFragment, "deleteProductWarningDialogFragment").commitNow();
+  }
+
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+    AutoSizeUtil.resetScreenSize(this);
   }
 }
 

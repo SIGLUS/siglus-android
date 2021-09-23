@@ -19,7 +19,7 @@
     android:layout_height="wrap_content"
     android:divider="@drawable/divider_horizontal"
     android:showDividers="middle"
-    tools:layout_height="120dp">
+    tools:layout_height="@dimen/px_120">
 
   </org.openlmis.core.view.widget.MMIARegimeThreeLineList>
 

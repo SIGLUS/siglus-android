@@ -18,6 +18,6 @@
       android:gravity="left|top"
       android:inputType="textMultiLine"
       android:paddingLeft="@dimen/rapid_view_view_left_padding"
-      android:paddingTop="8dp" />
+      android:paddingTop="@dimen/px_8" />
   </LinearLayout>
 </LinearLayout>

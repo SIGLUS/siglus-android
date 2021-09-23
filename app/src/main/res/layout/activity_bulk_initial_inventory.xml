@@ -25,7 +25,7 @@
         android:background="@drawable/border_round_blue"
         android:text="@string/btn_add_product"
         android:textColor="@color/color_accent"
-        android:textSize="16sp" />
+        android:textSize="@dimen/px_16" />
 
       <TextView
         android:id="@+id/tv_total"

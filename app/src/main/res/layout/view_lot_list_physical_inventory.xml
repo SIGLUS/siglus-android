@@ -28,7 +28,7 @@
       android:id="@+id/ly_action_panel"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="0dp"
+      android:layout_marginTop="@dimen/px_0"
       android:orientation="horizontal"
       android:padding="@dimen/padding_normal">
 
@@ -82,7 +82,7 @@
 
     <TextView
       android:id="@+id/btn_edit"
-      android:layout_width="80dp"
+      android:layout_width="@dimen/px_80"
       android:layout_height="wrap_content"
       android:background="@drawable/border_round_blue"
       android:gravity="center"

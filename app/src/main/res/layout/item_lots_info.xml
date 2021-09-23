@@ -7,7 +7,7 @@
   android:paddingBottom="@dimen/padding_normal">
 
   <LinearLayout
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:layout_weight="1"
     android:orientation="vertical">
@@ -17,7 +17,7 @@
       android:layout_height="wrap_content">
 
       <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_normal"
         android:layout_weight="4"
@@ -32,7 +32,7 @@
 
       <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ly_lot_amount"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_normal"
         android:layout_weight="3"
@@ -67,7 +67,7 @@
 
       <TextView
         android:id="@+id/tv_lot_soh"
-        android:layout_width="100dp"
+        android:layout_width="@dimen/px_100"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@color/color_text_secondary"

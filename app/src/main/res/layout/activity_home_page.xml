@@ -31,7 +31,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/cl_home_entrance"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="@dimen/px_0"
     android:layout_marginLeft="@dimen/px_32"
     android:layout_marginRight="@dimen/px_32"
     app:layout_constraintBottom_toTopOf="@id/view_sync_time"
@@ -40,7 +40,7 @@
     <TextView
       android:id="@+id/btn_stock_card"
       android:layout_width="match_parent"
-      android:layout_height="0dp"
+      android:layout_height="@dimen/px_0"
       android:paddingTop="@dimen/px_16"
       android:paddingLeft="@dimen/px_16"
       android:background="@drawable/shape_home_stock_card_background"
@@ -54,8 +54,8 @@
 
     <TextView
       android:id="@+id/btn_inventory"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_width="@dimen/px_0"
+      android:layout_height="@dimen/px_0"
       android:layout_marginTop="@dimen/px_8"
       android:layout_marginRight="@dimen/px_4"
       android:paddingTop="@dimen/px_14"
@@ -74,8 +74,8 @@
 
     <TextView
       android:id="@+id/btn_requisitions"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_width="@dimen/px_0"
+      android:layout_height="@dimen/px_0"
       android:layout_marginLeft="@dimen/px_4"
       android:paddingTop="@dimen/px_14"
       android:paddingLeft="@dimen/px_16"
@@ -92,8 +92,8 @@
 
     <TextView
       android:id="@+id/btn_kits"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_width="@dimen/px_0"
+      android:layout_height="@dimen/px_0"
       android:layout_marginTop="@dimen/px_8"
       android:paddingTop="@dimen/px_14"
       android:paddingLeft="@dimen/px_16"
@@ -111,8 +111,8 @@
 
     <TextView
       android:id="@+id/btn_issue_voucher"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_width="@dimen/px_0"
+      android:layout_height="@dimen/px_0"
       android:layout_marginLeft="@dimen/px_4"
       android:paddingTop="@dimen/px_14"
       android:paddingLeft="@dimen/px_16"

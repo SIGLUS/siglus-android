@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="0dp"
+  android:layout_width="@dimen/px_0"
   android:layout_height="match_parent"
   android:layout_weight="3"
   android:orientation="vertical"
@@ -14,7 +14,7 @@
       android:id="@+id/regime_list_wrap"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      tools:layout_height="100dp" />
+      tools:layout_height="@dimen/px_100" />
   </LinearLayout>
 
 

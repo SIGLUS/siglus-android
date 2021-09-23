@@ -58,8 +58,8 @@
 
     <LinearLayout
       android:id="@+id/action_panel"
-      android:paddingLeft="16dp"
-      android:paddingRight="16dp"
+      android:paddingLeft="@dimen/px_16"
+      android:paddingRight="@dimen/px_16"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       tools:visibility="visible"

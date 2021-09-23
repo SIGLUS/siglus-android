@@ -5,6 +5,6 @@
     android:width="@dimen/divider"
     android:color="@color/color_form_button_blue" />
   <solid android:color="@color/color_form_button_blue" />
-  <corners android:radius="3dp" />
+  <corners android:radius="@dimen/px_3" />
 
 </shape>

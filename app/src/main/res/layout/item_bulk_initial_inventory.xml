@@ -18,7 +18,7 @@
       android:orientation="horizontal">
 
       <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_height="wrap_content"
         android:layout_weight="3"
         android:orientation="vertical">
@@ -41,7 +41,7 @@
 
       <LinearLayout
         android:id="@+id/initial_inventory_ll_soh_information"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_large"
         android:layout_weight="1"
@@ -61,7 +61,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/sho"
-          android:textSize="10sp" />
+          android:textSize="@dimen/px_10" />
 
       </LinearLayout>
 
@@ -78,7 +78,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/tv_batch"
-        android:textSize="10sp" />
+        android:textSize="@dimen/px_10" />
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_lots"
@@ -105,7 +105,7 @@
         android:background="@drawable/border_round_blue"
         android:text="@string/btn_bulk_add_new_lot"
         android:textColor="@color/color_accent"
-        android:textSize="16sp" />
+        android:textSize="@dimen/px_16" />
       <TextView
         android:visibility="gone"
         android:id="@+id/btn_initial_inventory_edit"
@@ -115,7 +115,7 @@
         android:background="@drawable/border_round_blue"
         android:text="@string/btn_edit"
         android:textColor="@color/color_accent"
-        android:textSize="16sp" />
+        android:textSize="@dimen/px_16" />
 
       <TextView
         android:id="@+id/btn_no_stock"
@@ -125,7 +125,7 @@
         android:background="@drawable/border_round_blue"
         android:text="@string/btn_no_stock"
         android:textColor="@color/color_accent"
-        android:textSize="16sp" />
+        android:textSize="@dimen/px_16" />
     </LinearLayout>
   </LinearLayout>
 </androidx.cardview.widget.CardView>

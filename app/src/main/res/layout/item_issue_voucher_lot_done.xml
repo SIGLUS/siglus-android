@@ -18,7 +18,7 @@
 
   <TextView
     android:id="@+id/tv_lot_number_and_date"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:gravity="left|center_vertical"
     android:textColor="@color/color_6b6b6b"

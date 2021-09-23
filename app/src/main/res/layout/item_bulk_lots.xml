@@ -8,17 +8,17 @@
 
   <TextView
     android:id="@+id/tv_lot_information"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/margin_tiny_tiny"
     android:layout_weight="4"
     android:textColor="@color/color_black"
-    android:textSize="12sp"
+    android:textSize="@dimen/px_12"
     tools:text="@string/batch_dummy" />
 
   <EditText
     android:id="@+id/et_amount"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/margin_tiny_tiny"
     android:layout_weight="3"
@@ -28,7 +28,7 @@
 
   <ImageButton
     android:id="@+id/btn_delete_lot"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="match_parent"
     android:layout_marginRight="@dimen/margin_tiny_tiny"
     android:layout_weight="1"

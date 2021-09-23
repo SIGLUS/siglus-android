@@ -3,17 +3,17 @@
   <item>
     <shape>
       <padding
-        android:bottom="1dp"
-        android:left="1dp"
-        android:right="1dp"
-        android:top="1dp" />
+        android:bottom="@dimen/px_1"
+        android:left="@dimen/px_1"
+        android:right="@dimen/px_1"
+        android:top="@dimen/px_1" />
       <solid android:color="@color/color_black" />
     </shape>
   </item>
   <item>
     <shape>
       <solid android:color="@color/color_white" />
-      <corners android:radius="2dp" />
+      <corners android:radius="@dimen/px_2" />
     </shape>
   </item>
 </layer-list>

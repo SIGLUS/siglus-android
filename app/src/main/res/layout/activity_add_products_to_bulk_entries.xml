@@ -17,7 +17,7 @@
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/bulk_entries_products"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="@dimen/px_0"
     android:scrollbars="vertical"
     app:layout_constraintBottom_toTopOf="@id/btn_add_products"
     app:layout_constraintTop_toBottomOf="@+id/tv_total"/>
@@ -26,7 +26,7 @@
   <com.viethoa.RecyclerViewFastScroller
     android:id="@+id/fast_scroller"
     android:layout_width="wrap_content"
-    android:layout_height="0dp"
+    android:layout_height="@dimen/px_0"
     android:layout_alignParentEnd="true"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toTopOf="@id/bulk_entries_products"
@@ -35,7 +35,7 @@
   <Button
     android:id="@+id/btn_add_products"
     style="@style/FormAction.CompleteBtn"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="@dimen/button_height_default"
     android:layout_marginTop="@dimen/px_9"
     android:layout_marginBottom="@dimen/px_9"

@@ -20,7 +20,7 @@
 
       <ListView
         android:id="@+id/requisition_form_list_view"
-        android:layout_width="1400dp"
+        android:layout_width="@dimen/px_1400"
         android:layout_height="match_parent"
         android:background="@color/color_white"
         android:scrollbars="vertical" />
@@ -29,7 +29,7 @@
   </org.openlmis.core.view.widget.RequisitionBodyHorizontalScrollView>
 
   <LinearLayout
-    android:layout_width="200dp"
+    android:layout_width="@dimen/px_200"
     android:layout_height="match_parent"
     android:orientation="vertical">
 

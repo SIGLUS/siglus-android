@@ -22,7 +22,7 @@
 
     <TextView
       android:id="@+id/tv_product_title"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_weight="1"
       android:textStyle="bold"
       android:layout_marginRight="@dimen/px_36"
@@ -88,7 +88,7 @@
 
     <TextView
       android:id="@+id/btn_add_new_lot"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:layout_marginLeft="@dimen/px_48"
@@ -101,7 +101,7 @@
 
     <TextView
       android:id="@+id/btn_verify"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:layout_marginRight="@dimen/px_48"

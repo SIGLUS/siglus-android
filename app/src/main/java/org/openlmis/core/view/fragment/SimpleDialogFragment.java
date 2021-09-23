@@ -117,7 +117,7 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
 
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.AlertDialog)
         .setTitle(title)
         .setMessage(message)
         .setPositiveButton(positiveText, (dialog, which) -> {

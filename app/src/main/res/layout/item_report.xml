@@ -42,7 +42,7 @@
 
   <ImageView
     android:id="@+id/iv_del"
-    android:padding="5dp"
+    android:padding="@dimen/px_5"
     android:layout_margin="@dimen/margin_small"
     android:layout_gravity="right|top"
     android:src="@drawable/ic_menu_grey"

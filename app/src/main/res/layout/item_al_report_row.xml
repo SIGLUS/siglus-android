@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="931dp"
+  android:layout_width="@dimen/px_931"
   android:layout_height="@dimen/al_view_list_height"
   android:background="@drawable/border_bottom"
   android:orientation="horizontal">

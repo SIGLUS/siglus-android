@@ -6,7 +6,7 @@
   android:layout_height="wrap_content">
 
   <LinearLayout
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:layout_weight="4"
     android:orientation="horizontal">
@@ -14,7 +14,7 @@
     <TextView
       android:id="@+id/regime_name"
       style="@style/ItemRegime.Text"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="wrap_content"
       android:layout_weight="4"
       tools:text="Regime Name" />
@@ -29,7 +29,7 @@
   <EditText
     android:id="@+id/regime_amount"
     style="@style/ItemRegime.EditText"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="match_parent"
     android:layout_weight="2"
     android:inputType="number"
@@ -38,7 +38,7 @@
   <EditText
     android:id="@+id/regime_pharmacy_amount"
     style="@style/ItemRegime.EditText"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="match_parent"
     android:layout_weight="2"
     android:inputType="number"

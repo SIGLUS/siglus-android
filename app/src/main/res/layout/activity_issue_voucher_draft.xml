@@ -28,7 +28,7 @@
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/rv_issue_voucher_draft"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="@dimen/px_0"
     android:layout_marginBottom="@dimen/px_16"
     android:paddingHorizontal="@dimen/px_16"
     app:layout_constraintTop_toBottomOf="@+id/v_divider_line"

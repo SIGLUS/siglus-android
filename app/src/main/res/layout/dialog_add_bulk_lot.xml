@@ -133,7 +133,7 @@
         style="@style/Dialog.Btn.Positive"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/button_height_default"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/px_16"
         android:tag="button_complete_add_lot"
         android:text="@string/btn_complete" />
     </LinearLayout>

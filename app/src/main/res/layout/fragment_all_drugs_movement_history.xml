@@ -41,7 +41,7 @@
       <TextView
         android:id="@+id/tv_product_count"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/px_0"
         android:layout_weight="1"
         android:gravity="end"
         android:maxLines="1" />
@@ -49,7 +49,7 @@
       <TextView
         android:id="@+id/tv_movement_count"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/px_0"
         android:layout_weight="1"
         android:gravity="end"
         android:maxLines="1" />

@@ -45,7 +45,7 @@
       style="@style/Dialog.Btn.Positive"
       android:layout_width="wrap_content"
       android:layout_height="@dimen/button_height_default"
-      android:layout_marginStart="16dp"
+      android:layout_marginStart="@dimen/px_16"
       android:text="@string/btn_approve" />
   </LinearLayout>
 </LinearLayout>

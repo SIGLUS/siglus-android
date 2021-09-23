@@ -34,7 +34,7 @@
   <TextView
     android:id="@+id/tv_lot_code"
     android:gravity="center"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_weight="1.5"
     android:layout_height="wrap_content"
     android:textColor="@color/color_black"
@@ -46,7 +46,7 @@
   <TextView
     android:id="@+id/tv_document_number"
     android:gravity="center"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_weight="1"
     android:layout_height="wrap_content"
     android:textColor="@color/color_black"
@@ -58,7 +58,7 @@
   <TextView
     android:id="@+id/tv_received"
     android:gravity="center"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_weight="1"
     android:layout_height="wrap_content"
     android:textColor="@color/color_black"
@@ -70,7 +70,7 @@
   <TextView
     android:id="@+id/tv_negative_adjustment"
     android:gravity="center"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_weight="1"
     android:layout_height="wrap_content"
     android:textColor="@color/color_black"
@@ -82,7 +82,7 @@
   <TextView
     android:id="@+id/tv_positive_adjustment"
     android:gravity="center"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_weight="1"
     android:layout_height="wrap_content"
     android:textColor="@color/color_black"
@@ -94,7 +94,7 @@
   <TextView
     android:id="@+id/tv_issued"
     android:gravity="center"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_weight="1"
     android:layout_height="wrap_content"
     android:textColor="@color/color_black"
@@ -106,7 +106,7 @@
   <TextView
     android:id="@+id/tv_stock_on_hand"
     android:gravity="center"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_weight="1"
     android:layout_height="wrap_content"
     android:textColor="@color/color_black"
@@ -118,7 +118,7 @@
   <TextView
     android:id="@+id/tv_requested"
     android:gravity="center"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_weight="1"
     android:layout_height="wrap_content"
     android:textColor="@color/color_black"
@@ -130,7 +130,7 @@
   <TextView
     android:id="@+id/tv_signature"
     android:gravity="center"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_weight="1"
     android:layout_height="wrap_content"
     android:textColor="@color/color_black"

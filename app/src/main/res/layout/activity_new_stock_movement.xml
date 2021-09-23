@@ -52,7 +52,7 @@
       <TextView
         android:id="@+id/btn_cancel"
         style="@style/FormAction.CancelBtn"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_height="@dimen/button_height_default"
         android:layout_weight="1"
         android:text="@string/btn_cancel" />
@@ -60,7 +60,7 @@
       <Button
         android:id="@+id/btn_complete"
         style="@style/FormAction.CompleteBtn.StockMovement"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_height="@dimen/button_height_default"
         android:layout_weight="1"
         android:text="@string/btn_complete" />

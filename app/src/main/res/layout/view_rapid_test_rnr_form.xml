@@ -18,7 +18,7 @@
         android:layout_height="@dimen/repid_view_top_item_line_height"
         android:background="@drawable/border_right_bottom_rapid_test_header"
         android:gravity="center"
-        android:padding="4dp"
+        android:padding="@dimen/px_4"
         android:text="@string/label_product_codes"
         android:textColor="@color/color_black"
         android:textSize="@dimen/font_size_regular" />
@@ -26,7 +26,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/rv_top_left_product_code"
-      android:layout_width="120dp"
+      android:layout_width="@dimen/px_120"
       android:layout_height="wrap_content"
       android:layout_below="@id/arrow_title"
       android:layout_alignParentLeft="true"
@@ -59,38 +59,38 @@
 
           <TextView
             style="@style/RapidTestForm.productList"
-            android:layout_width="97dp"
+            android:layout_width="@dimen/px_97"
             android:layout_height="match_parent"
             android:text="@string/initial_stock" />
 
           <TextView
             style="@style/RapidTestForm.productList"
-            android:layout_width="70dp"
+            android:layout_width="@dimen/px_70"
             android:layout_height="match_parent"
             android:text="@string/entries" />
 
           <TextView
             style="@style/RapidTestForm.productList"
-            android:layout_width="70dp"
+            android:layout_width="@dimen/px_70"
             android:layout_height="match_parent"
             android:text="@string/ISSUE" />
 
 
           <TextView
             style="@style/RapidTestForm.productList"
-            android:layout_width="156dp"
+            android:layout_width="@dimen/px_156"
             android:layout_height="match_parent"
             android:text="@string/loss_and_adjustment" />
 
           <TextView
             style="@style/RapidTestForm.productList"
-            android:layout_width="97dp"
+            android:layout_width="@dimen/px_97"
             android:layout_height="match_parent"
             android:text="@string/label_inventory" />
 
           <TextView
             style="@style/RapidTestForm.productList"
-            android:layout_width="97dp"
+            android:layout_width="@dimen/px_97"
             android:layout_height="match_parent"
             android:text="@string/label_validate" />
         </LinearLayout>

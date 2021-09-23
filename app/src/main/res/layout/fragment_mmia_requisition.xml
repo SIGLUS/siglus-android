@@ -21,7 +21,7 @@
         style="@style/MMIA.RnrTable.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_height="220dp" />
+        tools:layout_height="@dimen/px_220" />
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
         android:layout_margin="@dimen/margin_small"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        tools:layout_height="320dp">
+        tools:layout_height="@dimen/px_320">
 
         <include layout="@layout/fragment_mmia_requisition_regime_list" />
 
@@ -53,7 +53,7 @@
 
     <LinearLayout
       android:id="@+id/mmia_rnr_items_header_freeze_left"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="wrap_content"
       android:layout_weight="2"
       android:orientation="vertical"
@@ -61,11 +61,11 @@
 
     <HorizontalScrollView
       android:id="@+id/mmia_rnr_items_header_freeze_right"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="wrap_content"
       android:layout_weight="3"
       android:scrollbars="none"
-      tools:layout_height="40dp" />
+      tools:layout_height="@dimen/px_40" />
   </LinearLayout>
 
 </FrameLayout>

@@ -111,6 +111,11 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     return dialog;
   }
 
+  @Override
+  public int getTheme() {
+    return R.style.AlertDialog;
+  }
+
   private void hideDay() {
     if (datePicker == null) {
       return;

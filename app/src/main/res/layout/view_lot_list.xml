@@ -65,7 +65,7 @@
       android:id="@+id/ly_action_panel"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="0dp"
+      android:layout_marginTop="@dimen/px_0"
       android:orientation="horizontal"
       android:padding="@dimen/padding_normal">
 
@@ -76,7 +76,7 @@
         android:background="@drawable/border_round_blue"
         android:text="@string/btn_add_new_lot"
         android:textColor="@color/color_accent"
-        android:textSize="16sp" />
+        android:textSize="@dimen/px_16" />
     </LinearLayout>
   </LinearLayout>
 </LinearLayout>

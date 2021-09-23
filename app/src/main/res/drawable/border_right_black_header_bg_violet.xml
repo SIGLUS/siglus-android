@@ -3,10 +3,10 @@
   <item>
     <shape>
       <padding
-        android:bottom="0dp"
-        android:left="0dp"
-        android:right="1dp"
-        android:top="0dp" />
+        android:bottom="@dimen/px_0"
+        android:left="@dimen/px_0"
+        android:right="@dimen/px_1"
+        android:top="@dimen/px_0" />
       <solid android:color="@color/color_black" />
     </shape>
   </item>

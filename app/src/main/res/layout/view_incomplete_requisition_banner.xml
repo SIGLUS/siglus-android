@@ -8,8 +8,8 @@
   android:padding="@dimen/padding_small">
 
   <ImageView
-    android:layout_width="20dp"
-    android:layout_height="20dp"
+    android:layout_width="@dimen/px_20"
+    android:layout_height="@dimen/px_20"
     android:src="@drawable/ic_error_outline_red"
     android:layout_marginRight="@dimen/margin_small" />
 

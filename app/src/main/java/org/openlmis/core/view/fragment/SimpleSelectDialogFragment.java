@@ -54,7 +54,7 @@ public class SimpleSelectDialogFragment extends BaseDialogFragment {
   @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.AlertDialog);
     ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.item_movement_type, R.id.tv_option,
         mySelections);
     builder.setAdapter(adapter, null);

@@ -29,13 +29,13 @@
 
   <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/til_destination"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     app:layout_constraintLeft_toLeftOf="@id/v_white_background"
     app:layout_constraintTop_toBottomOf="@id/tv_movement_detail_anchor"
     app:layout_constraintRight_toRightOf="@id/v_white_background"
     android:layout_marginHorizontal="@dimen/px_76"
-    android:padding="0dp"
+    android:padding="@dimen/px_0"
     android:layout_marginTop="@dimen/px_96">
     <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/et_destination"
@@ -43,7 +43,7 @@
       android:layout_height="wrap_content"
       android:theme="@style/EditText.Gray"
       android:drawableLeft="@drawable/bitmap_destination_or_origin"
-      android:drawablePadding="5dp"
+      android:drawablePadding="@dimen/px_5"
       android:hint="@string/hint_movement_reason_negative"
       android:focusableInTouchMode="false"
       android:focusable="false"
@@ -66,7 +66,7 @@
 
   <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/til_document_number"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     app:layout_constraintLeft_toLeftOf="@id/v_white_background"
     app:layout_constraintTop_toBottomOf="@id/til_destination"
@@ -80,7 +80,7 @@
       android:layout_height="wrap_content"
       android:theme="@style/EditText.Gray"
       android:drawableLeft="@drawable/bitmap_document_number"
-      android:drawablePadding="5dp"
+      android:drawablePadding="@dimen/px_5"
       android:hint="@string/hint_document_number"
       android:textSize="@dimen/px_20"
       android:maxLength="@integer/edit_amount_length"

@@ -57,7 +57,7 @@
 
     <TextView
       android:id="@+id/btn_add_new_lot"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:layout_marginLeft="@dimen/margin_larger"
@@ -66,12 +66,12 @@
       android:gravity="center"
       android:text="@string/btn_bulk_entries_add_new_lot"
       android:textColor="@color/color_accent"
-      android:textSize="16sp" />
+      android:textSize="@dimen/px_16" />
 
 
     <TextView
       android:id="@+id/btn_verify"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:layout_marginLeft="@dimen/margin_normal"
@@ -80,7 +80,7 @@
       android:gravity="center"
       android:text="@string/btn_done"
       android:textColor="@color/color_accent"
-      android:textSize="16sp" />
+      android:textSize="@dimen/px_16" />
   </LinearLayout>
 
   <LinearLayout

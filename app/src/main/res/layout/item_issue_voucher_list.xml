@@ -35,7 +35,7 @@
 
       <TextView
         android:id="@+id/tv_order_number"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_weight="1"
         android:layout_height="match_parent"
         tools:text="ORDER-AS5J7B1RR"

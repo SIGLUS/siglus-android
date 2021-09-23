@@ -5,12 +5,12 @@
 
   <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="@dimen/px_50"
     android:background="@drawable/border_bottom_black"
     android:orientation="horizontal">
 
     <LinearLayout
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="match_parent"
       android:layout_weight="1"
       android:background="@drawable/custom_border_title">
@@ -29,7 +29,7 @@
     </LinearLayout>
 
     <LinearLayout
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="match_parent"
       android:layout_weight="5"
       android:background="@drawable/border_bottom_black"
@@ -37,12 +37,12 @@
 
       <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/px_0"
         android:layout_weight="1"
         android:orientation="horizontal">
 
         <LinearLayout
-          android:layout_width="0dp"
+          android:layout_width="@dimen/px_0"
           android:layout_height="match_parent"
           android:layout_weight="1">
 
@@ -77,7 +77,7 @@
         </LinearLayout>
 
         <LinearLayout
-          android:layout_width="0dp"
+          android:layout_width="@dimen/px_0"
           android:layout_height="match_parent"
           android:layout_weight="1">
 

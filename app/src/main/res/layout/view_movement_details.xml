@@ -24,14 +24,14 @@
 
       <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/px_0"
         android:layout_weight="1"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
           android:id="@+id/ly_movement_date"
-          android:layout_width="0dp"
+          android:layout_width="@dimen/px_0"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/margin_normal"
           android:layout_weight="4"
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_date"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/px_5"
             android:focusableInTouchMode="false"
             android:hint="@string/hint_movement_date"
             android:inputType="date" />
@@ -50,7 +50,7 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-          android:layout_width="0dp"
+          android:layout_width="@dimen/px_0"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/margin_normal"
           android:layout_weight="3"
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_document"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/px_5"
             android:hint="@string/hint_document_number"
             android:inputType="textShortMessage"
             android:maxLength="@integer/document_number_length" />
@@ -71,13 +71,13 @@
 
       <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/px_0"
         android:layout_weight="1"
         android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
           android:id="@+id/ly_movement_reason"
-          android:layout_width="0dp"
+          android:layout_width="@dimen/px_0"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/margin_normal"
           android:layout_weight="4"
@@ -88,14 +88,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_movement_origin"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/px_5"
             android:focusableInTouchMode="false"
             android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
           android:id="@+id/ly_requested_quantity"
-          android:layout_width="0dp"
+          android:layout_width="@dimen/px_0"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/margin_normal"
           android:layout_weight="3"

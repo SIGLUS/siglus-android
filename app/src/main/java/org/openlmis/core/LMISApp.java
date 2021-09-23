@@ -19,6 +19,7 @@
 package org.openlmis.core;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Application;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -31,6 +32,8 @@ import android.os.Build;
 import androidx.multidex.MultiDex;
 import com.facebook.stetho.Stetho;
 import java.io.File;
+import me.jessyan.autosize.AutoSizeConfig;
+import me.jessyan.autosize.onAdaptListener;
 import net.danlew.android.joda.JodaTimeAndroid;
 import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -39,6 +42,7 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.NetworkSchedulerService;
 import org.openlmis.core.receiver.NetworkChangeReceiver;
+import org.openlmis.core.utils.AutoSizeUtil;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FileUtil;
 import roboguice.RoboGuice;
@@ -64,6 +68,7 @@ public class LMISApp extends Application {
     AnalyticsTracker.initialize(this);
     LMISApp.instance = this;
     registerNetWorkChangeListener();
+    configAutoSize();
   }
 
   public boolean isRoboUniTest() {
@@ -142,5 +147,20 @@ public class LMISApp extends Application {
     filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
     NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver();
     registerReceiver(networkChangeReceiver, filter);
+  }
+
+  private void configAutoSize() {
+    AutoSizeConfig.getInstance().setCustomFragment(true);
+    AutoSizeConfig.getInstance().setOnAdaptListener(new onAdaptListener() {
+      @Override
+      public void onAdaptBefore(Object target, Activity activity) {
+        AutoSizeUtil.resetScreenSize(activity);
+      }
+
+      @Override
+      public void onAdaptAfter(Object target, Activity activity) {
+        // do nothing
+      }
+    });
   }
 }

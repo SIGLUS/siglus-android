@@ -37,7 +37,7 @@
 
   <androidx.appcompat.widget.LinearLayoutCompat
     android:id="@+id/ll_dashboard_total_product"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"

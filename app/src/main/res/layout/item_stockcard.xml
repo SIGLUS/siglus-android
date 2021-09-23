@@ -15,21 +15,21 @@
     android:background="@color/color_73d8d8d8">
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/gl_vertical_one"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="wrap_content"
       android:orientation="vertical"
       app:layout_constraintGuide_percent="0.67" />
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/gl_vertical_two"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="wrap_content"
       android:orientation="vertical"
       app:layout_constraintGuide_percent="0.85" />
 
     <TextView
       android:id="@+id/tv_product_name"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="wrap_content"
       app:layout_constraintLeft_toLeftOf="parent"
       android:layout_marginStart="@dimen/px_8"

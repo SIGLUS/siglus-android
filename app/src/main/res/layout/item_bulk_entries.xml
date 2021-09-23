@@ -30,7 +30,7 @@
         android:visibility="gone"/>
 
       <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginRight="@dimen/px_100">

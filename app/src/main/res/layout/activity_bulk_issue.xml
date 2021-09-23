@@ -29,7 +29,7 @@
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/rv_bulk_issue"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="@dimen/px_0"
     app:layout_constraintTop_toBottomOf="@id/v_divider_line"
     app:layout_constraintBottom_toTopOf="@id/action_panel"
     android:layout_marginTop="@dimen/px_8"

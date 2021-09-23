@@ -6,7 +6,7 @@
 
   <LinearLayout
     style="@style/Divider.Horizontal"
-    android:layout_width="1000dp"
+    android:layout_width="@dimen/px_1000"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -25,14 +25,14 @@
 
       <TextView
         style="@style/LayoutRequisition.TextHeader"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_height="wrap_content"
         android:layout_weight="5"
         android:text="@string/title_stock_move_ment" />
 
       <TextView
         style="@style/LayoutRequisition.TextHeader"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_height="wrap_content"
         android:layout_weight="3"
         android:text="@string/title_inventory_info" />
@@ -47,7 +47,7 @@
 
       <LinearLayout
         style="@style/Divider.Horizontal"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_height="wrap_content"
         android:layout_weight="7"
         android:orientation="vertical">
@@ -60,49 +60,49 @@
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/label_initial_amount_requisition" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/label_received_requisition" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/label_issued_mmia" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/label_theoretical" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/label_total_requisition" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/label_inventory" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/label_different" />
@@ -116,49 +116,49 @@
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="SI" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="E" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="S" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="SF=SI+E-S" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="P" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="I" />
 
           <TextView
             style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/px_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="I-SF" />
@@ -170,7 +170,7 @@
 
       <TextView
         style="@style/LayoutRequisition.CellText"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/px_0"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
@@ -189,7 +189,7 @@
     <TextView
       android:id="@+id/tv_label_request"
       style="@style/LayoutRequisition.CellText"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="match_parent"
       android:layout_weight="1"
       android:text="@string/label_request_amount" />
@@ -197,7 +197,7 @@
     <TextView
       android:id="@+id/tv_label_approve"
       style="@style/LayoutRequisition.CellText"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="match_parent"
       android:layout_weight="1"
       android:text="@string/label_approved_amount" />

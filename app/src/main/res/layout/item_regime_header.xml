@@ -8,7 +8,7 @@
 
   <TextView
     style="@style/MMIA.Regime.Title"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
 
     android:layout_weight="5"
     android:text="@string/label_regime_header_name" />

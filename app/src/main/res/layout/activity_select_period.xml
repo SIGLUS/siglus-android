@@ -16,7 +16,7 @@
   <GridView
     android:id="@+id/vg_inventory_date_container"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="@dimen/px_0"
     android:layout_marginTop="@dimen/margin_large"
     android:layout_weight="1"
     android:choiceMode="singleChoice"
@@ -36,7 +36,7 @@
   <Button
     android:id="@+id/btn_select_period_next"
     style="@style/Button.Blue"
-    android:layout_width="200dp"
+    android:layout_width="@dimen/px_200"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_small"
     android:text="@string/label_next"

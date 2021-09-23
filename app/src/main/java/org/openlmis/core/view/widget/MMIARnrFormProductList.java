@@ -86,8 +86,7 @@ public class MMIARnrFormProductList extends LinearLayout {
     this.context = context;
     layoutInflater = LayoutInflater.from(context);
     View container = layoutInflater.inflate(R.layout.view_mmia_rnr_form, this, true);
-    rnrItemsHorizontalScrollView = container
-        .findViewById(R.id.vg_right_scrollview);
+    rnrItemsHorizontalScrollView = container.findViewById(R.id.vg_right_scrollview);
     leftViewGroup = container.findViewById(R.id.rnr_from_list_product_name);
     rightViewGroup = container.findViewById(R.id.rnr_from_list);
   }

@@ -10,7 +10,7 @@
   <TextView
     android:id="@+id/mmia_product_barcode_column_code"
     style="@style/ItemRnr.PrimaryName"
-    android:layout_width="80dp"
+    android:layout_width="@dimen/px_80"
     android:layout_height="match_parent"
     android:gravity="center"
     tools:text="Product name" />

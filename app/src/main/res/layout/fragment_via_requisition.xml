@@ -17,20 +17,20 @@
 
     <org.openlmis.core.view.widget.ViaReportConsultationNumberView
       android:id="@+id/view_consultation"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:background="@drawable/border_bg"
       app:ems="4"
       app:headerText="@string/label_requisition_header_consultation_header"
-      app:labelWidth="100dp"
+      app:labelWidth="@dimen/px_100"
       app:text="@string/label_consultation" />
 
     <org.openlmis.core.view.widget.ViaKitView
       android:id="@+id/vg_kit"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/px_0"
       android:layout_height="match_parent"
-      android:layout_marginStart="5dp"
+      android:layout_marginStart="@dimen/px_5"
       android:layout_weight="1" />
   </LinearLayout>
 

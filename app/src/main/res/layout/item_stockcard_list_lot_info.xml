@@ -7,19 +7,19 @@
   android:layout_height="wrap_content">
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/gl_vertical_one"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     app:layout_constraintGuide_percent="0.44" />
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/gl_vertical_two"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     app:layout_constraintGuide_percent="0.67" />
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/gl_vertical_three"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     app:layout_constraintGuide_percent="0.85" />
@@ -40,7 +40,7 @@
     app:layout_constraintVertical_chainStyle="packed" />
   <TextView
     android:id="@+id/tv_lot_code"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/px_24"
     android:layout_marginRight="@dimen/px_10"
