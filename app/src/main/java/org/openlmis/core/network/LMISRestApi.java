@@ -42,7 +42,6 @@ import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.PATCH;
 import retrofit.http.POST;
-import retrofit.http.PUT;
 import retrofit.http.Query;
 
 @SuppressWarnings("PMD")
@@ -94,7 +93,7 @@ public interface LMISRestApi {
   @DeleteWithBody("/api/siglusapi/android/me/facility/stockCards")
   SyncUpDeletedMovementResponse syncUpDeletedData(@Body List<DirtyDataItemEntry> entryList) throws LMISException;
 
-  @PUT("/api/siglusapi/android/me/facility/cmms")
+  @POST("/api/siglusapi/android/me/facility/cmms")
   Void syncUpCmms(@Body List<CmmEntry> cmms) throws LMISException;
 
   // below are v2 api

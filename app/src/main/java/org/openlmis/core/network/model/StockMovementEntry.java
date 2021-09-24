@@ -39,7 +39,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 @NoArgsConstructor
 public class StockMovementEntry {
 
-  long processedDate;
+  String processedDate;
   String signature;
   String occurredDate;
   String documentationNo;
@@ -52,8 +52,7 @@ public class StockMovementEntry {
   List<LotMovementEntry> lotEventList = new ArrayList<>();
 
   public StockMovementEntry(StockMovementItem stockMovementItem) {
-    DateTime dateTime = new DateTime(stockMovementItem.getCreatedTime());
-    this.setProcessedDate(dateTime.toInstant().getMillis());
+    this.setProcessedDate(new DateTime(stockMovementItem.getCreatedTime()).toInstant().toString());
     this.setSignature(stockMovementItem.getSignature());
     this.setOccurredDate(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
     this.setDocumentationNo(stockMovementItem.getDocumentNumber());
