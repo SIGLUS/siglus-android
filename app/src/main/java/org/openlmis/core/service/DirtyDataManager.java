@@ -63,6 +63,7 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.RoboGuice;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -103,6 +104,23 @@ public class DirtyDataManager {
   private boolean isSyncedMonthCheck = false;
 
   final Map<String, String> lotsOnHands = new HashMap<>();
+
+  Observer<Object> deleteDirtyDataSubscribe = new Observer<Object>() {
+    @Override
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onNext(Object o) {
+
+    }
+  };
 
   public DirtyDataManager() {
     RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
@@ -285,39 +303,48 @@ public class DirtyDataManager {
   }
 
   public void deleteAndReset() {
-    List<StockMovementItem> deletedStockMovementItems = sharedPreferenceMgr
-        .getDeletedMovementItems();
-    Map<String, List<StockMovementItem>> keepStockMovementItemsMap = sharedPreferenceMgr
-        .getKeepMovementItemsMap();
-    List<String> productCodes = sharedPreferenceMgr.getDeletedProduct();
-    if (!deletedStockMovementItems.isEmpty() || !keepStockMovementItemsMap.isEmpty() || !productCodes.isEmpty()) {
-      dirtyDataRepository.deleteDraftForDirtyData();
-      if (!deletedStockMovementItems.isEmpty()) {
-        stockMovementRepository.deleteStockMovementItems(deletedStockMovementItems);
-        lotRepository.deleteLotMovementItems(deletedStockMovementItems);
-        sharedPreferenceMgr.setDeletedMovementItems(new ArrayList<>());
-      }
-      if (!keepStockMovementItemsMap.isEmpty()) {
-        List<LotMovementItem> lotMovementItems = lotRepository
-            .resetKeepLotMovementItems(keepStockMovementItemsMap);
-        stockRepository.resetKeepLotsOnHand(lotMovementItems, keepStockMovementItemsMap);
-        stockMovementRepository.resetKeepItemToNotSynced(keepStockMovementItemsMap);
-        sharedPreferenceMgr.setKeepMovementItemsMap(new HashMap<>());
-      }
-      if (!productCodes.isEmpty()) {
-        stockRepository.deleteStockMovementsForDirtyData(productCodes);
-        try {
-          stockRepository.insertNewInventory(productCodes);
-        } catch (LMISException e) {
-          Log.w(TAG, e);
+    getDeleteDirtyDataObservable()
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(Schedulers.io())
+        .subscribe(deleteDirtyDataSubscribe);
+  }
+
+  private Observable<Object> getDeleteDirtyDataObservable() {
+    return Observable.create(subscriber -> {
+      List<StockMovementItem> deletedStockMovementItems = sharedPreferenceMgr.getDeletedMovementItems();
+      Map<String, List<StockMovementItem>> keepStockMovementItemsMap = sharedPreferenceMgr.getKeepMovementItemsMap();
+      List<String> productCodes = sharedPreferenceMgr.getDeletedProduct();
+      if (!deletedStockMovementItems.isEmpty() || !keepStockMovementItemsMap.isEmpty() || !productCodes.isEmpty()) {
+        dirtyDataRepository.deleteDraftForDirtyData();
+        if (!deletedStockMovementItems.isEmpty()) {
+          stockMovementRepository.deleteStockMovementItems(deletedStockMovementItems);
+          lotRepository.deleteLotMovementItems(deletedStockMovementItems);
+          sharedPreferenceMgr.setDeletedMovementItems(new ArrayList<>());
         }
-        stockRepository.resetStockCard(productCodes);
-        stockRepository.resetLotsOnHand(productCodes);
-        cmmRepository.resetCmm(productCodes);
-        rnrFormRepository.deleteRnrFormDirtyData(productCodes);
-        sharedPreferenceMgr.setDeletedProduct(new HashSet<>());
+        if (!keepStockMovementItemsMap.isEmpty()) {
+          List<LotMovementItem> lotMovementItems = lotRepository
+              .resetKeepLotMovementItems(keepStockMovementItemsMap);
+          stockRepository.resetKeepLotsOnHand(lotMovementItems, keepStockMovementItemsMap);
+          stockMovementRepository.resetKeepItemToNotSynced(keepStockMovementItemsMap);
+          sharedPreferenceMgr.setKeepMovementItemsMap(new HashMap<>());
+        }
+        if (!productCodes.isEmpty()) {
+          stockRepository.deleteStockMovementsForDirtyData(productCodes);
+          try {
+            stockRepository.insertNewInventory(productCodes);
+          } catch (LMISException e) {
+            Log.w(TAG, e);
+          }
+          stockRepository.resetStockCard(productCodes);
+          stockRepository.resetLotsOnHand(productCodes);
+          cmmRepository.resetCmm(productCodes);
+          rnrFormRepository.deleteRnrFormDirtyData(productCodes);
+          sharedPreferenceMgr.setDeletedProduct(new HashSet<>());
+        }
       }
-    }
+      subscriber.onNext(null);
+      subscriber.onCompleted();
+    });
   }
 
   private DirtyDataItemInfo convertStockMovementItemsToStockMovementEntriesForSave(
