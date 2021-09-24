@@ -28,8 +28,8 @@ public class PodOrderItemResponse {
   private String supplyFacilityDistrict;
   private String supplyFacilityProvince;
   private String status;
-  private long createdDate;
-  private long lastModifiedDate;
+  private String createdDate;
+  private String lastModifiedDate;
   private PodRequisitionItemResponse requisition;
 
 }

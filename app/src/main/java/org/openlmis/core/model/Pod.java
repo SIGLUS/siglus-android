@@ -18,8 +18,8 @@
 
 package org.openlmis.core.model;
 
-import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT;
 import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
+import static org.openlmis.core.utils.DateUtil.ISO_DATE_TIME_FORMAT;
 
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DataType;
@@ -79,10 +79,10 @@ public class Pod extends BaseModel implements Serializable {
   @DatabaseField
   private OrderStatus orderStatus;
 
-  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = ISO_DATE_TIME_FORMAT)
   private Date orderCreatedDate;
 
-  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = ISO_DATE_TIME_FORMAT)
   private Date orderLastModifiedDate;
 
   @DatabaseField
@@ -109,10 +109,10 @@ public class Pod extends BaseModel implements Serializable {
   @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
   private Date requisitionActualEndDate;
 
-  @DatabaseField
+  @DatabaseField(dataType = DataType.DATE_STRING, format = ISO_DATE_TIME_FORMAT)
   private Date processedDate;
 
-  @DatabaseField
+  @DatabaseField(dataType = DataType.DATE_STRING, format = ISO_DATE_TIME_FORMAT)
   private Date serverProcessedDate;
 
   @DatabaseField

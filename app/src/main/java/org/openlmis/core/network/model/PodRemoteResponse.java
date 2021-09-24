@@ -18,7 +18,6 @@
 
 package org.openlmis.core.network.model;
 
-import java.util.Date;
 import java.util.List;
 import lombok.Data;
 import org.openlmis.core.enumeration.OrderStatus;
@@ -54,8 +53,8 @@ public class PodRemoteResponse {
         .orderSupplyFacilityDistrict(order.getSupplyFacilityDistrict())
         .orderSupplyFacilityProvince(order.getSupplyFacilityProvince())
         .orderStatus(OrderStatus.covertToOrderStatus(order.getStatus()))
-        .orderCreatedDate(new Date(order.getCreatedDate()))
-        .orderLastModifiedDate(new Date(order.getLastModifiedDate()))
+        .orderCreatedDate(DateUtil.parseString(order.getCreatedDate(), DateUtil.ISO_DATE_TIME_FORMAT))
+        .orderLastModifiedDate(DateUtil.parseString(order.getLastModifiedDate(), DateUtil.ISO_DATE_TIME_FORMAT))
         .requisitionNumber(order.getRequisition().getNumber())
         .requisitionIsEmergency(order.getRequisition().isEmergency())
         .requisitionProgramCode(order.getRequisition().getProgramCode())
