@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyByte;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,14 +21,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.InventoryRepository;
@@ -227,8 +226,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
     initialInventoryPresenter.initOrArchiveBackStockCards();
 
     verify(stockRepositoryMock, times(1)).updateStockCardWithProduct(any(StockCard.class));
-    verify(stockRepositoryMock, times(1))
-        .addStockMovementAndUpdateStockCard(any(StockMovementItem.class));
+    verify(stockRepositoryMock, times(1)).addStockMovementAndUpdateStockCard(any(), anyByte());
   }
 
   @Test
@@ -266,8 +264,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
     initialInventoryPresenter.getDefaultViewModelList().add(model);
     initialInventoryPresenter.initOrArchiveBackStockCards();
 
-    ArgumentCaptor<StockMovementItem> argument = ArgumentCaptor.forClass(StockMovementItem.class);
-    verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(argument.capture());
+    verify(stockRepositoryMock,times(1)).addStockMovementAndUpdateStockCard(any(), anyByte());
   }
 
   public class MyTestModule extends AbstractModule {

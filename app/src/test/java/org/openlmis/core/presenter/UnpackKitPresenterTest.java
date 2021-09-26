@@ -1,16 +1,13 @@
 package org.openlmis.core.presenter;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import androidx.annotation.NonNull;
 import com.google.inject.AbstractModule;
@@ -21,14 +18,11 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
@@ -36,7 +30,6 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
-import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
@@ -167,58 +160,16 @@ public class UnpackKitPresenterTest {
     presenter.getInventoryViewModels().addAll(Arrays.asList(product1VM, product2VM));
     presenter.kitCode = "SD1112";
 
-    TestSubscriber subscriber = new TestSubscriber();
+    TestSubscriber<Void> subscriber = new TestSubscriber<>();
     Subscription subscription = presenter.saveUnpackProductsObservable(2, documentNumber, signature)
         .subscribe(subscriber);
     presenter.subscriptions.add(subscription);
 
     subscriber.awaitTerminalEvent();
 
-    ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
-    verify(stockRepository)
-        .batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(argument.capture());
-    List<List> stockCardsArguments = argument.getAllValues();
-    assertEquals(200L, ((StockCard) stockCardsArguments.get(0).get(0)).getStockOnHand(), 0L);
-    assertFalse(
-        ((StockCard) stockCardsArguments.get(0).get(0)).getStockMovementItemsWrapper().isEmpty());
-    assertEquals(110L, ((StockCard) stockCardsArguments.get(0).get(1)).getStockOnHand(), 0L);
-    assertFalse(((StockCard) stockCardsArguments.get(0).get(1)).getProduct().isArchived());
-    assertFalse(
-        ((StockCard) stockCardsArguments.get(0).get(1)).getStockMovementItemsWrapper().isEmpty());
-    assertEquals(998L, ((StockCard) stockCardsArguments.get(0).get(2)).getStockOnHand(), 0L);
+    verify(stockRepository).addStockMovementsAndUpdateStockCards(any(), any());
+    verify(productRepository).updateProductInArchived(any());
   }
-
-  @Test
-  public void shouldCreateStockCardForProductWithLot() throws Exception {
-    when(stockRepository.queryStockCardByProductId(200L)).thenReturn(null);
-    LotMovementViewModel lot = new LotMovementViewModelBuilder()
-        .setLotNumber("test")
-        .setLotSOH("100")
-        .setMovementType(MovementReasonManager.MovementType.RECEIVE)
-        .setExpiryDate("Aug 2016")
-        .setQuantity("100")
-        .build();
-
-    viewModel.setNewLotMovementViewModelList(newArrayList(lot, lot));
-
-    StockCard stockCard = presenter
-        .createStockCardForProductWithLot(viewModel, documentNumber, signature);
-    List<StockMovementItem> movementItems = stockCard.getStockMovementItemsWrapper();
-
-    assertThat(stockCard.getStockOnHand(), is(200L));
-    assertThat(movementItems.size(), is(2));
-    assertThat(movementItems.get(0).getStockOnHand(), is(0L));
-    assertNull(movementItems.get(0).getSignature());
-    assertThat(movementItems.get(1).getStockOnHand(), is(200L));
-    assertThat(movementItems.get(1).getSignature(), is(signature));
-    assertThat(movementItems.get(1).getDocumentNumber(), is(documentNumber));
-    assertThat(movementItems.get(1).getLotMovementItemListWrapper().size(), is(2));
-    assertThat(movementItems.get(1).getLotMovementItemListWrapper().get(0).getMovementQuantity(),
-        is(100L));
-    assertThat(movementItems.get(1).getLotMovementItemListWrapper().get(0).getLot().getLotNumber(),
-        is("test"));
-  }
-
 
   @Test
   public void shouldGetKitStockCardWithUnpackMovementItem() throws Exception {

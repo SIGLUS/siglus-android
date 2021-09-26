@@ -88,6 +88,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         if (DateUtil.getCurrentDate().before(latestStockMovementCreatedTime)) {
           throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
         }
+        long createdTime = LMISApp.getInstance().getCurrentTimeMillis();
         for (InventoryViewModel viewModel : inventoryViewModelList) {
           viewModel.setSignature(sign);
           StockCard stockCard = viewModel.getStockCard();
@@ -95,7 +96,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
           if (stockCard.getStockOnHand() == 0) {
             stockCard.setExpireDates("");
           }
-          stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(viewModel, stockCard));
+          stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(viewModel, stockCard), createdTime);
         }
         inventoryRepository.clearDraft();
         sharedPreferenceMgr.setLatestPhysicInventoryTime(

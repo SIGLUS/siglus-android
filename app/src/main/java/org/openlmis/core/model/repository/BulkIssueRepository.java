@@ -111,6 +111,7 @@ public class BulkIssueRepository {
     AtomicBoolean failedWithErrorDate = new AtomicBoolean(false);
     try {
       dbUtil.withDaoAsBatch(DraftBulkIssueProduct.class, dao -> {
+        long createdTime = LMISApp.getInstance().getCurrentTimeMillis();
         for (StockMovementItem stockMovementItem : stockMovementItems) {
           StockCard stockCard = stockMovementItem.getStockCard();
           Date lastMovementCreateDate = stockCard.getLastStockMovementCreatedTime();
@@ -118,7 +119,7 @@ public class BulkIssueRepository {
             failedWithErrorDate.set(true);
             throw new IllegalArgumentException();
           }
-          stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+          stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem, createdTime);
           if (stockCard.calculateSOHFromLots() == 0 && !stockCard.getProduct().isActive()) {
             SharedPreferenceMgr.getInstance()
                 .setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());

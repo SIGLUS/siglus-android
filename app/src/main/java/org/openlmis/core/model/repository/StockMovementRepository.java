@@ -112,8 +112,7 @@ public class StockMovementRepository {
                   lotMovementItem.setDocumentNumber(stockMovementItem.getDocumentNumber());
                   return lotMovementItem;
                 }).toList();
-            lotRepository
-                .batchCreateLotsAndLotMovements(lotMovementItems);
+            lotRepository.batchCreateLotsAndLotMovements(lotMovementItems);
           }
           return null;
         });
@@ -128,15 +127,9 @@ public class StockMovementRepository {
     stockMovementItem.setUpdatedAt(DateUtil.getCurrentDate());
   }
 
-  public void batchCreateStockMovementItemAndLotItemsForProductOperation(final StockMovementItem stockMovementItem)
-      throws LMISException {
-    batchCreateStockMovementItemAndLotItemsForProductOperation(stockMovementItem,
-        new Date(LMISApp.getInstance().getCurrentTimeMillis()));
-  }
-
-  public void batchCreateStockMovementItemAndLotItemsForProductOperation(final StockMovementItem stockMovementItem,
-      Date date) throws LMISException {
-    stockMovementItem.setCreatedTime(date);
+  public void batchCreateStockMovementItemAndLotItems(StockMovementItem stockMovementItem,
+      long timestamp) throws LMISException {
+    stockMovementItem.setCreatedTime(new Date(timestamp));
     create(stockMovementItem);
     if (CollectionUtils.isNotEmpty(stockMovementItem.getLotMovementItemListWrapper())
         || CollectionUtils.isNotEmpty(stockMovementItem.getNewAddedLotMovementItemListWrapper())) {

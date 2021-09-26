@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInitialInventory;
@@ -240,6 +241,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
   public Observable<Object> doInventory() {
     return Observable.create(subscriber -> {
       try {
+        long createdTime = LMISApp.getInstance().getCurrentTimeMillis();
         for (InventoryViewModel viewModel : inventoryViewModelList) {
           if (viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER
               || viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER) {
@@ -260,7 +262,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
           movementItem.setStockCard(stockCard);
           movementItem.setStockOnHand(movementItem.getStockOnHand());
           movementItem.buildLotMovementReasonAndDocumentNumber();
-          stockRepository.addStockMovementAndUpdateStockCard(movementItem);
+          stockRepository.addStockMovementAndUpdateStockCard(movementItem, createdTime);
         }
         inventoryRepository.clearInitialDraft();
         saveInventoryDate();

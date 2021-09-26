@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import lombok.Getter;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
@@ -51,7 +52,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         List<Product> inventoryProducts = productRepository.listProductsArchivedOrNotInStockCard();
 
         inventoryViewModelList.addAll(from(inventoryProducts)
-            .transform(product -> convertProductToStockCardViewModel(product)).toList());
+            .transform(this::convertProductToStockCardViewModel).toList());
         subscriber.onNext(inventoryViewModelList);
         subscriber.onCompleted();
       } catch (LMISException e) {
@@ -112,34 +113,32 @@ public class InitialInventoryPresenter extends InventoryPresenter {
   void initOrArchiveBackStockCards() {
     defaultViewModelList.clear();
     defaultViewModelList.addAll(inventoryViewModelList);
+    long createdTime = LMISApp.getInstance().getCurrentTimeMillis();
     for (InventoryViewModel inventoryViewModel : defaultViewModelList) {
-      if (inventoryViewModel.isChecked()) {
-        initOrArchiveBackStockCard(inventoryViewModel);
+      if (!inventoryViewModel.isChecked()) {
+        continue;
+      }
+      try {
+        if (inventoryViewModel.getProduct().isArchived()) {
+          StockCard stockCard = inventoryViewModel.getStockCard();
+          stockCard.getProduct().setArchived(false);
+          stockRepository.updateStockCardWithProduct(stockCard);
+          continue;
+        }
+        createStockCardAndInventoryMovementWithLot(inventoryViewModel, createdTime);
+      } catch (LMISException e) {
+        new LMISException(e, "InitialInventoryPresenter.initOrArchiveBackStockCard").reportToFabric();
       }
     }
   }
 
-  private void initOrArchiveBackStockCard(InventoryViewModel inventoryViewModel) {
-    try {
-      if (inventoryViewModel.getProduct().isArchived()) {
-        StockCard stockCard = inventoryViewModel.getStockCard();
-        stockCard.getProduct().setArchived(false);
-        stockRepository.updateStockCardWithProduct(stockCard);
-        return;
-      }
-      createStockCardAndInventoryMovementWithLot(inventoryViewModel);
-    } catch (LMISException e) {
-      new LMISException(e, "InitialInventoryPresenter.initOrArchiveBackStockCard").reportToFabric();
-    }
-  }
-
-  private void createStockCardAndInventoryMovementWithLot(InventoryViewModel model) {
+  private void createStockCardAndInventoryMovementWithLot(InventoryViewModel model, long createdTime) {
     StockCard stockCard = new StockCard();
     stockCard.setProduct(model.getProduct());
     StockMovementItem movementItem = new StockMovementItem(stockCard, model);
     movementItem.buildLotMovementReasonAndDocumentNumber();
     stockCard.setStockOnHand(movementItem.getStockOnHand());
-    stockRepository.addStockMovementAndUpdateStockCard(movementItem);
+    stockRepository.addStockMovementAndUpdateStockCard(movementItem, createdTime);
   }
 
   public void addNonBasicProductsToInventory(List<Product> nonBasicProducts) {

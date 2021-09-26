@@ -289,6 +289,7 @@ public class StockCardPresenter extends Presenter {
   }
 
   private List<StockCard> createStockCardsIfNotExist(List<Product> kits) {
+    long createdTime = LMISApp.getInstance().getCurrentTimeMillis();
     return from(kits).transform(product -> {
       StockCard stockCard = null;
       try {
@@ -296,7 +297,7 @@ public class StockCardPresenter extends Presenter {
         if (stockCard == null) {
           stockCard = new StockCard();
           stockCard.setProduct(product);
-          stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
+          stockRepository.createOrUpdateStockCardWithStockMovement(stockCard, createdTime);
         }
       } catch (LMISException e) {
         new LMISException(e, "createStockCardsIfNotExist").reportToFabric();

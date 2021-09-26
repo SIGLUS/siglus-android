@@ -20,7 +20,7 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
@@ -240,7 +240,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
       long changeQuality = getChangeQuality(podProductItem);
       stockCard.setStockOnHand(soh + changeQuality);
       StockMovementItem movementItem = buildStockMovementItem(stockCard, podProductItem, changeQuality);
-      stockCard.setStockMovementItemsWrapper(Arrays.asList(movementItem));
+      stockCard.setStockMovementItemsWrapper(Collections.singletonList(movementItem));
       toUpdateStockCards.add(stockCard);
     }
     productRepository.updateProductInArchived(needUpdatedArchived);

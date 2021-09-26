@@ -121,8 +121,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
 
 
   public List<StockMovementItem> getStockMovementItemsWrapper() {
-    stockMovementItemsWrapper = ListUtil
-        .wrapOrEmpty(foreignStockMovementItems, stockMovementItemsWrapper);
+    stockMovementItemsWrapper = ListUtil.wrapOrEmpty(foreignStockMovementItems, stockMovementItemsWrapper);
     return stockMovementItemsWrapper;
   }
 

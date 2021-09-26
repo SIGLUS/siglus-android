@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyByte;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -142,13 +143,13 @@ public class StockCardPresenterTest {
     when(stockRepository.queryStockCardByProductId(123)).thenReturn(null);
 
     //when
-    TestSubscriber<List<StockCard>> subscriber = new TestSubscriber();
+    TestSubscriber<List<StockCard>> subscriber = new TestSubscriber<>();
     presenter.afterLoadHandler = subscriber;
     presenter.loadKits();
     subscriber.awaitTerminalEvent();
 
     //then
-    verify(stockRepository).createOrUpdateStockCardWithStockMovement(any(StockCard.class));
+    verify(stockRepository).createOrUpdateStockCardWithStockMovement(any(StockCard.class), anyByte());
     StockCard createdKitStockCard = subscriber.getOnNextEvents().get(0).get(0);
     assertThat(createdKitStockCard.getProduct().getPrimaryName()).isEqualTo("kit a");
   }

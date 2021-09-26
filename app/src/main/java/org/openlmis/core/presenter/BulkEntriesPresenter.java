@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
@@ -139,6 +140,7 @@ public class BulkEntriesPresenter extends Presenter {
   public Observable<Long> saveBulkEntriesProducts(String signature) {
     return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
       try {
+        long createdTime = LMISApp.getInstance().getCurrentTimeMillis();
         for (BulkEntriesViewModel bulkEntriesViewModel : bulkEntriesViewModels) {
           bulkEntriesViewModel.setSignature(signature);
           bulkEntriesViewModel.calculateLotOnHand();
@@ -148,12 +150,14 @@ public class BulkEntriesPresenter extends Presenter {
             stockCard = bulkEntriesViewModel.getStockCard();
           } else {
             stockCard.setProduct(bulkEntriesViewModel.getProduct());
-            stockRepository.addStockMovementAndUpdateStockCard(stockCard.generateInitialStockMovementItem());
+            StockMovementItem initialStockMovementItem = stockCard.generateInitialStockMovementItem();
+            stockRepository.addStockMovementAndUpdateStockCard(initialStockMovementItem, createdTime);
           }
           stockCard.getProduct().setArchived(false);
           stockCard.setStockOnHand(getStockOnHand(bulkEntriesViewModel));
           productRepository.updateProduct(stockCard.getProduct());
-          stockRepository.addStockMovementAndUpdateStockCard(buildStockMovementItem(bulkEntriesViewModel, stockCard));
+          StockMovementItem stockMovementItem = buildStockMovementItem(bulkEntriesViewModel, stockCard);
+          stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem, (createdTime + 1));
           Long stockCardId = stockRepository.queryStockCardByProductId(bulkEntriesViewModel.getProductId()).getId();
           subscriber.onNext(stockCardId);
         }

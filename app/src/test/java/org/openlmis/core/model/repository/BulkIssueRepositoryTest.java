@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.mockito.Matchers.eq;
+
 import com.google.inject.AbstractModule;
 import java.util.Collections;
 import java.util.List;
@@ -144,7 +146,8 @@ public class BulkIssueRepositoryTest {
     bulkIssueRepository.saveMovement(Collections.singletonList(mockStockMovementItem));
 
     // then
-    Mockito.verify(mockStockRepository, Mockito.times(1)).addStockMovementAndUpdateStockCard(mockStockMovementItem);
+    Mockito.verify(mockStockRepository, Mockito.times(1))
+        .addStockMovementAndUpdateStockCard(eq(mockStockMovementItem), Mockito.anyByte());
     Assert.assertTrue(SharedPreferenceMgr.getInstance().isNeedShowProductsUpdateBanner());
   }
 

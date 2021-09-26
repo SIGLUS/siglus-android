@@ -147,12 +147,12 @@ public class StockRepository {
     }
   }
 
-  public void createOrUpdateStockCardWithStockMovement(final StockCard stockCard) {
+  public void createOrUpdateStockCardWithStockMovement(StockCard stockCard, long createdTime) {
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
         createOrUpdate(stockCard);
-        stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(
-            stockCard.generateInitialStockMovementItem());
+        stockMovementRepository.batchCreateStockMovementItemAndLotItems(stockCard.generateInitialStockMovementItem(),
+            createdTime);
         updateProductOfStockCard(stockCard.getProduct());
         return null;
       });
@@ -161,12 +161,16 @@ public class StockRepository {
     }
   }
 
-  public synchronized void addStockMovementAndUpdateStockCard(final StockMovementItem stockMovementItem) {
+  public void addStockMovementAndUpdateStockCard(StockMovementItem stockMovementItem) {
+    addStockMovementAndUpdateStockCard(stockMovementItem, LMISApp.getInstance().getCurrentTimeMillis());
+  }
+
+  public void addStockMovementAndUpdateStockCard(StockMovementItem stockMovementItem, long createdTime) {
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
         StockCard stockcard = stockMovementItem.getStockCard();
         createOrUpdate(stockcard);
-        stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(stockMovementItem);
+        stockMovementRepository.batchCreateStockMovementItemAndLotItems(stockMovementItem, createdTime);
         return null;
       });
     } catch (SQLException e) {
@@ -174,27 +178,21 @@ public class StockRepository {
     }
   }
 
-  public synchronized void addStockMovementsAndUpdateStockCards(final List<StockCard> needInitialStockCards,
-      final List<StockCard> stockCards) {
+  public void addStockMovementsAndUpdateStockCards(List<StockCard> needInitialStockCards, List<StockCard> stockCards) {
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
         if (!needInitialStockCards.isEmpty()) {
           for (StockCard stockCard : needInitialStockCards) {
             createOrUpdate(stockCard);
-            StockMovementItem item =  stockCard.generateInitialStockMovementItem(0);
-            stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(item);
+            StockMovementItem item = stockCard.generateInitialStockMovementItem(0);
+            stockMovementRepository.batchCreateStockMovementItemAndLotItems(item, currentTimeMillis);
           }
         }
-        for (StockCard stockCard: stockCards) {
-          long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
-          if (!needInitialStockCards.isEmpty()) {
-            currentTimeMillis = currentTimeMillis + 1;
-          }
+        for (StockCard stockCard : stockCards) {
           createOrUpdate(stockCard);
-          for (StockMovementItem movementItem: stockCard.getStockMovementItemsWrapper()) {
-            stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(
-                movementItem, new Date(currentTimeMillis));
-
+          for (StockMovementItem movementItem : stockCard.getStockMovementItemsWrapper()) {
+            stockMovementRepository.batchCreateStockMovementItemAndLotItems(movementItem, (currentTimeMillis + 1));
           }
         }
         return null;
