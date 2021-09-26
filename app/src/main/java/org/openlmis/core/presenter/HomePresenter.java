@@ -85,7 +85,7 @@ public class HomePresenter extends Presenter {
     previousSubscribe = Observable.create((Observable.OnSubscribe<Map<String, Integer>>) subscriber -> {
       subscriber.onNext(stockRepository.queryStockCountGroupByStockOnHandStatus());
       subscriber.onCompleted();
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(queryStockCountObserver);
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.immediate()).subscribe(queryStockCountObserver);
     subscriptions.add(previousSubscribe);
   }
 
