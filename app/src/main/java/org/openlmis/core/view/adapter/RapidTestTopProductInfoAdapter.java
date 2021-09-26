@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.enumeration.RapidTestTopProductValidationType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
@@ -36,15 +37,6 @@ import org.openlmis.core.view.widget.CleanableEditText;
 import org.openlmis.core.view.widget.RapidTestProductInfoView;
 
 public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Adapter {
-
-  /**
-   * all EditText pass validate flag
-   */
-  public static final int ALL_COMPLETE = -1;
-
-  private static final int CHECK_TYPE_INVENTORY = 1;
-
-  private static final int CHECK_TYPE_STOCK = 1;
 
   /**
    * inventory EditText Cache
@@ -58,7 +50,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
 
   private final List<RnrFormItem> productInfos;
 
-  private int lastNotCompleteType = -1;
+  private RapidTestTopProductValidationType lastNotCompleteType;
 
   public RapidTestTopProductInfoAdapter(List<RnrFormItem> productInfos) {
     this.productInfos = productInfos;
@@ -142,21 +134,21 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
   }
 
   public int getNotCompletePosition() {
-    for (int i = 0; i < inventoryEditTexts.size(); i++) {
-      final CleanableEditText item = inventoryEditTexts.get(i);
-      if (TextUtils.isEmpty(item.getText().toString())) {
-        lastNotCompleteType = CHECK_TYPE_INVENTORY;
-        return i;
-      }
-    }
     for (int i = 0; i < stockEditTexts.size(); i++) {
       final CleanableEditText item = stockEditTexts.get(i);
       if (TextUtils.isEmpty(item.getText().toString())) {
-        lastNotCompleteType = CHECK_TYPE_STOCK;
+        lastNotCompleteType = RapidTestTopProductValidationType.STOCK_EMPTY;
         return i;
       }
     }
-    return ALL_COMPLETE;
+    for (int i = 0; i < inventoryEditTexts.size(); i++) {
+      final CleanableEditText item = inventoryEditTexts.get(i);
+      if (TextUtils.isEmpty(item.getText().toString())) {
+        lastNotCompleteType = RapidTestTopProductValidationType.INVENTORY_EMPTY;
+        return i;
+      }
+    }
+    return -1;
   }
 
   public void showError(int position) {
@@ -164,7 +156,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
       return;
     }
     final CleanableEditText editText =
-        lastNotCompleteType == CHECK_TYPE_INVENTORY ? inventoryEditTexts.get(position)
+        lastNotCompleteType == RapidTestTopProductValidationType.INVENTORY_EMPTY ? inventoryEditTexts.get(position)
             : stockEditTexts.get(position);
     editText.setError(LMISApp.getContext().getString(R.string.hint_error_input));
     editText.requestFocus();

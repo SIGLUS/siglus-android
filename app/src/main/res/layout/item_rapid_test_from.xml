@@ -3,7 +3,9 @@
   style="@style/ItemRnr.Container"
   android:layout_width="wrap_content"
   android:layout_height="@dimen/repid_view_top_item_line_height"
-  android:background="@drawable/border_bottom_black">
+  android:background="@drawable/border_bottom_black"
+  android:focusable="true"
+  android:focusableInTouchMode="true">
 
   <TextView
     android:id="@+id/tv_name"
@@ -19,6 +21,7 @@
     android:background="@null"
     android:enabled="false"
     android:inputType="number"
+    android:focusableInTouchMode="true"
     android:maxLength="@integer/max_length_rapid_test_no_total" />
 
   <TextView
@@ -48,6 +51,7 @@
     android:background="@null"
     android:enabled="false"
     android:inputType="number"
+    android:focusableInTouchMode="true"
     android:maxLength="@integer/max_length_rapid_test_no_total" />
 
   <TextView
