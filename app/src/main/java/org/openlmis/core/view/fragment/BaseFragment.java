@@ -109,6 +109,13 @@ public abstract class BaseFragment extends RoboMigrationAndroidXFragment impleme
     }
   }
 
+  public boolean isLoading() {
+    if (getActivity() instanceof BaseActivity) {
+      return ((BaseActivity) getActivity()).isLoading();
+    }
+    return false;
+  }
+
   @Override
   public void onDestroy() {
     unSubscribeSubscriptions();

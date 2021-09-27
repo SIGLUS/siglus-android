@@ -123,12 +123,11 @@ public class ReportListFragment extends BaseReportListFragment {
 
   @Override
   protected void loadForms() {
-    if (!isLoading) {
+    if (!isLoading()) {
       loading();
-      isLoading = true;
-      Subscription subscription = presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
-      subscriptions.add(subscription);
     }
+    Subscription subscription = presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
+    subscriptions.add(subscription);
   }
 
   @Override
@@ -224,13 +223,11 @@ public class ReportListFragment extends BaseReportListFragment {
       @Override
       public void onCompleted() {
         loaded();
-        isLoading = false;
       }
 
       @Override
       public void onError(Throwable e) {
         loaded();
-        isLoading = false;
         ToastUtil.show(e.getMessage());
       }
 

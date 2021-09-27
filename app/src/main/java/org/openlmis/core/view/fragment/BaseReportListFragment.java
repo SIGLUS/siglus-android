@@ -25,8 +25,6 @@ import org.openlmis.core.event.SyncRnrFinishEvent;
 
 public abstract class BaseReportListFragment extends BaseFragment {
 
-  boolean isLoading = false;
-
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveSyncStatusEvent(SyncRnrFinishEvent event) {
     loadForms();

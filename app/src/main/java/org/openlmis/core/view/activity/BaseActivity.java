@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.openlmis.core.BuildConfig;
@@ -84,6 +85,8 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   protected Class<? extends Presenter> presenterClass;
   protected ProgressDialog loadingDialog;
+
+  @Getter
   protected boolean isLoading = false;
 
   private long appTimeout;
