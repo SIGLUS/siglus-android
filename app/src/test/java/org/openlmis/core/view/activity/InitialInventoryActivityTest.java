@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
+import android.app.Activity;
 import android.content.Intent;
 import com.google.inject.AbstractModule;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -27,12 +29,12 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.InitialInventoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.RobolectricUtils;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
-import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
 
@@ -67,6 +69,7 @@ public class InitialInventoryActivityTest {
     when(mockedAdapter.getData()).thenReturn(data);
 
     initialInventoryActivity.mAdapter = mockedAdapter;
+    LMISTestApp.getInstance().SetActiveActivity((Activity) initialInventoryActivity);
   }
 
   @After
@@ -104,7 +107,7 @@ public class InitialInventoryActivityTest {
 
     initialInventoryActivity.onBackPressed();
 
-    assertEquals(ShadowToast.getTextOfLatestToast(), initialInventoryActivity.getString(R.string.msg_save_before_exit));
+    assertEquals( initialInventoryActivity.getString(R.string.msg_save_before_exit), ToastUtil.activityToast.getText());
 
     initialInventoryActivity.onBackPressed();
 

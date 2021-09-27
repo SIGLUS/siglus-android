@@ -29,6 +29,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.view.View;
@@ -56,12 +57,13 @@ import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.RobolectricUtils;
+import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -97,6 +99,9 @@ public class VIARequisitionFragmentTest {
 
     SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
     viaRequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
+
+    Activity dumpFragmentActivity = Robolectric.buildActivity(DumpFragmentActivity.class).get();
+    LMISTestApp.getInstance().SetActiveActivity((Activity) dumpFragmentActivity);
   }
 
   private VIARequisitionFragment getVIARequisitionFragmentFromActivityWithIntent() {
@@ -127,7 +132,7 @@ public class VIARequisitionFragmentTest {
     viaRequisitionFragment.consultationView.findViewById(R.id.et_external_consultations_performed).performClick();
 
     assertEquals("This information is not used when creating an emergency requisition",
-        ShadowToast.getTextOfLatestToast());
+        ToastUtil.activityToast.getText());
     assertEquals(StringUtils.EMPTY,
         ((TextView) viaRequisitionFragment.kitView.findViewById(R.id.et_via_kit_received_hf)).getText().toString());
     assertEquals("Emergency requisition balancete",
@@ -243,13 +248,15 @@ public class VIARequisitionFragmentTest {
 
   @Test
   public void shouldShowTheCannotInitFormToastWhenTheAllStockMovementsAreNotSyncDown() {
+    // given
     reset(presenter);
     when(presenter.getRnrFormStatus()).thenReturn(Status.DRAFT);
     SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(true);
     viaRequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
 
+    // when
     String msg = viaRequisitionFragment.getString(R.string.msg_stock_movement_is_not_ready);
-    assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(msg);
+    assertEquals(msg, ToastUtil.activityToast.getText());
     verify(presenter, never()).loadData(anyLong(), any(Date.class));
   }
 }

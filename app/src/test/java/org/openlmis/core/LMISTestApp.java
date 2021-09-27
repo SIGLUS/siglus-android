@@ -1,5 +1,6 @@
 package org.openlmis.core;
 
+import android.app.Activity;
 import java.util.HashMap;
 import org.openlmis.core.network.LMISRestApi;
 
@@ -9,6 +10,7 @@ public class LMISTestApp extends LMISApp {
   private final HashMap<Integer, Boolean> featureToggles = new HashMap<>();
   private static LMISTestApp instance;
   private LMISRestApi restApi;
+  private Activity activeActivity;
 
   @Override
   public void onCreate() {
@@ -20,6 +22,14 @@ public class LMISTestApp extends LMISApp {
     return instance;
   }
 
+  @Override
+  public Activity getActiveActivity() {
+    return activeActivity;
+  }
+
+  public void SetActiveActivity(Activity activity) {
+     activeActivity = activity;
+  }
 
   public void setFeatureToggle(int id, boolean featureToggle) {
     featureToggles.put(id, featureToggle);

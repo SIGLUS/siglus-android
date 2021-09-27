@@ -53,7 +53,7 @@ public class LMISApp extends Application {
 
   private static LMISApp instance;
 
-  private static Activity activeActivity;
+  private Activity activeActivity;
 
   private static final int JOB_ID_NETWORK_CHANGE = 123;
 
@@ -83,7 +83,7 @@ public class LMISApp extends Application {
     return instance;
   }
 
-  public static Activity getActiveActivity(){
+  public Activity getActiveActivity() {
     return activeActivity;
   }
 
@@ -177,23 +177,29 @@ public class LMISApp extends Application {
       @Override
       public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
       }
+
       @Override
       public void onActivityStarted(Activity activity) {
       }
+
       @Override
       public void onActivityResumed(Activity activity) {
         activeActivity = activity;
       }
+
       @Override
       public void onActivityPaused(Activity activity) {
         activeActivity = null;
       }
+
       @Override
       public void onActivityStopped(Activity activity) {
       }
+
       @Override
       public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
       }
+
       @Override
       public void onActivityDestroyed(Activity activity) {
       }

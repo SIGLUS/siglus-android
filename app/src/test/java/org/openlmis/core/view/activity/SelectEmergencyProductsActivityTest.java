@@ -1,11 +1,13 @@
 package org.openlmis.core.view.activity;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.app.Activity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.inject.AbstractModule;
@@ -15,18 +17,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.ProductPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.holder.SelectEmergencyProductsViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
-import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
@@ -54,6 +57,7 @@ public class SelectEmergencyProductsActivityTest {
 
     activityController = Robolectric.buildActivity(SelectEmergencyProductsActivity.class);
     activity = activityController.create().start().resume().visible().get();
+    LMISTestApp.getInstance().SetActiveActivity((Activity) activity);
   }
 
   @After
@@ -74,7 +78,7 @@ public class SelectEmergencyProductsActivityTest {
     activity.mAdapter.refreshList(getInventoryViewModels());
     activity.btnNext.performClick();
 
-    assertThat(ShadowToast.getTextOfLatestToast(), is("Please select product"));
+    assertEquals("Please select product", ToastUtil.activityToast.getText());
   }
 
   @Test
@@ -94,8 +98,8 @@ public class SelectEmergencyProductsActivityTest {
     activity.mAdapter.onBindViewHolder(viewHolder, 10);
     viewHolder.itemView.findViewById(R.id.touchArea_checkbox).performClick();
 
-    assertThat(ShadowToast.getTextOfLatestToast(),
-        is("You can only select 10 products for an emergency requisition"));
+    assertEquals("You can only select 10 products for an emergency requisition",
+        ToastUtil.activityToast.getText());
   }
 
   @Test

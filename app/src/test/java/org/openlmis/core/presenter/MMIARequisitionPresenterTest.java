@@ -30,6 +30,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.app.Activity;
 import android.util.Log;
 import com.google.inject.AbstractModule;
 import java.sql.SQLException;
@@ -51,8 +52,10 @@ import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenItemRepository;
 import org.openlmis.core.service.SyncUpManager;
+import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.DumpFragmentActivity;
+import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -87,6 +90,8 @@ public class MMIARequisitionPresenterTest {
     when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
 
     presenter.loadDataOnNextAction.call(rnRForm);
+    Activity dumpFragmentActivity = Robolectric.buildActivity(DumpFragmentActivity.class).get();
+    LMISTestApp.getInstance().SetActiveActivity((Activity) dumpFragmentActivity);
   }
 
   @Test
@@ -109,10 +114,15 @@ public class MMIARequisitionPresenterTest {
 
   @Test
   public void shouldShowErrorWhenLoadRnRFormOnError() {
+    // given
     reset(mockMMIAformView);
     presenter.loadDataOnErrorAction.call(new Exception("I am testing the onError action"));
+
+    // when
     verify(mockMMIAformView).loaded();
-    assertEquals("I am testing the onError action", ShadowToast.getTextOfLatestToast());
+
+    //then
+    assertEquals("I am testing the onError action", ToastUtil.activityToast.getText());
   }
 
   @Test

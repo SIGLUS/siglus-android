@@ -18,15 +18,16 @@
 
 package org.openlmis.core.view.activity;
 
+import static junit.framework.Assert.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
+import android.app.Activity;
 import android.content.Intent;
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
@@ -43,12 +44,12 @@ import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.presenter.ReportListPresenter;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.ToastUtil;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowIntent;
-import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
 
@@ -70,6 +71,7 @@ public class ReportListActivityTest {
     });
     requisitionActivityActivityController = Robolectric.buildActivity(ReportListActivity.class);
     reportListActivity = requisitionActivityActivityController.create().get();
+    LMISTestApp.getInstance().SetActiveActivity((Activity) reportListActivity);
 
     verify(mockedPresenter, times(1)).getSupportReportTypes();
   }
@@ -116,8 +118,9 @@ public class ReportListActivityTest {
     reportListActivity.checkAndGotoEmergencyPage();
 
     // then
-    MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(),
-        is("You are not allowed to create an emergency between 18th and 25th, please submit request using the monthly requisition form."));
+    assertEquals(
+        "You are not allowed to create an emergency between 18th and 25th, please submit request using the monthly requisition form.",
+        ToastUtil.activityToast.getText());
   }
 
   @Test
@@ -128,8 +131,10 @@ public class ReportListActivityTest {
     // when
     reportListActivity.checkAndGotoEmergencyPage();
 
-    MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(),
-        is("Cannot create emergency requisition"));
+    // then
+    assertEquals(
+        "Cannot create emergency requisition",
+        ToastUtil.activityToast.getText());
   }
 
   @Test
@@ -145,8 +150,9 @@ public class ReportListActivityTest {
     reportListActivity.checkAndGotoEmergencyPage();
 
     // then
-    MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(),
-        is("You are not allowed to create an emergency requisition until you complete all your previous monthly requisitions."));
+    assertEquals(
+        "You are not allowed to create an emergency requisition until you complete all your previous monthly requisitions.",
+        ToastUtil.activityToast.getText());
   }
 
   @Test

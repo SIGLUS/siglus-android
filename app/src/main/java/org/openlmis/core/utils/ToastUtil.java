@@ -31,6 +31,8 @@ import org.openlmis.core.R;
 
 public final class ToastUtil {
 
+  public static SuperActivityToast activityToast;
+
   private ToastUtil() {
   }
 
@@ -39,19 +41,8 @@ public final class ToastUtil {
     if (TextUtils.isEmpty(text)) {
       return;
     }
-    WindowManager wm = (WindowManager) LMISApp.getContext().getSystemService(Context.WINDOW_SERVICE);
-    int width = wm.getDefaultDisplay().getWidth();
-    Activity currentActivity = LMISApp.getActiveActivity();
-    if (currentActivity != null) {
-      SuperActivityToast.create(currentActivity, new Style(), Style.TYPE_STANDARD)
-          .setText(text.toString())
-          .setDuration(Style.DURATION_VERY_LONG)
-          .setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0,
-              (int) LMISApp.getContext().getResources().getDimension(R.dimen.px_180))
-          .setWidth(width - 100)
-          .setFrame(Style.FRAME_STANDARD)
-          .setAnimations(Style.ANIMATIONS_FADE).show();
-    }
+    showActivityToast(text.toString(), Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM,
+        (int) LMISApp.getContext().getResources().getDimension(R.dimen.px_180));
   }
 
   public static void show(int resId) {
@@ -59,15 +50,20 @@ public final class ToastUtil {
   }
 
   public static void showInCenter(int text) {
+    showActivityToast(LMISApp.getContext().getResources().getText(text).toString(), Gravity.CENTER, 0);
+  }
+
+  private static void showActivityToast(String text, int gravity, int yOffset) {
     WindowManager wm = (WindowManager) LMISApp.getContext().getSystemService(Context.WINDOW_SERVICE);
     int width = wm.getDefaultDisplay().getWidth();
-    Activity currentActivity = LMISApp.getActiveActivity();
+    Activity currentActivity = LMISApp.getInstance().getActiveActivity();
     if (currentActivity != null) {
-      SuperActivityToast.create(currentActivity, new Style(), Style.TYPE_STANDARD)
-          .setText(LMISApp.getContext().getResources().getText(text).toString())
+      if (activityToast == null) {
+        activityToast = SuperActivityToast.create(currentActivity, new Style(), Style.TYPE_STANDARD);
+      }
+      activityToast.setText(text)
           .setDuration(Style.DURATION_VERY_LONG)
-          .setGravity(Gravity.CENTER, 0,
-              (int) LMISApp.getContext().getResources().getDimension(R.dimen.px_180))
+          .setGravity(gravity, 0, yOffset)
           .setWidth(width - 100)
           .setFrame(Style.FRAME_STANDARD)
           .setAnimations(Style.ANIMATIONS_FADE).show();
