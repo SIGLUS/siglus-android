@@ -91,40 +91,44 @@ public class UnpackKitPresenter extends Presenter {
   public Observable<Void> saveUnpackProductsObservable(int kitUnpackQuantity, String documentNumber, String signature) {
     return Observable.create((OnSubscribe<Void>) subscriber -> {
       try {
-        List<StockCard> toUpdateStockCards = new ArrayList<>();
-        List<StockCard> needInitialStockCards = new ArrayList<>();
-        for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
-          if (inventoryViewModel.getLotListQuantityTotalAmount() <= 0) {
-            continue;
-          }
-          StockCard stockCard = stockRepository.queryStockCardByProductId(inventoryViewModel.getProductId());
-          if (stockCard == null) {
-            stockCard = new StockCard();
-            needInitialStockCards.add(stockCard);
-          }
-          stockCard.setProduct(inventoryViewModel.getProduct());
-          List<LotMovementViewModel> lotMovementList = new ArrayList<>();
-          lotMovementList.addAll(FluentIterable.from(inventoryViewModel.getExistingLotMovementViewModelList())
-              .filter(LotMovementViewModel::quantityGreaterThanZero)
-              .toList());
-          lotMovementList.addAll(inventoryViewModel.getNewLotMovementViewModelList());
-          StockMovementItem newMovement = createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature,
-              lotMovementList);
-          stockCard.setStockOnHand(newMovement.getStockOnHand());
-          stockCard.setStockMovementItemsWrapper(Collections.singletonList(newMovement));
-          toUpdateStockCards.add(stockCard);
-        }
-        toUpdateStockCards.add(getStockCardForKit(kitUnpackQuantity, documentNumber, signature));
-        productRepository.updateProductInArchived(FluentIterable.from(toUpdateStockCards)
-            .transform((Function<StockCard, Long>) stockCard -> stockCard.getProduct().getId())
-            .toList());
-        stockRepository.addStockMovementsAndUpdateStockCards(needInitialStockCards, toUpdateStockCards);
+        saveUnpackMovement(kitUnpackQuantity, documentNumber, signature);
         subscriber.onNext(null);
         subscriber.onCompleted();
       } catch (LMISException exception) {
         subscriber.onError(exception);
       }
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  private void saveUnpackMovement(int kitUnpackQuantity, String documentNumber, String signature) throws LMISException {
+    List<StockCard> toUpdateStockCards = new ArrayList<>();
+    List<StockCard> needInitialStockCards = new ArrayList<>();
+    for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
+      if (inventoryViewModel.getLotListQuantityTotalAmount() <= 0) {
+        continue;
+      }
+      StockCard stockCard = stockRepository.queryStockCardByProductId(inventoryViewModel.getProductId());
+      if (stockCard == null) {
+        stockCard = new StockCard();
+        needInitialStockCards.add(stockCard);
+      }
+      stockCard.setProduct(inventoryViewModel.getProduct());
+      List<LotMovementViewModel> lotMovementList = new ArrayList<>();
+      lotMovementList.addAll(FluentIterable.from(inventoryViewModel.getExistingLotMovementViewModelList())
+          .filter(LotMovementViewModel::quantityGreaterThanZero)
+          .toList());
+      lotMovementList.addAll(inventoryViewModel.getNewLotMovementViewModelList());
+      StockMovementItem newMovement = createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature,
+          lotMovementList);
+      stockCard.setStockOnHand(newMovement.getStockOnHand());
+      stockCard.setStockMovementItemsWrapper(Collections.singletonList(newMovement));
+      toUpdateStockCards.add(stockCard);
+    }
+    toUpdateStockCards.add(getStockCardForKit(kitUnpackQuantity, documentNumber, signature));
+    productRepository.updateProductInArchived(FluentIterable.from(toUpdateStockCards)
+        .transform((Function<StockCard, Long>) stockCard -> stockCard.getProduct().getId())
+        .toList());
+    stockRepository.addStockMovementsAndUpdateStockCards(needInitialStockCards, toUpdateStockCards);
   }
 
   protected StockCard getStockCardForKit(int kitUnpackQuantity, String documentNumber,
@@ -158,6 +162,10 @@ public class UnpackKitPresenter extends Presenter {
     unpackMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
     unpackMovementItem.setDocumentNumber(documentNumber);
     unpackMovementItem.setSignature(signature);
+    for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
+      lotMovementViewModel.setMovementReason(MovementReasonManager.DDM);
+      lotMovementViewModel.setDocumentNumber(documentNumber);
+    }
     unpackMovementItem.populateLotQuantitiesAndCalculateNewSOH(lotMovementViewModelList);
     return unpackMovementItem;
   }

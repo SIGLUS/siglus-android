@@ -27,8 +27,10 @@ import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -68,6 +70,7 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.Sets;
 import rx.Observable;
 
 @Singleton
@@ -247,27 +250,26 @@ public class SyncUpManager {
         new LMISException("SyncUpManager.movementEntriesToSync").reportToFabric();
         return false;
       }
-      lmisRestApi.syncUpStockMovementDataSplit(movementEntriesToSync);
+      SyncUpStockMovementDataSplitResponse response = lmisRestApi.syncUpStockMovementDataSplit(movementEntriesToSync);
 
-      List<StockMovementItem> shouldMarkSyncedItems = stockMovementItems;
+      List<StockMovementItem> shouldMarkSyncedItems = new ArrayList<>();
 
-      //  Set<String> syncFailedProduct = Sets.newHashSet(response.getErrorProductCodes());
-      //  for (StockMovementItem stockMovementItem : stockMovementItems) {
-      //    if (CollectionUtils.isEmpty(syncFailedProduct)
-      //        || !syncFailedProduct
-      //        .contains(stockMovementItem.getStockCard().getProduct().getCode())) {
-      //      shouldMarkSyncedItems.add(stockMovementItem);
-      //    }
-      //  }
+      Set<String> syncFailedProduct = Sets.newHashSet(response.getErrorProductCodes());
+      for (StockMovementItem stockMovementItem : stockMovementItems) {
+        if (CollectionUtils.isEmpty(syncFailedProduct)
+            || !syncFailedProduct
+            .contains(stockMovementItem.getStockCard().getProduct().getCode())) {
+          shouldMarkSyncedItems.add(stockMovementItem);
+        }
+      }
 
       markStockDataSynced(shouldMarkSyncedItems);
       syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.STOCK_CARDS, 0L);
-      // TODO: deal with  error info
-      // if (!response.getErrorProductCodes().isEmpty()) {
-      //   syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.SYNC_MOVEMENT, 2L);
-      //   saveStockMovementErrors(response);
-      //   return false;
-      // }
+      if (!response.getErrorProductCodes().isEmpty()) {
+        syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.SYNC_MOVEMENT, 2L);
+        saveStockMovementErrors(response);
+        return false;
+      }
       sharedPreferenceMgr.setStockMovementSyncError("");
       Log.d(TAG, "===> SyncStockMovement : synced");
       return true;
@@ -281,12 +283,10 @@ public class SyncUpManager {
   }
 
   private void saveStockMovementErrors(SyncUpStockMovementDataSplitResponse response) {
-    List<String> syncErrorProduct = FluentIterable.from(response.getErrorProductCodes()).limit(3)
-        .toList();
+    List<String> syncErrorProduct = FluentIterable.from(response.getErrorProductCodes()).limit(3).toList();
     EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR, syncErrorProduct.toString()));
     sharedPreferenceMgr.setStockMovementSyncError(syncErrorProduct.toString());
-    syncErrorsRepository
-        .save(new SyncError(response.getErrorProductCodes().toString(), SyncType.SYNC_MOVEMENT, 2L));
+    syncErrorsRepository.save(new SyncError(response.getErrorProductCodes().toString(), SyncType.SYNC_MOVEMENT, 2L));
   }
 
   public boolean fakeSyncStockCards() {
