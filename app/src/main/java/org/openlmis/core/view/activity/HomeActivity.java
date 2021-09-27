@@ -323,8 +323,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
           startActivity(inventoryIntent);
           break;
         case R.id.btn_requisitions:
-           Intent reportIntent = new Intent(HomeActivity.this, ReportListActivity.class);
-           startActivity(reportIntent);
+          Intent reportIntent = new Intent(HomeActivity.this, ReportListActivity.class);
+          startActivity(reportIntent);
           break;
         case R.id.btn_kits:
           startActivity(KitStockCardListActivity.class);
