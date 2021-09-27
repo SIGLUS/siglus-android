@@ -18,31 +18,40 @@
 
 package org.openlmis.core.utils;
 
-import static android.widget.Toast.makeText;
-
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-import androidx.core.content.ContextCompat;
+import android.view.WindowManager;
+import com.github.johnpersano.supertoasts.library.Style;
+import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
 public final class ToastUtil {
 
   private ToastUtil() {
-
   }
 
+  @SuppressLint("WrongConstant")
   public static void show(CharSequence text) {
     if (TextUtils.isEmpty(text)) {
       return;
     }
-    Toast toast = makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG);
-    setToastLayout(toast);
-    toast.show();
+    WindowManager wm = (WindowManager) LMISApp.getContext().getSystemService(Context.WINDOW_SERVICE);
+    int width = wm.getDefaultDisplay().getWidth();
+    Activity currentActivity = LMISApp.getActiveActivity();
+    if (currentActivity != null) {
+      SuperActivityToast.create(currentActivity, new Style(), Style.TYPE_STANDARD)
+          .setText(text.toString())
+          .setDuration(Style.DURATION_VERY_LONG)
+          .setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0,
+              (int) LMISApp.getContext().getResources().getDimension(R.dimen.px_180))
+          .setWidth(width - 100)
+          .setFrame(Style.FRAME_STANDARD)
+          .setAnimations(Style.ANIMATIONS_FADE).show();
+    }
   }
 
   public static void show(int resId) {
@@ -50,21 +59,18 @@ public final class ToastUtil {
   }
 
   public static void showInCenter(int text) {
-    Toast toast = makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG);
-    setToastLayout(toast);
-    toast.setGravity(Gravity.CENTER, 0, 0);
-    toast.show();
-  }
-
-  private static void setToastLayout(Toast toast) {
-    toast.setGravity(Gravity.BOTTOM, 0, (int) LMISApp.getContext().getResources().getDimension(R.dimen.px_50));
-    View view = toast.getView();
-    if (view != null) {
-      view.setBackgroundResource(R.drawable.toast_bg);
-      TextView textView = view.findViewById(android.R.id.message);
-      textView.setTextColor(ContextCompat.getColor(LMISApp.getContext(), R.color.color_white));
-      textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, LMISApp.getInstance().getResources()
-          .getDimension(R.dimen.px_18));
+    WindowManager wm = (WindowManager) LMISApp.getContext().getSystemService(Context.WINDOW_SERVICE);
+    int width = wm.getDefaultDisplay().getWidth();
+    Activity currentActivity = LMISApp.getActiveActivity();
+    if (currentActivity != null) {
+      SuperActivityToast.create(currentActivity, new Style(), Style.TYPE_STANDARD)
+          .setText(LMISApp.getContext().getResources().getText(text).toString())
+          .setDuration(Style.DURATION_VERY_LONG)
+          .setGravity(Gravity.CENTER, 0,
+              (int) LMISApp.getContext().getResources().getDimension(R.dimen.px_180))
+          .setWidth(width - 100)
+          .setFrame(Style.FRAME_STANDARD)
+          .setAnimations(Style.ANIMATIONS_FADE).show();
     }
   }
 }

@@ -20,6 +20,7 @@ package org.openlmis.core.view.activity;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -121,6 +122,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private boolean isCmmCalculating = false;
 
+  public static  Activity activity;
+
   private int syncedCount = 0;
 
   public void syncData() {
@@ -152,6 +155,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveCmmCalculateEvent(CmmCalculateEvent event) {
     isCmmCalculating = event.isStart();
+
     refreshDashboard();
   }
 
@@ -244,6 +248,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    activity = this;
     EventBus.getDefault().register(this);
     if (UserInfoMgr.getInstance().getUser() == null) {
       // In case some users use some unknown way entered here!!!
