@@ -419,15 +419,14 @@ public class LoginPresenter extends Presenter {
 
       @Override
       public void onNext(List<StockCard> stockCards) {
-        syncDownManager.saveStockCardsFromLastYear(stockCards)
-            .subscribe(getSaveStockCardsSubscriber());
+        syncDownManager.saveStockCardsFromLastYear(stockCards).subscribe(getSaveStockCardsSubscriber());
       }
     };
   }
 
   @NonNull
-  private Subscriber<Void> getSaveStockCardsSubscriber() {
-    return new Subscriber<Void>() {
+  private Subscriber<Object> getSaveStockCardsSubscriber() {
+    return new Subscriber<Object>() {
       @Override
       public void onCompleted() {
         sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
@@ -447,7 +446,7 @@ public class LoginPresenter extends Presenter {
       }
 
       @Override
-      public void onNext(Void aVoid) {
+      public void onNext(Object aVoid) {
         // do nothing
       }
     };

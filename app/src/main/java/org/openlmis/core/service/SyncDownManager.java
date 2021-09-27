@@ -279,8 +279,8 @@ public class SyncDownManager {
   }
 
   @NonNull
-  private Subscriber<Void> getSaveStockCardsSubscriber() {
-    return new Subscriber<Void>() {
+  private Subscriber<Object> getSaveStockCardsSubscriber() {
+    return new Subscriber<Object>() {
       @Override
       public void onCompleted() {
         sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
@@ -299,7 +299,7 @@ public class SyncDownManager {
       }
 
       @Override
-      public void onNext(Void aVoid) {
+      public void onNext(Object aVoid) {
         // do nothing
       }
     };
@@ -428,8 +428,8 @@ public class SyncDownManager {
     }
   }
 
-  public Observable<Void> saveStockCardsFromLastYear(final List<StockCard> stockCards) {
-    List<Observable<Void>> observables = new ArrayList<>();
+  public Observable<Object> saveStockCardsFromLastYear(final List<StockCard> stockCards) {
+    List<Observable<Object>> observables = new ArrayList<>();
     if (stockCards.isEmpty()) {
       return Observable.merge(observables);
     }
@@ -444,15 +444,16 @@ public class SyncDownManager {
       startPosition = endPosition;
     }
     EventBus.getDefault().post(new CmmCalculateEvent(true));
-    return Observable.merge(observables).doOnTerminate(() -> EventBus.getDefault().post(new CmmCalculateEvent(false)));
+    return Observable.merge(observables).doOnTerminate(() -> {
+      stockService.immediatelyUpdateAvgMonthlyConsumption();
+      EventBus.getDefault().post(new CmmCalculateEvent(false));
+    });
   }
 
-  public Observable<Void> saveStockCards(final List<StockCard> stockCards, Scheduler scheduler) {
-
-    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+  public Observable<Object> saveStockCards(final List<StockCard> stockCards, Scheduler scheduler) {
+    return Observable.create(subscriber -> {
       try {
         stockRepository.batchCreateSyncDownStockCardsAndMovements(stockCards);
-        stockService.immediatelyUpdateAvgMonthlyConsumption();
         subscriber.onCompleted();
       } catch (Exception e) {
         subscriber.onError(e);
