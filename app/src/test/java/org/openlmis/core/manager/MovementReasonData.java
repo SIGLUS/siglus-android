@@ -32,7 +32,7 @@ public class MovementReasonData {
     // init pt
     PT_TYPE_TO_DESC_LIST.put(MovementType.RECEIVE, newArrayList("Distrito (DDM)",
         "Província (DPM)",
-        "Intermediate Warehouse ( AI)"));
+        "Armazém Intermediário ( AI)"));
     PT_TYPE_TO_DESC_LIST.put(MovementType.ISSUE, newArrayList("Farmácia Pública",
         "Maternidade-SMI",
         "Enfermaria",
