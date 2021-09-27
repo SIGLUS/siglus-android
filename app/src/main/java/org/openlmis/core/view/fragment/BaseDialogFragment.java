@@ -19,6 +19,7 @@
 package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
+import org.openlmis.core.R;
 import roboguice.fragment.RoboMigrationAndroidXDialogFragment;
 
 public class BaseDialogFragment extends RoboMigrationAndroidXDialogFragment {
@@ -27,5 +28,10 @@ public class BaseDialogFragment extends RoboMigrationAndroidXDialogFragment {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setRetainInstance(true);
+  }
+
+  @Override
+  public int getTheme() {
+    return R.style.AlertDialog;
   }
 }

@@ -6,7 +6,7 @@
 
   <TextView
     style="@style/Dialog.TitleLeft"
-    android:layout_width="@dimen/px_500"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/title_generate_lot_number"
     android:textSize="@dimen/font_size_large"
