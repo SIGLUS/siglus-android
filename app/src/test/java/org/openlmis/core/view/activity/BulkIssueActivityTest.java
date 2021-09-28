@@ -51,6 +51,7 @@ import org.openlmis.core.view.adapter.BulkIssueAdapter;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
+import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -151,7 +152,7 @@ public class BulkIssueActivityTest {
     bulkIssueActivity.onSaveDraftFinished(true);
 
     // then
-    assertEquals("Successfully Saved", ToastUtil.activityToast.getText());
+    Assert.assertEquals("Successfully Saved", ShadowToast.getTextOfLatestToast());
 
     // when
     bulkIssueActivity.onSaveDraftFinished(false);

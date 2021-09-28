@@ -95,7 +95,7 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
     loading();
     Subscription subscription = presenter.saveDraftInventoryObservable().subscribe(o -> {
       loaded();
-      ToastUtil.show(getString(R.string.successfully_saved));
+      ToastUtil.showSystem(getString(R.string.successfully_saved));
       goToNextPage();
     }, errorAction);
     subscriptions.add(subscription);

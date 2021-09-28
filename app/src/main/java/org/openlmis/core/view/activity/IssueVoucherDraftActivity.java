@@ -175,7 +175,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   @Override
   public void onSaveDraftFinished(boolean succeeded) {
     if (succeeded) {
-      ToastUtil.show(getString(R.string.successfully_saved));
+      ToastUtil.showSystem(getString(R.string.successfully_saved));
       backToIssueVoucherListActivity();
     } else {
       ToastUtil.show(getString(R.string.unsuccessfully_saved));

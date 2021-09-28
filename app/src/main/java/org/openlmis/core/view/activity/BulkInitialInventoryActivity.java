@@ -172,7 +172,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     return new Subscriber<Object>() {
       @Override
       public void onCompleted() {
-        ToastUtil.show(R.string.successfully_saved);
+        ToastUtil.showSystem(getString(R.string.successfully_saved));
         loaded();
         btnSave.setEnabled(true);
       }

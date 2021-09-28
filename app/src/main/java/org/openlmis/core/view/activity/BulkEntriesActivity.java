@@ -275,7 +275,7 @@ public class BulkEntriesActivity extends BaseActivity {
       @Override
       public void onCompleted() {
         finish();
-        ToastUtil.show(R.string.successfully_saved);
+        ToastUtil.showSystem(getString(R.string.successfully_saved));
       }
 
       @Override

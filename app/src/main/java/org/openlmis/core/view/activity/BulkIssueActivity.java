@@ -160,7 +160,7 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView, On
   @Override
   public void onSaveDraftFinished(boolean succeeded) {
     if (succeeded) {
-      ToastUtil.show(getString(R.string.successfully_saved));
+      ToastUtil.showSystem(getString(R.string.successfully_saved));
       finish();
     } else {
       ToastUtil.show(getString(R.string.unsuccessfully_saved));
