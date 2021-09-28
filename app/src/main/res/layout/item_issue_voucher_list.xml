@@ -94,7 +94,7 @@
         <TextView
           android:layout_width="@dimen/px_200"
           android:layout_height="wrap_content"
-          android:text="@string/label_requesting_facility"
+          android:text="@string/label_Client"
           android:textColor="@color/color_606162"
           android:textSize="@dimen/px_20" />
 
@@ -136,7 +136,7 @@
         <TextView
           android:layout_width="@dimen/px_200"
           android:layout_height="wrap_content"
-          android:text="@string/label_supplying_depot"
+          android:text="@string/label_supplier"
           android:textColor="@color/color_606162"
           android:textSize="@dimen/px_20" />
 
@@ -178,7 +178,7 @@
         <TextView
           android:layout_width="@dimen/px_200"
           android:layout_height="wrap_content"
-          android:text="@string/label_shipping_date"
+          android:text="@string/label_shipping_date_capitalize"
           android:textColor="@color/color_606162"
           android:textSize="@dimen/px_20" />
 
