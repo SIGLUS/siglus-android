@@ -43,6 +43,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.event.CmmCalculateEvent;
+import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
@@ -181,6 +182,16 @@ public class StockCardListFragment extends BaseFragment implements
       return;
     }
     loadStockCards();
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveDeleteDirtyDataEvent(DeleteDirtyDataEvent event) {
+    if (DeleteDirtyDataEvent.START == event) {
+      loading(getResources().getString(R.string.msg_delete_dirty_data));
+    }
+    if (DeleteDirtyDataEvent.FINISH == event) {
+      loaded();
+    }
   }
 
   protected void createAdapter() {

@@ -39,8 +39,10 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
+import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -108,17 +110,17 @@ public class DirtyDataManager {
   Observer<Object> deleteDirtyDataSubscribe = new Observer<Object>() {
     @Override
     public void onCompleted() {
-
+      // do nothing
     }
 
     @Override
     public void onError(Throwable e) {
-
+      EventBus.getDefault().post(DeleteDirtyDataEvent.FINISH);
     }
 
     @Override
     public void onNext(Object o) {
-
+      EventBus.getDefault().post(DeleteDirtyDataEvent.FINISH);
     }
   };
 
@@ -303,9 +305,10 @@ public class DirtyDataManager {
   }
 
   public void deleteAndReset() {
+    EventBus.getDefault().post(DeleteDirtyDataEvent.START);
     getDeleteDirtyDataObservable()
-        .subscribeOn(AndroidSchedulers.mainThread())
-        .observeOn(Schedulers.io())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(deleteDirtyDataSubscribe);
   }
 
