@@ -176,7 +176,9 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
 
   @Override
   public void orderEditOrViewOperation(IssueVoucherListViewModel viewModel) {
-    if (viewModel.isIssueVoucher() && presenter.hasUnmatchedPod(viewModel.getPod().getRequisitionProgramCode())) {
+    if (viewModel.isRemoteIssueVoucherOrPod() &&
+        viewModel.isIssueVoucher() &&
+        presenter.hasUnmatchedPod(viewModel.getPod().getRequisitionProgramCode())) {
       SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
           null,
           getString(R.string.msg_has_unmatched_pod, viewModel.getProgramName()),

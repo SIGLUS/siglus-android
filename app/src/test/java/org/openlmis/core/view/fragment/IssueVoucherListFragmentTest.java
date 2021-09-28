@@ -192,6 +192,7 @@ public class IssueVoucherListFragmentTest {
     Pod pod = PodBuilder.generatePod();
     when(mockViewModel.getPod()).thenReturn(pod);
     when(mockViewModel.isIssueVoucher()).thenReturn(true);
+    when(mockViewModel.isRemoteIssueVoucherOrPod()).thenReturn(true);
     when(mockPresenter.hasUnmatchedPod(any())).thenReturn(true);
 
     // when
