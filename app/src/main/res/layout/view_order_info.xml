@@ -265,7 +265,6 @@
         android:layout_weight="1">
         <TextView
           style="@style/Pod.header.title"
-          android:background="@color/color_fbdd6d"
           android:textStyle="bold"
           android:text="@string/label_returned"></TextView>
       </LinearLayout>

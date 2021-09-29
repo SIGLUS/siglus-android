@@ -89,7 +89,8 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
     private void initView(IssueVoucherReportProductViewModel productViewModel) {
       lvLotList = itemView.findViewById(R.id.lv_issue_voucher_lot_list);
       List<IssueVoucherReportLotViewModel> lotViewModels = productViewModel.getLotViewModelList();
-      lvLotList.getLayoutParams().height = (int) itemView.getResources().getDimension(R.dimen.px_50) * lotViewModels.size();
+      lvLotList.getLayoutParams().height =
+          (int) itemView.getResources().getDimension(R.dimen.px_50) * lotViewModels.size();
       lotAdapter = new IssueVoucherReportLotAdapter(itemView.getContext(), lotViewModels);
       lotAdapter.setOnRemoveListener(this);
       lvLotList.setAdapter(lotAdapter);

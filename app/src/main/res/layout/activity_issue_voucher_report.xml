@@ -44,7 +44,7 @@
     android:layout_marginRight="@dimen/px_12"
     android:layout_above="@+id/action_panel"
     android:layout_toRightOf="@id/products_list"
-    android:background="@drawable/border_bg_gray_bottom"
+    android:background="@drawable/border_bg_gray_left_bottom"
     app:layout_constraintBottom_toTopOf="@+id/ll_total_line"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
