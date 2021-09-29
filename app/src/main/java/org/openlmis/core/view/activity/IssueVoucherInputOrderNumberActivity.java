@@ -52,7 +52,6 @@ import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.presenter.IssueVoucherInputOrderNumberPresenter;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
@@ -68,67 +67,60 @@ import rx.Subscription;
 @ContentView(R.layout.activity_issue_voucher_input_order_number)
 public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
 
+  private final ActivityResultLauncher<Intent> issueVoucherActivityResultLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          return;
+        }
+      }
+  );
+  @InjectPresenter(IssueVoucherInputOrderNumberPresenter.class)
+  IssueVoucherInputOrderNumberPresenter presenter;
   @InjectView(R.id.v_white_background)
   private View background;
-
-
   @InjectView(R.id.tv_issue_voucher_anchor)
   private TextView issueVoucherText;
-
   @InjectView(R.id.til_order_number)
   private TextInputLayout tilOrderNumber;
-
   @Getter(AccessLevel.PACKAGE)
   @InjectView(R.id.et_order_number)
   private TextInputEditText etOrderNumber;
-
   @InjectView(R.id.til_program)
   private TextInputLayout tilProgram;
-
   @InjectView(R.id.til_origin)
   private TextInputLayout tilOrigin;
-
   @Getter(AccessLevel.PACKAGE)
   @InjectView(R.id.et_origin)
   private TextInputEditText etOrigin;
-
   @Getter(AccessLevel.PACKAGE)
   @InjectView(R.id.et_issue_voucher_program)
   private TextInputEditText etProgram;
-
   @Getter(AccessLevel.PACKAGE)
   @InjectView(R.id.bt_next)
   private Button btNext;
-
   @Setter(AccessLevel.PACKAGE)
   private String orderNumber = null;
-
   @Setter(AccessLevel.PACKAGE)
   private MovementReason chosenReason = null;
-
   @Setter(AccessLevel.PACKAGE)
   private Program chosenProgram = null;
-
-  @InjectPresenter(IssueVoucherInputOrderNumberPresenter.class)
-  IssueVoucherInputOrderNumberPresenter presenter;
-
+  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() != Activity.RESULT_OK) {
+          return;
+        }
+        Intent intent = new Intent(this, IssueVoucherDraftActivity.class);
+        intent.putExtra(IntentConstants.PARAM_ORDER_NUMBER, orderNumber);
+        intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE, chosenProgram.getProgramCode());
+        intent.putExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE, chosenReason.getCode());
+        intent.putExtra(SELECTED_PRODUCTS, result.getData().getSerializableExtra(SELECTED_PRODUCTS));
+        issueVoucherActivityResultLauncher.launch(intent);
+      });
   private List<Program> programItems = new ArrayList<>();
-  private boolean isElectronicIssueVoucher;
-  private Long podId;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    isElectronicIssueVoucher = getIntent().getBooleanExtra(Constants.PARAM_IS_ELECTRONIC_ISSUE_VOUCHER, false);
-    if (isElectronicIssueVoucher) {
-      issueVoucherText.setText(getResources().getString(R.string.title_electronic_issue_voucher));
-      podId = getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 0);
-      setTitle(getResources().getString(R.string.title_issue_voucher_remote_input_order_number));
-      tilOrderNumber.setVisibility(View.GONE);
-      etOrderNumber.setVisibility(View.GONE);
-      tilProgram.setVisibility(View.GONE);
-      etProgram.setVisibility(View.GONE);
-    }
     background.setOnClickListener(getBackgroundClickListener());
     etOrigin.setOnClickListener(getMovementReasonOnClickListener());
     btNext.setOnClickListener(getNextClickListener());
@@ -178,9 +170,6 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   }
 
   private void initForManuallyIssueVoucher() {
-    if (isElectronicIssueVoucher) {
-      return;
-    }
     initProgramData();
     addListenerForOrderNumber();
   }
@@ -256,54 +245,17 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
     };
   }
 
-  private final ActivityResultLauncher<Intent> issueVoucherActivityResultLauncher = registerForActivityResult(
-      new StartActivityForResult(), result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-          return;
-        }
-      }
-  );
-
-  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
-      new StartActivityForResult(), result -> {
-        if (result.getResultCode() != Activity.RESULT_OK) {
-          return;
-        }
-        Intent intent = new Intent(this, IssueVoucherDraftActivity.class);
-        intent.putExtra(IntentConstants.PARAM_ORDER_NUMBER, orderNumber);
-        intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE, chosenProgram.getProgramCode());
-        intent.putExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE, chosenReason.getCode());
-        intent.putExtra(SELECTED_PRODUCTS, result.getData().getSerializableExtra(SELECTED_PRODUCTS));
-        issueVoucherActivityResultLauncher.launch(intent);
-      });
-
   @NonNull
   private SingleClickButtonListener getNextClickListener() {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
         hideKeyboard();
-        if (isElectronicIssueVoucher) {
-          validateForRemote();
-        } else {
-          validateForLocal();
-        }
+        validateForLocal();
       }
     };
   }
 
-  private void validateForRemote() {
-    if (chosenReason == null) {
-      tilOrigin.setError(getResources().getString(R.string.alert_movement_reason_can_not_be_blank));
-      return;
-    }
-    Intent intent = new Intent(getApplicationContext(), IssueVoucherReportActivity.class);
-    intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, podId);
-    intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_OR_POD, Constants.PARAM_ISSUE_VOUCHER);
-    intent.putExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE, chosenReason.getCode());
-    startActivity(intent);
-
-  }
 
   private void validateForLocal() {
     if (validateAll()) {

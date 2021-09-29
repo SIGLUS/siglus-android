@@ -27,6 +27,7 @@ public class PodOrderItemResponse {
   private String supplyFacilityName;
   private String supplyFacilityDistrict;
   private String supplyFacilityProvince;
+  private String supplyFacilityType;
   private String status;
   private String createdDate;
   private String lastModifiedDate;

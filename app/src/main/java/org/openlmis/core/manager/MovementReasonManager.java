@@ -188,6 +188,20 @@ public final class MovementReasonManager {
     return typeList;
   }
 
+  public String getReasonCodeBySupplyFacilityType(String supplyFacilityType) throws MovementReasonNotFoundException {
+    Optional<MovementReason> matched = FluentIterable.from(currentReasonList)
+        .firstMatch(movementReason -> {
+          if (movementReason == null) {
+            return false;
+          }
+          return movementReason.getDescription().contains(supplyFacilityType);
+        });
+    if (!matched.isPresent()) {
+      throw new MovementReasonNotFoundException(supplyFacilityType);
+    }
+    return matched.get().getCode();
+  }
+
   public enum MovementType {
     RECEIVE("RECEIVE"),
     ISSUE("ISSUE"),

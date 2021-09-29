@@ -51,7 +51,6 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.EditOrderNumberActivity;
 import org.openlmis.core.view.activity.IssueVoucherDraftActivity;
-import org.openlmis.core.view.activity.IssueVoucherInputOrderNumberActivity;
 import org.openlmis.core.view.activity.IssueVoucherReportActivity;
 import org.openlmis.core.view.adapter.IssueVoucherListAdapter;
 import org.openlmis.core.view.listener.OrderOperationListener;
@@ -223,19 +222,12 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
   }
 
   private void handleRemoteIssueOrPod(IssueVoucherListViewModel viewModel) {
-    if (viewModel.isNeedEnterInputOrderNumber()) {
-      Intent intent = new Intent(getActivity(), IssueVoucherInputOrderNumberActivity.class);
-      intent.putExtra(Constants.PARAM_IS_ELECTRONIC_ISSUE_VOUCHER, true);
-      intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, viewModel.getPod().getId());
-      startActivity(intent);
-    } else {
-      Intent intent = new Intent(getActivity(), IssueVoucherReportActivity.class);
-      intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, viewModel.getPod().getId());
-      intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_OR_POD,
-          viewModel.getPod().getOrderStatus() == OrderStatus.SHIPPED ? Constants.PARAM_ISSUE_VOUCHER
-              : Constants.PARAM_POD);
-      startActivity(intent);
-    }
+    Intent intent = new Intent(getActivity(), IssueVoucherReportActivity.class);
+    intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, viewModel.getPod().getId());
+    intent.putExtra(Constants.PARAM_ISSUE_VOUCHER_OR_POD,
+        viewModel.getPod().getOrderStatus() == OrderStatus.SHIPPED ? Constants.PARAM_ISSUE_VOUCHER
+            : Constants.PARAM_POD);
+    startActivity(intent);
   }
 
   private InternetCheckListener checkInternetListener() {

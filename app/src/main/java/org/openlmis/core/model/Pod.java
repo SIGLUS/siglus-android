@@ -77,6 +77,9 @@ public class Pod extends BaseModel implements Serializable {
   private String orderSupplyFacilityProvince;
 
   @DatabaseField
+  private String orderSupplyFacilityType;
+
+  @DatabaseField
   private OrderStatus orderStatus;
 
   @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = ISO_DATE_TIME_FORMAT)

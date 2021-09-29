@@ -120,10 +120,6 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
       isBackToCurrentPage = ScreenName.ISSUE_VOUCHER_REPORT_SCREEN
           == getIntent().getExtras().getSerializable(IntentConstants.FROM_PAGE);
     }
-    String reason = getIntent().getStringExtra(IntentConstants.PARAM_MOVEMENT_REASON_CODE);
-    if (reason != null) {
-      presenter.reasonCode = reason;
-    }
     initProductList();
     initIssueVoucherList();
     issueVoucherReportAdapter.setOnRemoveListener(this);

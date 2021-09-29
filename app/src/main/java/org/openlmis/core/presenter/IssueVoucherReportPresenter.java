@@ -26,7 +26,9 @@ import java.util.Objects;
 import lombok.Getter;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
@@ -126,6 +128,12 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
       pod.setPodProductItemsWrapper(existedProducts);
     } else {
       pod = podContent;
+      try {
+        reasonCode = MovementReasonManager.getInstance()
+            .getReasonCodeBySupplyFacilityType(pod.getOrderSupplyFacilityType());
+      } catch (MovementReasonNotFoundException e) {
+        new LMISException(e, "MovementReasonNotFoundException").reportToFabric();
+      }
     }
     try {
       Program program = programRepository.queryByCode(pod.getRequisitionProgramCode());
