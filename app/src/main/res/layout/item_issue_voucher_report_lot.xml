@@ -6,99 +6,116 @@
   android:showDividers="middle"
   android:orientation="horizontal"
   android:divider="@drawable/divider_vertical">
+  <TextView
+    android:id="@+id/tv_product_dosage"
+    style="@style/Pod.list.lot" />
+  <TextView
+    android:id="@+id/tv_disiganation"
+    style="@style/Pod.list.lot" />
+  <LinearLayout
+    style="@style/Pod.list.lot"
+    android:layout_width="@dimen/px_230">
     <TextView
+      android:id="@+id/tv_lot_code"
       style="@style/Pod.list.lot"
-      android:id="@+id/tv_product_unit" />
+      android:layout_width="@dimen/px_200" />
+    <ImageView
+      android:id="@+id/iv_clear"
+      android:layout_width="@dimen/px_30"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:padding="@dimen/px_5"
+      android:src="@drawable/bitmap_close_red" />
+  </LinearLayout>
+  <TextView
+    style="@style/Pod.list.lot"
+    android:layout_width="@dimen/px_80"
+    android:id="@+id/tv_expiring_date"/>
+  <TextView
+    android:id="@+id/tv_quantity_ordered"
+    android:layout_width="@dimen/px_80"
+    style="@style/Pod.list.lot" />
+  <TextView
+    android:id="@+id/tv_partial_fulfilled"
+    android:layout_width="@dimen/px_80"
+    style="@style/Pod.list.lot" />
+  <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot"
+    android:layout_width="@dimen/px_80">
+    <EditText
+      android:id="@+id/et_quantity_shipped"
+      style="@style/Pod.list.lot.editView"
+      android:gravity="right|center_vertical"
+      android:inputType="numberSigned"
+      android:maxLength="@integer/edit_amount_length"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+  <TextView android:id="@+id/tv_price"
+    android:layout_width="@dimen/px_80"
+    style="@style/Pod.list.lot" />
+  <TextView android:id="@+id/tv_value"
+    android:layout_width="@dimen/px_80"
+    style="@style/Pod.list.lot" />
+  <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot"
+    android:layout_width="@dimen/px_80">
+    <EditText
+      android:id="@+id/et_quantity_accepted"
+    android:layout_width="@dimen/px_70"
+      style="@style/Pod.list.lot.editView"
+      android:gravity="right|center_vertical"
+      android:inputType="numberSigned"
+      android:maxLength="@integer/edit_amount_length"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+  <TextView
+    android:id="@+id/tv_quantity_returned"
+    android:layout_width="@dimen/px_80"
+    style="@style/Pod.list.lot" />
+  <RelativeLayout
+    style="@style/Pod.list.lot"
+    android:layout_width="@dimen/px_200">
+    <ImageView
+      android:id="@+id/iv_rejection_reason"
+      android:layout_width="@dimen/px_16"
+      android:layout_height="@dimen/px_16"
+      android:layout_marginLeft="@dimen/px_20"
+      android:layout_centerVertical="true"
+      android:paddingHorizontal="@dimen/px_1"
+      android:src="@drawable/icon_pulldown_enable" />
     <TextView
+      android:id="@+id/tv_rejection_reason"
       style="@style/Pod.list.lot"
-      android:id="@+id/tv_quantity_ordered" />
-    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginLeft="@dimen/px_32"
+      android:layout_marginRight="@dimen/px_15"
+      android:layout_marginVertical="@dimen/px_5"
+      android:background="@color/white_transparent_color"
+      android:gravity="center" />
+    <View
+      android:id="@+id/v_rejection_reason"
       style="@style/Pod.list.lot"
-      android:id="@+id/tv_partial_fulfilled" />
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot">
-      <EditText
-        android:id="@+id/et_quantity_shipped"
-        style="@style/Pod.list.lot.editView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:maxLength="@integer/edit_amount_length"
-        android:gravity="right|center_vertical"
-        android:inputType="numberSigned" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-      style="@style/Pod.list.lot"
-      android:layout_width="@dimen/px_230">
-
-      <TextView
-        style="@style/Pod.list.lot"
-        android:layout_width="@dimen/px_200"
-        android:id="@+id/tv_lot_code" />
-
-      <ImageView
-        android:id="@+id/iv_clear"
-        android:layout_width="@dimen/px_30"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/px_5"
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/bitmap_close_red" />
-    </LinearLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot">
-      <EditText
-        android:id="@+id/et_quantity_accepted"
-        style="@style/Pod.list.lot.editView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:maxLength="@integer/edit_amount_length"
-        android:gravity="right|center_vertical"
-        android:inputType="numberSigned" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <TextView
-      style="@style/Pod.list.lot"
-      android:id="@+id/tv_quantity_returned"/>
-    <RelativeLayout style="@style/Pod.list.lot"
-      android:layout_width="@dimen/px_200">
-      <View
-        android:id="@+id/v_rejection_reason"
-        style="@style/Pod.list.lot"
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="@dimen/px_10"
-        android:layout_marginVertical="@dimen/px_5"
-        android:background="@drawable/border_bg_corner" />
-      <TextView
-        android:id="@+id/tv_rejection_reason"
-        style="@style/Pod.list.lot"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/px_32"
-        android:layout_marginRight="@dimen/px_15"
-        android:layout_marginVertical="@dimen/px_5"
-        android:background="@color/white_transparent_color"
-        android:gravity="center" />
-      <ImageView
-        android:id="@+id/iv_rejection_reason"
-        android:paddingHorizontal="@dimen/px_1"
-        android:layout_width="@dimen/px_16"
-        android:layout_height="@dimen/px_16"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/px_20"
-        android:src="@drawable/icon_pulldown_enable" />
-    </RelativeLayout>
-   <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot">
-      <EditText style="@style/Pod.list.lot.editView"
-        android:id="@+id/et_note"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:gravity="right|center_vertical"
-        android:inputType="text"
-        android:maxLength="100"
-        android:background="@drawable/border_bg_corner" />
-   </androidx.constraintlayout.widget.ConstraintLayout>
+      android:layout_width="match_parent"
+      android:layout_marginHorizontal="@dimen/px_10"
+      android:layout_marginVertical="@dimen/px_5"
+      android:background="@drawable/border_bg_corner" />
+  </RelativeLayout>
+  <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot">
+    <EditText
+      android:id="@+id/et_note"
+      style="@style/Pod.list.lot.editView"
+      android:background="@drawable/border_bg_corner"
+      android:gravity="right|center_vertical"
+      android:inputType="text"
+      android:maxLength="100"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  style="@style/LayoutRequisition.HeaderRightContainer"
+  android:layout_width="wrap_content"
+  android:layout_height="@dimen/px_100"
+  android:divider="@drawable/divider_vertical"
+  android:showDividers="middle">
+  <LinearLayout
+    android:layout_width="@dimen/px_200"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_horizontal"
+    android:showDividers="middle"
+    android:orientation="vertical">
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/px_50"
+      android:text="@string/label_destination_product" />
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/px_49"
+      android:divider="@drawable/divider_vertical"
+      android:showDividers="middle">
+      <TextView
+        style="@style/Pod.list.header"
+        android:layout_weight="1"
+        android:layout_height="@dimen/px_50"
+        android:text="@string/label_dosage" />
+      <TextView
+        style="@style/Pod.list.header"
+        android:layout_weight="1"
+        android:text="@string/label_desiganation" />
+    </LinearLayout>
+  </LinearLayout>
+  <TextView
+    style="@style/Pod.list.header"
+    android:layout_width="@dimen/px_230"
+    android:text="@string/label_header_lot_number" />
+  <TextView
+    style="@style/Pod.list.header"
+    android:layout_width="@dimen/px_80"
+    android:text="@string/label_expiring_date" />
+  <TextView
+    style="@style/Pod.list.header"
+    android:layout_width="@dimen/px_80"
+    android:text="@string/label_quantity_ordered" />
+  <TextView
+    style="@style/Pod.list.header"
+    android:layout_width="@dimen/px_80"
+    android:text="@string/label_partial_fulfilled" />
+  <LinearLayout
+    android:layout_width="@dimen/px_80"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_horizontal"
+    android:showDividers="middle"
+    android:orientation="vertical">
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_width="match_parent"
+      android:layout_weight="1"
+      android:text="@string/label_supplied_quantity" />
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_weight="1"
+      android:text="@string/label_qf" />
+  </LinearLayout>
+  <LinearLayout
+    android:layout_width="@dimen/px_80"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_horizontal"
+    android:showDividers="middle"
+    android:orientation="vertical">
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_width="match_parent"
+      android:layout_weight="1"
+      android:text="@string/label_price" />
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_weight="1"
+      android:text="@string/label_pu" />
+  </LinearLayout>
+  <LinearLayout
+    android:layout_width="@dimen/px_80"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_horizontal"
+    android:showDividers="middle"
+    android:orientation="vertical">
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_width="match_parent"
+      android:layout_weight="1"
+      android:text="@string/label_value" />
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_weight="1"
+      android:text="@string/label_qf_pu" />
+  </LinearLayout>
+  <LinearLayout
+    android:layout_width="@dimen/px_80"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_horizontal"
+    android:showDividers="middle"
+    android:orientation="vertical">
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_width="match_parent"
+      android:layout_weight="1"
+      android:text="@string/label_quantity_received" />
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_weight="1"
+      android:text="@string/label_qr" />
+  </LinearLayout>
+  <LinearLayout
+    android:layout_width="@dimen/px_80"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_horizontal"
+    android:showDividers="middle"
+    android:orientation="vertical">
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_width="match_parent"
+      android:layout_weight="1"
+      android:text="@string/label_different" />
+    <TextView
+      style="@style/Pod.list.header"
+      android:layout_weight="1"
+      android:text="@string/label_qr_qf" />
+  </LinearLayout>
+  <TextView
+    style="@style/Pod.list.header"
+    android:layout_width="@dimen/px_200"
+    android:text="@string/label_rejection_reason" />
+  <TextView
+    style="@style/Pod.list.header"
+    android:text="@string/label_note" />
+</LinearLayout>

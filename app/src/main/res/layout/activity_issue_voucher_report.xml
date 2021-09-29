@@ -17,7 +17,7 @@
 
   <LinearLayout
     android:id="@+id/products_list"
-    android:layout_width="@dimen/px_190"
+    android:layout_width="@dimen/px_255"
     android:layout_height="0dp"
     android:layout_marginTop="@dimen/px_12"
     android:layout_marginLeft="@dimen/px_12"
@@ -26,11 +26,7 @@
     app:layout_constraintBottom_toTopOf="@+id/ll_total_line"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/view_orderInfo">
-    <TextView
-      style="@style/Pod.list.header"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/px_50"
-      android:text="@string/label_product_name" />
+    <include layout="@layout/layout_issue_voucher_body_left_header" />
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/product_name_list_view"
       android:layout_width="match_parent"
@@ -44,7 +40,7 @@
     android:layout_marginTop="@dimen/px_12"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:layout_marginLeft="@dimen/px_202"
+    android:layout_marginLeft="@dimen/px_255"
     android:layout_marginRight="@dimen/px_12"
     android:layout_above="@+id/action_panel"
     android:layout_toRightOf="@id/products_list"
@@ -59,43 +55,8 @@
       android:layout_height="match_parent"
       android:background="@drawable/border_bg_gray_bottom"
       android:orientation="vertical">
-
-      <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/px_50"
-        android:showDividers="middle"
-        android:divider="@drawable/divider_vertical">
-        <TextView
-          style="@style/Pod.list.header"
-          android:text="@string/label_product_unit" />
-        <TextView
-          style="@style/Pod.list.header"
-          android:text="@string/label_quantity_ordered" />
-        <TextView
-          style="@style/Pod.list.header"
-          android:text="@string/label_partial_fulfilled"/>
-        <TextView
-          style="@style/Pod.list.header"
-          android:text="@string/label_quantity_shipped"/>
-        <TextView
-          style="@style/Pod.list.header"
-          android:layout_width="@dimen/px_230"
-          android:text="@string/label_stockcard_lot_code"/>
-        <TextView
-          style="@style/Pod.list.header"
-          android:text="@string/label_quantity_accepted"/>
-        <TextView
-          style="@style/Pod.list.header"
-          android:text="@string/label_quantity_returned"/>
-        <TextView
-          style="@style/Pod.list.header"
-          android:layout_width="@dimen/px_200"
-          android:text="@string/label_rejection_reason"/>
-        <TextView
-          style="@style/Pod.list.header"
-          android:text="@string/label_note"/>
-      </LinearLayout>
-
+      <include
+        layout="@layout/layout_issue_voucher_body_right_header" />
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/form_list_view"
         android:layout_width="wrap_content"

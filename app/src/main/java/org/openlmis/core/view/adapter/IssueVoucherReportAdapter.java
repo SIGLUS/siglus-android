@@ -82,21 +82,20 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
     public void populate(IssueVoucherReportProductViewModel productViewModel) {
       initView(productViewModel);
       tvProductUnit.setText(productViewModel.getProductUnitName());
-      tvPartialFulfilled.setText(productViewModel.getPartialFulfilledQuantity());
       tvQuantityOrdered.setText(productViewModel.getOrderedQuantity());
+      tvPartialFulfilled.setText(productViewModel.getPartialFulfilledQuantity());
     }
 
     private void initView(IssueVoucherReportProductViewModel productViewModel) {
       lvLotList = itemView.findViewById(R.id.lv_issue_voucher_lot_list);
       List<IssueVoucherReportLotViewModel> lotViewModels = productViewModel.getLotViewModelList();
-      lvLotList.getLayoutParams().height =
-          (int) itemView.getResources().getDimension(R.dimen.px_50) * lotViewModels.size();
+      lvLotList.getLayoutParams().height = (int) itemView.getResources().getDimension(R.dimen.px_50) * lotViewModels.size();
       lotAdapter = new IssueVoucherReportLotAdapter(itemView.getContext(), lotViewModels);
       lotAdapter.setOnRemoveListener(this);
       lvLotList.setAdapter(lotAdapter);
-      tvProductUnit = itemView.findViewById(R.id.tv_product_unit);
-      tvPartialFulfilled = itemView.findViewById(R.id.tv_partial_fulfilled);
+      tvProductUnit = itemView.findViewById(R.id.tv_product_dosage);
       tvQuantityOrdered = itemView.findViewById(R.id.tv_quantity_ordered);
+      tvPartialFulfilled = itemView.findViewById(R.id.tv_partial_fulfilled);
     }
 
     @Override

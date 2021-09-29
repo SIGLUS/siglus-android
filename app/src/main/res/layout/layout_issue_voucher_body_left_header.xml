@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  style="@style/LayoutRequisition.HeaderRightContainer"
+  android:layout_width="@dimen/px_255"
+  android:layout_height="@dimen/px_100"
+  android:divider="@drawable/divider_vertical"
+  android:showDividers="middle">
+
+  <TextView
+    style="@style/Pod.list.header"
+    android:layout_width="@dimen/px_64"
+    android:textStyle="bold"
+    android:layout_height="match_parent"
+    android:text="@string/label_fnm" />
+  <TextView
+    style="@style/Pod.list.header"
+    android:textStyle="bold"
+    android:layout_width="@dimen/px_190"
+    android:layout_height="match_parent"
+    android:text="@string/label_product_name" />
+
+</LinearLayout>

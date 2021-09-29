@@ -46,7 +46,7 @@ public class IssueVoucherReportProductViewModel {
     this.isLocal = isLocal;
     this.podProductItem = podProductItem;
     product = podProductItem.getProduct();
-    productUnitName = product.getStrength() == null ? "each" : product.getStrength();
+    productUnitName = product.getStrength() == null || product.getStrength().isEmpty() ? "each" : product.getStrength();
     orderedQuantity = podProductItem.getOrderedQuantity() == null ? ""
         : String.valueOf(podProductItem.getOrderedQuantity());
     partialFulfilledQuantity = podProductItem.getPartialFulfilledQuantity() == null ? ""

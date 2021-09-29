@@ -704,4 +704,20 @@
   <string name="msg_remove_lot_title"><![CDATA[<b>Remove lot</b>]]></string>
   <string name="msg_remove_lot"><![CDATA[Remove the lot <b>%1$s</b> which is expiring in %2$s from <b>%3$s</b>]]></string>
   <string name="msg_delete_dirty_data">Deleting dirty data…</string>
+
+  <string name="label_destination_product">Destination of Product</string>
+  <string name="label_dosage">Dosage</string>
+  <string name="label_desiganation">Desiganation</string>
+  <string name="label_header_lot_number">Lot Number</string>
+  <string name="label_expiring_date">Expiring Date</string>
+  <string name="label_supplied_quantity">Supplied Quantity</string>
+  <string name="label_qf">QF</string>
+  <string name="label_price">Price</string>
+  <string name="label_pu">PU</string>
+  <string name="label_value">Value</string>
+  <string name="label_qf_pu">QF×PU</string>
+  <string name="label_quantity_received">Quantity Received</string>
+  <string name="label_qr">QR</string>
+  <string name="label_qr_qf">QR-QF</string>
+  <string name="label_reason_for_adjustment">Reason for adjustment</string>
 </resources>
