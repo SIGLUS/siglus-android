@@ -128,11 +128,13 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
       pod.setPodProductItemsWrapper(existedProducts);
     } else {
       pod = podContent;
-      try {
-        reasonCode = MovementReasonManager.getInstance()
-            .getReasonCodeBySupplyFacilityType(pod.getOrderSupplyFacilityType());
-      } catch (MovementReasonNotFoundException e) {
-        new LMISException(e, "MovementReasonNotFoundException").reportToFabric();
+      if (pod.getOrderSupplyFacilityType() != null) {
+        try {
+          reasonCode = MovementReasonManager.getInstance()
+              .getReasonCodeBySupplyFacilityType(pod.getOrderSupplyFacilityType());
+        } catch (MovementReasonNotFoundException e) {
+          new LMISException(e, "MovementReasonNotFoundException").reportToFabric();
+        }
       }
     }
     try {
