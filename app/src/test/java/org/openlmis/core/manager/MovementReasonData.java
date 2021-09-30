@@ -45,19 +45,18 @@ public class MovementReasonData {
         "Estomatologia",
         "Desembalar Kit"));
     PT_TYPE_TO_DESC_LIST
-        .put(MovementType.NEGATIVE_ADJUST, newArrayList("Devolução de Expirados Quarentena (ou Depósito fornecedor)",
-            "Danificados no Depósito",
-            "Empréstimo (de todos os Níveis) que dão saída do Depósito",
-            "Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)",
-            "Saída para Quarentena no Caso de Problemas relativos as Qualidade",
-            "Devolução para o depósito fornecedor"));
+        .put(MovementType.NEGATIVE_ADJUST, newArrayList("Devolução de expirados quarentena (ou depósito fornecedor)",
+            "Danificado no depósito",
+            "Empréstimos (para todos níveis) que dão saída do depósito",
+            "Correcção de inventário, no caso do stock em falta (stock é inferior ao existente na ficha de stock)",
+            "Saída para quarentena, no caso de problemas relativos a qualidade"));
     PT_TYPE_TO_DESC_LIST
-        .put(MovementType.POSITIVE_ADJUST, newArrayList("Devolução dos seus dependentes (US e Depósitos Beneficiários)",
-            "Devolução de Expirados (US e Depósitos Beneficiários)",
+        .put(MovementType.POSITIVE_ADJUST, newArrayList("Devolução dos clientes (US e Depósitos Beneficiários)",
+            "Devolução de expirados (US e Depósitos Beneficiários)",
             "Doação ao Depósito",
-            "Empréstimo (de todos os Níveis) que dão entrada no Depósito",
-            "Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)",
-            "Retorno da Quarentena no caso de se confirmar a qualidade do produto"));
+            "Empréstimos (de todos os níveis) que dão entrada no depósito",
+            "Correcção de inventário, no caso do stock em excesso (stock é superior ao existente na ficha de stock)",
+            "Retorno da quarentena, no caso de se confirmar a qualidade do produto"));
     PT_TYPE_TO_DESC_LIST.put(MovementType.PHYSICAL_INVENTORY, newArrayList("Inventario",
         "Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)",
         "Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)"));
@@ -78,11 +77,10 @@ public class MovementReasonData {
         "Unpack kit"));
     EN_TYPE_TO_DESC_LIST
         .put(MovementType.NEGATIVE_ADJUST, newArrayList("Drugs in quarantine have expired, returned to Supplier",
-            "Damaged on arrival",
+            "Damaged in the warehouse",
             "Loans made from a health facility deposit",
             "Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)",
-            "Product defective, moved to quarantine",
-            "Return to DDM"));
+            "Product defective, moved to quarantine"));
     EN_TYPE_TO_DESC_LIST.put(MovementType.POSITIVE_ADJUST, newArrayList("Returns from Customers(HF and dependent wards)",
         "Returns of expired drugs (HF and dependent wards)",
         "Donations to Deposit",

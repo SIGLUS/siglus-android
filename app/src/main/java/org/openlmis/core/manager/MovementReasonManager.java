@@ -242,8 +242,7 @@ public final class MovementReasonManager {
     protected boolean canBeDisplayOnMovementMenu() {
       return !(code.startsWith(ChangeMovementReasonToCode.DEFAULT_PREFIX)
           || code.equalsIgnoreCase(INVENTORY)
-          || MovementReasonManager.UNPACK_KIT.equals(code)
-          || MovementReasonManager.DONATION.equals(code));
+          || MovementReasonManager.UNPACK_KIT.equals(code));
     }
   }
 }

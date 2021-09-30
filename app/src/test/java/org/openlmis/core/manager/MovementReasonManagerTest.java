@@ -72,7 +72,7 @@ public class MovementReasonManagerTest {
     assertThat(
         reasonManager.queryByCode(MovementType.POSITIVE_ADJUST, MovementReasonManager.DONATION)
             .canBeDisplayOnMovementMenu(),
-        is(false));
+        is(true));
     assertThat(
         reasonManager.queryByCode(MovementType.ISSUE, MovementReasonManager.UNPACK_KIT).canBeDisplayOnMovementMenu(),
         is(false));
@@ -83,7 +83,6 @@ public class MovementReasonManagerTest {
     for (Entry<MovementType, ArrayList<String>> entry : EN_TYPE_TO_DESC_LIST.entrySet()) {
       for (String desc : entry.getValue()) {
         boolean displayMenu = !(desc.equalsIgnoreCase("Inventory")
-            || desc.equals("Donations to Deposit")
             || desc.equals("Unpack kit"));
         assertThat(reasonManager.queryByDesc(entry.getKey(), desc).canBeDisplayOnMovementMenu(), is(displayMenu));
       }
