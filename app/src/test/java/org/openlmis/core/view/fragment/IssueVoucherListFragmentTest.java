@@ -45,7 +45,6 @@ import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.activity.EditOrderNumberActivity;
-import org.openlmis.core.view.activity.IssueVoucherInputOrderNumberActivity;
 import org.openlmis.core.view.activity.IssueVoucherListActivity;
 import org.openlmis.core.view.activity.IssueVoucherReportActivity;
 import org.openlmis.core.view.adapter.IssueVoucherListAdapter;
@@ -187,7 +186,7 @@ public class IssueVoucherListFragmentTest {
     Intent startedIntent = shadowActivity.getNextStartedActivity();
 
     // then
-    Assert.assertEquals(IssueVoucherInputOrderNumberActivity.class.getName(), startedIntent.getComponent().getClassName());
+    Assert.assertEquals(IssueVoucherReportActivity.class.getName(), startedIntent.getComponent().getClassName());
   }
 
   @Test

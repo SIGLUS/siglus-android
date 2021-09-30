@@ -29,7 +29,6 @@ import android.text.Editable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
@@ -78,8 +77,6 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   IssueVoucherInputOrderNumberPresenter presenter;
   @InjectView(R.id.v_white_background)
   private View background;
-  @InjectView(R.id.tv_issue_voucher_anchor)
-  private TextView issueVoucherText;
   @InjectView(R.id.til_order_number)
   private TextInputLayout tilOrderNumber;
   @Getter(AccessLevel.PACKAGE)
