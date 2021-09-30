@@ -20,18 +20,25 @@ package org.openlmis.core.presenter;
 
 import static org.openlmis.core.utils.Constants.KIT_PRODUCTS;
 import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_BASIC;
+import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_BASIC_HEADER;
+import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER;
+import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_NO_BASIC;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.util.Log;
-import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
+import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.event.DebugInitialInventoryEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.DraftInitialInventory;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Product;
@@ -104,7 +111,6 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     }
   }
 
-  @Nullable
   private List<BulkInitialInventoryViewModel> convertProductToStockCardViewModel(List<Product> products, int viewType) {
     return from(products).transform(product -> {
       try {
@@ -151,20 +157,11 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     bulkInitialInventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
   }
 
-  public Observable<List<BulkInitialInventoryViewModel>> addNonBasicProductsToInventory(
-      List<Product> nonBasicProducts) {
-    return Observable.create((OnSubscribe<List<BulkInitialInventoryViewModel>>) subscriber -> {
-      List<BulkInitialInventoryViewModel> nonBasicProductsModels = convertProductToStockCardViewModel(
-          nonBasicProducts,
-          BulkInitialInventoryAdapter.ITEM_NO_BASIC);
-      buildNonBasicProductModels(nonBasicProductsModels);
-      subscriber.onNext(nonBasicProductsModels);
-    }).doOnNext(bulkInitialInventoryViewModels -> {
-      for (BulkInitialInventoryViewModel inventoryViewModel : bulkInitialInventoryViewModels) {
-        final Program program = programRepository.queryProgramByProductCode(inventoryViewModel.getProduct().getCode());
-        inventoryViewModel.setProgram(program);
-      }
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  public Observable<List<BulkInitialInventoryViewModel>> addNonBasicProductsObservable(List<Product> nonBasicProducts) {
+    return Observable.create((OnSubscribe<List<BulkInitialInventoryViewModel>>) subscriber ->
+        subscriber.onNext(addNonBasicProducts(nonBasicProducts)))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io());
   }
 
   public List<String> getAllAddedNonBasicProduct() {
@@ -172,6 +169,18 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
         .filter(viewModel -> viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NO_BASIC)
         .transform(viewModel -> viewModel.getProduct().getCode())
         .toList();
+  }
+
+  private List<BulkInitialInventoryViewModel> addNonBasicProducts(List<Product> nonBasicProducts) {
+    List<BulkInitialInventoryViewModel> nonBasicProductsModels = convertProductToStockCardViewModel(
+        nonBasicProducts,
+        BulkInitialInventoryAdapter.ITEM_NO_BASIC);
+    buildNonBasicProductModels(nonBasicProductsModels);
+    for (BulkInitialInventoryViewModel inventoryViewModel : nonBasicProductsModels) {
+      final Program program = programRepository.queryProgramByProductCode(inventoryViewModel.getProduct().getCode());
+      inventoryViewModel.setProgram(program);
+    }
+    return nonBasicProductsModels;
   }
 
   private void buildNonBasicProductModels(List<BulkInitialInventoryViewModel> nonBasicProductsModels) {
@@ -273,6 +282,62 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
         new LMISException(e, "doInventory").reportToFabric();
       }
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+  }
+
+  @VisibleForTesting
+  public Observable<Object> autofillAllProductInventory(DebugInitialInventoryEvent event) {
+    // clear non basic item
+    return Observable.create(subscriber -> {
+      Iterator<InventoryViewModel> iterator = inventoryViewModelList.iterator();
+      while (iterator.hasNext()) {
+        InventoryViewModel inventoryViewModel = iterator.next();
+        if (inventoryViewModel.getViewType() == ITEM_NO_BASIC) {
+          iterator.remove();
+        }
+      }
+      addNonBasicProducts(from(productRepository.listNonBasicProducts())
+          .filter(product -> !KIT_PRODUCTS.contains(product.getCode()))
+          .limit(event.getNonBasicProductAmount())
+          .toList());
+
+      // generate lot movement
+      int lotAddedBasicProductAmount = 0;
+      int lotAddedNonBasicProductAmount = 0;
+      for (InventoryViewModel inventoryViewModel : inventoryViewModelList) {
+        if (inventoryViewModel.getViewType() == ITEM_BASIC_HEADER
+            || inventoryViewModel.getViewType() == ITEM_NON_BASIC_HEADER) {
+          continue;
+        }
+        if (inventoryViewModel.getViewType() == ITEM_BASIC
+            && lotAddedBasicProductAmount <= event.getBasicProductAmount()) {
+          lotAddedBasicProductAmount++;
+          generateLotViewModel(event.getLotAmountPerProduct(), inventoryViewModel);
+        }
+        if (inventoryViewModel.getViewType() == ITEM_NO_BASIC
+            && lotAddedNonBasicProductAmount <= event.getNonBasicProductAmount()) {
+          lotAddedNonBasicProductAmount++;
+          generateLotViewModel(event.getLotAmountPerProduct(), inventoryViewModel);
+        }
+        ((BulkInitialInventoryViewModel) inventoryViewModel).setDone(true);
+      }
+      subscriber.onNext(null);
+      subscriber.onCompleted();
+    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+  }
+
+  private void generateLotViewModel(int lotAmountPerProduct, InventoryViewModel inventoryViewModel) {
+    DateTime dateTime = new DateTime();
+    for (int i = 0; i < lotAmountPerProduct; i++) {
+      dateTime = dateTime.plusYears(1);
+      String expiryDate = dateTime.toString(DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+      String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(
+          inventoryViewModel.getProduct().getCode(),
+          expiryDate);
+      LotMovementViewModel newLotMovementViewModel = new LotMovementViewModel(lotNumber, expiryDate,
+          MovementType.PHYSICAL_INVENTORY);
+      newLotMovementViewModel.setQuantity("100");
+      inventoryViewModel.getNewLotMovementViewModelList().add(newLotMovementViewModel);
+    }
   }
 
   private void saveInventoryDate() {

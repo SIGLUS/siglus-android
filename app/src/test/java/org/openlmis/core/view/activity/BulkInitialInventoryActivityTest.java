@@ -217,13 +217,13 @@ public class BulkInitialInventoryActivityTest {
     newAddedProduct.add(product);
     final Intent intent = new Intent();
     intent.putExtra(SELECTED_NON_BASIC_PRODUCTS, (Serializable) newAddedProduct);
-    when(mockedPresenter.addNonBasicProductsToInventory(any())).thenReturn(Observable.empty());
+    when(mockedPresenter.addNonBasicProductsObservable(any())).thenReturn(Observable.empty());
 
     // when
     bulkInventoryActivity.onActivityResult(REQUEST_CODE, RESULT_CODE, intent);
 
     // then
-    verify(mockedPresenter, times(1)).addNonBasicProductsToInventory(newAddedProduct);
+    verify(mockedPresenter, times(1)).addNonBasicProductsObservable(newAddedProduct);
   }
 
   @Test

@@ -96,7 +96,6 @@ public interface LMISRestApi {
   @POST("/api/siglusapi/android/me/facility/cmms")
   Void syncUpCmms(@Body List<CmmEntry> cmms) throws LMISException;
 
-  // below are v2 api
   @POST("/api/siglusapi/android/me/resync-info")
   Void recordReSyncAction() throws LMISException;
 

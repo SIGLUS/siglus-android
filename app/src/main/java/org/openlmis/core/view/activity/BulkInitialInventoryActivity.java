@@ -19,13 +19,19 @@
 package org.openlmis.core.view.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import java.io.Serializable;
 import java.util.ArrayList;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
+import org.openlmis.core.event.DebugInitialInventoryEvent;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.BulkInitialInventoryPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -69,6 +75,18 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
   }
 
   @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    EventBus.getDefault().register(this);
+  }
+
+  @Override
+  protected void onDestroy() {
+    EventBus.getDefault().unregister(this);
+    super.onDestroy();
+  }
+
+  @Override
   public void onBackPressed() {
     if (isSearchViewActivity()) {
       searchView.onActionViewCollapsed();
@@ -79,6 +97,16 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
       return;
     }
     super.onBackPressed();
+  }
+
+  @VisibleForTesting
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveInitialInventory(DebugInitialInventoryEvent event) {
+    loading();
+    presenter.autofillAllProductInventory(event).subscribe(o -> {
+      loaded();
+      mAdapter.refresh();
+    });
   }
 
   @Override
@@ -119,7 +147,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     if (areThereSelectedProducts(requestCode, resultCode, data)) {
       final ArrayList<Product> nonBasicProducts = (ArrayList<Product>) data
           .getSerializableExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS);
-      presenter.addNonBasicProductsToInventory(nonBasicProducts).subscribe(
+      presenter.addNonBasicProductsObservable(nonBasicProducts).subscribe(
           bulkInitialInventoryViewModels -> {
             mAdapter.refresh();
             setUpFastScroller(mAdapter.getFilteredList());

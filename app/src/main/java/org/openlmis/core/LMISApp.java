@@ -42,6 +42,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.NetworkSchedulerService;
+import org.openlmis.core.receiver.DebugReceiver;
 import org.openlmis.core.receiver.NetworkChangeReceiver;
 import org.openlmis.core.utils.AutoSizeUtil;
 import org.openlmis.core.utils.DateUtil;
@@ -71,6 +72,7 @@ public class LMISApp extends Application {
     AnalyticsTracker.initialize(this);
     LMISApp.instance = this;
     registerNetWorkChangeListener();
+    DebugReceiver.registerDebugBoardCastReceiver(this);
     configAutoSize();
     setupActivityListener();
   }

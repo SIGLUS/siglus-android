@@ -21,14 +21,22 @@ package org.openlmis.core.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
+import org.openlmis.core.event.DebugPhysicalInventoryEvent;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
 import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
@@ -55,6 +63,18 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
   }
 
   @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    EventBus.getDefault().register(this);
+  }
+
+  @Override
+  protected void onDestroy() {
+    EventBus.getDefault().unregister(this);
+    super.onDestroy();
+  }
+
+  @Override
   public void onBackPressed() {
     if (isSearchViewActivity()) {
       searchView.onActionViewCollapsed();
@@ -65,6 +85,20 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
       return;
     }
     super.onBackPressed();
+  }
+
+  @VisibleForTesting
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveDebugPhysicalInventory(DebugPhysicalInventoryEvent event) {
+    for (InventoryViewModel inventoryViewModel : presenter.getInventoryViewModelList()) {
+      for (LotMovementViewModel lotMovementViewModel : inventoryViewModel.getExistingLotMovementViewModelList()) {
+        lotMovementViewModel.setQuantity(lotMovementViewModel.getLotSoh());
+      }
+      for (LotMovementViewModel lotMovementViewModel : inventoryViewModel.getNewLotMovementViewModelList()) {
+        lotMovementViewModel.setQuantity(lotMovementViewModel.getLotSoh());
+      }
+    }
+    mAdapter.notifyDataSetChanged();
   }
 
   @Override
