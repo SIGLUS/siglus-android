@@ -67,7 +67,10 @@ public class IssueVoucherReportLotViewModel {
   }
 
   public BigDecimal getTotalValue() {
-    String price = lot.getProduct().getPrice();
+    String price = null;
+    if (lot != null) {
+      price = lot.getProduct().getPrice();
+    }
     if (price == null || shippedQuantity == null) {
       return null;
     }
@@ -76,7 +79,10 @@ public class IssueVoucherReportLotViewModel {
   }
 
   public boolean shouldShowLotClear() {
-    return this.isLocal() && this.isDraft();
+    if (this.getLot() == null) {
+      return false;
+    }
+    return this.isLocal() && this.isDraft() && !this.getLot().getProduct().isKit();
   }
 
 }

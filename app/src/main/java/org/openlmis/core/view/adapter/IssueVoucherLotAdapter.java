@@ -51,6 +51,8 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
   public IssueVoucherLotAdapter() {
     addItemType(IssueVoucherLotViewModel.TYPE_EDIT, R.layout.item_issue_voucher_lot_edit);
     addItemType(IssueVoucherLotViewModel.TYPE_DONE, R.layout.item_issue_voucher_lot_done);
+    addItemType(IssueVoucherLotViewModel.TYPE_KIT_EDIT, R.layout.item_issue_voucher_kit_virtual_lot_edit);
+    addItemType(IssueVoucherLotViewModel.TYPE_KIT_DONE, R.layout.item_issue_voucher_kit_virtual_lot_done);
   }
 
 
@@ -72,12 +74,23 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
     public void populate(IssueVoucherLotViewModel viewModel) {
       this.viewModel = viewModel;
       if (viewModel.isDone()) {
-        setText(R.id.tv_lot_number_and_date, viewModel.getLotNumber());
+        if (!viewModel.isVirtualLot()) {
+          setText(R.id.tv_lot_number_and_date, viewModel.getLotNumber());
+        }
         setText(R.id.tv_quantity_shipped, "Quantity shipped: " + viewModel.getShippedQuantity());
         setText(R.id.tv_quantity_accepted, "Quantity accepted: " + viewModel.getAcceptedQuantity());
       } else {
-        setText(R.id.tv_lot_number_and_date, MessageFormat.format("{0} - {1}",
-            viewModel.getLotNumber(), viewModel.getExpiryDate()));
+        if (!viewModel.isVirtualLot()) {
+          setText(R.id.tv_lot_number_and_date, MessageFormat.format("{0} - {1}",
+              viewModel.getLotNumber(), viewModel.getExpiryDate()));
+          ImageView ivDel = getView(R.id.iv_del);
+          ivDel.setOnClickListener(getOnClickListenerForDeleteIcon());
+          if (viewModel.isNewAdd()) {
+            ivDel.setVisibility(View.VISIBLE);
+          } else {
+            ivDel.setVisibility(View.GONE);
+          }
+        }
         tilShippedQuantity = getView(R.id.til_quantity_shipped);
         tilAcceptedQuantity = getView(R.id.til_quantity_accepted);
         setText(R.id.et_quantity_shipped,
@@ -92,13 +105,6 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
         etAcceptedQuantity.removeTextChangedListener(getAcceptedQuantityTextWatcher());
         etShippedQuantity.addTextChangedListener(getShippedQuantityTextWatcher());
         etAcceptedQuantity.addTextChangedListener(getAcceptedQuantityTextWatcher());
-        ImageView ivDel = getView(R.id.iv_del);
-        ivDel.setOnClickListener(getOnClickListenerForDeleteIcon());
-        if (viewModel.isNewAdd()) {
-          ivDel.setVisibility(View.VISIBLE);
-        } else {
-          ivDel.setVisibility(View.GONE);
-        }
         updateQuantityTips();
       }
     }

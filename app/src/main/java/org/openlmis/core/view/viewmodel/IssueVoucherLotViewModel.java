@@ -31,6 +31,7 @@ import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 @Data
@@ -42,6 +43,10 @@ public class IssueVoucherLotViewModel implements MultiItemEntity, Comparable<Iss
   public static final int TYPE_EDIT = 1;
 
   public static final int TYPE_DONE = 2;
+
+  public static final int TYPE_KIT_EDIT = 3;
+
+  public static final int TYPE_KIT_DONE = 4;
 
   private Long shippedQuantity;
 
@@ -95,7 +100,10 @@ public class IssueVoucherLotViewModel implements MultiItemEntity, Comparable<Iss
 
   @Override
   public int getItemType() {
-    return done ? TYPE_DONE : TYPE_EDIT;
+    if (done) {
+      return isVirtualLot() ? TYPE_KIT_DONE : TYPE_DONE;
+    }
+    return isVirtualLot() ? TYPE_KIT_EDIT : TYPE_EDIT;
   }
 
   public boolean isLotAllBlank() {
@@ -152,12 +160,12 @@ public class IssueVoucherLotViewModel implements MultiItemEntity, Comparable<Iss
   }
 
   public boolean hasChanged() {
-    if (ObjectUtils.notEqual(shippedQuantity, productLotItem.getShippedQuantity())
-        || ObjectUtils.notEqual(acceptedQuantity, productLotItem.getAcceptedQuantity())) {
-      return true;
-    } else {
-      return false;
-    }
+    return ObjectUtils.notEqual(shippedQuantity, productLotItem.getShippedQuantity())
+        || ObjectUtils.notEqual(acceptedQuantity, productLotItem.getAcceptedQuantity());
+  }
+
+  public boolean isVirtualLot() {
+    return Constants.VIRTUAL_LOT_NUMBER.equals(lotNumber);
   }
 
   @Override

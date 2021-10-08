@@ -230,6 +230,8 @@ public final class Constants {
 
   public static final String SIGLUS_API_ERROR_NOT_ANDROID = "siglusapi.error.notAndroid";
 
+  public static final String VIRTUAL_LOT_NUMBER = "virtual lot number";
+
   private Constants() {
 
   }

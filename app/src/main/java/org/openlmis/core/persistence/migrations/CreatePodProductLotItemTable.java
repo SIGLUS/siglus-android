@@ -9,7 +9,7 @@ public class CreatePodProductLotItemTable extends Migration {
     execSQL("CREATE TABLE `pod_product_lot_items` " +
         "(`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "`podProductItem_id` BIGINT NOT NULL, " +
-        "`lot_id` BIGINT NOT NULL, " +
+        "`lot_id` BIGINT, " +
         "`shippedQuantity` BIGINT, " +
         "`acceptedQuantity` BIGINT, " +
         "`rejectedReason` VARCHAR, " +

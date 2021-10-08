@@ -34,6 +34,7 @@ import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
@@ -45,6 +46,10 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
   public static final int TYPE_EDIT = 1;
 
   public static final int TYPE_DONE = 2;
+
+  public static final int TYPE_KIT_EDIT = 3;
+
+  public static final int TYPE_KIT_DONE = 4;
 
   @Getter
   private final List<IssueVoucherLotViewModel> lotViewModels = new ArrayList<>();
@@ -73,21 +78,24 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
             && lotOnHand.getQuantityOnHand() > 0)
         .transform(IssueVoucherLotViewModel::build)
         .toList());
+    if (stockCard.getProduct().isKit()) {
+      createVirtualLotForKitProduct();
+    }
   }
 
   @Override
   public int getItemType() {
-    return done ? TYPE_DONE : TYPE_EDIT;
+    if (done) {
+      return product.isKit() ? TYPE_KIT_DONE : TYPE_DONE;
+    }
+    return product.isKit() ? TYPE_KIT_EDIT : TYPE_EDIT;
   }
 
   public boolean validate() {
-    if (validProduct() && isAllLotValid()) {
-      setDone(true);
-      return true;
-    } else {
-      setDone(false);
-      return false;
-    }
+//    if (product.isKit()) {
+//      return validKitProduct();
+//    }
+    return validNormalProduct();
   }
 
   public void setDone(boolean isDone) {
@@ -153,6 +161,40 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
       }
     }
     return false;
+  }
+
+  private boolean validKitProduct() {
+    IssueVoucherLotViewModel virtualLot = lotViewModels.get(0);
+    Long shippedQuantity = virtualLot.getShippedQuantity();
+    Long acceptedQuantity = virtualLot.getAcceptedQuantity();
+    if (shippedQuantity == null && acceptedQuantity == null) {
+      validationType = IssueVoucherValidationType.KIT_ALL_BLANK;
+      virtualLot.setValid(false);
+      setDone(false);
+      return false;
+    } else if (shippedQuantity == null || acceptedQuantity == null) {
+      validationType = IssueVoucherValidationType.KIT_HAS_BLANK;
+      virtualLot.setValid(false);
+      setDone(false);
+      return false;
+    }
+    validationType = IssueVoucherValidationType.VALID;
+    setDone(true);
+    return true;
+  }
+
+  private boolean validNormalProduct() {
+    if (validProduct() && isAllLotValid()) {
+      setDone(true);
+      return true;
+    } else {
+      setDone(false);
+      return false;
+    }
+  }
+
+  private void createVirtualLotForKitProduct() {
+    lotViewModels.add(new IssueVoucherLotViewModel(Constants.VIRTUAL_LOT_NUMBER,"Oct 2021",product));
   }
 
   private boolean isAllLotValid() {

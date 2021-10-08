@@ -101,7 +101,9 @@ public class PodEntry {
     private String notes;
 
     public LotEntry(PodProductLotItem podProductLotItem) {
-      this.lot = new LotItemEntry(podProductLotItem);
+      if (!podProductLotItem.getPodProductItem().getProduct().isKit()) {
+        this.lot = new LotItemEntry(podProductLotItem);
+      }
       this.shippedQuantity = podProductLotItem.getShippedQuantity();
       this.acceptedQuantity = podProductLotItem.getAcceptedQuantity();
       this.rejectedReason = podProductLotItem.getRejectedReason();

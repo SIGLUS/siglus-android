@@ -122,9 +122,11 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       this.position = position;
       this.lotViewModel = lotViewModel;
       initView();
-      tvLotCode.setText(lotViewModel.getLot().getLotNumber());
-      tvLotExpireDate.setText(DateUtil
-          .formatDate(lotViewModel.getLot().getExpirationDate(), DateUtil.DB_DATE_FORMAT));
+      if (lotViewModel.getLot() != null && !lotViewModel.getLot().getProduct().isKit()) {
+        tvLotCode.setText(lotViewModel.getLot().getLotNumber());
+        tvLotExpireDate.setText(DateUtil
+            .formatDate(lotViewModel.getLot().getExpirationDate(), DateUtil.DB_DATE_FORMAT));
+      }
       tvPrice.setText(getPrice(lotViewModel));
       updateTotalValue(lotViewModel);
       etQuantityShipped.setText(convertLongValueToString(lotViewModel.getShippedQuantity()));
@@ -141,7 +143,10 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private String getPrice(IssueVoucherReportLotViewModel lotViewModel) {
-      String price = lotViewModel.getLot().getProduct().getPrice();
+      String price = null;
+      if (lotViewModel.getLot() != null) {
+        price = lotViewModel.getLot().getProduct().getPrice();
+      }
       return price == null ? "" : price;
     }
 

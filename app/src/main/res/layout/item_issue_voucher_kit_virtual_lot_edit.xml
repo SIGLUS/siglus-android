@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="@dimen/px_100"
+  android:orientation="horizontal">
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/til_quantity_shipped"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:layout_gravity="center_vertical"
+    android:layout_marginStart="@dimen/px_53"
+    android:layout_marginEnd="@dimen/px_65">
+
+    <com.google.android.material.textfield.TextInputEditText
+      android:id="@+id/et_quantity_shipped"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/hint_quantity_shipped"
+      android:inputType="number"
+      android:maxLength="@integer/document_number_length"
+      android:textSize="@dimen/px_18"/>
+
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/til_quantity_accepted"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:layout_gravity="center_vertical"
+    android:layout_marginStart="@dimen/px_65"
+    android:layout_marginEnd="@dimen/px_53">
+
+    <com.google.android.material.textfield.TextInputEditText
+      android:id="@+id/et_quantity_accepted"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/hint_quantity_accepted"
+      android:inputType="number"
+      android:maxLength="@integer/document_number_length"
+      android:textSize="@dimen/px_18"/>
+
+  </com.google.android.material.textfield.TextInputLayout>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>
