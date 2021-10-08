@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/products_list_item"
+  android:layout_width="@dimen/px_255"
+  android:layout_height="wrap_content"
+  android:divider="@drawable/divider_horizontal"
+  android:showDividers="middle"
+  android:orientation="vertical">
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@drawable/divider_vertical"
+    android:orientation="vertical"
+    android:showDividers="middle">
+    <TextView
+      style="@style/Pod.list.header.product"
+      android:layout_height="@dimen/px_50"
+      android:background="@color/color_eeeeee"
+      android:layout_width="match_parent"
+      android:text="@string/label_issue_voucher_total" />
+  </LinearLayout>
+  <TextView
+    style="@style/Pod.list.header.product"
+    android:layout_height="@dimen/px_50"
+    android:background="@color/color_eeeeee"
+    android:layout_width="match_parent"
+    android:text="@string/label_signature" />
+</LinearLayout>

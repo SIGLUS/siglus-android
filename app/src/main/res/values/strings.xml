@@ -720,4 +720,9 @@
   <string name="label_qr">QR</string>
   <string name="label_qr_qf">QR-QF</string>
   <string name="label_reason_for_adjustment">Reason for adjustment</string>
+  <string name="label_issue_voucher_total">Total value of the issue voucher</string>
+  <string name="label_issue_prepared_by">Prepared by:</string>
+  <string name="label_issue_conferred_by">Conferred by:</string>
+  <string name="label_issue_delivered_by">Delivered by: </string>
+  <string name="label_issue_received_by">Received by: </string>
 </resources>

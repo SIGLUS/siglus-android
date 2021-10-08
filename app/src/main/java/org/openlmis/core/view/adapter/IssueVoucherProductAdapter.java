@@ -25,18 +25,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.List;
 import lombok.Setter;
 import org.openlmis.core.R;
+import org.openlmis.core.enumeration.IssueVoucherItemType;
 import org.openlmis.core.view.adapter.IssueVoucherProductAdapter.IssueVoucherProductViewHolder;
 import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportSummaryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
-public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherReportProductViewModel,
+public class IssueVoucherProductAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity,
     IssueVoucherProductViewHolder> {
 
   @Setter
@@ -44,12 +49,15 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
 
 
   public IssueVoucherProductAdapter() {
-    super(R.layout.item_issue_voucher_report_product_info);
+    addItemType(IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TOTAL.getValue(),
+        R.layout.item_issue_voucher_report_summary_info);
+    addItemType(IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TYPE.getValue(),
+        R.layout.item_issue_voucher_report_product_info);
   }
 
   @Override
   protected void convert(@NonNull IssueVoucherProductViewHolder holder,
-      IssueVoucherReportProductViewModel viewModel) {
+      MultiItemEntity viewModel) {
     holder.populate(viewModel);
   }
 
@@ -64,20 +72,23 @@ public class IssueVoucherProductAdapter extends BaseQuickAdapter<IssueVoucherRep
       super(itemView);
     }
 
-    public void populate(IssueVoucherReportProductViewModel issueVoucherReportProductViewModel) {
-      productName = itemView.findViewById(R.id.products_name);
-      productList = itemView.findViewById(R.id.products_list_item);
-      lotList = itemView.findViewById(R.id.ll_lot_list);
-      btnProductClear = itemView.findViewById(R.id.iv_clear);
-      updateClearButtonStatus(issueVoucherReportProductViewModel);
-      productName.setText(issueVoucherReportProductViewModel.getPodProductItem().getProduct().getPrimaryName());
-      lotList.removeAllViews();
-      btnProductClear.setOnClickListener(getRemoveClickListener());
-      List<IssueVoucherReportLotViewModel> lotViewModels = issueVoucherReportProductViewModel.getLotViewModelList();
-      if (lotViewModels.isEmpty()) {
-        return;
+    public void populate(MultiItemEntity viewModel) {
+      if (viewModel.getItemType() == IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TYPE.getValue()) {
+        IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel) viewModel;
+        productName = itemView.findViewById(R.id.products_name);
+        productList = itemView.findViewById(R.id.products_list_item);
+        lotList = itemView.findViewById(R.id.ll_lot_list);
+        btnProductClear = itemView.findViewById(R.id.iv_clear);
+        updateClearButtonStatus(productViewModel);
+        productName.setText(productViewModel.getPodProductItem().getProduct().getPrimaryName());
+        lotList.removeAllViews();
+        btnProductClear.setOnClickListener(getRemoveClickListener());
+        List<IssueVoucherReportLotViewModel> lotViewModels = productViewModel.getLotViewModelList();
+        if (lotViewModels.isEmpty()) {
+          return;
+        }
+        addEmptyLotView(lotViewModels);
       }
-      addEmptyLotView(lotViewModels);
     }
 
     private void updateClearButtonStatus(IssueVoucherReportProductViewModel viewModel) {

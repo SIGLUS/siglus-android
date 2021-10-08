@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="@dimen/px_1384"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_50"
+    android:background="@drawable/border_bg_gray_bottom"
+    android:showDividers="middle"
+    android:divider="@drawable/divider_vertical">
+    <TextView android:layout_height="match_parent"
+      android:layout_width="@dimen/px_838"/>
+    <TextView style="@style/Pod.list.product"
+      android:layout_width="@dimen/px_80"
+      android:layout_height="match_parent"
+      android:id="@+id/tv_value"/>
+    <TextView android:layout_height="match_parent"
+      android:layout_width="@dimen/px_464"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_50"
+    android:background="@drawable/border_bg_gray_bottom"
+    android:showDividers="middle"
+    android:divider="@drawable/divider_vertical">
+    <LinearLayout
+      android:layout_weight="1"
+      android:paddingLeft="@dimen/px_8"
+      android:layout_height="match_parent"
+      android:layout_width="0dp">
+      <TextView style="@style/Pod.list.summary"
+        android:textStyle="bold"
+        android:text="@string/label_issue_prepared_by"/>
+      <TextView style="@style/Pod.list.summary"
+        android:paddingLeft="@dimen/px_5"
+        android:text="sara"/>
+    </LinearLayout>
+    <LinearLayout
+      android:layout_weight="1"
+      android:paddingLeft="@dimen/px_8"
+      android:layout_height="match_parent"
+      android:layout_width="0dp">
+      <TextView style="@style/Pod.list.summary"
+        android:textStyle="bold"
+        android:text="@string/label_issue_conferred_by"/>
+      <TextView style="@style/Pod.list.summary"
+        android:paddingLeft="@dimen/px_5" />
+    </LinearLayout>
+    <LinearLayout
+      android:layout_weight="1"
+      android:paddingLeft="@dimen/px_8"
+      android:layout_height="match_parent"
+      android:layout_width="0dp">
+      <TextView style="@style/Pod.list.summary"
+        android:textStyle="bold"
+        android:text="@string/label_issue_delivered_by"/>
+      <TextView style="@style/Pod.list.summary"
+        android:paddingLeft="@dimen/px_5" />
+    </LinearLayout>
+    <LinearLayout
+      android:layout_weight="1"
+      android:paddingLeft="@dimen/px_8"
+      android:layout_height="match_parent"
+      android:layout_width="0dp">
+      <TextView style="@style/Pod.list.summary"
+        android:textStyle="bold"
+        android:text="@string/label_issue_received_by"/>
+      <TextView style="@style/Pod.list.summary"
+        android:paddingLeft="@dimen/px_5" />
+    </LinearLayout>
+  </LinearLayout>
+</LinearLayout>

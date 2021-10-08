@@ -803,9 +803,11 @@
   <dimen name="px_718">718.00dp</dimen>
   <dimen name="px_719">719.00dp</dimen>
   <dimen name="px_720">720.00dp</dimen>
+  <dimen name="px_838">838.00dp</dimen>
   <dimen name="px_931">931.00dp</dimen>
   <dimen name="px_1000">1000.00dp</dimen>
   <dimen name="px_1110">1110.00dp</dimen>
   <dimen name="px_1200">1200.00dp</dimen>
+  <dimen name="px_1384">1384.00dp</dimen>
   <dimen name="px_1400">1400.00dp</dimen>
 </resources>

@@ -18,6 +18,9 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import org.openlmis.core.enumeration.OrderStatus;
@@ -30,14 +33,32 @@ public class IssueVoucherReportViewModel {
 
   private Pod pod;
   private Program program;
-  List<IssueVoucherReportProductViewModel> productViewModels;
+  List<MultiItemEntity> viewModels;
 
   public IssueVoucherReportViewModel(Pod pod) {
+       updateProductViewModels(pod);
+  }
+
+  public List<IssueVoucherReportProductViewModel> getProductViewModels() {
+    List<MultiItemEntity> productViewModels = new ArrayList<>();
+    productViewModels.addAll(viewModels);
+    productViewModels.remove(viewModels.size() - 1);
+    return FluentIterable.from(productViewModels)
+        .transform(productViewModel -> (IssueVoucherReportProductViewModel) productViewModel).toList();
+  }
+
+  public void updateProductViewModels(Pod pod) {
     this.pod = pod;
-    productViewModels = FluentIterable.from(pod.getPodProductItemsWrapper())
+    if (viewModels == null) {
+      viewModels = new ArrayList<>();
+    }
+    viewModels.clear();
+    viewModels.addAll(FluentIterable.from(pod.getPodProductItemsWrapper())
         .transform(podProductItem ->
             new IssueVoucherReportProductViewModel(podProductItem, pod.getOrderStatus(), pod.isLocal(), pod.isDraft()))
-        .toList();
+        .toList());
+    // TODO total
+    viewModels.add(new IssueVoucherReportSummaryViewModel(pod, BigDecimal.valueOf(10)));
   }
 
   public OrderStatus getPodStatus() {

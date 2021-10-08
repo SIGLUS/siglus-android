@@ -167,8 +167,8 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Override
   public void refreshIssueVoucherForm(Pod pod) {
     IssueVoucherReportViewModel viewModel = presenter.getIssueVoucherReportViewModel();
-    productAdapter.setList(viewModel.getProductViewModels());
-    issueVoucherReportAdapter.setList(viewModel.getProductViewModels());
+    productAdapter.setList(viewModel.getViewModels());
+    issueVoucherReportAdapter.setList(viewModel.getViewModels());
     if (viewModel.getPodStatus() == OrderStatus.RECEIVED) {
       actionPanelView.setVisibility(View.GONE);
       orderInfo.refresh(pod, viewModel);
@@ -235,14 +235,14 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   private void updateTotal() {
     Long total = 0L;
-    for (IssueVoucherReportProductViewModel productViewModel : issueVoucherReportAdapter.getData()) {
-      for (IssueVoucherReportLotViewModel lotViewModel : productViewModel.getLotViewModelList()) {
-        if (lotViewModel.getShippedQuantity() != null) {
-          total += lotViewModel.getShippedQuantity();
-        }
-      }
-    }
-    tvTotalPrice.setText(MessageFormat.format("Total :{0}", total));
+//    for (IssueVoucherReportProductViewModel productViewModel : issueVoucherReportAdapter.getData()) {
+//      for (IssueVoucherReportLotViewModel lotViewModel : productViewModel.getLotViewModelList()) {
+//        if (lotViewModel.getShippedQuantity() != null) {
+//          total += lotViewModel.getShippedQuantity();
+//        }
+//      }
+//    }
+//    tvTotalPrice.setText(MessageFormat.format("Total :{0}", total));
   }
 
   private void showConfirmDialog() {
@@ -429,7 +429,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
             presenter.getPod().getPodProductItemsWrapper().get(position).getProduct().getCode())).toList();
     presenter.getPod().setPodProductItemsWrapper(filterProducts);
     existedProducts.remove(position);
-    presenter.getIssueVoucherReportViewModel().setProductViewModels(existedProducts);
+    presenter.getIssueVoucherReportViewModel().updateProductViewModels(presenter.getPod());
     updateTotal();
   }
 

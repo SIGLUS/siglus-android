@@ -4,7 +4,7 @@
   android:layout_height="wrap_content"
   android:orientation="vertical">
   <LinearLayout
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="@dimen/px_92"
     android:background="@drawable/border_bg_gray_bottom"
     android:showDividers="middle"
@@ -46,7 +46,7 @@
 
   <ListView
     android:id="@+id/lv_issue_voucher_lot_list"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/border_bg_gray_bottom"
     android:nestedScrollingEnabled="false"

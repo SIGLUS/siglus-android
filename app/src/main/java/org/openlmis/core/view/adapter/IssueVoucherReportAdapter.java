@@ -22,40 +22,53 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.List;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.R;
+import org.openlmis.core.enumeration.IssueVoucherItemType;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter.IssueVoucherReportViewHolder;
 import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportSummaryViewModel;
 
-public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherReportProductViewModel,
+public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity,
     IssueVoucherReportViewHolder> {
-
-  public IssueVoucherReportAdapter() {
-    super(R.layout.item_issue_voucher_report_product);
-  }
-
   @Setter
   private OnRemoveListener onRemoveListener;
 
+  public IssueVoucherReportAdapter() {
+    addItemType(IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TOTAL.getValue(),
+        R.layout.item_issue_voucher_report_product_summary);
+    addItemType(IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TYPE.getValue(),
+        R.layout.item_issue_voucher_report_product);
+  }
+
   @Override
-  protected void convert(@NonNull IssueVoucherReportViewHolder holder,
-      IssueVoucherReportProductViewModel viewModel) {
+  protected void convert(@NonNull IssueVoucherReportViewHolder holder, MultiItemEntity viewModel) {
     holder.populate(viewModel);
   }
 
   public boolean isThisProductNoLot(int position) {
-    return getData().get(position).getLotViewModelList().isEmpty();
+    if (position == getData().size() - 1) {
+      return false;
+    } else {
+     return ((IssueVoucherProductViewModel)getData().get(position)).getLotViewModels().isEmpty();
+    }
   }
 
   public int validateAll() {
     int position = -1;
-    for (int i = 0; i < getData().size(); i++) {
-      if (getData().get(i).validate()) {
+    int dataSize = getData().size();
+    for (int i = 0; i < dataSize - 1; i++) {
+      IssueVoucherProductViewModel productViewModel = (IssueVoucherProductViewModel)getData().get(i);
+      if (productViewModel.validate()) {
         continue;
       }
       if (position == -1) {
@@ -79,11 +92,18 @@ public class IssueVoucherReportAdapter extends BaseQuickAdapter<IssueVoucherRepo
       super(itemView);
     }
 
-    public void populate(IssueVoucherReportProductViewModel productViewModel) {
-      initView(productViewModel);
-      tvProductUnit.setText(productViewModel.getProductUnitName());
-      tvQuantityOrdered.setText(productViewModel.getOrderedQuantity());
-      tvPartialFulfilled.setText(productViewModel.getPartialFulfilledQuantity());
+    public void populate(MultiItemEntity viewModel) {
+      if (viewModel.getItemType() == IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TYPE.getValue()) {
+        IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel) viewModel;
+        initView(productViewModel);
+        tvProductUnit.setText(productViewModel.getProductUnitName());
+        tvQuantityOrdered.setText(productViewModel.getOrderedQuantity());
+        tvPartialFulfilled.setText(productViewModel.getPartialFulfilledQuantity());
+      } else {
+        IssueVoucherReportSummaryViewModel summaryViewModel = (IssueVoucherReportSummaryViewModel) viewModel;
+        TextView totalValue = itemView.findViewById(R.id.tv_value);
+        totalValue.setText(summaryViewModel.getTotal().toString());
+      }
     }
 
     private void initView(IssueVoucherReportProductViewModel productViewModel) {

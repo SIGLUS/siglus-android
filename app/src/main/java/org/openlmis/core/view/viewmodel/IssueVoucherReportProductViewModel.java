@@ -18,8 +18,10 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import java.util.List;
 import lombok.Data;
+import org.openlmis.core.enumeration.IssueVoucherItemType;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.PodProductLotItem;
@@ -27,7 +29,7 @@ import org.openlmis.core.model.Product;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
-public class IssueVoucherReportProductViewModel {
+public class IssueVoucherReportProductViewModel implements MultiItemEntity {
 
   private Product product;
   private String productUnitName;
@@ -112,4 +114,8 @@ public class IssueVoucherReportProductViewModel {
         && lotViewModel.getRejectedReason() == null;
   }
 
+  @Override
+  public int getItemType() {
+    return IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TYPE.getValue();
+  }
 }
