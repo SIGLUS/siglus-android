@@ -51,11 +51,11 @@ public class IssueVoucherReportLotViewModel {
     this.orderStatus = orderStatus;
   }
 
-  public Long getReturnedQuality() {
+  public Long getDifferenceQuality() {
     if (shippedQuantity == null || acceptedQuantity == null) {
       return null;
     }
-    return shippedQuantity.longValue() - acceptedQuantity.longValue();
+    return acceptedQuantity.longValue() - shippedQuantity.longValue();
   }
 
   public PodProductLotItem convertToModel() {

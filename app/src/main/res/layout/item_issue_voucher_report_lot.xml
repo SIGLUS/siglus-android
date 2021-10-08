@@ -44,6 +44,7 @@
     <EditText
       android:id="@+id/et_quantity_shipped"
       style="@style/Pod.list.lot.editView"
+      android:layout_width="@dimen/px_70"
       android:gravity="right|center_vertical"
       android:inputType="numberSigned"
       android:maxLength="@integer/edit_amount_length"
@@ -62,7 +63,7 @@
     android:layout_width="@dimen/px_80">
     <EditText
       android:id="@+id/et_quantity_accepted"
-    android:layout_width="@dimen/px_70"
+      android:layout_width="@dimen/px_70"
       style="@style/Pod.list.lot.editView"
       android:gravity="right|center_vertical"
       android:inputType="numberSigned"

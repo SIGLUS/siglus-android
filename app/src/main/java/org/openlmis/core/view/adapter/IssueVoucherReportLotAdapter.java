@@ -59,7 +59,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
   private List<IssueVoucherReportLotViewModel> lotViewModelList;
 
   @Setter
-  private OnUpdatePodListener onRemoveListener;
+  private OnUpdatePodListener onUpdatePodListener;
 
 
   public IssueVoucherReportLotAdapter(Context context, List<IssueVoucherReportLotViewModel> lotViewModelList) {
@@ -125,7 +125,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       updateTotalValue(lotViewModel);
       etQuantityShipped.setText(convertLongValueToString(lotViewModel.getShippedQuantity()));
       etQuantityAccepted.setText(convertLongValueToString(lotViewModel.getAcceptedQuantity()));
-      tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
+      tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getDifferenceQuality()));
       etNote.setText(lotViewModel.getNotes() == null ? "" : lotViewModel.getNotes());
       icLotClear.setOnClickListener(getOnClickListenerForDeleteIcon());
       updateClearButtonStatus(lotViewModel);
@@ -197,7 +197,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private void setRejectReason() {
-      if (lotViewModel.getReturnedQuality() != null && lotViewModel.getReturnedQuality().longValue() > 0) {
+      if (lotViewModel.getDifferenceQuality() != null && lotViewModel.getDifferenceQuality().longValue() < 0) {
         setRejectReasonForCanSelectStatus();
         vRejectionReason.setOnClickListener(v -> {
           Bundle bundle = new Bundle();
@@ -251,7 +251,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       } else if (lotViewModel.getAcceptedQuantity().longValue() > lotViewModel.getShippedQuantity().longValue()) {
         etQuantityAccepted.setError(getContext().getString(R.string.hint_error_more_than_shipped));
         etQuantityAccepted.requestFocus();
-      } else if (lotViewModel.getReturnedQuality().longValue() > 0 && lotViewModel.getRejectedReason() == null) {
+      } else if (lotViewModel.getDifferenceQuality().longValue() < 0 && lotViewModel.getRejectedReason() == null) {
         tvRejectionReason.setError("");
         vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_red);
       }
@@ -264,16 +264,26 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
           try {
             String shippedQuantity = text.toString();
             Long quantityValue = StringUtils.isEmpty(shippedQuantity) ? null : Long.parseLong(shippedQuantity);
-            lotViewModel.setShippedQuantity(quantityValue);
+            if (!checkEqual(quantityValue, lotViewModel.getShippedQuantity())) {
+              lotViewModel.setShippedQuantity(quantityValue);
+              onUpdatePodListener.onUpdateTotalValue();
+            }
             updateTotalValue(lotViewModel);
             etQuantityShipped.setError(null);
-            tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
+            tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getDifferenceQuality()));
             setRejectReason();
           } catch (NumberFormatException e) {
             new LMISException(e, "lotViewModel shippedQuantity").reportToFabric();
           }
         }
       };
+    }
+
+    private boolean checkEqual(Long quantityValue, Long shippedValue) {
+      if (quantityValue == null) {
+        return shippedValue == null ? true : false;
+      }
+      return quantityValue.equals(shippedValue);
     }
 
     private SingleTextWatcher getQuantityAcceptedTextWatcher() {
@@ -285,7 +295,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
             Long acceptedValue = StringUtils.isEmpty(acceptedQuantity) ? null : Long.parseLong(acceptedQuantity);
             lotViewModel.setAcceptedQuantity(acceptedValue);
             etQuantityAccepted.setError(null);
-            tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
+            tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getDifferenceQuality()));
             setRejectReason();
           } catch (NumberFormatException e) {
             new LMISException(e, "issue voucher acceptedQuantity").reportToFabric();
@@ -353,7 +363,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
         dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
           @Override
           public void positiveClick(String tag) {
-            onRemoveListener.onRemove(position);
+            onUpdatePodListener.onRemove(position);
           }
 
           @Override

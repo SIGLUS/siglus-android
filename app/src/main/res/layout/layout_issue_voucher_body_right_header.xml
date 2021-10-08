@@ -61,6 +61,7 @@
       android:text="@string/label_supplied_quantity" />
     <TextView
       style="@style/Pod.list.header"
+      android:layout_width="match_parent"
       android:layout_weight="1"
       android:text="@string/label_qf" />
   </LinearLayout>
@@ -77,6 +78,7 @@
       android:text="@string/label_price" />
     <TextView
       style="@style/Pod.list.header"
+      android:layout_width="match_parent"
       android:layout_weight="1"
       android:text="@string/label_pu" />
   </LinearLayout>
@@ -93,6 +95,7 @@
       android:text="@string/label_value" />
     <TextView
       style="@style/Pod.list.header"
+      android:layout_width="match_parent"
       android:layout_weight="1"
       android:text="@string/label_qf_pu" />
   </LinearLayout>
@@ -109,6 +112,7 @@
       android:text="@string/label_quantity_received" />
     <TextView
       style="@style/Pod.list.header"
+      android:layout_width="match_parent"
       android:layout_weight="1"
       android:text="@string/label_qr" />
   </LinearLayout>
@@ -125,6 +129,7 @@
       android:text="@string/label_different" />
     <TextView
       style="@style/Pod.list.header"
+      android:layout_width="match_parent"
       android:layout_weight="1"
       android:text="@string/label_qr_qf" />
   </LinearLayout>

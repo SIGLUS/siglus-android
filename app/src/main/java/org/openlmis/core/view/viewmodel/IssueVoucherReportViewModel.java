@@ -48,6 +48,10 @@ public class IssueVoucherReportViewModel {
         .transform(productViewModel -> (IssueVoucherReportProductViewModel) productViewModel).toList();
   }
 
+  public int getListSize() {
+    return viewModels.size();
+  }
+
   public void updateProductViewModels(Pod pod) {
     this.pod = pod;
     List<IssueVoucherReportProductViewModel> productViewModels = FluentIterable.from(pod.getPodProductItemsWrapper())
@@ -71,21 +75,29 @@ public class IssueVoucherReportViewModel {
   }
 
   public void removeProductAtPosition(int position) {
-    List<IssueVoucherReportProductViewModel> productViewModels = getProductViewModels();
+    List<IssueVoucherReportProductViewModel> productViewModels = new ArrayList<>(getProductViewModels());
     productViewModels.remove(position);
     updateViewModels(productViewModels);
   }
 
+  public boolean isNeedRemoveProduct(int productPosition) {
+    IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel)viewModels.get(productPosition);
+    return productViewModel.getLotViewModelList().size() == 1;
+  }
+
   public void removeLotAtPosition(int productPosition, int lotPosition) {
     List<IssueVoucherReportProductViewModel> productViewModels = getProductViewModels();
-    List<IssueVoucherReportLotViewModel> existedLots = productViewModels.get(productPosition).getLotViewModelList();
+    IssueVoucherReportProductViewModel productViewModel = productViewModels.get(productPosition);
+    List<IssueVoucherReportLotViewModel> existedLots =  new ArrayList<> (productViewModel.getLotViewModelList());
     existedLots.remove(lotPosition);
+    productViewModel.setLotViewModelList(existedLots);
     updateViewModels(productViewModels);
   }
 
   public void updateTotalViewModels() {
-    viewModels.set(viewModels.size() - 1,
-        new IssueVoucherReportSummaryViewModel(pod, calculateTotalValue(getProductViewModels())));
+    IssueVoucherReportSummaryViewModel viewModel = (IssueVoucherReportSummaryViewModel)viewModels.get(viewModels.size() - 1);
+    viewModel.setTotal(calculateTotalValue(getProductViewModels()));
+    viewModels.set(viewModels.size() - 1, viewModel);
   }
 
 
@@ -93,9 +105,16 @@ public class IssueVoucherReportViewModel {
     if (viewModels == null) {
       viewModels = new ArrayList<>();
     }
+    IssueVoucherReportSummaryViewModel summaryViewModel;
+    if (viewModels.size() > 0) {
+      summaryViewModel = (IssueVoucherReportSummaryViewModel)viewModels.get(viewModels.size() -1);
+      summaryViewModel.setTotal(calculateTotalValue(productViewModels));
+;    } else {
+      summaryViewModel = new IssueVoucherReportSummaryViewModel(pod, calculateTotalValue(productViewModels));
+    }
     viewModels.clear();
     viewModels.addAll(productViewModels);
-    viewModels.add(new IssueVoucherReportSummaryViewModel(pod, calculateTotalValue(productViewModels)));
+    viewModels.add(summaryViewModel);
   }
 
   public OrderStatus getPodStatus() {

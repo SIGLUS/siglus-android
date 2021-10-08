@@ -80,9 +80,6 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @InjectView(R.id.action_panel)
   private ActionPanelView actionPanelView;
 
-  @InjectView(R.id.tv_total_price)
-  private TextView tvTotalPrice;
-
   @InjectPresenter(IssueVoucherReportPresenter.class)
   IssueVoucherReportPresenter presenter;
 
@@ -222,18 +219,6 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     rvProductList.setAdapter(productAdapter);
   }
 
-  private void updateTotal() {
-    Long total = 0L;
-//    for (IssueVoucherReportProductViewModel productViewModel : issueVoucherReportAdapter.getData()) {
-//      for (IssueVoucherReportLotViewModel lotViewModel : productViewModel.getLotViewModelList()) {
-//        if (lotViewModel.getShippedQuantity() != null) {
-//          total += lotViewModel.getShippedQuantity();
-//        }
-//      }
-//    }
-//    tvTotalPrice.setText(MessageFormat.format("Total :{0}", total));
-  }
-
   private void showConfirmDialog() {
     SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
         null,
@@ -335,15 +320,17 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   @Override
   public void onRemove(int productPosition, int lotPosition) {
-    removeLot(productPosition, lotPosition);
-    if (issueVoucherReportAdapter.isThisProductNoLot(productPosition)) {
+    if (presenter.getIssueVoucherReportViewModel().isNeedRemoveProduct(productPosition)) {
       removeProduct(productPosition);
+      return;
     }
+    removeLot(productPosition, lotPosition);
   }
 
   @Override
   public void onUpdateTotalValue() {
     presenter.getIssueVoucherReportViewModel().updateTotalViewModels();
+    issueVoucherReportAdapter.notifyItemChanged(presenter.getIssueVoucherReportViewModel().getListSize() - 1);
   }
 
   protected void showSignDialog() {
@@ -416,13 +403,13 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     presenter.getIssueVoucherReportViewModel().removeProductAtPosition(position);
     productAdapter.removeAt(position);
     issueVoucherReportAdapter.removeAt(position);
+    issueVoucherReportAdapter.notifyItemChanged(presenter.getIssueVoucherReportViewModel().getListSize() - 1);
 
   }
 
   private void removeLot(int productPosition, int lotPosition) {
     presenter.getIssueVoucherReportViewModel().removeLotAtPosition(productPosition, lotPosition);
     productAdapter.notifyDataSetChanged();
-    productAdapter.notifyItemChanged(productPosition);
-
+    issueVoucherReportAdapter.notifyDataSetChanged();
   }
 }

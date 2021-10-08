@@ -57,7 +57,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     if (position == getData().size() - 1) {
       return false;
     } else {
-      return ((IssueVoucherProductViewModel) getData().get(position)).getLotViewModels().isEmpty();
+      return ((IssueVoucherReportProductViewModel) getData().get(position)).getLotViewModelList().isEmpty();
     }
   }
 
@@ -110,7 +110,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
       lvLotList.getLayoutParams().height =
           (int) itemView.getResources().getDimension(R.dimen.px_50) * lotViewModels.size();
       lotAdapter = new IssueVoucherReportLotAdapter(itemView.getContext(), lotViewModels);
-      lotAdapter.setOnRemoveListener(this);
+      lotAdapter.setOnUpdatePodListener(this);
       lvLotList.setAdapter(lotAdapter);
       tvProductUnit = itemView.findViewById(R.id.tv_product_dosage);
       tvQuantityOrdered = itemView.findViewById(R.id.tv_quantity_ordered);
