@@ -92,7 +92,7 @@ public class IssueVoucherProductAdapter extends BaseMultiItemQuickAdapter<MultiI
     }
 
     private void updateClearButtonStatus(IssueVoucherReportProductViewModel viewModel) {
-      if (viewModel.isLocal() && viewModel.isDraft()) {
+      if (viewModel.shouldShowProductClear()) {
         btnProductClear.setVisibility(View.VISIBLE);
       } else {
         btnProductClear.setVisibility(View.GONE);

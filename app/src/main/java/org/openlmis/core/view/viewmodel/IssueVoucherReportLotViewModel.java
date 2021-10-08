@@ -75,4 +75,8 @@ public class IssueVoucherReportLotViewModel {
     return perPrice.multiply(BigDecimal.valueOf(shippedQuantity.longValue()));
   }
 
+  public boolean shouldShowLotClear() {
+    return this.isLocal() && this.isDraft();
+  }
+
 }

@@ -154,7 +154,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private void updateClearButtonStatus(IssueVoucherReportLotViewModel viewModel) {
-      if (viewModel.isLocal() && viewModel.isDraft()) {
+      if (viewModel.shouldShowLotClear()) {
         icLotClear.setVisibility(View.VISIBLE);
       } else {
         icLotClear.setVisibility(View.GONE);

@@ -40,7 +40,7 @@ import org.openlmis.core.utils.ListUtil;
 @NoArgsConstructor
 @AllArgsConstructor
 @DatabaseTable(tableName = "pod_product_items")
-public class PodProductItem extends BaseModel implements Comparable<PodProductItem> {
+public class PodProductItem extends BaseModel {
 
   @Expose
   @SerializedName("code")
@@ -66,8 +66,4 @@ public class PodProductItem extends BaseModel implements Comparable<PodProductIt
     return podProductLotItemsWrapper;
   }
 
-  @Override
-  public int compareTo(PodProductItem o) {
-    return product.getCode() == null ? 0 : product.getCode().compareTo(o.getProduct().getCode());
-  }
 }

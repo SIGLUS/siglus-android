@@ -104,6 +104,10 @@ public class IssueVoucherReportProductViewModel implements MultiItemEntity {
     }
   }
 
+  public boolean shouldShowProductClear() {
+    return this.isLocal() && this.isDraft();
+  }
+
   private boolean isContainInvalidateQuantity(IssueVoucherReportLotViewModel lotViewModel) {
     return lotViewModel.getShippedQuantity() == null || lotViewModel.getAcceptedQuantity() == null
         || lotViewModel.getDifferenceQuality() > 0 || isInvalidateReason(lotViewModel);
