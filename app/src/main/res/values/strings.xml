@@ -8,7 +8,8 @@
   <string name="title_kit_stock_cards">Kit Overview</string>
   <string name="title_unpack_kit">Unpack Kit</string>
   <string name="title_requisition">Create Requisition Balancete for Via classica</string>
-  <string name="title_pod">Proof of Delivery for Testes Rápidos Diag.</string>
+  <string name="title_pod">Proof of Delivery for %1$s</string>
+  <string name="title_issue_voucher">Issue Voucher for %1$s</string>
 
   <string name="hint_network_error">NetWork error please check you network connection</string>
 

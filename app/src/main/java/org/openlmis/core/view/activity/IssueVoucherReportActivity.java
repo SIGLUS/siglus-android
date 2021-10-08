@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
@@ -158,8 +159,10 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     issueVoucherReportAdapter.setList(viewModel.getViewModels());
     if (viewModel.getPodStatus() == OrderStatus.RECEIVED) {
       actionPanelView.setVisibility(View.GONE);
+      setTitle(LMISApp.getContext().getString(R.string.title_pod,viewModel.getProgram().getProgramCode()));
       orderInfo.refresh(pod, viewModel);
     } else {
+      setTitle(LMISApp.getContext().getString(R.string.title_issue_voucher,viewModel.getProgram().getProgramCode()));
       if (viewModel.getIsLocal()) {
         orderInfo.setVisibility(View.GONE);
       } else {
