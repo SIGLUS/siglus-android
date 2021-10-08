@@ -52,14 +52,14 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.keyboard.KeyboardUtil;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
-import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_issue_voucher_draft)
-public class IssueVoucherDraftActivity extends BaseActivity implements IssueVoucherDraftView, OnRemoveListener {
+public class IssueVoucherDraftActivity extends BaseActivity implements IssueVoucherDraftView, OnUpdatePodListener {
 
   @InjectView(R.id.tv_total_amount)
   private TextView tvTotalAmount;
@@ -217,6 +217,11 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
 
   @Override
   public void onRemove(int productPosition, int lotPosition) {
+    // do nothing
+  }
+
+  @Override
+  public void onUpdateTotalValue() {
     // do nothing
   }
 

@@ -39,14 +39,14 @@ import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.BulkIssueAdapter.BulkIssueProductViewHolder;
 import org.openlmis.core.view.listener.AmountChangeListener;
-import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.viewmodel.BulkIssueProductViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProductViewModel, BulkIssueProductViewHolder> {
 
   @Setter
-  private OnRemoveListener removeListener;
+  private OnUpdatePodListener removeListener;
 
   public BulkIssueAdapter() {
     addItemType(BulkIssueProductViewModel.TYPE_EDIT, R.layout.item_bulk_issue_edit);

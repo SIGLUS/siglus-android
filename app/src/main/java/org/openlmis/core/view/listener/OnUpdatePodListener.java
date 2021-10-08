@@ -18,8 +18,10 @@
 
 package org.openlmis.core.view.listener;
 
-public interface OnRemoveListener {
+public interface OnUpdatePodListener {
   void onRemove(int position);
 
   void onRemove(int productPosition, int lotPosition);
+
+  void onUpdateTotalValue();
 }

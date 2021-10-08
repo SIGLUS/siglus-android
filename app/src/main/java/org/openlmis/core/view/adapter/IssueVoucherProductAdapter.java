@@ -26,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.List;
@@ -34,18 +33,16 @@ import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.IssueVoucherItemType;
 import org.openlmis.core.view.adapter.IssueVoucherProductAdapter.IssueVoucherProductViewHolder;
-import org.openlmis.core.view.listener.OnRemoveListener;
-import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
+import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
-import org.openlmis.core.view.viewmodel.IssueVoucherReportSummaryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 public class IssueVoucherProductAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity,
     IssueVoucherProductViewHolder> {
 
   @Setter
-  private OnRemoveListener productRemoveListener;
+  private OnUpdatePodListener productRemoveListener;
 
 
   public IssueVoucherProductAdapter() {
@@ -74,11 +71,11 @@ public class IssueVoucherProductAdapter extends BaseMultiItemQuickAdapter<MultiI
 
     public void populate(MultiItemEntity viewModel) {
       if (viewModel.getItemType() == IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TYPE.getValue()) {
-        IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel) viewModel;
         productName = itemView.findViewById(R.id.products_name);
         productList = itemView.findViewById(R.id.products_list_item);
         lotList = itemView.findViewById(R.id.ll_lot_list);
         btnProductClear = itemView.findViewById(R.id.iv_clear);
+        IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel) viewModel;
         updateClearButtonStatus(productViewModel);
         productName.setText(productViewModel.getPodProductItem().getProduct().getPrimaryName());
         lotList.removeAllViews();

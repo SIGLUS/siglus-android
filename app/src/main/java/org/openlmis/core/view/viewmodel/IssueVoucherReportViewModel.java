@@ -27,6 +27,7 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import rx.Observable;
 
 @Data
 public class IssueVoucherReportViewModel {
@@ -36,7 +37,7 @@ public class IssueVoucherReportViewModel {
   List<MultiItemEntity> viewModels;
 
   public IssueVoucherReportViewModel(Pod pod) {
-       updateProductViewModels(pod);
+    updateProductViewModels(pod);
   }
 
   public List<IssueVoucherReportProductViewModel> getProductViewModels() {
@@ -49,16 +50,52 @@ public class IssueVoucherReportViewModel {
 
   public void updateProductViewModels(Pod pod) {
     this.pod = pod;
+    List<IssueVoucherReportProductViewModel> productViewModels = FluentIterable.from(pod.getPodProductItemsWrapper())
+        .transform(podProductItem ->
+            new IssueVoucherReportProductViewModel(podProductItem, pod.getOrderStatus(), pod.isLocal(), pod.isDraft()))
+        .toList();
+    updateViewModels(productViewModels);
+  }
+
+  private BigDecimal calculateTotalValue(List<IssueVoucherReportProductViewModel> productViewModels) {
+    BigDecimal totalValue = new BigDecimal("0.00");
+    for(IssueVoucherReportProductViewModel productViewModel: productViewModels) {
+      for (IssueVoucherReportLotViewModel lotViewModel : productViewModel.getLotViewModelList()) {
+        BigDecimal value = lotViewModel.getTotalValue();
+        if(value != null) {
+          totalValue = totalValue.add(value);
+        }
+      }
+    }
+    return totalValue;
+  }
+
+  public void removeProductAtPosition(int position) {
+    List<IssueVoucherReportProductViewModel> productViewModels = getProductViewModels();
+    productViewModels.remove(position);
+    updateViewModels(productViewModels);
+  }
+
+  public void removeLotAtPosition(int productPosition, int lotPosition) {
+    List<IssueVoucherReportProductViewModel> productViewModels = getProductViewModels();
+    List<IssueVoucherReportLotViewModel> existedLots = productViewModels.get(productPosition).getLotViewModelList();
+    existedLots.remove(lotPosition);
+    updateViewModels(productViewModels);
+  }
+
+  public void updateTotalViewModels() {
+    viewModels.set(viewModels.size() - 1,
+        new IssueVoucherReportSummaryViewModel(pod, calculateTotalValue(getProductViewModels())));
+  }
+
+
+  private void updateViewModels(List<IssueVoucherReportProductViewModel> productViewModels) {
     if (viewModels == null) {
       viewModels = new ArrayList<>();
     }
     viewModels.clear();
-    viewModels.addAll(FluentIterable.from(pod.getPodProductItemsWrapper())
-        .transform(podProductItem ->
-            new IssueVoucherReportProductViewModel(podProductItem, pod.getOrderStatus(), pod.isLocal(), pod.isDraft()))
-        .toList());
-    // TODO total
-    viewModels.add(new IssueVoucherReportSummaryViewModel(pod, BigDecimal.valueOf(10)));
+    viewModels.addAll(productViewModels);
+    viewModels.add(new IssueVoucherReportSummaryViewModel(pod, calculateTotalValue(productViewModels)));
   }
 
   public OrderStatus getPodStatus() {

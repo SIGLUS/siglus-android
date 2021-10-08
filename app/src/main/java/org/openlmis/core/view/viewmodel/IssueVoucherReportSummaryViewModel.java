@@ -20,15 +20,9 @@ package org.openlmis.core.view.viewmodel;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import java.math.BigDecimal;
-import java.util.List;
 import lombok.Data;
 import org.openlmis.core.enumeration.IssueVoucherItemType;
-import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.Pod;
-import org.openlmis.core.model.PodProductItem;
-import org.openlmis.core.model.PodProductLotItem;
-import org.openlmis.core.model.Product;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
 public class IssueVoucherReportSummaryViewModel implements MultiItemEntity {

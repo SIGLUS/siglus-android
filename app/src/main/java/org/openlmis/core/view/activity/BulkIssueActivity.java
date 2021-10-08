@@ -51,7 +51,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkIssueAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
-import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.widget.BulkEntriesSignatureDialog;
 import org.openlmis.core.view.widget.SignatureDialog.DialogDelegate;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -59,7 +59,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_bulk_issue)
-public class BulkIssueActivity extends BaseActivity implements BulkIssueView, OnRemoveListener {
+public class BulkIssueActivity extends BaseActivity implements BulkIssueView, OnUpdatePodListener {
 
   @InjectView(R.id.tv_total_amount)
   private TextView tvTotalAmount;
@@ -214,6 +214,11 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView, On
 
   @Override
   public void onRemove(int productPosition, int lotPosition) {
+    // do nothing
+  }
+
+  @Override
+  public void onUpdateTotalValue() {
     // do nothing
   }
 

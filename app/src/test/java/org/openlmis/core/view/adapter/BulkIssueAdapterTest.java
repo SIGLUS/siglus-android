@@ -37,7 +37,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.adapter.BulkIssueAdapter.BulkIssueProductViewHolder;
-import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.viewmodel.BulkIssueProductViewModel;
 
 @RunWith(LMISTestRunner.class)
@@ -104,7 +104,7 @@ public class BulkIssueAdapterTest {
   @Test
   public void shouldCorrectRemoveItem() {
     // given
-    OnRemoveListener mockOnRemoveListener = Mockito.mock(OnRemoveListener.class);
+    OnUpdatePodListener mockOnRemoveListener = Mockito.mock(OnUpdatePodListener.class);
     BulkIssueAdapter mockAdapter = new BulkIssueAdapter();
     mockAdapter.setRemoveListener(mockOnRemoveListener);
     BulkIssueProductViewHolder holder = mockAdapter.new BulkIssueProductViewHolder(

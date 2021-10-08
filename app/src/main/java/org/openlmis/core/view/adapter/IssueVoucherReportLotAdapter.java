@@ -48,7 +48,7 @@ import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
-import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -59,7 +59,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
   private List<IssueVoucherReportLotViewModel> lotViewModelList;
 
   @Setter
-  private OnRemoveListener onRemoveListener;
+  private OnUpdatePodListener onRemoveListener;
 
 
   public IssueVoucherReportLotAdapter(Context context, List<IssueVoucherReportLotViewModel> lotViewModelList) {
@@ -100,6 +100,8 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
 
     private EditText etQuantityShipped;
     private TextView tvLotCode;
+    private TextView tvPrice;
+    private TextView tvTotalValue;
     private TextView tvQuantityReturned;
     private EditText etQuantityAccepted;
     private EditText etNote;
@@ -119,6 +121,8 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       this.lotViewModel = lotViewModel;
       initView();
       tvLotCode.setText(lotViewModel.getLot().getLotNumber());
+      tvPrice.setText(getPrice(lotViewModel));
+      updateTotalValue(lotViewModel);
       etQuantityShipped.setText(convertLongValueToString(lotViewModel.getShippedQuantity()));
       etQuantityAccepted.setText(convertLongValueToString(lotViewModel.getAcceptedQuantity()));
       tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
@@ -130,6 +134,19 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       } else {
         setViewForReceived();
       }
+    }
+
+    private String getPrice(IssueVoucherReportLotViewModel lotViewModel) {
+      String price = lotViewModel.getLot().getProduct().getPrice();
+      return price == null ? "" : price;
+    }
+
+    private void updateTotalValue(IssueVoucherReportLotViewModel lotViewModel) {
+      if (lotViewModel.getTotalValue() == null) {
+        tvTotalValue.setText("");
+        return;
+      }
+      tvTotalValue.setText(lotViewModel.getTotalValue().toString());
     }
 
     private void updateClearButtonStatus(IssueVoucherReportLotViewModel viewModel) {
@@ -248,6 +265,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
             String shippedQuantity = text.toString();
             Long quantityValue = StringUtils.isEmpty(shippedQuantity) ? null : Long.parseLong(shippedQuantity);
             lotViewModel.setShippedQuantity(quantityValue);
+            updateTotalValue(lotViewModel);
             etQuantityShipped.setError(null);
             tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getReturnedQuality()));
             setRejectReason();
@@ -293,6 +311,8 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       vRejectionReason = itemView.findViewById(R.id.v_rejection_reason);
       tvRejectionReason = itemView.findViewById(R.id.tv_rejection_reason);
       ivRejectionReason = itemView.findViewById(R.id.iv_rejection_reason);
+      tvPrice = itemView.findViewById(R.id.tv_price);
+      tvTotalValue = itemView.findViewById(R.id.tv_value);
       etNote = itemView.findViewById(R.id.et_note);
       icLotClear = itemView.findViewById(R.id.iv_clear);
     }

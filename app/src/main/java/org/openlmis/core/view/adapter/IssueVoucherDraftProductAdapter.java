@@ -44,7 +44,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter.IssueVoucherProductViewHolder;
 import org.openlmis.core.view.listener.AmountChangeListener;
-import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
@@ -57,7 +57,7 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
     IssueVoucherProductViewHolder> {
 
   @Setter
-  private OnRemoveListener removeListener;
+  private OnUpdatePodListener removeListener;
 
   public IssueVoucherDraftProductAdapter() {
     addItemType(IssueVoucherProductViewModel.TYPE_EDIT, R.layout.item_issue_voucher_draft_edit);

@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import java.math.BigDecimal;
 import lombok.Data;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.Lot;
@@ -63,6 +64,15 @@ public class IssueVoucherReportLotViewModel {
     lotItem.setRejectedReason(rejectedReason);
     lotItem.setNotes(notes);
     return lotItem;
+  }
+
+  public BigDecimal getTotalValue() {
+    String price = lot.getProduct().getPrice();
+    if (price == null || shippedQuantity == null) {
+      return null;
+    }
+    BigDecimal perPrice = new BigDecimal(price);
+    return perPrice.multiply(BigDecimal.valueOf(shippedQuantity.longValue()));
   }
 
 }

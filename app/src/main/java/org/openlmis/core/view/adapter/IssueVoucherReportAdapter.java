@@ -23,16 +23,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.List;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.IssueVoucherItemType;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter.IssueVoucherReportViewHolder;
-import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
@@ -41,7 +39,7 @@ import org.openlmis.core.view.viewmodel.IssueVoucherReportSummaryViewModel;
 public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity,
     IssueVoucherReportViewHolder> {
   @Setter
-  private OnRemoveListener onRemoveListener;
+  private OnUpdatePodListener onUpdatePodListener;
 
   public IssueVoucherReportAdapter() {
     addItemType(IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TOTAL.getValue(),
@@ -59,7 +57,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     if (position == getData().size() - 1) {
       return false;
     } else {
-     return ((IssueVoucherProductViewModel)getData().get(position)).getLotViewModels().isEmpty();
+      return ((IssueVoucherProductViewModel) getData().get(position)).getLotViewModels().isEmpty();
     }
   }
 
@@ -67,7 +65,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     int position = -1;
     int dataSize = getData().size();
     for (int i = 0; i < dataSize - 1; i++) {
-      IssueVoucherProductViewModel productViewModel = (IssueVoucherProductViewModel)getData().get(i);
+      IssueVoucherProductViewModel productViewModel = (IssueVoucherProductViewModel) getData().get(i);
       if (productViewModel.validate()) {
         continue;
       }
@@ -80,7 +78,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     return position;
   }
 
-  protected class IssueVoucherReportViewHolder extends BaseViewHolder implements OnRemoveListener {
+  protected class IssueVoucherReportViewHolder extends BaseViewHolder implements OnUpdatePodListener {
 
     private TextView tvProductUnit;
     private TextView tvQuantityOrdered;
@@ -122,12 +120,18 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     @Override
     public void onRemove(int position) {
       notifyDataSetChanged();
-      onRemoveListener.onRemove(getLayoutPosition(), position);
+      onUpdatePodListener.onRemove(getLayoutPosition(), position);
     }
 
     @Override
     public void onRemove(int productPosition, int lotPosition) {
       // do nothing
     }
+
+    @Override
+    public void onUpdateTotalValue() {
+      onUpdatePodListener.onUpdateTotalValue();
+    }
+
   }
 }

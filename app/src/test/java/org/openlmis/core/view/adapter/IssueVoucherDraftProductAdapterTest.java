@@ -19,7 +19,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter.IssueVoucherProductViewHolder;
-import org.openlmis.core.view.listener.OnRemoveListener;
+import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
 
 @RunWith(LMISTestRunner.class)
@@ -80,7 +80,7 @@ public class IssueVoucherDraftProductAdapterTest {
   @Test
   public void shouldCorrectRemoveItem() {
     // given
-    OnRemoveListener mockOnRemoveListener = Mockito.mock(OnRemoveListener.class);
+    OnUpdatePodListener mockOnRemoveListener = Mockito.mock(OnUpdatePodListener.class);
     IssueVoucherDraftProductAdapter mockAdapter = new IssueVoucherDraftProductAdapter();
     mockAdapter.setRemoveListener(mockOnRemoveListener);
     IssueVoucherDraftProductAdapter.IssueVoucherProductViewHolder holder = mockAdapter.new IssueVoucherProductViewHolder(
