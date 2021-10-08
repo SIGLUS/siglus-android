@@ -151,7 +151,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   public void deleteIssueVoucher() {
     try {
       if (pod.isLocal()) {
-        podRepository.deleteByOrderCode(pod.getOrderCode());
+        // do nothing
       } else {
         pod.setPodProductItemsWrapper(FluentIterable.from(issueVoucherReportViewModel.getProductViewModels())
             .transform(productViewModel -> productViewModel.restoreToPodProductModelForRemote()).toList());
