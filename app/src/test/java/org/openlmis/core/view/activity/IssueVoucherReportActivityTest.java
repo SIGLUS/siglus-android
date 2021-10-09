@@ -123,6 +123,7 @@ public class IssueVoucherReportActivityTest {
     OrderInfoView orderInfoView = mock(OrderInfoView.class);
     IssueVoucherReportViewModel viewModel = new IssueVoucherReportViewModel(pod);
     Program program = new Program();
+    program.setProgramName("VIA");
     program.setProgramCode(Program.VIA_CODE);
     viewModel.setProgram(program);
     when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(viewModel);
@@ -142,6 +143,7 @@ public class IssueVoucherReportActivityTest {
     Pod pod = PodBuilder.generatePod();
     IssueVoucherReportViewModel viewModel = new IssueVoucherReportViewModel(pod);
     Program program = new Program();
+    program.setProgramName("VIA");
     program.setProgramCode(Program.VIA_CODE);
     viewModel.setProgram(program);
     reportActivity.setOrderInfo(orderInfoView);

@@ -259,7 +259,9 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
       toUpdateStockCards.add(stockCard);
     }
     productRepository.updateProductInArchived(needUpdatedArchived);
-    stockRepository.addStockMovementsAndUpdateStockCards(needInitialStockCards, toUpdateStockCards);
+    if (!toUpdateStockCards.isEmpty()) {
+      stockRepository.addStockMovementsAndUpdateStockCards(needInitialStockCards, toUpdateStockCards);
+    }
   }
 
   private boolean needUpdateStockCard(PodProductItem podProductItem) {

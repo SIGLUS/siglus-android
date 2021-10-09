@@ -158,10 +158,10 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     issueVoucherReportAdapter.setList(viewModel.getViewModels());
     if (viewModel.getPodStatus() == OrderStatus.RECEIVED) {
       actionPanelView.setVisibility(View.GONE);
-      setTitle(LMISApp.getContext().getString(R.string.title_pod, viewModel.getProgram().getProgramCode()));
+      setTitle(LMISApp.getContext().getString(R.string.title_pod, viewModel.getProgram().getProgramName()));
       orderInfo.refresh(pod, viewModel);
     } else {
-      setTitle(LMISApp.getContext().getString(R.string.title_issue_voucher, viewModel.getProgram().getProgramCode()));
+      setTitle(LMISApp.getContext().getString(R.string.title_issue_voucher, viewModel.getProgram().getProgramName()));
       if (viewModel.getIsLocal()) {
         orderInfo.setVisibility(View.GONE);
       } else {
