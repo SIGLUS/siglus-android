@@ -83,6 +83,10 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     private TextView tvProductUnit;
     private TextView tvQuantityOrdered;
     private TextView tvPartialFulfilled;
+    private TextView tvPreparedBy;
+    private TextView tvConferredBy;
+    private TextView tvDeliveredBy;
+    private TextView tvReceivedBy;
     private ListView lvLotList;
     private IssueVoucherReportLotAdapter lotAdapter;
 
@@ -101,8 +105,19 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
         IssueVoucherReportSummaryViewModel summaryViewModel = (IssueVoucherReportSummaryViewModel) viewModel;
         TextView totalValue = itemView.findViewById(R.id.tv_value);
         totalValue.setText(summaryViewModel.getTotal().toString());
+        initSummaryView();
+        tvDeliveredBy.setText(summaryViewModel.getPod().getDeliveredBy());
+        tvReceivedBy.setText(summaryViewModel.getPod().getReceivedBy());
       }
     }
+
+    private void initSummaryView() {
+      tvPreparedBy = itemView.findViewById(R.id.tv_prepared_by);
+      tvConferredBy = itemView.findViewById(R.id.tv_conferred_by);
+      tvDeliveredBy = itemView.findViewById(R.id.tv_delivered_by);
+      tvReceivedBy = itemView.findViewById(R.id.tv_received_by);
+    }
+
 
     private void initView(IssueVoucherReportProductViewModel productViewModel) {
       lvLotList = itemView.findViewById(R.id.lv_issue_voucher_lot_list);
