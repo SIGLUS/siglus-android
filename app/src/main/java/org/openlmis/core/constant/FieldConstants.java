@@ -47,6 +47,8 @@ public class FieldConstants {
 
   public static final String TYPE = "type";
 
+  public static final String PRICE = "price";
+
   public static final String IS_KIT = "isKit";
 
   public static final String IS_CUSTOM = "isCustom";

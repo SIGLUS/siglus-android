@@ -25,6 +25,7 @@ import static org.openlmis.core.constant.FieldConstants.IS_ARCHIVED;
 import static org.openlmis.core.constant.FieldConstants.IS_BASIC;
 import static org.openlmis.core.constant.FieldConstants.IS_KIT;
 import static org.openlmis.core.constant.FieldConstants.KIT_CODE;
+import static org.openlmis.core.constant.FieldConstants.PRICE;
 import static org.openlmis.core.constant.FieldConstants.PRIMARY_NAME;
 import static org.openlmis.core.constant.FieldConstants.PRODUCT_CODE;
 import static org.openlmis.core.constant.FieldConstants.STRENGTH;
@@ -406,6 +407,7 @@ public class ProductRepository {
     product.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ID)));
     product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow(STRENGTH)));
     product.setType(cursor.getString(cursor.getColumnIndexOrThrow(TYPE)));
+    product.setPrice(cursor.getString(cursor.getColumnIndexOrThrow(PRICE)));
     return product;
   }
 }
