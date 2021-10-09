@@ -200,6 +200,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   }
 
   private void openAddProducts() {
+    presenter.updatePodItems();
     Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
     intent.putExtra(IntentConstants.IS_FROM_BULK_ISSUE, false);
     intent.putExtra(IntentConstants.FROM_PAGE, getScreenName());

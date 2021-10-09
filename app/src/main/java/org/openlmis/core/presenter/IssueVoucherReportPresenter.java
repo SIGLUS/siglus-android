@@ -201,6 +201,10 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
+  public void updatePodItems() {
+    setPodItems();
+  }
+
   public void setPodItems() {
     pod.setPodProductItemsWrapper(FluentIterable.from(
         issueVoucherReportViewModel.getProductViewModels())
