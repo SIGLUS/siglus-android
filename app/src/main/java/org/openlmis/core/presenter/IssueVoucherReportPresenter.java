@@ -238,7 +238,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     List<StockCard> needInitialStockCards = new ArrayList<>();
     for (PodProductItem podProductItem : pod.getPodProductItemsWrapper()) {
       if (!needUpdateStockCard(podProductItem)) {
-        break;
+        continue;
       }
       Product product = podProductItem.getProduct();
       long productId = podProductItem.getProduct().getId();
