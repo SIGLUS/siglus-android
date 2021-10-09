@@ -119,8 +119,13 @@ public class IssueVoucherReportActivityTest {
   @Test
   public void shouldCorrectUIWhenRefreshForShipped() throws Exception {
     // given
+    Pod pod = PodBuilder.generatePod();
     OrderInfoView orderInfoView = mock(OrderInfoView.class);
-    when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(mock(IssueVoucherReportViewModel.class));
+    IssueVoucherReportViewModel viewModel = new IssueVoucherReportViewModel(pod);
+    Program program = new Program();
+    program.setProgramCode(Program.VIA_CODE);
+    viewModel.setProgram(program);
+    when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(viewModel);
     reportActivity.setOrderInfo(orderInfoView);
 
     // when
@@ -134,12 +139,14 @@ public class IssueVoucherReportActivityTest {
   public void shouldCorrectUIWhenRefreshForReceived() throws Exception {
     // given
     OrderInfoView orderInfoView = mock(OrderInfoView.class);
-    when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(mock(IssueVoucherReportViewModel.class));
-    reportActivity.setOrderInfo(orderInfoView);
     Pod pod = PodBuilder.generatePod();
+    IssueVoucherReportViewModel viewModel = new IssueVoucherReportViewModel(pod);
+    Program program = new Program();
+    program.setProgramCode(Program.VIA_CODE);
+    viewModel.setProgram(program);
+    reportActivity.setOrderInfo(orderInfoView);
     pod.setOrderStatus(OrderStatus.RECEIVED);
-    IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
-    when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(issueVoucherReportViewModel);
+    when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(viewModel);
 
     // when
     reportActivity.refreshIssueVoucherForm(pod);

@@ -106,7 +106,7 @@ public class IssueVoucherReportPresenterTest {
     presenter.deleteIssueVoucher();
 
     // then
-    verify(podRepository,times(1)).deleteByOrderCode(pod.getOrderCode());
+    verify(podRepository,times(0)).deleteByOrderCode(pod.getOrderCode());
   }
 
   @Test

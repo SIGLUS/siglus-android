@@ -126,7 +126,7 @@ public class IssueVoucherReportLotAdapterTest {
     assertEquals("3", ((EditText)holder.getView(R.id.et_quantity_accepted)).getText().toString());
     assertEquals("10", ((EditText)holder.getView(R.id.et_quantity_shipped)).getText().toString());
     TextView returnedValue = holder.getView(R.id.tv_quantity_returned);
-    assertEquals("7", returnedValue.getText().toString());
+    assertEquals("-7", returnedValue.getText().toString());
     TextView reason = holder.getView(R.id.tv_rejection_reason);
     assertEquals("test", (reason.getText().toString()));
   }
@@ -145,7 +145,7 @@ public class IssueVoucherReportLotAdapterTest {
     assertEquals("4", ((EditText)holder.getView(R.id.et_quantity_accepted)).getText().toString());
     assertEquals("10", ((EditText)holder.getView(R.id.et_quantity_shipped)).getText().toString());
     TextView returnedValue = holder.getView(R.id.tv_quantity_returned);
-    assertEquals("6", returnedValue.getText().toString());
+    assertEquals("-6", returnedValue.getText().toString());
     TextView reason = holder.getView(R.id.tv_rejection_reason);
     assertEquals("reason2", (reason.getText().toString()));
     ImageView reasonLogo = holder.getView(R.id.iv_rejection_reason);
