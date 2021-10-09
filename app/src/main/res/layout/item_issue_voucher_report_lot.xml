@@ -80,14 +80,13 @@
   <RelativeLayout
     style="@style/Pod.list.lot"
     android:layout_width="@dimen/px_200">
-    <ImageView
-      android:id="@+id/iv_rejection_reason"
-      android:layout_width="@dimen/px_16"
-      android:layout_height="@dimen/px_16"
-      android:layout_marginLeft="@dimen/px_20"
-      android:layout_centerVertical="true"
-      android:paddingHorizontal="@dimen/px_1"
-      android:src="@drawable/icon_pulldown_enable" />
+    <View
+      android:id="@+id/v_rejection_reason"
+      style="@style/Pod.list.lot"
+      android:layout_width="match_parent"
+      android:layout_marginHorizontal="@dimen/px_10"
+      android:layout_marginVertical="@dimen/px_5"
+      android:background="@drawable/border_bg_corner" />
     <TextView
       android:id="@+id/tv_rejection_reason"
       style="@style/Pod.list.lot"
@@ -98,13 +97,14 @@
       android:layout_marginVertical="@dimen/px_5"
       android:background="@color/white_transparent_color"
       android:gravity="center" />
-    <View
-      android:id="@+id/v_rejection_reason"
-      style="@style/Pod.list.lot"
-      android:layout_width="match_parent"
-      android:layout_marginHorizontal="@dimen/px_10"
-      android:layout_marginVertical="@dimen/px_5"
-      android:background="@drawable/border_bg_corner" />
+    <ImageView
+      android:id="@+id/iv_rejection_reason"
+      android:layout_width="@dimen/px_16"
+      android:layout_height="@dimen/px_16"
+      android:layout_marginLeft="@dimen/px_20"
+      android:layout_centerVertical="true"
+      android:paddingHorizontal="@dimen/px_1"
+      android:src="@drawable/icon_pulldown_enable" />
   </RelativeLayout>
   <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot">
     <EditText

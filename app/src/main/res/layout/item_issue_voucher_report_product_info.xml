@@ -21,13 +21,13 @@
       <TextView
         android:id="@+id/products_name"
         style="@style/Pod.list.header.product"
-        android:layout_width="@dimen/px_160" />
+        android:layout_width="@dimen/px_145" />
       <ImageView
         android:id="@+id/iv_clear"
-        android:layout_width="@dimen/px_30"
+        android:layout_width="@dimen/px_35"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:padding="@dimen/px_5"
+        android:paddingRight="@dimen/px_15"
         android:src="@drawable/bitmap_close_red" />
     </LinearLayout>
   </LinearLayout>
