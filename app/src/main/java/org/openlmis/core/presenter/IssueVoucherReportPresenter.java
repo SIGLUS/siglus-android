@@ -239,6 +239,9 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     List<StockCard> toUpdateStockCards = new ArrayList<>();
     List<StockCard> needInitialStockCards = new ArrayList<>();
     for (PodProductItem podProductItem : pod.getPodProductItemsWrapper()) {
+      if (!needUpdateStockCard(podProductItem)) {
+        break;
+      }
       Product product = podProductItem.getProduct();
       long productId = podProductItem.getProduct().getId();
       StockCard stockCard;
@@ -259,6 +262,16 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     }
     productRepository.updateProductInArchived(needUpdatedArchived);
     stockRepository.addStockMovementsAndUpdateStockCards(needInitialStockCards, toUpdateStockCards);
+  }
+
+  private boolean needUpdateStockCard(PodProductItem podProductItem) {
+    boolean needUpdate = false;
+    for (PodProductLotItem lotItem : podProductItem.getPodProductLotItemsWrapper()) {
+      if (lotItem.getAcceptedQuantity() != 0) {
+        return true;
+      }
+    }
+    return needUpdate;
   }
 
   private long getChangeQuality(PodProductItem podProductItem) {
@@ -284,6 +297,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
         .uniqueIndex(lotOnHand -> lotOnHand.getId());
     stockMovementItem.setLotMovementItemListWrapper(
         FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
+            .filter(podLotItem -> podLotItem.getAcceptedQuantity() > 0)
             .transform(podLotItem -> buildLotMovementItem(stockMovementItem, podLotItem, lotIdToLotOnHands)).toList());
     return stockMovementItem;
   }
