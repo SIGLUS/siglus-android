@@ -55,7 +55,7 @@ public class IssueVoucherReportViewModelTest {
     IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
 
     // then
-    List<IssueVoucherReportProductViewModel> productViewModels = issueVoucherReportViewModel.productViewModels;
+    List<IssueVoucherReportProductViewModel> productViewModels = issueVoucherReportViewModel.getProductViewModels();
     assertEquals(1, productViewModels.size());
     IssueVoucherReportProductViewModel productViewModel = productViewModels.get(0);
     assertEquals("productCode",productViewModel.getProduct().getCode());
@@ -69,7 +69,7 @@ public class IssueVoucherReportViewModelTest {
     IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
 
     // then
-    List<IssueVoucherReportProductViewModel> productViewModels = issueVoucherReportViewModel.productViewModels;
+    List<IssueVoucherReportProductViewModel> productViewModels = issueVoucherReportViewModel.getProductViewModels();
     assertEquals(1, productViewModels.size());
     IssueVoucherReportLotViewModel lotViewModel = productViewModels.get(0).getLotViewModelList().get(0);
     assertEquals(FieldConstants.LOT_NUMBER, lotViewModel.getLot().getLotNumber());

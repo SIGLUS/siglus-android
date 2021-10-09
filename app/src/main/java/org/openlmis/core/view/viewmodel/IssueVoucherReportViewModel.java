@@ -27,7 +27,6 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
-import rx.Observable;
 
 @Data
 public class IssueVoucherReportViewModel {
@@ -63,10 +62,10 @@ public class IssueVoucherReportViewModel {
 
   private BigDecimal calculateTotalValue(List<IssueVoucherReportProductViewModel> productViewModels) {
     BigDecimal totalValue = new BigDecimal("0.00");
-    for(IssueVoucherReportProductViewModel productViewModel: productViewModels) {
+    for (IssueVoucherReportProductViewModel productViewModel : productViewModels) {
       for (IssueVoucherReportLotViewModel lotViewModel : productViewModel.getLotViewModelList()) {
         BigDecimal value = lotViewModel.getTotalValue();
-        if(value != null) {
+        if (value != null) {
           totalValue = totalValue.add(value);
         }
       }
@@ -81,21 +80,23 @@ public class IssueVoucherReportViewModel {
   }
 
   public boolean isNeedRemoveProduct(int productPosition) {
-    IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel)viewModels.get(productPosition);
+    IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel) viewModels
+        .get(productPosition);
     return productViewModel.getLotViewModelList().size() == 1;
   }
 
   public void removeLotAtPosition(int productPosition, int lotPosition) {
     List<IssueVoucherReportProductViewModel> productViewModels = getProductViewModels();
     IssueVoucherReportProductViewModel productViewModel = productViewModels.get(productPosition);
-    List<IssueVoucherReportLotViewModel> existedLots =  new ArrayList<> (productViewModel.getLotViewModelList());
+    List<IssueVoucherReportLotViewModel> existedLots = new ArrayList<>(productViewModel.getLotViewModelList());
     existedLots.remove(lotPosition);
     productViewModel.setLotViewModelList(existedLots);
     updateViewModels(productViewModels);
   }
 
   public void updateTotalViewModels() {
-    IssueVoucherReportSummaryViewModel viewModel = (IssueVoucherReportSummaryViewModel)viewModels.get(viewModels.size() - 1);
+    IssueVoucherReportSummaryViewModel viewModel = (IssueVoucherReportSummaryViewModel) viewModels
+        .get(viewModels.size() - 1);
     viewModel.setTotal(calculateTotalValue(getProductViewModels()));
     viewModels.set(viewModels.size() - 1, viewModel);
   }
@@ -107,9 +108,9 @@ public class IssueVoucherReportViewModel {
     }
     IssueVoucherReportSummaryViewModel summaryViewModel;
     if (viewModels.size() > 0) {
-      summaryViewModel = (IssueVoucherReportSummaryViewModel)viewModels.get(viewModels.size() -1);
+      summaryViewModel = (IssueVoucherReportSummaryViewModel) viewModels.get(viewModels.size() - 1);
       summaryViewModel.setTotal(calculateTotalValue(productViewModels));
-;    } else {
+    } else {
       summaryViewModel = new IssueVoucherReportSummaryViewModel(pod, calculateTotalValue(productViewModels));
     }
     viewModels.clear();

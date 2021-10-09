@@ -31,7 +31,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.enumeration.IssueVoucherItemType;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter.IssueVoucherReportViewHolder;
 import org.openlmis.core.view.listener.OnUpdatePodListener;
-import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportSummaryViewModel;
@@ -64,7 +63,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
   public int validateAll() {
     int position = -1;
     int dataSize = getData().size();
-    for (int i = 0; i < dataSize - 2; i++) {
+    for (int i = 0; i < dataSize - 1; i++) {
       IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel) getData().get(i);
       if (productViewModel.validate()) {
         continue;

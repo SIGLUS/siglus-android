@@ -26,7 +26,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -159,10 +158,10 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     issueVoucherReportAdapter.setList(viewModel.getViewModels());
     if (viewModel.getPodStatus() == OrderStatus.RECEIVED) {
       actionPanelView.setVisibility(View.GONE);
-      setTitle(LMISApp.getContext().getString(R.string.title_pod,viewModel.getProgram().getProgramCode()));
+      setTitle(LMISApp.getContext().getString(R.string.title_pod, viewModel.getProgram().getProgramCode()));
       orderInfo.refresh(pod, viewModel);
     } else {
-      setTitle(LMISApp.getContext().getString(R.string.title_issue_voucher,viewModel.getProgram().getProgramCode()));
+      setTitle(LMISApp.getContext().getString(R.string.title_issue_voucher, viewModel.getProgram().getProgramCode()));
       if (viewModel.getIsLocal()) {
         orderInfo.setVisibility(View.GONE);
       } else {
