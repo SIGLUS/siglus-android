@@ -34,8 +34,7 @@
         android:textStyle="bold"
         android:text="@string/label_issue_prepared_by"/>
       <TextView style="@style/Pod.list.summary"
-        android:paddingLeft="@dimen/px_5"
-        android:text="sara"/>
+        android:paddingLeft="@dimen/px_5" />
     </LinearLayout>
     <LinearLayout
       android:layout_weight="1"

@@ -14,16 +14,14 @@
     <TextView
       android:id="@+id/products_code"
       style="@style/Pod.list.header.product"
-      android:layout_width="@dimen/px_64"
-      android:text="02A01" />
+      android:layout_width="@dimen/px_64" />
     <LinearLayout
       style="@style/Pod.list.header.product"
       android:layout_width="@dimen/px_190">
       <TextView
         android:id="@+id/products_name"
         style="@style/Pod.list.header.product"
-        android:layout_width="@dimen/px_160"
-        android:text="Kit KWATMHOSO2- M6dulo Mangueiras adicionais; N/A;" />
+        android:layout_width="@dimen/px_160" />
       <ImageView
         android:id="@+id/iv_clear"
         android:layout_width="@dimen/px_30"

@@ -44,6 +44,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
@@ -100,6 +101,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
 
     private EditText etQuantityShipped;
     private TextView tvLotCode;
+    private TextView tvLotExpireDate;
     private TextView tvPrice;
     private TextView tvTotalValue;
     private TextView tvQuantityReturned;
@@ -121,6 +123,8 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       this.lotViewModel = lotViewModel;
       initView();
       tvLotCode.setText(lotViewModel.getLot().getLotNumber());
+      tvLotExpireDate.setText(DateUtil
+          .formatDate(lotViewModel.getLot().getExpirationDate(), DateUtil.DB_DATE_FORMAT));
       tvPrice.setText(getPrice(lotViewModel));
       updateTotalValue(lotViewModel);
       etQuantityShipped.setText(convertLongValueToString(lotViewModel.getShippedQuantity()));
@@ -316,6 +320,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     private void initView() {
       etQuantityShipped = itemView.findViewById(R.id.et_quantity_shipped);
       tvLotCode = itemView.findViewById(R.id.tv_lot_code);
+      tvLotExpireDate = itemView.findViewById(R.id.tv_expiring_date);
       etQuantityAccepted = itemView.findViewById(R.id.et_quantity_accepted);
       tvQuantityReturned = itemView.findViewById(R.id.tv_quantity_returned);
       vRejectionReason = itemView.findViewById(R.id.v_rejection_reason);
