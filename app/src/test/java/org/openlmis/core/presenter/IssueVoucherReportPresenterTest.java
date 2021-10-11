@@ -41,6 +41,7 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportSummaryViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -81,6 +82,10 @@ public class IssueVoucherReportPresenterTest {
 
     //then
     assertEquals(program.getProgramName(), presenter.getIssueVoucherReportViewModel().getProgram().getProgramName());
+    assertEquals(2, presenter.getIssueVoucherReportViewModel().getViewModels().size());
+    IssueVoucherReportSummaryViewModel viewModel = (IssueVoucherReportSummaryViewModel) presenter
+        .getIssueVoucherReportViewModel().getViewModels().get(1);
+    assertEquals("20.00", viewModel.getTotal().toString());
     assertEquals(1, presenter.getIssueVoucherReportViewModel().getProductViewModels().size());
     verify(issueVoucherView, times(1)).loaded();
   }

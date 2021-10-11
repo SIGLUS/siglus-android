@@ -25,6 +25,11 @@ public class ProductBuilder {
     return this;
   }
 
+  public ProductBuilder setPrice(String price) {
+    product.setPrice(price);
+    return this;
+  }
+
   public ProductBuilder setCode(String code) {
     product.setCode(code);
     return this;
@@ -53,6 +58,7 @@ public class ProductBuilder {
     return new ProductBuilder().setType(Product.MEDICINE_TYPE_ADULT)
         .setCode("productCode")
         .setStrength("serious")
+        .setPrice("2.00")
         .setPrimaryName("Primary product name")
         .build();
   }

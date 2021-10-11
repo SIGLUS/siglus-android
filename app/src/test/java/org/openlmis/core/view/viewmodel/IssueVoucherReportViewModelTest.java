@@ -65,15 +65,53 @@ public class IssueVoucherReportViewModelTest {
 
   @Test
   public void shouldGetCorrectLotItem() {
-    // when
+    // given
     IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
 
-    // then
+    // when
     List<IssueVoucherReportProductViewModel> productViewModels = issueVoucherReportViewModel.getProductViewModels();
+
+    // then
     assertEquals(1, productViewModels.size());
     IssueVoucherReportLotViewModel lotViewModel = productViewModels.get(0).getLotViewModelList().get(0);
     assertEquals(FieldConstants.LOT_NUMBER, lotViewModel.getLot().getLotNumber());
     assertEquals(Long.valueOf(10),lotViewModel.getShippedQuantity());
+  }
+
+  @Test
+  public void shouldNeedDeleteProductModel() {
+    // given
+    IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
+
+    // when
+    boolean isNeedDeleteProductModel = issueVoucherReportViewModel.isNeedRemoveProduct(0);
+
+    // then
+    assertEquals(true, isNeedDeleteProductModel);
+  }
+
+  @Test
+  public void shouldDeleteProduct() {
+    // given
+    IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
+
+    // when
+    issueVoucherReportViewModel.removeProductAtPosition(0);
+
+    // then
+    assertEquals(1, issueVoucherReportViewModel.getViewModels().size());
+  }
+
+  @Test
+  public void shouldDeleteLot() {
+    // given
+    IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
+
+    // when
+    issueVoucherReportViewModel.removeLotAtPosition(0, 0);
+
+    // then
+    assertEquals(2, issueVoucherReportViewModel.getViewModels().size());
   }
 
 }
