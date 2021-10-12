@@ -293,14 +293,15 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     stockMovementItem.setDocumentNumber(pod.getOrderCode());
     stockMovementItem.setStockOnHand(stockCard.getStockOnHand());
     stockMovementItem.setSignature(pod.getReceivedBy());
-    if (!stockCard.getProduct().isKit()) {
-      ImmutableMap<Long, LotOnHand> lotIdToLotOnHands = FluentIterable.from(stockCard.getLotOnHandListWrapper())
-          .uniqueIndex(lotOnHand -> lotOnHand.getId());
-      stockMovementItem.setLotMovementItemListWrapper(
-          FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
-              .filter(podLotItem -> podLotItem.getAcceptedQuantity() > 0)
-              .transform(podLotItem -> buildLotMovementItem(stockMovementItem, podLotItem, lotIdToLotOnHands)).toList());
+    if (stockCard.getProduct().isKit()) {
+      return stockMovementItem;
     }
+    ImmutableMap<Long, LotOnHand> lotIdToLotOnHands = FluentIterable.from(stockCard.getLotOnHandListWrapper())
+        .uniqueIndex(lotOnHand -> lotOnHand.getId());
+    stockMovementItem.setLotMovementItemListWrapper(
+        FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
+            .filter(podLotItem -> podLotItem.getAcceptedQuantity() > 0)
+            .transform(podLotItem -> buildLotMovementItem(stockMovementItem, podLotItem, lotIdToLotOnHands)).toList());
     return stockMovementItem;
   }
 

@@ -92,9 +92,6 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
   }
 
   public boolean validate() {
-//    if (product.isKit()) {
-//      return validKitProduct();
-//    }
     return validNormalProduct();
   }
 
@@ -194,7 +191,7 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
   }
 
   private void createVirtualLotForKitProduct() {
-    lotViewModels.add(new IssueVoucherLotViewModel(Constants.VIRTUAL_LOT_NUMBER,"Oct 2021",product));
+    lotViewModels.add(new IssueVoucherLotViewModel(Constants.VIRTUAL_LOT_NUMBER, "Oct 2021", product));
   }
 
   private boolean isAllLotValid() {

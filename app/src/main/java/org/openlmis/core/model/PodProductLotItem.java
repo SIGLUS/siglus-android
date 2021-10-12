@@ -36,7 +36,7 @@ import lombok.Setter;
 @DatabaseTable(tableName = "pod_product_lot_items")
 public class PodProductLotItem extends BaseModel {
 
-  @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false)
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private Lot lot;
 
   @DatabaseField

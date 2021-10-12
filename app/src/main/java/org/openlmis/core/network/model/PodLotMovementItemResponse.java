@@ -19,6 +19,7 @@
 package org.openlmis.core.network.model;
 
 import lombok.Data;
+import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.PodProductLotItem;
 
 @Data
@@ -36,11 +37,18 @@ public class PodLotMovementItemResponse {
 
   public PodProductLotItem from() {
     return PodProductLotItem.builder()
-        .lot(lot.from())
+        .lot(buildLot())
         .shippedQuantity(shippedQuantity)
         .acceptedQuantity(acceptedQuantity)
         .rejectedReason(rejectedReason)
         .notes(notes)
         .build();
+  }
+
+  private Lot buildLot() {
+    if (lot != null) {
+      return lot.from();
+    }
+    return null;
   }
 }

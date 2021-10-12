@@ -91,14 +91,10 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
 
   protected class IssueVoucherProductViewHolder extends BaseViewHolder implements AmountChangeListener {
 
-    protected AddLotDialogFragment addLotDialogFragment;
-
-    private IssueVoucherProductViewModel viewModel;
-
-    private IssueVoucherLotAdapter lotAdapter;
-
     private static final String ADD_LOT = "add_new_lot";
-
+    protected AddLotDialogFragment addLotDialogFragment;
+    private IssueVoucherProductViewModel viewModel;
+    private IssueVoucherLotAdapter lotAdapter;
     private ImageView ivTrashcan;
 
     private TextView tvErrorBanner;
@@ -143,25 +139,25 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
     }
 
     private void initLots() {
-        rvLots = getView(R.id.rv_lots);
-        rvLots.setLayoutManager(new LinearLayoutManager(itemView.getContext()) {
-          @Override
-          public boolean canScrollVertically() {
-            return false;
-          }
-        });
-        lotAdapter = new IssueVoucherLotAdapter();
-        rvLots.setAdapter(lotAdapter);
-        if (rvLots.getItemDecorationCount() == 0) {
-          rvLots.addItemDecoration(new DividerItemDecoration(itemView.getContext(), DividerItemDecoration.VERTICAL));
+      rvLots = getView(R.id.rv_lots);
+      rvLots.setLayoutManager(new LinearLayoutManager(itemView.getContext()) {
+        @Override
+        public boolean canScrollVertically() {
+          return false;
         }
-        lotAdapter.setAmountChangeListener(this);
-        List<IssueVoucherLotViewModel> filteredLotViewModels = viewModel.getLotViewModels();
-        if (viewModel.isDone()) {
-          filteredLotViewModels = FluentIterable.from(viewModel.getLotViewModels()).filter(issueVoucherLotViewModel ->
-              Objects.requireNonNull(issueVoucherLotViewModel).getShippedQuantity() != null).toList();
-        }
-        lotAdapter.setNewInstance(filteredLotViewModels);
+      });
+      lotAdapter = new IssueVoucherLotAdapter();
+      rvLots.setAdapter(lotAdapter);
+      if (rvLots.getItemDecorationCount() == 0) {
+        rvLots.addItemDecoration(new DividerItemDecoration(itemView.getContext(), DividerItemDecoration.VERTICAL));
+      }
+      lotAdapter.setAmountChangeListener(this);
+      List<IssueVoucherLotViewModel> filteredLotViewModels = viewModel.getLotViewModels();
+      if (viewModel.isDone()) {
+        filteredLotViewModels = FluentIterable.from(viewModel.getLotViewModels()).filter(issueVoucherLotViewModel ->
+            Objects.requireNonNull(issueVoucherLotViewModel).getShippedQuantity() != null).toList();
+      }
+      lotAdapter.setNewInstance(filteredLotViewModels);
     }
 
     private SingleClickButtonListener getRemoveClickListener() {
