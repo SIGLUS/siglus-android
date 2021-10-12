@@ -29,7 +29,6 @@ import android.widget.TextView;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.network.SyncErrorsMap;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -149,8 +148,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
     String error;
     error = context.getString(R.string.label_unsynced_requisition, model.getName());
     if (model.getSyncServerErrorMessage() != null) {
-      error = SyncErrorsMap
-          .getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
+      error = model.getSyncServerErrorMessage();
     }
     configHolder(model.getTitle(),
         Html.fromHtml(error),

@@ -232,6 +232,14 @@ public final class Constants {
 
   public static final String VIRTUAL_LOT_NUMBER = "virtual lot number";
 
+  public static final String SIGLUS_API_ORDER_NUMBER_NOT_EXIST = "This order number does not exist";
+
+  public static final String SERVER_FAILED_MESSAGE_IN_ENGLISH =
+      "Sync failed due to technical problem on the server. Please contact system administrator.";
+
+  public static final String SERVER_FAILED_MESSAGE_IN_PORTUGUESE =
+      "Sincronização falhou devido à problemas técnicos no servidor. Entre em contacto com administrador do sistema.";
+
   private Constants() {
 
   }

@@ -30,7 +30,7 @@ import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.builder.PodBuilder;
-import org.openlmis.core.network.SyncErrorsMap;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 @RunWith(LMISTestRunner.class)
@@ -154,7 +154,7 @@ public class IssueVoucherListViewModelTest {
         .build();
 
     Pod orderNotMatchPod = PodBuilder.generatePod();
-    SyncError orderNotMatchError = new SyncError(SyncErrorsMap.ERROR_POD_ORDER_DOSE_NOT_EXIST, SyncType.POD,
+    SyncError orderNotMatchError = new SyncError(Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST, SyncType.POD,
         syncErrorPod.getId());
     IssueVoucherListViewModel orderNotMatchViewModel = IssueVoucherListViewModel.builder()
         .pod(orderNotMatchPod)
@@ -164,9 +164,8 @@ public class IssueVoucherListViewModelTest {
     // then
     Assert.assertEquals(LMISApp.getContext().getResources().getString(R.string.error_pod_not_sync),
         unsyncViewModel.getErrorMsg());
-    Assert.assertEquals(LMISApp.getContext().getResources().getString(R.string.sync_server_error),
-        syncErrorViewModel.getErrorMsg());
-    Assert.assertEquals(LMISApp.getContext().getResources().getString(R.string.error_pod_order_number_not_exist),
+    Assert.assertEquals("test message", syncErrorViewModel.getErrorMsg());
+    Assert.assertEquals(Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST,
         orderNotMatchViewModel.getErrorMsg());
   }
 }

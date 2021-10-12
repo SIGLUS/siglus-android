@@ -268,7 +268,7 @@ public class SyncDownManager {
         sharedPreferenceMgr.setStockCardLastYearSyncError(true);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
         new LMISException(e, "getSyncLastYearStockCardSubscriber:onError").reportToFabric();
-        sendSyncErrorBroadcast(e.getMessage());
+        EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR));
       }
 
       @Override
@@ -295,7 +295,7 @@ public class SyncDownManager {
         sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
         sharedPreferenceMgr.setStockCardLastYearSyncError(true);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-        sendSyncErrorBroadcast("Save one year stock failed");
+        EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR));
       }
 
       @Override
@@ -303,10 +303,6 @@ public class SyncDownManager {
         // do nothing
       }
     };
-  }
-
-  private void sendSyncErrorBroadcast(String errorMsg) {
-    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR, errorMsg));
   }
 
   private void syncDownRequisition(Subscriber<? super SyncProgress> subscriber)

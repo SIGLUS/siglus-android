@@ -41,10 +41,10 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.SyncType;
-import org.openlmis.core.network.SyncErrorsMap;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 public class PodRepository {
@@ -130,7 +130,7 @@ public class PodRepository {
       }
       do {
         String errorMsg = cursor.getString(cursor.getColumnIndexOrThrow(FieldConstants.ERROR_MESSAGE));
-        if (StringUtils.isNotEmpty(errorMsg) && errorMsg.contains(SyncErrorsMap.ERROR_POD_ORDER_DOSE_NOT_EXIST)) {
+        if (StringUtils.isNotEmpty(errorMsg) && errorMsg.contains(Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST)) {
           return true;
         }
       } while (cursor.moveToNext());

@@ -207,7 +207,7 @@ public class SyncUpManager {
         return true;
       } catch (Exception e) {
         new LMISException(e, "SyncUpManager:fakeSyncRnr,sync failed").reportToFabric();
-        syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RNR_FORM, rnRForm.getId()));
+        syncErrorsRepository.save(new SyncError(e, SyncType.RNR_FORM, rnRForm.getId()));
         return false;
       }
     }).subscribe(this::markRnrFormSynced);
@@ -275,8 +275,8 @@ public class SyncUpManager {
       return true;
     } catch (LMISException exception) {
       new LMISException(exception, "SyncUpManager.syncStockCards").reportToFabric();
-      EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR, exception.getMessage()));
-      syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.STOCK_CARDS, 0L));
+      EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR));
+      syncErrorsRepository.save(new SyncError(exception, SyncType.STOCK_CARDS, 0L));
       Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
       return false;
     }
@@ -301,7 +301,7 @@ public class SyncUpManager {
       return true;
     } catch (LMISException exception) {
       new LMISException(exception, "SyncUpManager.fakeSyncStockCards").reportToFabric();
-      syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.STOCK_CARDS, 0L));
+      syncErrorsRepository.save(new SyncError(exception, SyncType.STOCK_CARDS, 0L));
       Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
       return false;
     }
@@ -444,7 +444,7 @@ public class SyncUpManager {
     } catch (LMISException e) {
       new LMISException(e, "SyncUpManager.submitRequisition").reportToFabric();
       Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
-      syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RNR_FORM, rnRForm.getId()));
+      syncErrorsRepository.save(new SyncError(e, SyncType.RNR_FORM, rnRForm.getId()));
       return false;
     }
   }
@@ -494,7 +494,7 @@ public class SyncUpManager {
     } catch (LMISException e) {
       new LMISException(e, "SyncUpManager.submitPod.lmis").reportToFabric();
       syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.POD, localPod.getId());
-      syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.POD, localPod.getId()));
+      syncErrorsRepository.save(new SyncError(e, SyncType.POD, localPod.getId()));
     }
     return localPod;
   }

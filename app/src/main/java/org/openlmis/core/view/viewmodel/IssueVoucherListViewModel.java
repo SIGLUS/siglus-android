@@ -29,7 +29,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.SyncError;
-import org.openlmis.core.network.SyncErrorsMap;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.Constants.Program;
 import org.openlmis.core.utils.DateUtil;
 
@@ -93,7 +93,7 @@ public class IssueVoucherListViewModel implements Comparable<IssueVoucherListVie
 
   public boolean shouldShowOperationIcon() {
     return pod.isLocal() && (isIssueVoucher()
-        || (!isIssueVoucher() && StringUtils.contains(getErrorMsg(), SyncErrorsMap.ERROR_POD_ORDER_DOSE_NOT_EXIST)));
+        || (!isIssueVoucher() && StringUtils.contains(getErrorMsg(), Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST)));
   }
 
   @Nullable
@@ -101,7 +101,7 @@ public class IssueVoucherListViewModel implements Comparable<IssueVoucherListVie
     if (!pod.isSynced() && syncError == null) {
       return LMISApp.getContext().getResources().getString(R.string.error_pod_not_sync);
     } else if (syncError != null) {
-      return SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(syncError.getErrorMessage());
+      return syncError.getErrorMessage();
     } else {
       return null;
     }

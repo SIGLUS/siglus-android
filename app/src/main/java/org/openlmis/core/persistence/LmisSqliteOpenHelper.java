@@ -67,6 +67,7 @@ import org.openlmis.core.persistence.migrations.AddRnrBaseInfoItem;
 import org.openlmis.core.persistence.migrations.AddServiceItemTable;
 import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovementItemTable;
 import org.openlmis.core.persistence.migrations.AddSubmittedDateToRnRForm;
+import org.openlmis.core.persistence.migrations.AddErrorMessageInPortuguese;
 import org.openlmis.core.persistence.migrations.AddSyncErrorsMessageTable;
 import org.openlmis.core.persistence.migrations.AddSyncTagToStockMovementItem;
 import org.openlmis.core.persistence.migrations.AddVersionCodeToProgramProductTable;
@@ -227,6 +228,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new CreateAdditionalProductProgramTable());
     MIGRATIONS.add(new CreateIssueVoucherDraftTables());
     MIGRATIONS.add(new AddProductPrice());
+    MIGRATIONS.add(new AddErrorMessageInPortuguese());
   }
 
   private LmisSqliteOpenHelper(Context context) {

@@ -67,7 +67,6 @@ import org.openlmis.core.network.adapter.ReportTypeAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.ServiceAdapter;
 import org.openlmis.core.network.adapter.StockCardsResponseAdapter;
-import org.openlmis.core.network.model.DataErrorResponse;
 import org.openlmis.core.network.model.ErrorHandlingResponse;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
@@ -191,29 +190,29 @@ public class LMISRestManager {
     @Override
     public Throwable handleError(RetrofitError cause) {
       Response r = cause.getResponse();
-      if (r != null && r.getStatus() == 400) {
-        return new SyncServerException(
-            ((DataErrorResponse) cause.getBodyAs(DataErrorResponse.class)).getError());
+      if (r != null && (r.getStatus() == 400 || r.getStatus() == 404)) {
+        ErrorHandlingResponse errorResponse = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
+        if (errorResponse.isAndroid()){
+          return new SyncServerException(errorResponse.getMessage(), errorResponse.getMessageInPortuguese());
+        }else {
+          return new SyncServerException();
+        }
       }
       if (r != null && r.getStatus() == 401) {
         UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
         refreshAccessToken(UserInfoMgr.getInstance().getUser(), cause);
       }
       if (r != null && r.getStatus() == 403) {
-        DataErrorResponse dataErrorResponse = (DataErrorResponse) cause.getBodyAs(DataErrorResponse.class);
-        if (SIGLUS_API_ERROR_NOT_ANDROID.equals(dataErrorResponse.getMessageKey())) {
+        ErrorHandlingResponse errorResponse = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
+        if (SIGLUS_API_ERROR_NOT_ANDROID.equals(errorResponse.getMessageKey())) {
           EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
           userRepository.deleteLocalUser();
           SharedPreferenceMgr.getInstance().setLastLoginUser(StringUtils.EMPTY);
           return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
         }
       }
-      if (r != null && r.getStatus() == 404) {
-        ErrorHandlingResponse response = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
-        return new LMISException(response.getMessage());
-      }
       if (r != null && r.getStatus() == 500) {
-        return new SyncServerException(LMISApp.getContext().getString(R.string.sync_server_error));
+        return new SyncServerException();
       }
       if (cause.getKind() == RetrofitError.Kind.NETWORK) {
         return new NetWorkException(cause);

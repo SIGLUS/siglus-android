@@ -20,8 +20,11 @@ package org.openlmis.core.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import lombok.Getter;
+import java.util.Locale;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.openlmis.core.exceptions.SyncServerException;
+import org.openlmis.core.utils.Constants;
 
 @NoArgsConstructor
 @DatabaseTable(tableName = "sync_errors")
@@ -30,16 +33,40 @@ public class SyncError extends BaseModel {
   @DatabaseField
   private SyncType syncType;
 
-  @Getter
   @DatabaseField
   private String errorMessage;
+
+  @DatabaseField
+  private String errorMessageInPortuguese;
 
   @DatabaseField
   private long syncObjectId;
 
   public SyncError(String message, SyncType syncType, long syncObjectId) {
     this.errorMessage = message;
+    this.errorMessageInPortuguese = message;
     this.syncType = syncType;
     this.syncObjectId = syncObjectId;
+  }
+
+  public SyncError(@NotNull Exception e, SyncType syncType, long syncObjectId) {
+    this.syncType = syncType;
+    this.syncObjectId = syncObjectId;
+    if (e instanceof SyncServerException) {
+      SyncServerException serverException = (SyncServerException) e;
+      this.errorMessage = serverException.getMessageInEnglish();
+      this.errorMessageInPortuguese = serverException.getMessageInPortuguese();
+    }else {
+      this.errorMessage = Constants.SERVER_FAILED_MESSAGE_IN_ENGLISH;
+      this.errorMessageInPortuguese = Constants.SERVER_FAILED_MESSAGE_IN_PORTUGUESE;
+    }
+  }
+
+  public String getErrorMessage() {
+    if (Locale.getDefault().getLanguage().equals(new Locale("pt").getLanguage())) {
+      return errorMessageInPortuguese;
+    } else {
+      return errorMessage;
+    }
   }
 }

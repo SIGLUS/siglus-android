@@ -25,9 +25,11 @@ import lombok.Setter;
 @Setter
 public class ErrorHandlingResponse {
 
-  int status;
+  boolean isAndroid;
 
   String message;
+
+  String messageKey;
 
   String messageInPortuguese;
 }

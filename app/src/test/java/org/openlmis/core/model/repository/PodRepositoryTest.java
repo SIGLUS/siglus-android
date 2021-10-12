@@ -31,7 +31,7 @@ import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.builder.PodBuilder;
-import org.openlmis.core.network.SyncErrorsMap;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.Constants.Program;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -126,7 +126,7 @@ public class PodRepositoryTest {
   @Test
   public void testHasUnmatchedPodByProgram() throws Exception {
     // given
-    SyncError syncError = new SyncError(SyncErrorsMap.ERROR_POD_ORDER_DOSE_NOT_EXIST, SyncType.POD, 2);
+    SyncError syncError = new SyncError(Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST, SyncType.POD, 2);
     syncErrorRepository.save(syncError);
     Pod VCPod = PodBuilder.generatePod();
     VCPod.setId(2);
@@ -164,7 +164,7 @@ public class PodRepositoryTest {
     pods.add(pod);
     podRepository.batchCreatePodsWithItems(pods);
 
-    SyncError syncError = new SyncError(SyncErrorsMap.ERROR_POD_ORDER_DOSE_NOT_EXIST, SyncType.POD, 3);
+    SyncError syncError = new SyncError(Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST, SyncType.POD, 3);
     syncErrorRepository.save(syncError);
 
     // then

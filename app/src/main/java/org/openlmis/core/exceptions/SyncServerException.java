@@ -18,9 +18,28 @@
 
 package org.openlmis.core.exceptions;
 
+import lombok.Getter;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
+import org.openlmis.core.utils.Constants;
+
 public class SyncServerException extends LMISException {
 
-  public SyncServerException(String message) {
-    super(message);
+  @Getter
+  private final String messageInEnglish;
+
+  @Getter
+  private final String messageInPortuguese;
+
+  public SyncServerException() {
+    super(LMISApp.getInstance().getString(R.string.sync_server_error));
+    this.messageInEnglish = Constants.SERVER_FAILED_MESSAGE_IN_ENGLISH;
+    this.messageInPortuguese = Constants.SERVER_FAILED_MESSAGE_IN_PORTUGUESE;
+  }
+
+  public SyncServerException(String messageInEnglish, String messageInPortuguese) {
+    super(messageInEnglish);
+    this.messageInEnglish = messageInEnglish;
+    this.messageInPortuguese = messageInPortuguese;
   }
 }

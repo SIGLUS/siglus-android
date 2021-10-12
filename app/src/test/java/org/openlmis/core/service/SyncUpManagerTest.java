@@ -47,10 +47,8 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.SyncServerException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -412,8 +410,7 @@ public class SyncUpManagerTest {
     List<DirtyDataItemInfo> dirtyDataItems = createDirtyDateItem();
     DirtyDataItemInfo item = dirtyDataItems.get(0);
     when(mockedDirtyDataRepository.listunSyced()).thenReturn(dirtyDataItems);
-    doThrow(new SyncServerException(LMISApp.getContext().getString(R.string.sync_server_error)))
-        .when(mockedLmisRestApi).syncUpDeletedData(anyList());
+    doThrow(new SyncServerException()).when(mockedLmisRestApi).syncUpDeletedData(anyList());
 
     assertThat(item.isSynced(), is(false));
 

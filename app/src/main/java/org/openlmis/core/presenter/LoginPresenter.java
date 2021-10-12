@@ -413,7 +413,7 @@ public class LoginPresenter extends Presenter {
         sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
         sharedPreferenceMgr.setStockCardLastYearSyncError(true);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-        view.sendSyncErrorBroadcast(e.getMessage());
+        view.sendSyncErrorBroadcast();
         new LMISException(e).reportToFabric();
       }
 
@@ -442,7 +442,7 @@ public class LoginPresenter extends Presenter {
         sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
         sharedPreferenceMgr.setStockCardLastYearSyncError(true);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-        view.sendSyncErrorBroadcast("Save one year stock failed");
+        view.sendSyncErrorBroadcast();
       }
 
       @Override
@@ -491,6 +491,6 @@ public class LoginPresenter extends Presenter {
 
     void sendSyncFinishedBroadcast();
 
-    void sendSyncErrorBroadcast(String errorMsg);
+    void sendSyncErrorBroadcast();
   }
 }
