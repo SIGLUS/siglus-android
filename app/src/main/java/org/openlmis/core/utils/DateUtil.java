@@ -273,4 +273,8 @@ public final class DateUtil {
     instance.set(Calendar.DAY_OF_MONTH, instance.getActualMaximum(Calendar.DAY_OF_MONTH));
     return instance.getTime();
   }
+
+  public static String getVirtualLotExpireDate() {
+    return new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR, Locale.getDefault()).format(DateUtil.getCurrentDate());
+  }
 }

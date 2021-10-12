@@ -35,6 +35,7 @@ import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
@@ -170,7 +171,8 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
   }
 
   private void createVirtualLotForKitProduct() {
-    lotViewModels.add(new IssueVoucherLotViewModel(Constants.VIRTUAL_LOT_NUMBER, "Oct 2021", product));
+    lotViewModels.add(new IssueVoucherLotViewModel(Constants.VIRTUAL_LOT_NUMBER, DateUtil.getVirtualLotExpireDate(),
+        product));
   }
 
   private boolean isAllLotValid() {
