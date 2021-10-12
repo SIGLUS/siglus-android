@@ -291,7 +291,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
         continue;
       }
 
-      String word = name.substring(0, 1);
+      String word = name.substring(0, 1).toUpperCase();
       if (!strAlphabets.contains(word)) {
         strAlphabets.add(word);
         mAlphabetItems.add(new AlphabetItem(i, word, false));

@@ -55,7 +55,8 @@ public class AddDrugsToVIAPresenter extends Presenter {
             .from(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm())
             .filter(product -> !existingProducts.contains(product.getCode()))
             .transform(AddDrugsToViaInventoryViewModel::new)
-            .toList());
+            .toSortedList((o1, o2) ->
+                o1.getProductName() == null ? 0 : o1.getProductName().compareToIgnoreCase(o2.getProductName())));
         subscriber.onNext(null);
         subscriber.onCompleted();
       } catch (LMISException e) {

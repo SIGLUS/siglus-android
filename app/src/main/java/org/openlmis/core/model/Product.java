@@ -130,7 +130,7 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
 
   @Override
   public int compareTo(@NonNull Product another) {
-    return primaryName == null ? 0 : primaryName.compareTo(another.getPrimaryName());
+    return primaryName == null ? 0 : primaryName.compareToIgnoreCase(another.getPrimaryName());
   }
 
   public String getUnit() {
