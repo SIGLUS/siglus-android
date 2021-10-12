@@ -31,7 +31,6 @@ import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 @Data
@@ -165,7 +164,7 @@ public class IssueVoucherLotViewModel implements MultiItemEntity, Comparable<Iss
   }
 
   public boolean isVirtualLot() {
-    return Constants.VIRTUAL_LOT_NUMBER.equals(lotNumber);
+    return this.getProduct().isKit();
   }
 
   @Override

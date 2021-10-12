@@ -95,7 +95,13 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
   }
 
   public boolean validate() {
-    return validNormalProduct();
+    if (validProduct() && isAllLotValid()) {
+      setDone(true);
+      return true;
+    } else {
+      setDone(false);
+      return false;
+    }
   }
 
   public void setDone(boolean isDone) {
@@ -161,36 +167,6 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
       }
     }
     return false;
-  }
-
-  private boolean validKitProduct() {
-    IssueVoucherLotViewModel virtualLot = lotViewModels.get(0);
-    Long shippedQuantity = virtualLot.getShippedQuantity();
-    Long acceptedQuantity = virtualLot.getAcceptedQuantity();
-    if (shippedQuantity == null && acceptedQuantity == null) {
-      validationType = IssueVoucherValidationType.KIT_ALL_BLANK;
-      virtualLot.setValid(false);
-      setDone(false);
-      return false;
-    } else if (shippedQuantity == null || acceptedQuantity == null) {
-      validationType = IssueVoucherValidationType.KIT_HAS_BLANK;
-      virtualLot.setValid(false);
-      setDone(false);
-      return false;
-    }
-    validationType = IssueVoucherValidationType.VALID;
-    setDone(true);
-    return true;
-  }
-
-  private boolean validNormalProduct() {
-    if (validProduct() && isAllLotValid()) {
-      setDone(true);
-      return true;
-    } else {
-      setDone(false);
-      return false;
-    }
   }
 
   private void createVirtualLotForKitProduct() {

@@ -33,7 +33,6 @@ import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 public class PodProductLotItemRepository {
@@ -83,7 +82,7 @@ public class PodProductLotItemRepository {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
         for (PodProductLotItem podProductLotItem : podProductLotItems) {
           Lot lot = podProductLotItem.getLot();
-          if (lot != null && !Constants.VIRTUAL_LOT_NUMBER.equals(lot.getLotNumber())) {
+          if (lot != null && !lot.getProduct().isKit()) {
             lot.setProduct(podProductItem.getProduct());
             Lot savedLot = lotRepository.createOrUpdateWithExistingLot(lot);
             podProductLotItem.setLot(savedLot);

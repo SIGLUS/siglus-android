@@ -19,7 +19,6 @@
 package org.openlmis.core.view.adapter;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,13 +34,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.IssueVoucherValidationType;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.BaseActivity;
@@ -208,8 +205,6 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
         setNoLotStatus();
       } else if (IssueVoucherValidationType.ALL_LOT_BLANK == viewModel.getValidationType()) {
         setAllLotBlankStatus();
-      } else if (IssueVoucherValidationType.KIT_ALL_BLANK == viewModel.getValidationType()) {
-        setAllLotBlankStatus();
       } else {
         setValidStatus();
       }
@@ -328,28 +323,6 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
       if (viewModel.isShouldShowError()) {
         updateErrorStatus();
       }
-    }
-
-    private SingleTextWatcher getShippedQuantityTextWatcher() {
-      return new SingleTextWatcher() {
-        @Override
-        public void afterTextChanged(Editable s) {
-          String shippedQuantity = s.toString();
-          Long quantityValue = StringUtils.isEmpty(shippedQuantity) ? null : Long.parseLong(shippedQuantity);
-          viewModel.getLotViewModels().get(0).setShippedQuantity(quantityValue);
-        }
-      };
-    }
-
-    private SingleTextWatcher getAcceptedQuantityTextWatcher() {
-      return new SingleTextWatcher() {
-        @Override
-        public void afterTextChanged(Editable s) {
-          String acceptedQuantity = s.toString();
-          Long quantityValue = StringUtils.isEmpty(acceptedQuantity) ? null : Long.parseLong(acceptedQuantity);
-          viewModel.getLotViewModels().get(0).setAcceptedQuantity(quantityValue);
-        }
-      };
     }
   }
 

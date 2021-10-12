@@ -143,10 +143,10 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private String getPrice(IssueVoucherReportLotViewModel lotViewModel) {
-      String price = null;
-      if (lotViewModel.getLot() != null) {
-        price = lotViewModel.getLot().getProduct().getPrice();
+      if (lotViewModel.getLot() == null) {
+        return "";
       }
+      String price = lotViewModel.getLot().getProduct().getPrice();
       return price == null ? "" : price;
     }
 
