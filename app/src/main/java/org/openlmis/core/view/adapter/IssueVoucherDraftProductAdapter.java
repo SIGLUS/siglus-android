@@ -227,8 +227,10 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
     private void setAllLotBlankStatus() {
       ivTrashcan.setImageResource(R.drawable.ic_red_ashcan);
       tvErrorBanner.setVisibility(View.VISIBLE);
-      tvErrorBanner.setText(R.string.alert_issue_voucher_can_not_be_blank);
-      if (!viewModel.getProduct().isKit()) {
+      if (viewModel.getProduct().isKit()) {
+        tvErrorBanner.setText(R.string.alert_issue_voucher_can_not_be_blank_for_kit);
+      } else {
+        tvErrorBanner.setText(R.string.alert_issue_voucher_can_not_be_blank);
         btnAddNewLot.setTextColor(ContextCompat.getColor(getContext(), R.color.color_accent));
         btnAddNewLot.setBackground(ResourcesCompat.getDrawable(getContext().getResources(),
             R.drawable.border_round_blue, null));

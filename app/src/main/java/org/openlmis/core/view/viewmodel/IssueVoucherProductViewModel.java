@@ -68,6 +68,9 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
 
   public IssueVoucherProductViewModel(Product product) {
     this.product = product;
+    if (product.isKit()) {
+      createVirtualLotForKitProduct();
+    }
   }
 
   public IssueVoucherProductViewModel(StockCard stockCard) {
