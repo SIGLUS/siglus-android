@@ -12,6 +12,8 @@ public class CreatePodTable extends Migration {
         "`receivedDate` VARCHAR, " +
         "`deliveredBy` VARCHAR, " +
         "`receivedBy` VARCHAR, " +
+        "`preparedBy` VARCHAR, " +
+        "`conferredBy` VARCHAR, " +
         "`documentNo` VARCHAR, " +
         "`orderCode` VARCHAR NOT NULL, " +
         "`originOrderCode` VARCHAR, " +

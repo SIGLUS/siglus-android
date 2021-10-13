@@ -56,6 +56,12 @@ public class Pod extends BaseModel implements Serializable {
   private String receivedBy;
 
   @DatabaseField
+  private String preparedBy;
+
+  @DatabaseField
+  private String conferredBy;
+
+  @DatabaseField
   private String documentNo;
 
   @DatabaseField(dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)

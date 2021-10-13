@@ -347,9 +347,9 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   private IssueVoucherSignatureDialog.DialogDelegate getSignatureDialogDelegate() {
     return new IssueVoucherSignatureDialog.DialogDelegate() {
       @Override
-      public void onSign(String deliveredBy, String receivedBy) {
+      public void onSign(String receivedBy) {
         loading();
-        Subscription subscription = presenter.getCompleteFormObservable(deliveredBy, receivedBy)
+        Subscription subscription = presenter.getCompleteFormObservable(receivedBy)
             .subscribe(getCompleteIssueVoucherSubscriber());
         subscriptions.add(subscription);
       }

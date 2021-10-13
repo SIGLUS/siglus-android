@@ -188,7 +188,7 @@ public class IssueVoucherReportPresenterTest {
     // when
     TestSubscriber<Void> subscriber = new TestSubscriber<>();
     Observable<Void> completeObservable  = presenter
-        .getCompleteFormObservable("testOne", "received");
+        .getCompleteFormObservable("received");
     completeObservable.subscribe(subscriber);
     subscriber.awaitTerminalEvent();
 

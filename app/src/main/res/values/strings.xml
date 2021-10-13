@@ -17,7 +17,7 @@
   <string name="hint_username">User Name</string>
   <string name="hint_password">Password</string>
   <string name="btn_login">LOG IN</string>
-  <string name="msg_empty_user">User name and password cannot be blank</string>
+  <string name="msg_empty_user">Username and password cannot be blank</string>
   <string name="msg_invalid_user">Username or Password is incorrect.</string>
   <string name="msg_sync_products_list_failed">Download of products from the server failed, please login again.</string>
   <string name="msg_sync_stock_movements_data">Synchronizing stock movement data</string>
@@ -682,7 +682,7 @@
   <string name="title_issue_voucher_remote_input_order_number">Issue voucher remote</string>
   <string name="title_electronic_issue_voucher">Electronic Issue Voucher</string>
   <string name="hint_save_issue_voucher_failed">Unable to save Issue Voucher form, please contact your administrator.</string>
-  <string name="msg_title_for_signature">Proof of Delivery for</string>
+  <string name="msg_title_for_signature">Issue Voucher for</string>
   <string name="msg_receive_for_signature">Received By</string>
   <string name="msg_delivered_for_signature">Delivered By</string>
   <string name="btn_next">NEXT</string>

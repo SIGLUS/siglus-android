@@ -177,12 +177,11 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
-  public Observable<Void> getCompleteFormObservable(String deliveredBy, String receivedBy) {
+  public Observable<Void> getCompleteFormObservable(String receivedBy) {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {
         pod.setDraft(false);
         pod.setReceivedBy(receivedBy);
-        pod.setDeliveredBy(deliveredBy);
         pod.setReceivedDate(DateUtil.getCurrentDate());
         pod.setOrderStatus(OrderStatus.RECEIVED);
         if (reasonCode != null) {

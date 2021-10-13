@@ -42,34 +42,12 @@
   </com.google.android.material.textfield.TextInputLayout>
 
   <com.google.android.material.textfield.TextInputLayout
-    android:id="@+id/ly_delivered"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/px_40"
-    android:layout_marginRight="@dimen/px_40"
-    app:layout_constraintTop_toBottomOf="@+id/ly_process_date">
-
-    <EditText
-      android:id="@+id/et_delivered"
-      style="@style/Dialog.EditText"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:inputType="textPersonName"
-      android:maxLength="@integer/signature_length"
-      android:hint="@string/msg_delivered_for_signature"
-      android:drawableStart="@drawable/ic_receive_by"
-      android:drawablePadding="@dimen/padding_normal"
-      android:paddingVertical="@dimen/px_13"
-      android:textSize="@dimen/px_20"/>
-  </com.google.android.material.textfield.TextInputLayout>
-
-  <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/ly_received"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/px_40"
     android:layout_marginRight="@dimen/px_40"
-    app:layout_constraintTop_toBottomOf="@+id/ly_delivered">
+    app:layout_constraintTop_toBottomOf="@+id/ly_process_date">
 
     <EditText
       android:id="@+id/et_received"
@@ -79,7 +57,7 @@
       android:inputType="textPersonName"
       android:maxLength="@integer/signature_length"
       android:hint="@string/msg_receive_for_signature"
-      android:drawableStart="@drawable/ic_delivered_by"
+      android:drawableStart="@drawable/ic_receive_by"
       android:drawablePadding="@dimen/padding_normal"
       android:paddingVertical="@dimen/px_13"
       android:textSize="@dimen/px_20"/>

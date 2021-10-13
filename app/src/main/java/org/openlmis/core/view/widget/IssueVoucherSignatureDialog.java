@@ -41,33 +41,28 @@ import roboguice.inject.InjectView;
 
 public class IssueVoucherSignatureDialog extends BaseDialogFragment {
 
+  @InjectView(R.id.btn_cancel)
+  public TextView btnCancel;
+  @InjectView(R.id.btn_done)
+  public Button btnSign;
   @Getter
   @Setter
   IssueVoucherSignatureDialog.DialogDelegate delegate;
-
   @InjectView(R.id.tv_title)
   private TextView title;
-
   @InjectView(R.id.et_process_date)
   private TextView etProcessDate;
-
   @InjectView(R.id.et_received)
   private EditText etReceived;
-
   @InjectView(R.id.ly_received)
   private TextInputLayout lyReceived;
 
-  @InjectView(R.id.et_delivered)
-  private EditText etDelivered;
-
-  @InjectView(R.id.ly_delivered)
-  private TextInputLayout lyDelivered;
-
-  @InjectView(R.id.btn_cancel)
-  public TextView btnCancel;
-
-  @InjectView(R.id.btn_done)
-  public Button btnSign;
+  public static Bundle getBundleToMe(String date, String programName) {
+    Bundle bundle = new Bundle();
+    bundle.putString("Date", date);
+    bundle.putString("programName", programName);
+    return bundle;
+  }
 
   @Nullable
   @Override
@@ -93,13 +88,6 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     }
   }
 
-  public static Bundle getBundleToMe(String date, String programName) {
-    Bundle bundle = new Bundle();
-    bundle.putString("Date", date);
-    bundle.putString("programName", programName);
-    return bundle;
-  }
-
   public void show(@NonNull FragmentManager manager) {
     if (manager.findFragmentByTag("signature_dialog") != null) {
       return;
@@ -111,7 +99,6 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     btnCancel.setOnClickListener(getSingleClickButtonListener());
     btnSign.setOnClickListener(getSingleClickButtonListener());
     etReceived.setFilters(TextStyleUtil.getSignatureLimitation());
-    etDelivered.setFilters(TextStyleUtil.getSignatureLimitation());
   }
 
   private SingleClickButtonListener getSingleClickButtonListener() {
@@ -138,16 +125,13 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     }
 
     String received = etReceived.getText().toString().trim();
-    String delivered = etDelivered.getText().toString().trim();
 
-    if (!checkSignature(delivered)) {
-      lyDelivered.setError(getString(R.string.hint_signature_error_message));
-    } else if (!checkSignature(received)) {
+    if (!checkSignature(received)) {
       lyReceived.setError(getString(R.string.hint_signature_error_message));
     } else {
       btnSign.setEnabled(false);
       btnCancel.setEnabled(false);
-      delegate.onSign(delivered, received);
+      delegate.onSign(received);
       dismiss();
     }
   }
@@ -182,6 +166,6 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     public void onCancel() {
     }
 
-    public abstract void onSign(String deliveredBy, String receivedBy);
+    public abstract void onSign(String receivedBy);
   }
 }

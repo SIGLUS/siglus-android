@@ -38,6 +38,10 @@ public class PodRemoteResponse {
 
   private String receivedBy;
 
+  private String preparedBy;
+
+  private String conferredBy;
+
   private String receivedDate;
 
   private List<PodProductItemResponse> products;
@@ -47,6 +51,8 @@ public class PodRemoteResponse {
         .shippedDate(DateUtil.parseString(shippedDate, DateUtil.DB_DATE_FORMAT))
         .deliveredBy(deliveredBy)
         .receivedBy(receivedBy)
+        .preparedBy(preparedBy)
+        .conferredBy(conferredBy)
         .receivedDate(receivedDate == null ? null : DateUtil.parseString(receivedDate, DateUtil.DB_DATE_FORMAT))
         .orderCode(order.getCode())
         .orderSupplyFacilityName(order.getSupplyFacilityName())

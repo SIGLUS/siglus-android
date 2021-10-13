@@ -56,18 +56,6 @@
       android:layout_width="0dp">
       <TextView style="@style/Pod.list.summary"
         android:textStyle="bold"
-        android:text="@string/label_issue_delivered_by"/>
-      <TextView android:id="@+id/tv_delivered_by"
-        style="@style/Pod.list.summary"
-        android:paddingLeft="@dimen/px_5" />
-    </LinearLayout>
-    <LinearLayout
-      android:layout_weight="1"
-      android:paddingLeft="@dimen/px_8"
-      android:layout_height="match_parent"
-      android:layout_width="0dp">
-      <TextView style="@style/Pod.list.summary"
-        android:textStyle="bold"
         android:text="@string/label_issue_received_by"/>
       <TextView android:id="@+id/tv_received_by"
         style="@style/Pod.list.summary"
