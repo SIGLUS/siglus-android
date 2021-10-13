@@ -89,6 +89,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Inject
   SyncService syncService;
 
+  private Menu addProductMenu;
   private Long podId;
   private Pod pod;
   private String pageName;
@@ -170,6 +171,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
       actionPanelView.setVisibility(View.VISIBLE);
       actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
     }
+    updateMenuStatus();
   }
 
   @Override
@@ -181,11 +183,9 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
-    boolean isPrepared = super.onPrepareOptionsMenu(menu);
-    boolean isVisible = presenter.getIssueVoucherReportViewModel().getPod().isLocal()
-        && presenter.getIssueVoucherReportViewModel().getPod().isDraft();
-    menu.findItem(R.id.action_add_product).setVisible(isVisible);
-    return isPrepared;
+    addProductMenu = menu;
+    updateMenuStatus();
+    return super.onPrepareOptionsMenu(menu);
   }
 
   @Override
@@ -195,6 +195,14 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
       return true;
     } else {
       return super.onOptionsItemSelected(item);
+    }
+  }
+
+  private void updateMenuStatus() {
+    if (addProductMenu != null) {
+      boolean isVisible = presenter.getIssueVoucherReportViewModel().getPod().isLocal()
+          && presenter.getIssueVoucherReportViewModel().getPod().isDraft();
+      addProductMenu.findItem(R.id.action_add_product).setVisible(isVisible);
     }
   }
 
