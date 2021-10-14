@@ -29,7 +29,7 @@
       <TextView
         style="@style/Pod.list.header"
         android:layout_weight="1"
-        android:text="@string/label_desiganation" />
+        android:text="@string/label_designation" />
     </LinearLayout>
   </LinearLayout>
   <TextView
@@ -136,7 +136,7 @@
   <TextView
     style="@style/Pod.list.header"
     android:layout_width="@dimen/px_200"
-    android:text="@string/label_rejection_reason" />
+    android:text="@string/label_reason_for_adjustment" />
   <TextView
     style="@style/Pod.list.header"
     android:text="@string/label_note" />

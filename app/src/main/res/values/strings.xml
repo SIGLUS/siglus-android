@@ -664,7 +664,6 @@
   <string name="label_quantity_shipped">Quantity Shipped</string>
   <string name="label_quantity_accepted">Quantity Accepted</string>
   <string name="label_quantity_returned">Quantity Returned</string>
-  <string name="label_rejection_reason">Rejection Reason</string>
   <string name="label_note">Note</string>
   <string name="label_default_rejection_reason">Select an option</string>
   <string name="hint_error_field_required">This field is required</string>
@@ -675,9 +674,9 @@
   <string name="alert_issue_voucher_can_not_be_blank_for_kit">Enter the quantity or remove the product</string>
   <string name="msg_issue_voucher_back_confirm">Are you sure you want to quit without saving your work? If you click ‘yes’, your draft will be deleted.</string>
   <string name="msg_shipped_quantity_less_than_accepted_quantity">You can\'t accept more stock than was shipped</string>
-  <string name="msg_shipped_quantity_can_not_be_blank">Quantity shipped cannot be blank</string>
-  <string name="msg_accepted_quantity_can_not_be_blank">Quantity accepted cannot be blank</string>
-  <string name="msg_shipped_quantity_can_not_be_zero">Quantity shipped cannot be 0</string>
+  <string name="msg_shipped_quantity_can_not_be_blank">Supplied quantity cannot be blank</string>
+  <string name="msg_accepted_quantity_can_not_be_blank">Quantity received cannot be blank</string>
+  <string name="msg_shipped_quantity_can_not_be_zero">Supplied quantity cannot be 0</string>
 
   <string name="title_issue_voucher_remote_input_order_number">Issue voucher remote</string>
   <string name="title_electronic_issue_voucher">Electronic Issue Voucher</string>
@@ -709,7 +708,7 @@
 
   <string name="label_destination_product">Destination of Product</string>
   <string name="label_dosage">Dosage</string>
-  <string name="label_desiganation">Desiganation</string>
+  <string name="label_designation">Designation</string>
   <string name="label_header_lot_number">Lot Number</string>
   <string name="label_expiring_date">Expiring Date</string>
   <string name="label_supplied_quantity">Supplied Quantity</string>
