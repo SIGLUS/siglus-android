@@ -79,7 +79,8 @@ public class IssueVoucherLotViewModel implements MultiItemEntity, Comparable<Iss
     this.shouldShowError = false;
     this.lot = Lot.builder()
         .lotNumber(lotNumber)
-        .expirationDate(DateUtil.parseString(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR))
+        .expirationDate(DateUtil.getActualMaximumDate(DateUtil.parseString(expiryDate,
+            DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)))
         .product(product)
         .build();
   }

@@ -126,6 +126,7 @@ public class IssueVoucherProductViewModel implements MultiItemEntity {
           lotViewModel.setValid(true);
           continue;
         }
+        lotViewModel.setShouldShowError(true);
         lotViewModel.setValid(false);
       }
       if (isALlLotBlank) {
