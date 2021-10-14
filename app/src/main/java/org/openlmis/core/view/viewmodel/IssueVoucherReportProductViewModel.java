@@ -55,7 +55,8 @@ public class IssueVoucherReportProductViewModel implements MultiItemEntity {
         : String.valueOf(podProductItem.getPartialFulfilledQuantity());
     this.orderStatus = orderStatus;
     lotViewModelList = FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
-        .transform(podLotItem -> new IssueVoucherReportLotViewModel(podLotItem, orderStatus, isLocal, isDraft))
+        .transform(podLotItem -> new IssueVoucherReportLotViewModel(podLotItem, podProductItem, orderStatus, isLocal,
+            isDraft))
         .toList();
   }
 

@@ -36,6 +36,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.model.builder.LotBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
@@ -61,7 +62,10 @@ public class IssueVoucherReportLotAdapterTest {
         .lot(lot)
         .shippedQuantity(10L)
         .build();
-    lotViewModel = new IssueVoucherReportLotViewModel(podProductLotItem, OrderStatus.SHIPPED, true, true);
+    PodProductItem podProductItem = PodProductItem.builder()
+        .product(ProductBuilder.buildAdultProduct())
+        .build();
+    lotViewModel = new IssueVoucherReportLotViewModel(podProductLotItem, podProductItem, OrderStatus.SHIPPED, true, true);
     adapter = new IssueVoucherReportLotAdapter(LMISTestApp.getContext(), Arrays.asList(lotViewModel));
     holder = adapter.new IssueVoucherReportLotViewHolder(
         LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_issue_voucher_report_lot, null));

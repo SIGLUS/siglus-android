@@ -22,7 +22,10 @@ import java.math.BigDecimal;
 import lombok.Data;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.PodProductLotItem;
+import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 
 @Data
 public class IssueVoucherReportLotViewModel {
@@ -38,12 +41,12 @@ public class IssueVoucherReportLotViewModel {
   private boolean isDraft;
   private boolean isValidate = true;
 
-  public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, OrderStatus orderStatus, boolean isLocal,
-      boolean isDraft) {
+  public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, PodProductItem podProductItem,
+      OrderStatus orderStatus, boolean isLocal, boolean isDraft) {
     this.isDraft = isDraft;
     this.isLocal = isLocal;
     this.lotItem = lotItem;
-    lot = lotItem.getLot();
+    lot = buildLot(lotItem, podProductItem);
     shippedQuantity = lotItem.getShippedQuantity();
     acceptedQuantity = lotItem.getAcceptedQuantity();
     rejectedReason = lotItem.getRejectedReason();
@@ -83,6 +86,19 @@ public class IssueVoucherReportLotViewModel {
       return false;
     }
     return this.isLocal() && this.isDraft() && !this.getLot().getProduct().isKit();
+  }
+
+  private Lot buildLot(PodProductLotItem podProductLotItem, PodProductItem podProductItem) {
+    if (podProductItem.getProduct().isKit()) {
+      return Lot.builder()
+          .lotNumber(Constants.VIRTUAL_LOT_NUMBER)
+          .expirationDate(DateUtil.parseString(DateUtil.getVirtualLotExpireDate(),
+              DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR))
+          .product(podProductItem.getProduct())
+          .build();
+    } else {
+      return podProductLotItem.getLot();
+    }
   }
 
 }
