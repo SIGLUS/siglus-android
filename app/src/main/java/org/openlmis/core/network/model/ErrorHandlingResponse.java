@@ -31,5 +31,7 @@ public class ErrorHandlingResponse {
 
   String messageKey;
 
+  String messageInEnglish;
+
   String messageInPortuguese;
 }

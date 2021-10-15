@@ -192,9 +192,9 @@ public class LMISRestManager {
       Response r = cause.getResponse();
       if (r != null && (r.getStatus() == 400 || r.getStatus() == 404)) {
         ErrorHandlingResponse errorResponse = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
-        if (errorResponse.isAndroid()){
-          return new SyncServerException(errorResponse.getMessage(), errorResponse.getMessageInPortuguese());
-        }else {
+        if (errorResponse.isAndroid()) {
+          return new SyncServerException(errorResponse.getMessageInEnglish(), errorResponse.getMessageInPortuguese());
+        } else {
           return new SyncServerException();
         }
       }

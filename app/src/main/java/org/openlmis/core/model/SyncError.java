@@ -56,7 +56,7 @@ public class SyncError extends BaseModel {
       SyncServerException serverException = (SyncServerException) e;
       this.errorMessage = serverException.getMessageInEnglish();
       this.errorMessageInPortuguese = serverException.getMessageInPortuguese();
-    }else {
+    } else {
       this.errorMessage = Constants.SERVER_FAILED_MESSAGE_IN_ENGLISH;
       this.errorMessageInPortuguese = Constants.SERVER_FAILED_MESSAGE_IN_PORTUGUESE;
     }

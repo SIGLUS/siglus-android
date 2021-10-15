@@ -141,8 +141,8 @@ public class SyncUpManager {
       boolean isSyncRnrSuccessful = syncRnr();
       if (isSyncRnrSuccessful) {
         sharedPreferenceMgr.setRnrLastSyncTime();
-        EventBus.getDefault().post(new SyncRnrFinishEvent());
       }
+      EventBus.getDefault().post(new SyncRnrFinishEvent());
 
       boolean isSyncPodSuccessful = syncPod();
       if (isSyncPodSuccessful) {
