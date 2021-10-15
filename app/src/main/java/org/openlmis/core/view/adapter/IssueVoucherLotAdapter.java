@@ -93,16 +93,16 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
         }
         tilShippedQuantity = getView(R.id.til_quantity_shipped);
         tilAcceptedQuantity = getView(R.id.til_quantity_accepted);
-        setText(R.id.et_quantity_shipped,
-            viewModel.getShippedQuantity() == null ? "" : viewModel.getShippedQuantity().toString());
-        setText(R.id.et_quantity_accepted,
-            viewModel.getAcceptedQuantity() == null ? "" : viewModel.getAcceptedQuantity().toString());
         TextInputEditText etShippedQuantity = getView(R.id.et_quantity_shipped);
         TextInputEditText etAcceptedQuantity = getView(R.id.et_quantity_accepted);
-        etShippedQuantity.setSelection(Objects.requireNonNull(etShippedQuantity.getText()).toString().length());
-        etAcceptedQuantity.setSelection(Objects.requireNonNull(etAcceptedQuantity.getText()).toString().length());
         etShippedQuantity.removeTextChangedListener(getShippedQuantityTextWatcher());
         etAcceptedQuantity.removeTextChangedListener(getAcceptedQuantityTextWatcher());
+        etShippedQuantity.setText(viewModel.getShippedQuantity() == null ? "" :
+            viewModel.getShippedQuantity().toString());
+        etAcceptedQuantity.setText(viewModel.getAcceptedQuantity() == null ? "" :
+            viewModel.getAcceptedQuantity().toString());
+        etShippedQuantity.setSelection(Objects.requireNonNull(etShippedQuantity.getText()).toString().length());
+        etAcceptedQuantity.setSelection(Objects.requireNonNull(etAcceptedQuantity.getText()).toString().length());
         etShippedQuantity.addTextChangedListener(getShippedQuantityTextWatcher());
         etAcceptedQuantity.addTextChangedListener(getAcceptedQuantityTextWatcher());
         updateQuantityTips();
@@ -143,7 +143,16 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
       if (!viewModel.isValid() && viewModel.isShouldShowError()) {
         updateShippedQuantityTips();
         updateAcceptedQuantityTips();
+      } else {
+        removeErrorMessage();
       }
+    }
+
+    private void removeErrorMessage() {
+      tilShippedQuantity.setErrorEnabled(false);
+      tilShippedQuantity.setError(null);
+      tilAcceptedQuantity.setErrorEnabled(false);
+      tilAcceptedQuantity.setError(null);
     }
 
     private void updateQuantityTipsAfterTextChange() {
@@ -151,10 +160,7 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
         updateShippedQuantityTips();
         updateAcceptedQuantityTips();
       } else {
-        tilShippedQuantity.setErrorEnabled(false);
-        tilShippedQuantity.setError(null);
-        tilAcceptedQuantity.setErrorEnabled(false);
-        tilAcceptedQuantity.setError(null);
+        removeErrorMessage();
       }
     }
 

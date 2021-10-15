@@ -98,6 +98,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
         if (position >= 0) {
           LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvIssueVoucher.getLayoutManager();
           linearLayoutManager.scrollToPositionWithOffset(position, 0);
+          rvIssueVoucher.requestFocus();
         } else {
           issueVoucherDraftPresenter.deleteDraftPod();
           openIssueVoucherReportPage();
