@@ -39,6 +39,7 @@ import org.openlmis.core.presenter.StockMovementHistoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
+import org.openlmis.core.view.widget.StockMovementHeaderView;
 import roboguice.inject.InjectView;
 
 public class StockMovementHistoryFragment extends BaseFragment implements
@@ -56,16 +57,21 @@ public class StockMovementHistoryFragment extends BaseFragment implements
   @InjectView(R.id.tv_archived_old_data)
   TextView tvArchivedOldData;
 
+  @InjectView(R.id.stock_movement_header)
+  StockMovementHeaderView stockMovementHeaderView;
+
   private long startIndex = 0;
   private boolean isLoading;
   private boolean isFirstLoading;
 
   private StockMovementAdapter stockMovementAdapter;
+  private boolean isKit;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     long stockCardID = requireActivity().getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
+    isKit = requireActivity().getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
     presenter.setStockCardId(stockCardID);
   }
 
@@ -93,12 +99,16 @@ public class StockMovementHistoryFragment extends BaseFragment implements
   private void initUI() {
     rvStockMovementList.setLayoutManager(new LinearLayoutManager(requireContext()));
     stockMovementAdapter = new StockMovementAdapter();
+    stockMovementAdapter.setKit(isKit);
     stockMovementAdapter.setPreviousPage(ScreenName.STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN);
     rvStockMovementList.setAdapter(stockMovementAdapter);
     stockMovementAdapter.setNewInstance(presenter.getStockMovementModelList());
     swipeRefreshLayout.setOnRefreshListener(this);
     if (!SharedPreferenceMgr.getInstance().hasDeletedOldStockMovement()) {
       tvArchivedOldData.setVisibility(View.GONE);
+    }
+    if (isKit) {
+      stockMovementHeaderView.hideLotCodeHeaderView();
     }
   }
 

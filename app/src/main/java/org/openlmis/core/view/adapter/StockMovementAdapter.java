@@ -38,6 +38,9 @@ public class StockMovementAdapter extends BaseQuickAdapter<StockMovementHistoryV
   @Setter
   private ScreenName previousPage;
 
+  @Setter
+  private boolean isKit;
+
   private BaseViewHolder holder;
 
   private StockMovementHistoryViewModel model;
@@ -50,10 +53,9 @@ public class StockMovementAdapter extends BaseQuickAdapter<StockMovementHistoryV
   protected void convert(@NonNull BaseViewHolder holder, StockMovementHistoryViewModel model) {
     this.holder = holder;
     this.model = model;
-    if (previousPage == ScreenName.STOCK_CARD_MOVEMENT_SCREEN) {
+    if (previousPage == ScreenName.STOCK_CARD_MOVEMENT_SCREEN || isKit) {
       covertByProduct();
-    }
-    if (previousPage == ScreenName.STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN) {
+    } else if (previousPage == ScreenName.STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN) {
       covertByLot();
     }
   }
