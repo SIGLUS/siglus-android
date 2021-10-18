@@ -129,7 +129,7 @@ public class LotRepository {
   public Lot createOrUpdateWithExistingLot(final Lot lot) throws LMISException {
     Lot existingLot = getLotByLotNumberAndProductId(lot.getLotNumber(), lot.getProduct().getId());
     if (existingLot != null) {
-      lot.setId(existingLot.getId());
+      return existingLot;
     }
     return createOrUpdateLot(lot);
   }
