@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 import static org.robolectric.Shadows.shadowOf;
 
-import android.app.Activity;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.inject.AbstractModule;
 import org.junit.After;
@@ -37,10 +36,10 @@ import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.presenter.EditOrderNumberPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
-import org.openlmis.core.utils.ToastUtil;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
+import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -63,7 +62,6 @@ public class EditOrderNumberActivityTest {
     });
     activityController = Robolectric.buildActivity(EditOrderNumberActivity.class);
     editOrderNumberActivity = activityController.create().get();
-    LMISTestApp.getInstance().SetActiveActivity((Activity) editOrderNumberActivity);
   }
 
   @After
@@ -128,7 +126,7 @@ public class EditOrderNumberActivityTest {
     editOrderNumberActivity.loadDataFailed();
 
     // then
-    Assert.assertEquals("Load Order List Failed", ToastUtil.activityToast.getText());
+    Assert.assertEquals("Load Order List Failed", ShadowToast.getTextOfLatestToast());
     Assert.assertTrue(shadowOf(editOrderNumberActivity).isFinishing());
   }
 
@@ -138,7 +136,7 @@ public class EditOrderNumberActivityTest {
     editOrderNumberActivity.updateOrderNumberFailed();
 
     // then
-    Assert.assertEquals("Change Order Number Failed", ToastUtil.activityToast.getText());
+    Assert.assertEquals("Change Order Number Failed", ShadowToast.getTextOfLatestToast());
     Assert.assertTrue(shadowOf(editOrderNumberActivity).isFinishing());
   }
 

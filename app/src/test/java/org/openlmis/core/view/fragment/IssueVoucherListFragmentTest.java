@@ -26,7 +26,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
-import android.app.Activity;
 import android.content.Intent;
 import androidx.fragment.app.Fragment;
 import com.google.inject.AbstractModule;
@@ -35,15 +34,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
-import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.activity.EditOrderNumberActivity;
 import org.openlmis.core.view.activity.IssueVoucherListActivity;
 import org.openlmis.core.view.activity.IssueVoucherReportActivity;
@@ -53,6 +49,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -79,8 +76,6 @@ public class IssueVoucherListFragmentTest {
     fragment = IssueVoucherListFragment.newInstance(true);
     listActivity.getSupportFragmentManager().beginTransaction().add(fragment, null).commit();
     RobolectricUtils.waitLooperIdle();
-    Activity dumpFragmentActivity = Robolectric.buildActivity(DumpFragmentActivity.class).get();
-    LMISTestApp.getInstance().SetActiveActivity((Activity) dumpFragmentActivity);
   }
 
   @After
@@ -215,7 +210,7 @@ public class IssueVoucherListFragmentTest {
     fragment.onLoadDataFailed(lmisException);
 
     // then
-    Assert.assertEquals(lmisException.getMsg(), ToastUtil.activityToast.getText());
+    Assert.assertEquals(lmisException.getMsg(), ShadowToast.getTextOfLatestToast());
     Assert.assertTrue(shadowOf(listActivity).isFinishing());
   }
 

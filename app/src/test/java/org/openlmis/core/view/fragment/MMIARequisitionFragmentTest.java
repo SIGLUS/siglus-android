@@ -18,7 +18,6 @@
 package org.openlmis.core.view.fragment;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -47,7 +46,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -61,8 +59,6 @@ import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.RobolectricUtils;
-import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.widget.MMIAPatientInfoList;
 import org.openlmis.core.view.widget.MMIARegimeListWrap;
@@ -71,6 +67,7 @@ import org.openlmis.core.view.widget.MMIARnrFormProductList;
 import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Observer;
@@ -123,8 +120,6 @@ public class MMIARequisitionFragmentTest {
     form.setId(1L);
     form.setComments("");
     when(mmiaFormPresenter.getRnrForm(anyInt())).thenReturn(form);
-    Activity dumpFragmentActivity = Robolectric.buildActivity(DumpFragmentActivity.class).get();
-    LMISTestApp.getInstance().SetActiveActivity((Activity) dumpFragmentActivity);
   }
 
   private MMIARequisitionFragment getMMIARequisitionFragmentWithFormId() {
@@ -170,25 +165,22 @@ public class MMIARequisitionFragmentTest {
 
   @Test
   public void shouldShowTheCannotInitFormToastWhenTheAllStockMovementsAreNotSyncDown() {
-    // given
     reset(mmiaFormPresenter);
     SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(true);
     mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
 
-    // then
     String msg = mmiaRequisitionFragment.getString(R.string.msg_stock_movement_is_not_ready);
-    assertEquals(msg, ToastUtil.activityToast.getText());
+    assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(msg);
     verify(mmiaFormPresenter, never()).loadData(anyLong(), any(Date.class));
   }
 
   @Test
   public void shouldSaveCompleteWhenMethodCalled() {
-    // given
     mmiaRequisitionFragment.completeSuccess();
 
-    //then
     String successMessage = mmiaRequisitionFragment.getString(R.string.msg_mmia_submit_tip);
-    assertEquals(successMessage, ToastUtil.activityToast.getText());
+    assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(successMessage);
+
     assertThat(mmiaRequisitionFragment.getActivity().isFinishing()).isTrue();
   }
 

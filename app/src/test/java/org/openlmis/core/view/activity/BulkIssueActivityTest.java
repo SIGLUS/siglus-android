@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.activity;
 
-import static junit.framework.Assert.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -27,7 +26,6 @@ import static org.mockito.Mockito.when;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.IS_FROM_BULK_ISSUE;
 import static org.robolectric.Shadows.shadowOf;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.view.MenuItem;
 import androidx.fragment.app.Fragment;
@@ -46,7 +44,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.BulkIssuePresenter;
 import org.openlmis.core.utils.RobolectricUtils;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkIssueAdapter;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -74,7 +71,6 @@ public class BulkIssueActivityTest {
     });
     activityController = Robolectric.buildActivity(BulkIssueActivity.class);
     bulkIssueActivity = activityController.create().start().resume().get();
-    LMISTestApp.getInstance().SetActiveActivity((Activity) bulkIssueActivity);
     bulkIssueActivity.bulkIssueAdapter = mockAdapter;
   }
 
@@ -158,7 +154,7 @@ public class BulkIssueActivityTest {
     bulkIssueActivity.onSaveDraftFinished(false);
 
     // then
-    assertEquals("Unsuccessfully Saved", ToastUtil.activityToast.getText());
+    Assert.assertEquals("Unsuccessfully Saved", ShadowToast.getTextOfLatestToast());
   }
 
   @Test
@@ -200,7 +196,9 @@ public class BulkIssueActivityTest {
     bulkIssueActivity.onSaveMovementSuccess();
 
     // then
-    assertEquals(LMISTestApp.getContext().getString(R.string.msg_complete_successfully), ToastUtil.activityToast.getText());
+    assertThat(bulkIssueActivity.isFinishing()).isTrue();
+    assertThat(ShadowToast.getTextOfLatestToast())
+        .isEqualTo(LMISTestApp.getContext().getString(R.string.msg_complete_successfully));
   }
 
   @Test
@@ -211,7 +209,7 @@ public class BulkIssueActivityTest {
     bulkIssueActivity.onSaveMovementFailed(lmisException);
 
     // then
-    assertEquals("test msg", ToastUtil.activityToast.getText());
+    assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("test msg");
   }
 
   @Test

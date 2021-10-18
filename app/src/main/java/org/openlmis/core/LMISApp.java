@@ -54,7 +54,7 @@ public class LMISApp extends Application {
 
   private static LMISApp instance;
 
-  private Activity activeActivity;
+  private static Activity activeActivity;
 
   private static final int JOB_ID_NETWORK_CHANGE = 123;
 
@@ -85,7 +85,7 @@ public class LMISApp extends Application {
     return instance;
   }
 
-  public Activity getActiveActivity() {
+  public static Activity getActiveActivity() {
     return activeActivity;
   }
 

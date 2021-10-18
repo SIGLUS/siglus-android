@@ -27,7 +27,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SHOULD_GO_TO_INITIAL_INVENTORY;
 
-import android.app.Activity;
 import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,11 +44,9 @@ import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
-import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.activity.LoginActivity;
-import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Subscriber;
 
@@ -79,8 +76,6 @@ public class LoginPresenterTest {
     presenter.attachView(mockActivity);
     syncSubscriber = presenter.getSyncSubscriber();
     presenter = spy(presenter);
-    Activity dumpFragmentActivity = Robolectric.buildActivity(DumpFragmentActivity.class).get();
-    LMISTestApp.getInstance().SetActiveActivity((Activity) dumpFragmentActivity);
   }
 
   @Test
@@ -124,7 +119,7 @@ public class LoginPresenterTest {
     // then
     verify(mockActivity, times(1)).loaded();
     assertEquals(LMISTestApp.getInstance().getString(R.string.msg_sync_products_list_failed),
-        ToastUtil.activityToast.getText());
+        ShadowToast.getTextOfLatestToast());
   }
 
   @Test
@@ -139,7 +134,7 @@ public class LoginPresenterTest {
     // then
     verify(mockActivity, times(1)).loaded();
     assertEquals(LMISTestApp.getInstance().getString(R.string.msg_sync_stock_movement_failed),
-        ToastUtil.activityToast.getText());
+        ShadowToast.getTextOfLatestToast());
   }
 
   @Test
@@ -155,7 +150,7 @@ public class LoginPresenterTest {
     // then
     verify(mockActivity, times(1)).loaded();
     assertEquals(LMISTestApp.getInstance().getString(R.string.msg_sync_requisition_failed),
-        ToastUtil.activityToast.getText());
+        ShadowToast.getTextOfLatestToast());
   }
 
   @Test

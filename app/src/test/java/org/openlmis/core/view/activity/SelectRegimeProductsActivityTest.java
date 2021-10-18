@@ -2,7 +2,6 @@ package org.openlmis.core.view.activity;
 
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -20,18 +19,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.presenter.ProductPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.RobolectricUtils;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
 
@@ -58,7 +56,6 @@ public class SelectRegimeProductsActivityTest {
     intent.putExtra(SelectRegimeProductsActivity.PARAM_REGIME_TYPE, Regimen.RegimeType.Adults);
     activityController = Robolectric.buildActivity(SelectRegimeProductsActivity.class, intent);
     selectProductsActivity = activityController.create().get();
-    LMISTestApp.getInstance().SetActiveActivity((Activity) selectProductsActivity);
   }
 
   @After
@@ -74,7 +71,7 @@ public class SelectRegimeProductsActivityTest {
     selectProductsActivity.viewModels = getInventoryViewModels();
     selectProductsActivity.btnNext.performClick();
 
-    assertEquals("Please select product", ToastUtil.activityToast.getText());
+    assertThat(ShadowToast.getTextOfLatestToast(), is("Please select product"));
   }
 
   @Test
@@ -87,7 +84,7 @@ public class SelectRegimeProductsActivityTest {
     }
     selectProductsActivity.btnNext.performClick();
 
-    assertEquals("You can only select 1 products for regime", ToastUtil.activityToast.getText());
+    assertThat(ShadowToast.getTextOfLatestToast(), is("You can only select 1 products for regime"));
   }
 
   @Test

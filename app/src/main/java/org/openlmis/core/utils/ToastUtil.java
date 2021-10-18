@@ -48,12 +48,15 @@ public final class ToastUtil {
     if (TextUtils.isEmpty(text)) {
       return;
     }
-    showActivityToast(text.toString(), Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM,
-        (int) LMISApp.getContext().getResources().getDimension(R.dimen.px_180));
+    showSystem(text);
   }
 
   public static void show(int resId) {
     show(LMISApp.getContext().getString(resId));
+  }
+
+  public static void showInCenter(int text) {
+    showSystem(LMISApp.getContext().getResources().getText(text).toString());
   }
 
   public static void showSystem(CharSequence text) {
@@ -65,20 +68,21 @@ public final class ToastUtil {
     toast.show();
   }
 
-  public static void showInCenter(int text) {
-    showActivityToast(LMISApp.getContext().getResources().getText(text).toString(), Gravity.CENTER, 0);
+  private static void showSystemToast(String text) {
+    Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG).show();
   }
 
   private static void showActivityToast(String text, int gravity, int yOffset) {
     WindowManager wm = (WindowManager) LMISApp.getContext().getSystemService(Context.WINDOW_SERVICE);
     int width = wm.getDefaultDisplay().getWidth();
-    Activity currentActivity = LMISApp.getInstance().getActiveActivity();
+    Activity currentActivity = LMISApp.getActiveActivity();
     if (currentActivity != null) {
       activityToast = SuperActivityToast.create(currentActivity, new Style(), Style.TYPE_STANDARD);
       activityToast.setText(text)
           .setColor(LMISApp.getContext().getResources().getColor(R.color.color_6b6b6b))
           .setDuration(Style.DURATION_VERY_LONG)
-          .setGravity(gravity, 0, yOffset)
+          .setGravity(Gravity.CENTER, 0,
+              (int) LMISApp.getContext().getResources().getDimension(R.dimen.px_180))
           .setWidth(width - 100)
           .setFrame(Style.FRAME_STANDARD)
           .setAnimations(Style.ANIMATIONS_FADE)

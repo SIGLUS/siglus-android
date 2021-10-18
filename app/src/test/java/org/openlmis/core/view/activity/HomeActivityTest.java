@@ -34,7 +34,6 @@ import static org.openlmis.core.utils.RobolectricUtils.resetNextClickTime;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 import static org.robolectric.Shadows.shadowOf;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -58,7 +57,6 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ReportTypeBuilder;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.RobolectricUtils;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.widget.DashboardView;
 import org.openlmis.core.view.widget.SyncTimeView;
 import org.robolectric.Robolectric;
@@ -67,6 +65,7 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowIntent;
+import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -100,7 +99,6 @@ public class HomeActivityTest {
     activityController = Robolectric.buildActivity(HomeActivity.class);
     homeActivity = activityController.create().get();
     homeActivity.syncTimeView = syncTimeView;
-    LMISTestApp.getInstance().SetActiveActivity((Activity) homeActivity);
     homeActivity.dvProductDashboard = dashboardView;
   }
 
@@ -222,11 +220,11 @@ public class HomeActivityTest {
 
   @Test
   public void shouldToastWarningMessageWhenClickBackButtonFirstTime() {
-    // given
     homeActivity.onBackPressed();
 
-    // then
-    assertEquals(homeActivity.getString(R.string.msg_back_twice_to_exit), ToastUtil.activityToast.getText());
+    String warningMessage = ShadowToast.getTextOfLatestToast();
+
+    assertThat(warningMessage, equalTo(homeActivity.getString(R.string.msg_back_twice_to_exit)));
   }
 
   @Test
@@ -258,7 +256,8 @@ public class HomeActivityTest {
     homeActivity.validateConnectionListener.onResult(false);
 
     // then
-    assertEquals(expectedMessage, ToastUtil.activityToast.getText());
+    String warningMessage = ShadowToast.getTextOfLatestToast();
+    assertEquals(expectedMessage, warningMessage);
   }
 
   @Test

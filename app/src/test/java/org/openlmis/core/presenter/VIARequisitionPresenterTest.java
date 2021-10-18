@@ -38,7 +38,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.model.Product.IsKit;
 
-import android.app.Activity;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.inject.AbstractModule;
@@ -73,13 +72,10 @@ import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.fragment.VIARequisitionFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.roboguice.shaded.goole.common.collect.Lists;
-import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
@@ -117,8 +113,6 @@ public class VIARequisitionPresenterTest {
     presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(VIARequisitionPresenter.class);
     presenter.attachView(VIARequisitionFragment);
-    Activity dumpFragmentActivity = Robolectric.buildActivity(DumpFragmentActivity.class).get();
-    LMISTestApp.getInstance().SetActiveActivity((Activity) dumpFragmentActivity);
   }
 
   @Test
@@ -330,8 +324,9 @@ public class VIARequisitionPresenterTest {
 
     presenter.processRequisition(baseInfoItemValue);
 
-    assertEquals(LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique),
-        ToastUtil.activityToast.getText());
+    assertEquals(
+        LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique),
+        ShadowToast.getTextOfLatestToast());
   }
 
   @Test

@@ -32,7 +32,6 @@ import static org.mockito.Mockito.when;
 import static org.openlmis.core.utils.Constants.PARAM_IS_FROM_ARCHIVE;
 import static org.robolectric.Shadows.shadowOf;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,18 +42,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.presenter.StockMovementsPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.widget.LotInfoGroup;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
+import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -76,7 +74,6 @@ public class StockMovementsWithLotActivityTest {
     when(mockPresenter.getStockCard()).thenReturn(StockCardBuilder.buildStockCard());
     activityController = Robolectric.buildActivity(StockMovementsWithLotActivity.class);
     movementWithLotActivity = activityController.create().start().resume().get();
-    LMISTestApp.getInstance().SetActiveActivity((Activity) movementWithLotActivity);
   }
 
   @After
@@ -163,7 +160,8 @@ public class StockMovementsWithLotActivityTest {
 
     // then
     verify(mockPresenter, times(1)).archiveStockCard();
-    assertEquals(movementWithLotActivity.getString(R.string.msg_drug_archived), ToastUtil.activityToast.getText());
+    assertEquals(movementWithLotActivity.getString(R.string.msg_drug_archived),
+        ShadowToast.getTextOfLatestToast());
   }
 
   @Test

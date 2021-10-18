@@ -2,6 +2,7 @@ package org.openlmis.core.view.activity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -32,7 +33,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.RnRFormListPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -40,6 +40,7 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowIntent;
+import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
 
@@ -70,7 +71,6 @@ public class RnRFormListActivityTest {
     intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.Program.MMIA_PROGRAM);
     activityController = Robolectric.buildActivity(RnRFormListActivity.class, intent);
     rnRFormListActivity = activityController.create().get();
-    LMISTestApp.getInstance().SetActiveActivity((Activity) rnRFormListActivity);
   }
 
   @After
@@ -102,7 +102,7 @@ public class RnRFormListActivityTest {
   public void shouldShowErrorMsgWhenCalledSubscriberOnError() {
     rnRFormListActivity.getRnRFormSubscriber().onError(new Exception("test exception"));
 
-    assertEquals("test exception", ToastUtil.activityToast.getText());
+    assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("test exception");
   }
 
   @Test
@@ -283,19 +283,15 @@ public class RnRFormListActivityTest {
 
   @Test
   public void shouldShowToastWhenDateNotInEmergencyDate() {
-    // given
     LMISTestApp.getInstance().setCurrentTimeMillis(
         DateUtil.parseString("2015-05-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
     rnRFormListActivity.checkAndGotoEmergencyPage();
-
-    // then
-    assertEquals("You are not allowed to create an emergency between 18th and 25th, please submit request using the monthly requisition form.",
-        ToastUtil.activityToast.getText());
+    MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(),
+        is("You are not allowed to create an emergency between 18th and 25th, please submit request using the monthly requisition form."));
   }
 
   @Test
   public void shouldShowToastWhenHasMissed() {
-    // given
     LMISTestApp.getInstance().setCurrentTimeMillis(
         DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
 
@@ -303,10 +299,8 @@ public class RnRFormListActivityTest {
 
     when(mockedPresenter.hasMissedPeriod()).thenReturn(value);
     rnRFormListActivity.checkAndGotoEmergencyPage();
-
-    // then
-    assertEquals("You are not allowed to create an emergency requisition until you complete all your previous monthly requisitions.",
-        ToastUtil.activityToast.getText());
+    MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(),
+        is("You are not allowed to create an emergency requisition until you complete all your previous monthly requisitions."));
   }
 
   @Test
