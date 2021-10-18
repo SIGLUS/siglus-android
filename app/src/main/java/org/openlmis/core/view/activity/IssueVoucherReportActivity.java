@@ -90,6 +90,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   SyncService syncService;
 
   private Menu addProductMenu;
+  private boolean isVisible = false;
   private Long podId;
   private Pod pod;
   private String pageName;
@@ -184,7 +185,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
     addProductMenu = menu;
-    updateMenuStatus();
+    addProductMenu.findItem(R.id.action_add_product).setVisible(isVisible);
     return super.onPrepareOptionsMenu(menu);
   }
 
@@ -199,9 +200,9 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   }
 
   private void updateMenuStatus() {
+    isVisible = presenter.getIssueVoucherReportViewModel().getPod().isLocal()
+        && presenter.getIssueVoucherReportViewModel().getPod().isDraft();
     if (addProductMenu != null) {
-      boolean isVisible = presenter.getIssueVoucherReportViewModel().getPod().isLocal()
-          && presenter.getIssueVoucherReportViewModel().getPod().isDraft();
       addProductMenu.findItem(R.id.action_add_product).setVisible(isVisible);
     }
   }

@@ -72,12 +72,11 @@ public class IncompleteRequisitionBanner extends LinearLayout {
       ReportTypeForm tarvReportTypeForm = reportTypeFormRepository.getReportType(Program.TARV_CODE);
       ReportTypeForm viaReportTypeForm = reportTypeFormRepository.getReportType(Program.VIA_CODE);
       int tarvPeriodOffsetMonth = (tarvReportTypeForm == null || !tarvReportTypeForm.active)
-          ? 0
-          : requisitionPeriodService.getIncompletePeriodOffsetMonth(Program.TARV_CODE);
+          ? 0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Program.TARV_CODE);
       int viaPeriodOffsetMonth = (viaReportTypeForm == null || !viaReportTypeForm.active)
           ? 0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Program.VIA_CODE);
       String tipMessage;
-      if (tarvPeriodOffsetMonth == 0 && viaPeriodOffsetMonth == 0) {
+      if (tarvPeriodOffsetMonth <= 0 && viaPeriodOffsetMonth <= 0) {
         this.setVisibility(View.GONE);
         return;
       } else if (viaPeriodOffsetMonth > 0 && tarvPeriodOffsetMonth > 0) {
