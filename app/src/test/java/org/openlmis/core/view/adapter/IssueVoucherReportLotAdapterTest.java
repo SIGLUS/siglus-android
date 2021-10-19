@@ -35,6 +35,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.enumeration.OrderStatus;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.PodProductLotItem;
@@ -42,8 +43,10 @@ import org.openlmis.core.model.builder.LotBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.view.adapter.IssueVoucherReportLotAdapter.IssueVoucherReportLotViewHolder;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
+import org.robolectric.annotation.Config;
 
 @RunWith(LMISTestRunner.class)
+@Config(qualifiers = "en-port")
 public class IssueVoucherReportLotAdapterTest {
 
   private IssueVoucherReportLotAdapter adapter;
@@ -52,6 +55,7 @@ public class IssueVoucherReportLotAdapterTest {
 
   @Before
   public void setup() {
+    MovementReasonManager.getInstance().refresh();
     Lot lot = new LotBuilder()
         .setProduct(ProductBuilder.buildAdultProduct())
         .setLotNumber(FieldConstants.LOT_NUMBER)
@@ -121,7 +125,7 @@ public class IssueVoucherReportLotAdapterTest {
   public void testValueForIssueVoucher() {
     // given
     lotViewModel.setAcceptedQuantity(3L);
-    lotViewModel.setRejectedReason("test");
+    lotViewModel.setRejectedReason("DAMAGED");
 
     // when
     holder.populate(lotViewModel, 0);
@@ -132,14 +136,14 @@ public class IssueVoucherReportLotAdapterTest {
     TextView returnedValue = holder.getView(R.id.tv_quantity_returned);
     assertEquals("-7", returnedValue.getText().toString());
     TextView reason = holder.getView(R.id.tv_rejection_reason);
-    assertEquals("test", (reason.getText().toString()));
+    assertEquals("Damaged/broken/spilled", (reason.getText().toString()));
   }
 
   @Test
   public void testCorrectUIForRemoteReceived()  {
     // given
     lotViewModel.setAcceptedQuantity(4L);
-    lotViewModel.setRejectedReason("reason2");
+    lotViewModel.setRejectedReason("INSUFFICIENT");
     lotViewModel.setOrderStatus(OrderStatus.RECEIVED);
 
     // when
@@ -151,7 +155,7 @@ public class IssueVoucherReportLotAdapterTest {
     TextView returnedValue = holder.getView(R.id.tv_quantity_returned);
     assertEquals("-6", returnedValue.getText().toString());
     TextView reason = holder.getView(R.id.tv_rejection_reason);
-    assertEquals("reason2", (reason.getText().toString()));
+    assertEquals("Received less quantities than expected", (reason.getText().toString()));
     ImageView reasonLogo = holder.getView(R.id.iv_rejection_reason);
     assertEquals(View.GONE, reasonLogo.getVisibility());
   }
@@ -161,7 +165,7 @@ public class IssueVoucherReportLotAdapterTest {
     // given
     lotViewModel.setShippedQuantity(null);
     lotViewModel.setAcceptedQuantity(null);
-    lotViewModel.setRejectedReason("reason");
+    lotViewModel.setRejectedReason("OVER_ISSUE");
     lotViewModel.setOrderStatus(OrderStatus.RECEIVED);
 
     // when
@@ -173,7 +177,7 @@ public class IssueVoucherReportLotAdapterTest {
     TextView returnedValue = holder.getView(R.id.tv_quantity_returned);
     assertEquals("", returnedValue.getText().toString());
     TextView reason = holder.getView(R.id.tv_rejection_reason);
-    assertEquals("reason", (reason.getText().toString()));
+    assertEquals("Received more quantities than expected", (reason.getText().toString()));
     ImageView reasonLogo = holder.getView(R.id.iv_rejection_reason);
     assertEquals(View.GONE, reasonLogo.getVisibility());
   }

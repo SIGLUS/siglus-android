@@ -20,7 +20,12 @@ package org.openlmis.core.view.viewmodel;
 
 import java.math.BigDecimal;
 import lombok.Data;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
+import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementReason;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.PodProductLotItem;
@@ -58,7 +63,21 @@ public class IssueVoucherReportLotViewModel {
     if (shippedQuantity == null || acceptedQuantity == null) {
       return null;
     }
-    return acceptedQuantity.longValue() - shippedQuantity.longValue();
+    return acceptedQuantity - shippedQuantity;
+  }
+
+  public String getRejectionReasonDesc(boolean useDefault) {
+    MovementReason reason = null;
+    try {
+      reason = MovementReasonManager.getInstance().queryByCode(MovementType.REJECTION, rejectedReason);
+    } catch (Exception ignored) {
+      // do nothing
+    }
+    if (reason == null) {
+      return useDefault ? LMISApp.getInstance().getString(R.string.label_default_rejection_reason) : "";
+    } else {
+      return reason.getDescription();
+    }
   }
 
   public PodProductLotItem convertToModel() {
@@ -78,7 +97,7 @@ public class IssueVoucherReportLotViewModel {
       return null;
     }
     BigDecimal perPrice = new BigDecimal(price);
-    return perPrice.multiply(BigDecimal.valueOf(shippedQuantity.longValue()));
+    return perPrice.multiply(BigDecimal.valueOf(shippedQuantity));
   }
 
   public boolean shouldShowLotClear() {

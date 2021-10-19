@@ -41,10 +41,10 @@
     <item>POSITIVE_ADJUST|DEFAULT_POSITIVE_ADJUSTMENT|Positive adjustment</item>
 
     <item>REJECTION|DAMAGED|Damaged/broken/spilled</item>
-    <item>REJECTION|RECEIVED_MORE|Received more quantites than expected</item>
-    <item>REJECTION|RECEIVED_LESS|Received less quantites than expected</item>
+    <item>REJECTION|OVER_ISSUE|Received more quantities than expected</item>
+    <item>REJECTION|INSUFFICIENT|Received less quantities than expected</item>
     <item>REJECTION|EXPIRED|Expired products</item>
-    <item>REJECTION|Inappropriate|Inappropriate for consumption</item>
+    <item>REJECTION|UNEATABLE|Inappropriate for consumption</item>
   </string-array>
 </resources>
 

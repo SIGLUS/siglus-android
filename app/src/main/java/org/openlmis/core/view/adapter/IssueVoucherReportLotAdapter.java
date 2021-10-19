@@ -57,7 +57,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
 
   private final Context context;
 
-  private List<IssueVoucherReportLotViewModel> lotViewModelList;
+  private final List<IssueVoucherReportLotViewModel> lotViewModelList;
 
   @Setter
   private OnUpdatePodListener onUpdatePodListener;
@@ -191,7 +191,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private void setQuantityShipped() {
-      if (lotViewModel.isLocal() == true) {
+      if (lotViewModel.isLocal()) {
         SingleTextWatcher quantityShippedTextWatcher = getQuantityShippedTextWatcher();
         etQuantityShipped.removeTextChangedListener(quantityShippedTextWatcher);
         etQuantityShipped.addTextChangedListener(quantityShippedTextWatcher);
@@ -203,7 +203,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private void setRejectReason() {
-      if (lotViewModel.getDifferenceQuality() != null && lotViewModel.getDifferenceQuality().longValue() < 0) {
+      if (lotViewModel.getDifferenceQuality() != null && lotViewModel.getDifferenceQuality() < 0) {
         setRejectReasonForCanSelectStatus();
         vRejectionReason.setOnClickListener(v -> {
           Bundle bundle = new Bundle();
@@ -214,7 +214,8 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
           bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonArray);
           SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
           reasonsDialog.setArguments(bundle);
-          reasonsDialog.setItemClickListener(new MovementTypeOnClickListener(reasonsDialog, lotViewModel, reasonArray));
+          reasonsDialog
+              .setItemClickListener(new MovementTypeOnClickListener(reasonsDialog, lotViewModel, movementReasons));
           reasonsDialog.show(((BaseActivity) itemView.getContext()).getSupportFragmentManager(), "SELECT_REASONS");
         });
         setRejectReasonText();
@@ -235,13 +236,8 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private void setRejectReasonText() {
-      if (lotViewModel.getOrderStatus() == OrderStatus.RECEIVED) {
-        tvRejectionReason.setText(lotViewModel.getRejectedReason() == null ? "" : lotViewModel.getRejectedReason());
-        return;
-      }
-      tvRejectionReason.setText(lotViewModel.getRejectedReason() == null ? itemView.getResources()
-          .getString(R.string.label_default_rejection_reason)
-          : lotViewModel.getRejectedReason());
+      tvRejectionReason
+          .setText(lotViewModel.getRejectionReasonDesc(lotViewModel.getOrderStatus() != OrderStatus.RECEIVED));
     }
 
     private void checkValidate() {
@@ -254,10 +250,10 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       } else if (lotViewModel.getAcceptedQuantity() == null) {
         etQuantityAccepted.setError(getContext().getString(R.string.hint_error_field_required));
         etQuantityAccepted.requestFocus();
-      } else if (lotViewModel.getAcceptedQuantity().longValue() > lotViewModel.getShippedQuantity().longValue()) {
+      } else if (lotViewModel.getAcceptedQuantity() > lotViewModel.getShippedQuantity()) {
         etQuantityAccepted.setError(getContext().getString(R.string.hint_error_more_than_shipped));
         etQuantityAccepted.requestFocus();
-      } else if (lotViewModel.getDifferenceQuality().longValue() < 0 && lotViewModel.getRejectedReason() == null) {
+      } else if (lotViewModel.getDifferenceQuality() < 0 && lotViewModel.getRejectedReason() == null) {
         tvRejectionReason.setError("");
         vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_red);
       }
@@ -388,11 +384,11 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {
 
       private final SimpleSelectDialogFragment reasonsDialog;
-      private IssueVoucherReportLotViewModel viewModel;
-      private String[] rejectReasons;
+      private final IssueVoucherReportLotViewModel viewModel;
+      private final List<MovementReason> rejectReasons;
 
       public MovementTypeOnClickListener(SimpleSelectDialogFragment reasonsDialog,
-          IssueVoucherReportLotViewModel viewModel, String[] reasons) {
+          IssueVoucherReportLotViewModel viewModel, List<MovementReason> reasons) {
         this.reasonsDialog = reasonsDialog;
         this.rejectReasons = reasons;
         this.viewModel = viewModel;
@@ -400,7 +396,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
 
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        viewModel.setRejectedReason(rejectReasons[position]);
+        viewModel.setRejectedReason(rejectReasons.get(position).getCode());
         setRejectReasonForCanSelectStatus();
         tvRejectionReason.setError(null);
         reasonsDialog.dismiss();
