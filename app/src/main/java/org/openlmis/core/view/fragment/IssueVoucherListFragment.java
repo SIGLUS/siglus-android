@@ -201,7 +201,7 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
 
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveRefreshListEvent(String event) {
-    if (Constants.REFRESH_ISSUE_VOUCHER_LIST == event) {
+    if (Constants.REFRESH_ISSUE_VOUCHER_LIST.equals(event)) {
       presenter.loadData();
     }
   }
