@@ -199,6 +199,13 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
     presenter.loadData();
   }
 
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveRefreshListEvent(String event) {
+    if (Constants.REFRESH_ISSUE_VOUCHER_LIST == event) {
+      presenter.loadData();
+    }
+  }
+
   private View generateHeaderView() {
     View view = new View(requireContext());
     LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,

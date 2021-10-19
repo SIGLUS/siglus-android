@@ -251,7 +251,7 @@ public class SyncDownManager {
         })
         .toList();
     podRepository.batchCreatePodsWithItems(filteredPods);
-    return filteredPods.isEmpty();
+    return !filteredPods.isEmpty();
   }
 
   @NonNull

@@ -64,7 +64,7 @@ public class User extends BaseModel {
 
   String referenceDataUserId;
 
-  Boolean isTokenExpired;
+  Boolean isTokenExpired = false;
 
   public User(String username, String password) {
     this.username = username;
