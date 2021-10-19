@@ -92,10 +92,11 @@
       style="@style/Pod.list.lot"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_marginLeft="@dimen/px_32"
+      android:layout_marginLeft="@dimen/px_30"
       android:layout_marginRight="@dimen/px_15"
       android:layout_marginVertical="@dimen/px_5"
       android:background="@color/white_transparent_color"
+      android:textSize="@dimen/px_12"
       android:gravity="center" />
     <ImageView
       android:id="@+id/iv_rejection_reason"
