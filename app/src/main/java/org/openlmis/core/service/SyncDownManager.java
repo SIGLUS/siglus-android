@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -47,12 +48,10 @@ import org.openlmis.core.model.repository.AdditionalProductProgramRepository;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.model.repository.ServiceFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.service.StockService;
@@ -67,6 +66,7 @@ import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.service.sync.SchedulerBuilder;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
@@ -109,11 +109,7 @@ public class SyncDownManager {
   @Inject
   ProductProgramRepository productProgramRepository;
   @Inject
-  ProgramDataFormRepository programDataFormRepository;
-  @Inject
   ReportTypeFormRepository reportTypeFormRepository;
-  @Inject
-  ServiceFormRepository serviceFormRepository;
   @Inject
   StockService stockService;
   @Inject
@@ -185,7 +181,9 @@ public class SyncDownManager {
 
       @Override
       public void onNext(SyncProgress syncProgress) {
-        // do nothing
+        if (SyncProgress.SHOULD_REFRESH_ISSUE_VOUCHER_LIST == syncProgress) {
+          EventBus.getDefault().post(Constants.REFRESH_ISSUE_VOUCHER_LIST);
+        }
       }
     });
   }
@@ -219,7 +217,9 @@ public class SyncDownManager {
   private void syncDownPods(Subscriber<? super SyncProgress> subscriber) throws LMISException {
     try {
       subscriber.onNext(SyncProgress.SYNCING_PODS);
-      fetchAndSavePods();
+      if (fetchAndSavePods()) {
+        subscriber.onNext(SyncProgress.SHOULD_REFRESH_ISSUE_VOUCHER_LIST);
+      }
       sharedPreferenceMgr.setKeyIsPodDataSynced();
       subscriber.onNext(SyncProgress.PODS_SYNCED);
     } catch (LMISException e) {
@@ -229,7 +229,7 @@ public class SyncDownManager {
     }
   }
 
-  private void fetchAndSavePods() throws LMISException {
+  private boolean fetchAndSavePods() throws LMISException {
     List<Pod> pods;
     if (sharedPreferenceMgr.isPodDataInitialSynced()) {
       pods = lmisRestApi.fetchPods(true);
@@ -244,13 +244,14 @@ public class SyncDownManager {
     ImmutableList<Pod> filteredPods = FluentIterable.from(pods)
         .filter(pod -> {
           try {
-            return podRepository.queryByOrderCode(pod.getOrderCode()) == null;
+            return podRepository.queryByOrderCode(Objects.requireNonNull(pod).getOrderCode()) == null;
           } catch (LMISException e) {
             return false;
           }
         })
         .toList();
     podRepository.batchCreatePodsWithItems(filteredPods);
+    return filteredPods.isEmpty();
   }
 
   @NonNull
@@ -567,6 +568,7 @@ public class SyncDownManager {
     STOCK_CARDS_LAST_YEAR_SYNCED,
     RAPID_TESTS_SYNCED,
     PODS_SYNCED,
+    SHOULD_REFRESH_ISSUE_VOUCHER_LIST,
     SHOULD_GO_TO_INITIAL_INVENTORY;
 
     private int messageCode;

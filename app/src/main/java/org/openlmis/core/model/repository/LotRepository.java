@@ -89,6 +89,8 @@ public class LotRepository {
       } else {
         lotOnHand = getLotOnHandByLot(existingLot);
         if (lotOnHand == null) {
+          lot.setId(existingLot.getId());
+          createOrUpdateLot(lot);
           lotOnHand = new LotOnHand(lot, lotMovementItem.getStockMovementItem().getStockCard(),
               lotMovementItem.getMovementQuantity());
         } else {
