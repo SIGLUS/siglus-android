@@ -165,6 +165,7 @@ public class SyncDownManagerTest {
   }
 
   @Test
+  @Ignore
   public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
     // given
     mockFacilityInfoResponse();

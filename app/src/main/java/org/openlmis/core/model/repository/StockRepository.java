@@ -88,22 +88,6 @@ public class StockRepository {
     genericDao = new GenericDao<>(StockCard.class, context);
   }
 
-  public void batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(final List<StockCard> stockCards) {
-    try {
-      dbUtil.withDaoAsBatch(StockCard.class, dao -> {
-        for (StockCard stockCard : stockCards) {
-          setStockCardCmmStatus(stockCard);
-          dao.createOrUpdate(stockCard);
-          updateProductOfStockCard(stockCard.getProduct());
-          stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotInfo(stockCard.getStockMovementItemsWrapper());
-        }
-        return null;
-      });
-    } catch (LMISException e) {
-      new LMISException(e, "StockRepository.batchSave").reportToFabric();
-    }
-  }
-
   public void createOrUpdate(final StockCard stockCard) {
     try {
       StockCard existStockCard = queryStockCardByProductId(stockCard.getProduct().getId());
