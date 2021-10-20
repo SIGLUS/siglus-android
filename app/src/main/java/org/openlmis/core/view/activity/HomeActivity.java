@@ -123,7 +123,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private boolean isCmmCalculating = false;
 
-  public static  Activity activity;
+  public static Activity activity;
 
   private int syncedCount = 0;
 
@@ -347,9 +347,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
           startActivity(KitStockCardListActivity.class);
           break;
         case R.id.btn_issue_voucher:
-          if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_pod)) {
-            startActivity(new Intent(HomeActivity.this, IssueVoucherListActivity.class));
-          }
+          startActivity(new Intent(HomeActivity.this, IssueVoucherListActivity.class));
           break;
         default:
           // do nothing

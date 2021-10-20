@@ -164,7 +164,6 @@ public class HomeActivityTest {
   public void shouldGoToIssueVoucherPage() {
     // given
     resetNextClickTime();
-    LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_pod, true);
 
     // when
     homeActivity.findViewById(R.id.btn_issue_voucher).performClick();
