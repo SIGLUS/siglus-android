@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="@dimen/px_1384"
+  android:layout_width="@dimen/px_1684"
   android:layout_height="@dimen/px_50"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:showDividers="middle"
@@ -107,14 +107,18 @@
       android:paddingHorizontal="@dimen/px_1"
       android:src="@drawable/icon_pulldown_enable" />
   </RelativeLayout>
-  <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot">
+  <androidx.constraintlayout.widget.ConstraintLayout
+    style="@style/Pod.list.lot"
+    android:layout_width="@dimen/px_400"
+    android:background="@color/color_white">
     <EditText
       android:id="@+id/et_note"
       style="@style/Pod.list.lot.editView"
+      android:layout_width="@dimen/px_392"
       android:background="@drawable/border_bg_corner"
       android:gravity="right|center_vertical"
       android:inputType="text"
-      android:maxLength="100"
+      android:maxLength="50"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent"

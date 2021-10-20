@@ -810,4 +810,7 @@
   <dimen name="px_1200">1200.00dp</dimen>
   <dimen name="px_1384">1384.00dp</dimen>
   <dimen name="px_1400">1400.00dp</dimen>
+  <dimen name="px_1644">1644.00dp</dimen>
+  <dimen name="px_1664">1664.00dp</dimen>
+  <dimen name="px_1684">1684.00dp</dimen>
 </resources>
