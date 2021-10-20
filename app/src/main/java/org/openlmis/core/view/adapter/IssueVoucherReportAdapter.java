@@ -52,14 +52,6 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     holder.populate(viewModel);
   }
 
-  public boolean isThisProductNoLot(int position) {
-    if (position == getData().size() - 1) {
-      return false;
-    } else {
-      return ((IssueVoucherReportProductViewModel) getData().get(position)).getLotViewModelList().isEmpty();
-    }
-  }
-
   public int validateAll() {
     int position = -1;
     int dataSize = getData().size();
