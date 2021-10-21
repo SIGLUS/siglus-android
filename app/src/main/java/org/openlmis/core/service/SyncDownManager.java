@@ -23,6 +23,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,6 +65,7 @@ import org.openlmis.core.network.model.SupportedProgram;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.service.sync.SchedulerBuilder;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.utils.Constants;
@@ -427,13 +429,18 @@ public class SyncDownManager {
     EventBus.getDefault().post(new CmmCalculateEvent(true));
     return Observable.create(subscriber -> {
       try {
-        stockRepository.batchSaveLastYearMovements(stockCards);
+        TransactionManager
+            .callInTransaction(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), () -> {
+              stockRepository.batchSaveLastYearMovements(stockCards);
+              stockCards.clear();
+              stockService.immediatelyUpdateAvgMonthlyConsumption();
+              return null;
+            });
         subscriber.onCompleted();
       } catch (Exception e) {
         subscriber.onError(e);
       }
     }).observeOn(SchedulerBuilder.createScheduler()).doOnTerminate(() -> {
-      stockService.immediatelyUpdateAvgMonthlyConsumption();
       EventBus.getDefault().post(new CmmCalculateEvent(false));
     });
   }
