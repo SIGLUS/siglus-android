@@ -78,7 +78,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
   VIARequisitionPresenter presenter;
 
   private long formId;
-
+  private boolean shouldDisplayAddButton = false;
   private Date periodEndDate;
   private boolean isMissedPeriod;
   private ArrayList<StockCard> emergencyStockCards;
@@ -132,7 +132,8 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     if (menu == null) {
       return;
     }
-    menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(presenter.isFormProductEditable());
+    shouldDisplayAddButton = presenter.isFormProductEditable();
+    menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(shouldDisplayAddButton);
   }
 
   @Override
@@ -140,7 +141,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     super.onCreateOptionsMenu(menu, inflater);
     inflater.inflate(R.menu.menu_via_requisition, menu);
     this.menu = menu;
-    hideOrShowAddProductMenuInVIAPage();
+    menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(shouldDisplayAddButton);
   }
 
   @Override
