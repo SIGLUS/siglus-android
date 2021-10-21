@@ -254,7 +254,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
   protected abstract int getCompleteErrorMessage();
 
   public boolean isFormProductEditable() {
-    return !isHistoryForm();
+    return !isHistoryForm() && !(getRnRForm() != null && getRnRForm().isEmergency());
   }
 
   public boolean isDraft() {
