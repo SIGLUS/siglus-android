@@ -71,13 +71,11 @@ import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 @Singleton
-@SuppressWarnings("PMD")
 public class SyncDownManager {
 
   private static volatile boolean syncing = false;
@@ -138,7 +136,6 @@ public class SyncDownManager {
     }
     Observable.create((Observable.OnSubscribe<SyncProgress>) subscriber1 -> {
       try {
-        // TODO: Remove the comment when developing to the corresponding api
         syncDownFacilityInfo(subscriber1);
         syncDownRegimens(subscriber1);
         syncDownProducts(subscriber1);
@@ -223,7 +220,7 @@ public class SyncDownManager {
       sharedPreferenceMgr.setKeyIsPodDataSynced();
       subscriber.onNext(SyncProgress.PODS_SYNCED);
     } catch (LMISException e) {
-      LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_pod_failed));
+      LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_pod_failed));
       e1.reportToFabric();
       throw e1;
     }
@@ -316,7 +313,7 @@ public class SyncDownManager {
         subscriber.onNext(SyncProgress.REQUISITION_SYNCED);
       } catch (LMISException e) {
         sharedPreferenceMgr.setRequisitionDataSynced(false);
-        LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_requisition_failed));
+        LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_requisition_failed));
         e1.reportToFabric();
         throw e1;
       }
@@ -327,8 +324,6 @@ public class SyncDownManager {
 
     if (!sharedPreferenceMgr.isLastMonthStockDataSynced()) {
       try {
-        // 1 re-sync && if(stockRepository.list()!=null) do not goto initial inventory
-        // 2 initial inventory
         subscriber.onNext(SyncProgress.SYNCING_STOCK_CARDS_LAST_MONTH);
         fetchLatestOneMonthMovements();
         sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
@@ -336,7 +331,7 @@ public class SyncDownManager {
       } catch (LMISException e) {
         sharedPreferenceMgr.setLastMonthStockCardDataSynced(false);
         Log.w(TAG, e);
-        LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_stock_movement_failed));
+        LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_stock_movement_failed));
         e1.reportToFabric();
         throw e1;
       }
@@ -426,37 +421,23 @@ public class SyncDownManager {
   }
 
   public Observable<Object> saveStockCardsFromLastYear(final List<StockCard> stockCards) {
-    List<Observable<Object>> observables = new ArrayList<>();
     if (stockCards.isEmpty()) {
-      return Observable.merge(observables);
-    }
-    Scheduler scheduler = SchedulerBuilder.createScheduler();
-    int threadNumber = Runtime.getRuntime().availableProcessors();
-    int numberOfElementsInAListForAnObservable = stockCards.size() / threadNumber;
-    int startPosition = 0;
-    for (int arrayNumber = 1; arrayNumber <= threadNumber; arrayNumber++) {
-      int endPosition = arrayNumber == threadNumber ? stockCards.size()
-          : numberOfElementsInAListForAnObservable * arrayNumber;
-      observables.add(saveStockCards(stockCards.subList(startPosition, endPosition), scheduler));
-      startPosition = endPosition;
+      return Observable.empty();
     }
     EventBus.getDefault().post(new CmmCalculateEvent(true));
-    return Observable.merge(observables).doOnTerminate(() -> {
+    return Observable.create(subscriber -> {
+      try {
+        stockRepository.batchSaveLastYearMovements(stockCards);
+        subscriber.onCompleted();
+      } catch (Exception e) {
+        subscriber.onError(e);
+      }
+    }).observeOn(SchedulerBuilder.createScheduler()).doOnTerminate(() -> {
       stockService.immediatelyUpdateAvgMonthlyConsumption();
       EventBus.getDefault().post(new CmmCalculateEvent(false));
     });
   }
 
-  public Observable<Object> saveStockCards(final List<StockCard> stockCards, Scheduler scheduler) {
-    return Observable.create(subscriber -> {
-      try {
-        stockRepository.batchCreateSyncDownStockCardsAndMovements(stockCards);
-        subscriber.onCompleted();
-      } catch (Exception e) {
-        subscriber.onError(e);
-      }
-    }).observeOn(scheduler);
-  }
 
   private String getStartDate() {
     Calendar calendar = Calendar.getInstance();
