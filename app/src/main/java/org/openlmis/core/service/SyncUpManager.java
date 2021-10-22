@@ -142,13 +142,12 @@ public class SyncUpManager {
       if (isSyncRnrSuccessful) {
         sharedPreferenceMgr.setRnrLastSyncTime();
       }
-      EventBus.getDefault().post(new SyncRnrFinishEvent());
+
 
       boolean isSyncPodSuccessful = syncPod();
       if (isSyncPodSuccessful) {
         sharedPreferenceMgr.setPodLastSyncTime();
       }
-      EventBus.getDefault().post(new SyncPodFinishEvent());
 
       boolean isSyncStockSuccessful = syncStockCards();
       if (isSyncStockSuccessful) {
@@ -185,7 +184,7 @@ public class SyncUpManager {
     }
 
     Observable.from(forms).filter(this::submitRequisition).subscribe(this::markRnrFormSynced);
-
+    EventBus.getDefault().post(new SyncRnrFinishEvent());
     return from(forms).allMatch(RnRForm::isSynced);
   }
 
@@ -233,6 +232,7 @@ public class SyncUpManager {
         allSubmitSuccess = false;
       }
     }
+    EventBus.getDefault().post(new SyncPodFinishEvent());
     return allSubmitSuccess;
   }
 
