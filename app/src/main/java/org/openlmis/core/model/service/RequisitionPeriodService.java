@@ -113,12 +113,11 @@ public class RequisitionPeriodService {
     ReportTypeForm reportTypeForm = reportTypeFormRepository.queryByCode(programCode);
     DateTime lastReportEndTime = reportTypeForm.getLastReportEndTimeForDateTime();
     if (lastReportEndTime != null && Months.monthsBetween(lastReportEndTime, new DateTime()).getMonths() > 12) {
-      initializeDateTime = new DateTime()
-          .plusMonths(-sharedPreferenceMgr.getMonthOffsetThatDefinedOldData()).toDateTime();
+      initializeDateTime = new DateTime().minusMonths(sharedPreferenceMgr.getMonthOffsetThatDefinedOldData())
+          .toDateTime();
     }
-    initializeDateTime = initializeDateTime == null ? new DateTime(
-        stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode))
-        : initializeDateTime;
+    initializeDateTime = initializeDateTime == null ? new DateTime(stockMovementRepository
+        .queryEarliestStockMovementDateByProgram(programCode)) : initializeDateTime;
 
     int initializeDayOfMonth = initializeDateTime.getDayOfMonth();
 
