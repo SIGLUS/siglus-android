@@ -261,7 +261,7 @@ public class LoginPresenter extends Presenter {
         loginRemote(user, fromReSync);
       } else {
         User localUser = userRepository.getLocalUser();
-        if (localUser == null) {
+        if (localUser == null && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
           onLoginFailed(LoginErrorType.NO_INTERNET);
         } else {
           loginLocal(user);
