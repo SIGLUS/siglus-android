@@ -165,4 +165,5 @@ public class Period implements Serializable {
     result = 31 * result + (inventoryEnd != null ? inventoryEnd.hashCode() : 0);
     return result;
   }
+
 }
