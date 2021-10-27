@@ -35,6 +35,8 @@ import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.event.SyncPodFinishEvent;
 import org.openlmis.core.event.SyncRnrFinishEvent;
 import org.openlmis.core.event.SyncStatusEvent;
@@ -227,7 +229,12 @@ public class SyncUpManager {
     }
     boolean allSubmitSuccess = true;
     for (Pod pod : pods) {
-      Pod submittedPod = submitPod(pod);
+      Pod submittedPod;
+      if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+        submittedPod = fakeSubmitPod(pod);
+      } else {
+        submittedPod = submitPod(pod);
+      }
       if (!submittedPod.isSynced()) {
         allSubmitSuccess = false;
       }
@@ -496,6 +503,18 @@ public class SyncUpManager {
       syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.POD, localPod.getId());
       syncErrorsRepository.save(new SyncError(e, SyncType.POD, localPod.getId()));
     }
+    return localPod;
+  }
+
+  private Pod fakeSubmitPod(Pod localPod) {
+    localPod.setOrderSupplyFacilityName("DDM de Chiure");
+    localPod.setOrderSupplyFacilityDistrict("CHIURE");
+    localPod.setOrderSupplyFacilityProvince("CABO DELGADO");
+    localPod.setOrderSupplyFacilityType("DDM");
+    localPod.setOrderStatus(OrderStatus.RECEIVED);
+    localPod.setPreparedBy("android_user6_ddm");
+    localPod.setConferredBy("android_user6_ddm");
+    localPod.setSynced(podRepository.markSynced(localPod));
     return localPod;
   }
 }

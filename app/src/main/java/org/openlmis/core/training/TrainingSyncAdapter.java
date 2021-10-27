@@ -55,6 +55,11 @@ public class TrainingSyncAdapter {
       sharedPreferenceMgr.setRnrLastSyncTime();
     }
 
+    boolean isSyncPodSuccessful = syncUpManager.syncPod();
+    if (isSyncPodSuccessful) {
+      sharedPreferenceMgr.setPodLastSyncTime();
+    }
+
     boolean isFakeSyncStockSuccessful = syncUpManager.fakeSyncStockCards();
     if (isFakeSyncStockSuccessful) {
       sharedPreferenceMgr.setStockLastSyncTime();
