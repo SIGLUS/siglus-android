@@ -32,6 +32,7 @@ import org.openlmis.core.utils.DateUtil;
 
 
 public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
+
   private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2021-07-18", DateUtil.DB_DATE_FORMAT);
   public static final String DATE_TIME_SUFFIX = ".000000";
   private int monthOffsetFromAnchor;
@@ -88,20 +89,24 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
   }
 
   private void updateStockMovementItemCreatedTime() throws SQLException {
-    String sql = "UPDATE stock_items SET createdTime = datetime(createdTime, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX;
+    String sql =
+        "UPDATE stock_items SET createdTime = datetime(createdTime, '+" + monthOffsetFromAnchor + " months') || "
+            + DATE_TIME_SUFFIX;
     dbConnection.update(sql, null, null);
   }
 
   private void updateRnRFormPeriods() throws SQLException {
     String sql = "UPDATE rnr_forms "
-        + "SET periodBegin = datetime(periodBegin, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX + ","
+        + "SET periodBegin = datetime(periodBegin, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX
+        + ","
         + "periodEnd = datetime(periodEnd, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX;
     dbConnection.update(sql, null, null);
   }
 
   private void updateProgramDataFromPeriodsAndSubmitTime() throws SQLException {
     String sql = "UPDATE program_data_forms "
-        + "SET periodBegin = datetime(periodBegin, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX + ","
+        + "SET periodBegin = datetime(periodBegin, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX
+        + ","
         + "periodEnd = datetime(periodEnd, '+" + monthOffsetFromAnchor + " months') ||" + DATE_TIME_SUFFIX;
     dbConnection.update(sql, null, null);
   }
