@@ -18,7 +18,7 @@
 
 package org.openlmis.core.service;
 
-import static org.openlmis.core.utils.DateUtil.today;
+import static org.openlmis.core.utils.DateUtil.calculateDateOffsetToNow;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -219,10 +219,8 @@ public class DirtyDataManager {
         || isSyncedMonthCheck) {
       return;
     }
-    DateTime recordLastDirtyDataCheck = SharedPreferenceMgr.getInstance()
-        .getLatestMonthlyCheckDirtyDataTime();
-    Period period = Period.of(today());
-    if (recordLastDirtyDataCheck.isBefore(period.getBegin())) {
+    DateTime recordLastDirtyDataCheck = SharedPreferenceMgr.getInstance().getLatestMonthlyCheckDirtyDataTime();
+    if (calculateDateOffsetToNow(recordLastDirtyDataCheck) >=30) {
       isSyncedMonthCheck = true;
       sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
       Set<String> deleteProducts = checkAllMovementAndLotSOHAndSaveToDB();

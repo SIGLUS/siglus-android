@@ -198,6 +198,12 @@ public final class DateUtil {
     return diffYear * 12 + endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
   }
 
+  public static int calculateDateOffsetToNow(DateTime time) {
+    long currentDateTime = (new Date()).getTime();
+    long difference =  (time.toDate().getTime() - currentDateTime)/86400000;
+    return (int) Math.floor(difference);
+  }
+
   private static Calendar calendarDate(Date date) {
     final Calendar instance = Calendar.getInstance();
     instance.setTime(date);
