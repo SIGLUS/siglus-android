@@ -610,10 +610,8 @@ public class StockRepository {
     return dbUtil.withDao(LotOnHand.class, dao -> dao.queryRaw(querySql));
   }
 
-  public List<StockCard> queryCheckedStockCards(Set<String> filterStockCardIds) {
-    String querySql = "select * from stock_cards where id NOT IN ("
-        + StringUtils.join(filterStockCardIds, ",")
-        + ")";
+  public List<StockCard> queryCheckedStockCards() {
+    String querySql = "select * from stock_cards";
     List<StockCard> checkedStockCards = new ArrayList<>();
 
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
