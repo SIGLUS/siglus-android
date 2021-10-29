@@ -37,6 +37,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -571,6 +572,14 @@ public class SharedPreferenceMgr {
 
   public void setCheckDataDate(long time) {
     sharedPreferences.edit().putLong(KEY_DELETED_PRODUCT_TIME, time).apply();
+  }
+
+  public boolean shouldStartHourlyDirtyDataCheck() {
+    long now = LMISApp.getInstance().getCurrentTimeMillis();
+    long previousChecked = getCheckDataDate().getTime();
+    return !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training) &&
+        (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6);
+
   }
 
 }

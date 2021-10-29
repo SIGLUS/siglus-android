@@ -94,7 +94,7 @@ public class StockCardPresenter extends Presenter {
 
   private void checkDataAndEmitter(Subscriber<? super List<StockCard>> subscriber, ArchiveStatus status) {
     List<StockCard> allStockCards = stockRepository.list();
-    if (shouldStartDataCheck()) {
+    if (sharedPreferenceMgr.shouldStartHourlyDirtyDataCheck()) {
       dirtyDataManager.correctDataForStockCardOverView(allStockCards, lotsOnHands);
     }
     stockService.monthlyUpdateAvgMonthlyConsumption();
@@ -127,20 +127,12 @@ public class StockCardPresenter extends Presenter {
       view.showWarning();
       return;
     }
-    if (shouldStartDataCheck()) {
+    if (sharedPreferenceMgr.shouldStartHourlyDirtyDataCheck()) {
       Subscription subscription = correctDirtyObservable(status).subscribe(afterLoadHandler);
       subscriptions.add(subscription);
     } else {
       loadStockCardsInner(status);
     }
-  }
-
-  private boolean shouldStartDataCheck() {
-    long now = LMISApp.getInstance().getCurrentTimeMillis();
-    long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
-    return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
-        && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
-        && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
   }
 
   private void loadStockCardsInner(ArchiveStatus status) {
