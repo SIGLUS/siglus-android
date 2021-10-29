@@ -277,7 +277,7 @@ public final class DateUtil {
 
   private static Calendar getCurrentCalendarForTraining() {
     Calendar calendar = Calendar.getInstance();
-    calendar.set(2021, 7, 18);
+    calendar.set(2021, 10, 18);
     String firstLoginTrainingTime = SharedPreferenceMgr.getInstance().getLastLoginTrainingTime();
     if (firstLoginTrainingTime != null) {
       String currentDate = DateUtil.formatDate(new Date(), DateUtil.SIMPLE_DATE_FORMAT);

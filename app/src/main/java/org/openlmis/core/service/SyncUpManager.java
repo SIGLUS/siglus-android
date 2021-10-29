@@ -91,6 +91,8 @@ public class SyncUpManager {
 
   private static final String TAG = "SyncUpManager";
 
+  private static final String FAKE_ORDER_NUMBER = "ErrorOrderNumber";
+
   @Inject
   RnrFormRepository rnrFormRepository;
 
@@ -157,7 +159,6 @@ public class SyncUpManager {
         syncArchivedProducts();
       }
 
-      // syncUpUnSyncedStockCardCodes();
       syncAppVersion();
       syncUpCmms();
     }
@@ -507,13 +508,22 @@ public class SyncUpManager {
   }
 
   private Pod fakeSubmitPod(Pod localPod) {
-    localPod.setOrderSupplyFacilityName("DDM de Chiure");
-    localPod.setOrderSupplyFacilityDistrict("CHIURE");
-    localPod.setOrderSupplyFacilityProvince("CABO DELGADO");
-    localPod.setOrderSupplyFacilityType("DDM");
+    if (!FAKE_ORDER_NUMBER.equals(localPod.getOrderCode())) {
+      return localPod;
+    }
+    localPod.setOrderSupplyFacilityName("DPM ZAMBEZIA");
+    localPod.setOrderSupplyFacilityDistrict("CIDADE DE QUELIMANE");
+    localPod.setOrderSupplyFacilityProvince("ZAMBEZIA");
+    localPod.setOrderSupplyFacilityType("DPM");
     localPod.setOrderStatus(OrderStatus.RECEIVED);
     localPod.setPreparedBy("android_user6_ddm");
     localPod.setConferredBy("android_user6_ddm");
+    localPod.setRequisitionNumber("RNR-NO010412110000039");
+    localPod.setRequisitionStartDate(DateUtil.parseString("2021-05-21", DateUtil.DB_DATE_FORMAT));
+    localPod.setRequisitionEndDate(DateUtil.parseString("2021-06-20", DateUtil.DB_DATE_FORMAT));
+    localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-05-18", DateUtil.DB_DATE_FORMAT));
+    localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-05-18", DateUtil.DB_DATE_FORMAT));
+    localPod.setShippedDate(DateUtil.parseString("2021-06-18", DateUtil.DB_DATE_FORMAT));
     localPod.setSynced(podRepository.markSynced(localPod));
     return localPod;
   }

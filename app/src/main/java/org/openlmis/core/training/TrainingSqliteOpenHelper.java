@@ -36,6 +36,7 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
   private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2021-07-18", DateUtil.DB_DATE_FORMAT);
   public static final String DATE_TIME_SUFFIX = ".000000";
   public static final String MONTH_FIELD = " months') || ";
+  public static final String MONTH = " months')";
   private int monthOffsetFromAnchor;
 
   private DatabaseConnection dbConnection;
@@ -82,10 +83,17 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     updateRnRFormPeriods();
     updateStockMovementItemMovementDate();
     updateStockMovementItemCreatedTime();
+    updateInventory();
+  }
+
+  private void updateInventory() throws SQLException {
+    String sql = "UPDATE inventory SET createdAt = datetime(createdAt, '+" + monthOffsetFromAnchor + " months'), "
+        + "updatedAt = datetime(updatedAt, '+" + monthOffsetFromAnchor + MONTH;
+    dbConnection.update(sql, null, null);
   }
 
   private void updateStockMovementItemMovementDate() throws SQLException {
-    String sql = "UPDATE stock_items SET movementDate = date(movementDate, '+" + monthOffsetFromAnchor + " months')";
+    String sql = "UPDATE stock_items SET movementDate = date(movementDate, '+" + monthOffsetFromAnchor + MONTH;
     dbConnection.update(sql, null, null);
   }
 
@@ -114,7 +122,7 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
 
   private void updateLotExpirationDate() throws SQLException {
-    String sql = "UPDATE lots SET expirationDate = date(expirationDate, '+" + monthOffsetFromAnchor + " months')";
+    String sql = "UPDATE lots SET expirationDate = date(expirationDate, '+" + monthOffsetFromAnchor + MONTH;
     dbConnection.update(sql, null, null);
   }
 

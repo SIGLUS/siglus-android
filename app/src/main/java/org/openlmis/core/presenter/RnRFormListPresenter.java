@@ -140,7 +140,7 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)
-        && stockMovementRepository.queryStockMovementDatesByProgram(programCode).isEmpty()) {
+        && stockMovementRepository.queryMalariaStockMovementDates().isEmpty()) {
       return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
     }
 
