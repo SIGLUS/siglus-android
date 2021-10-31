@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
@@ -65,11 +64,11 @@ public class ProductPresenterTest {
   @Test
   public void shouldLoadRegimeProducts() throws Exception {
     // when
-    RegimeShortCode regimeShortCode = new RegimeShortCode();
-    regimeShortCode.setCode("code");
-    regimeShortCode.setShortCode("3TC 150mg");
-    when(regimenRepository.listRegimeShortCode(Regimen.RegimeType.Adults))
-        .thenReturn(newArrayList(regimeShortCode));
+    Regimen regimen = new Regimen();
+    regimen.setCode("code");
+    regimen.setName("3TC 150mg");
+    when(regimenRepository.listNonCustomRegimen(Regimen.RegimeType.Adults))
+        .thenReturn(newArrayList(regimen));
     Product product = new Product();
     product.setPrimaryName("PrimaryName");
     when(productRepository.getByCode("code")).thenReturn(product);

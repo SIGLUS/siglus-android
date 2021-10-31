@@ -29,7 +29,6 @@ import com.google.inject.Inject;
 import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
@@ -97,11 +96,15 @@ public class RegimenRepository {
         .query());
   }
 
-  public List<RegimeShortCode> listRegimeShortCode(Regimen.RegimeType type) throws LMISException {
-    return dbUtil.withDao(RegimeShortCode.class, dao -> dao.queryBuilder()
-        .where()
-        .eq(TYPE, type)
-        .query());
+  public List<Regimen> listNonCustomRegimen(Regimen.RegimeType type) throws LMISException {
+    return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder()
+    .where()
+    .eq(IS_CUSTOM, true)
+    .and()
+    .eq(ACTIVE, true)
+    .and()
+    .eq(TYPE, type)
+    .query());
   }
 
   public void deleteRegimeDirtyData(String programCode) {

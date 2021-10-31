@@ -213,7 +213,7 @@ public class SyncUpManager {
         return false;
       }
     }).subscribe(this::markRnrFormSynced);
-
+    EventBus.getDefault().post(new SyncRnrFinishEvent());
     return from(forms).allMatch(RnRForm::isSynced);
   }
 
@@ -508,7 +508,7 @@ public class SyncUpManager {
   }
 
   private Pod fakeSubmitPod(Pod localPod) {
-    if (!FAKE_ORDER_NUMBER.equals(localPod.getOrderCode())) {
+    if (FAKE_ORDER_NUMBER.equals(localPod.getOrderCode())) {
       return localPod;
     }
     localPod.setOrderSupplyFacilityName("DPM ZAMBEZIA");
