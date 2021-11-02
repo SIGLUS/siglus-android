@@ -511,19 +511,22 @@ public class SyncUpManager {
     if (FAKE_ORDER_NUMBER.equals(localPod.getOrderCode())) {
       return localPod;
     }
-    localPod.setOrderSupplyFacilityName("DPM ZAMBEZIA");
-    localPod.setOrderSupplyFacilityDistrict("CIDADE DE QUELIMANE");
-    localPod.setOrderSupplyFacilityProvince("ZAMBEZIA");
-    localPod.setOrderSupplyFacilityType("DPM");
-    localPod.setOrderStatus(OrderStatus.RECEIVED);
-    localPod.setPreparedBy("android_user6_ddm");
-    localPod.setConferredBy("android_user6_ddm");
-    localPod.setRequisitionNumber("RNR-NO010412110000039");
-    localPod.setRequisitionStartDate(DateUtil.parseString("2021-05-21", DateUtil.DB_DATE_FORMAT));
-    localPod.setRequisitionEndDate(DateUtil.parseString("2021-06-20", DateUtil.DB_DATE_FORMAT));
-    localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-05-18", DateUtil.DB_DATE_FORMAT));
-    localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-05-18", DateUtil.DB_DATE_FORMAT));
-    localPod.setShippedDate(DateUtil.parseString("2021-06-18", DateUtil.DB_DATE_FORMAT));
+    if (localPod.isLocal()) {
+      localPod.setOrderSupplyFacilityName("DPM ZAMBEZIA");
+      localPod.setOrderSupplyFacilityDistrict("CIDADE DE QUELIMANE");
+      localPod.setOrderSupplyFacilityProvince("ZAMBEZIA");
+      localPod.setOrderSupplyFacilityType("DPM");
+      localPod.setOrderStatus(OrderStatus.RECEIVED);
+      localPod.setPreparedBy("android_user6_ddm");
+      localPod.setConferredBy("android_user6_ddm");
+      localPod.setRequisitionNumber("RNR-NO010412110000039");
+      localPod.setRequisitionStartDate(DateUtil.parseString("2021-10-21", DateUtil.DB_DATE_FORMAT));
+      localPod.setRequisitionEndDate(DateUtil.parseString("2021-11-20", DateUtil.DB_DATE_FORMAT));
+      localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-10-18", DateUtil.DB_DATE_FORMAT));
+      localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-10-18", DateUtil.DB_DATE_FORMAT));
+      localPod.setShippedDate(DateUtil.parseString("2021-11-18", DateUtil.DB_DATE_FORMAT));
+      localPod.setProcessedDate(DateUtil.getCurrentDate());
+    }
     localPod.setSynced(podRepository.markSynced(localPod));
     return localPod;
   }

@@ -262,13 +262,12 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   }
 
   private boolean needUpdateStockCard(PodProductItem podProductItem) {
-    boolean needUpdate = false;
     for (PodProductLotItem lotItem : podProductItem.getPodProductLotItemsWrapper()) {
       if (lotItem.getAcceptedQuantity() != 0) {
         return true;
       }
     }
-    return needUpdate;
+    return false;
   }
 
   private long getChangeQuality(PodProductItem podProductItem) {

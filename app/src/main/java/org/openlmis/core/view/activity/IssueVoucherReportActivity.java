@@ -31,7 +31,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.io.Serializable;
-import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.LMISApp;
@@ -348,8 +347,8 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   protected void showSignDialog() {
     IssueVoucherSignatureDialog signatureDialog = new IssueVoucherSignatureDialog();
-    signatureDialog.setArguments(IssueVoucherSignatureDialog.getBundleToMe(DateUtil.formatDate(new Date()),
-        presenter.getIssueVoucherReportViewModel().getProgram().getProgramName()));
+    signatureDialog.setArguments(IssueVoucherSignatureDialog.getBundleToMe(DateUtil.formatDate(
+        DateUtil.getCurrentDate()), presenter.getIssueVoucherReportViewModel().getProgram().getProgramName()));
     signatureDialog.setDelegate(getSignatureDialogDelegate());
     signatureDialog.show(getSupportFragmentManager());
   }

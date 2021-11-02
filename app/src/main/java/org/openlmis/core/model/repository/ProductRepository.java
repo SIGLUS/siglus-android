@@ -378,7 +378,7 @@ public class ProductRepository {
       return;
     }
     String ids = StringUtils.join(productIds, ',');
-    String updateArchive = "UPDATE products SET isArchived = 'true' where id in ('" + ids + "')";
+    String updateArchive = "UPDATE products SET isArchived = '0' where id in ('" + ids + "')";
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateArchive);
   }
 

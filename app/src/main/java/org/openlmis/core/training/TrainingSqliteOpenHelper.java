@@ -33,10 +33,10 @@ import org.openlmis.core.utils.DateUtil;
 
 public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
-  private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2021-07-18", DateUtil.DB_DATE_FORMAT);
   public static final String DATE_TIME_SUFFIX = ".000000";
   public static final String MONTH_FIELD = " months') || ";
   public static final String MONTH = " months')";
+  private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2021-07-18", DateUtil.DB_DATE_FORMAT);
   private int monthOffsetFromAnchor;
 
   private DatabaseConnection dbConnection;
@@ -44,6 +44,10 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
   private TrainingSqliteOpenHelper(Context context) {
     super(context, "lmis_db", null, LmisSqliteOpenHelper.getDBVersion());
     monthOffsetFromAnchor = DateUtil.calculateDateMonthOffset(TRAINING_ANCHOR_DATE, DateUtil.getCurrentDate());
+  }
+
+  public static TrainingSqliteOpenHelper getInstance(Context context) {
+    return new TrainingSqliteOpenHelper(context);
   }
 
   private synchronized void getConnection() throws SQLException {
@@ -80,10 +84,11 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     getConnection();
     updateLotExpirationDate();
     updateProgramDataFromPeriodsAndSubmitTime();
-    updateRnRFormPeriods();
+    updateRnRFormPeriodsAndSubmittedTime();
     updateStockMovementItemMovementDate();
     updateStockMovementItemCreatedTime();
     updateInventory();
+    updatePodReportPeriodAndShippedDate();
   }
 
   private void updateInventory() throws SQLException {
@@ -104,11 +109,13 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     dbConnection.update(sql, null, null);
   }
 
-  private void updateRnRFormPeriods() throws SQLException {
+  private void updateRnRFormPeriodsAndSubmittedTime() throws SQLException {
     String sql = "UPDATE rnr_forms "
         + "SET periodBegin = datetime(periodBegin, '+" + monthOffsetFromAnchor + MONTH_FIELD + DATE_TIME_SUFFIX
         + ","
-        + "periodEnd = datetime(periodEnd, '+" + monthOffsetFromAnchor + MONTH_FIELD + DATE_TIME_SUFFIX;
+        + "periodEnd = datetime(periodEnd, '+" + monthOffsetFromAnchor + MONTH_FIELD + DATE_TIME_SUFFIX
+        + ","
+        + "submittedTime = dateTime(submittedTime, '+" + monthOffsetFromAnchor + MONTH_FIELD + DATE_TIME_SUFFIX;
     dbConnection.update(sql, null, null);
   }
 
@@ -120,13 +127,21 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     dbConnection.update(sql, null, null);
   }
 
+  private void updatePodReportPeriodAndShippedDate() throws SQLException {
+    String sql = "UPDATE pods "
+        + "SET shippedDate = date(shippedDate, '+" + monthOffsetFromAnchor + MONTH
+        + ","
+        + "requisitionActualStartDate = date(requisitionActualStartDate, '+" + monthOffsetFromAnchor + MONTH
+        + ","
+        + "requisitionActualEndDate = date(requisitionActualEndDate, '+" + monthOffsetFromAnchor + MONTH
+        + ","
+        + "processedDate = " + "'2021-11-18T15:35:24.455Z'";
+    dbConnection.update(sql, null, null);
+
+  }
 
   private void updateLotExpirationDate() throws SQLException {
     String sql = "UPDATE lots SET expirationDate = date(expirationDate, '+" + monthOffsetFromAnchor + MONTH;
     dbConnection.update(sql, null, null);
-  }
-
-  public static TrainingSqliteOpenHelper getInstance(Context context) {
-    return new TrainingSqliteOpenHelper(context);
   }
 }
