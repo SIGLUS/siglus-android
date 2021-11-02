@@ -577,8 +577,8 @@ public class SharedPreferenceMgr {
   public boolean shouldStartHourlyDirtyDataCheck() {
     long now = LMISApp.getInstance().getCurrentTimeMillis();
     long previousChecked = getCheckDataDate().getTime();
-    return !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training) &&
-        (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6);
+    return !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)
+        && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6);
 
   }
 

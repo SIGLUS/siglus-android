@@ -220,7 +220,7 @@ public class DirtyDataManager {
       return;
     }
     DateTime recordLastDirtyDataCheck = SharedPreferenceMgr.getInstance().getLatestMonthlyCheckDirtyDataTime();
-    if (calculateDateOffsetToNow(recordLastDirtyDataCheck) >=30) {
+    if (calculateDateOffsetToNow(recordLastDirtyDataCheck) >= 30) {
       isSyncedMonthCheck = true;
       sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
       Set<String> deleteProducts = checkAllMovementAndLotSOHAndSaveToDB();
