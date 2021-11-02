@@ -31,8 +31,6 @@ import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.greenrobot.eventbus.EventBus;
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -40,7 +38,6 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.DateUtil;
 import roboguice.RoboGuice;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {

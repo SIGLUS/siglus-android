@@ -20,7 +20,6 @@ package org.openlmis.core.view.activity;
 
 import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
-import static org.openlmis.core.utils.Constants.PTV_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
@@ -49,7 +48,6 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ProgramUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
