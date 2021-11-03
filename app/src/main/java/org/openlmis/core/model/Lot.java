@@ -29,6 +29,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
+import org.openlmis.core.utils.DateUtil;
 
 @Data
 @Builder
@@ -47,6 +48,6 @@ public class Lot extends BaseModel {
   Date expirationDate;
 
   public boolean isExpired() {
-    return new DateTime(expirationDate).plusDays(1).isBeforeNow();
+    return new DateTime(expirationDate).plusDays(1).isBefore(new DateTime(DateUtil.getCurrentDate()));
   }
 }

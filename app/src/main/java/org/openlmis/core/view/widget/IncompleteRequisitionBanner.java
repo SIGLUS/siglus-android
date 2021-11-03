@@ -22,16 +22,16 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.inject.Inject;
+import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
@@ -69,27 +69,22 @@ public class IncompleteRequisitionBanner extends LinearLayout {
 
   public void setIncompleteRequisitionBanner() {
     try {
-      ReportTypeForm tarvReportTypeForm = reportTypeFormRepository.getReportType(Program.TARV_CODE);
-      ReportTypeForm viaReportTypeForm = reportTypeFormRepository.getReportType(Program.VIA_CODE);
-      int tarvPeriodOffsetMonth = (tarvReportTypeForm == null || !tarvReportTypeForm.active)
-          ? 0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Program.TARV_CODE);
-      int viaPeriodOffsetMonth = (viaReportTypeForm == null || !viaReportTypeForm.active)
-          ? 0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Program.VIA_CODE);
-      String tipMessage;
-      if (tarvPeriodOffsetMonth <= 0 && viaPeriodOffsetMonth <= 0) {
-        this.setVisibility(View.GONE);
-        return;
-      } else if (viaPeriodOffsetMonth > 0 && tarvPeriodOffsetMonth > 0) {
-        tipMessage = getResources().getString(R.string.via_and_mmia_requisition_alert);
-      } else if (viaPeriodOffsetMonth > 0) {
-        tipMessage = getResources().getString(R.string.via_requisition_alert);
+      List<ReportTypeForm> incompleteReports = requisitionPeriodService.getIncompleteReports();
+      if (incompleteReports.isEmpty()) {
+        this.setVisibility(GONE);
       } else {
-        tipMessage = getResources().getString(R.string.mmia_requisition_alert);
+        txMissedRequisition.setText(buildTipMessage(incompleteReports));
+        this.setVisibility(VISIBLE);
       }
-      txMissedRequisition.setText(tipMessage);
-      this.setVisibility(VISIBLE);
     } catch (LMISException e) {
       Log.w("IncompleteBanner", e);
     }
+  }
+
+  private String buildTipMessage(List<ReportTypeForm> incompleteReports) {
+    return context.getString(R.string.incomplete_alert_message, FluentIterable.from(incompleteReports)
+        .transform(ReportTypeForm::getName)
+        .toList()
+        .toString());
   }
 }

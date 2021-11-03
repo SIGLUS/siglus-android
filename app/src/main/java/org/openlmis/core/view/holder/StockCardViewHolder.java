@@ -86,7 +86,7 @@ public class StockCardViewHolder extends BaseViewHolder {
     Date earliestLotExpiryDate = inventoryViewModel.getStockCard().getEarliestLotExpiryDate();
 
     if (earliestLotExpiryDate != null) {
-      Calendar earliestLotExpiryDateAddOneDay = Calendar.getInstance();
+      Calendar earliestLotExpiryDateAddOneDay = DateUtil.getCurrentCalendar();
       earliestLotExpiryDateAddOneDay.setTime(earliestLotExpiryDate);
       earliestLotExpiryDateAddOneDay.add(Calendar.DATE, 1);
       if (earliestLotExpiryDateAddOneDay.getTime()

@@ -19,6 +19,7 @@
 package org.openlmis.core.model.service;
 
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -215,6 +216,24 @@ public class RequisitionPeriodService {
     } else {
       return getMissedPeriodOffsetMonth(programCode) + 1;
     }
+  }
+
+  public List<ReportTypeForm> getIncompleteReports() throws LMISException {
+    List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
+    List<ReportTypeForm> incompleteReports = new ArrayList<>();
+    for (ReportTypeForm reportTypeForm : reportTypeForms) {
+      List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, reportTypeForm.getCode());
+      int monthOffset;
+      if (rnRForms.isEmpty() || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
+        monthOffset = getMissedPeriodOffsetMonth(reportTypeForm.getCode());
+      } else {
+        monthOffset = getMissedPeriodOffsetMonth(reportTypeForm.getCode()) + 1;
+      }
+      if (monthOffset > 0 ) {
+        incompleteReports.add(reportTypeForm);
+      }
+    }
+    return incompleteReports;
   }
 
   public DateTime getCurrentMonthInventoryBeginDate() {
