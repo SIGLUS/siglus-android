@@ -1064,7 +1064,7 @@
     <item name="android:textSize">@dimen/px_14</item>
     <item name="android:gravity">center</item>
     <item name="android:layout_margin">@dimen/px_5</item>
-    <item name="android:paddingRight">@dimen/px_4</item>
+    <item name="android:paddingLeft">@dimen/px_1</item>
     <item name="android:background">@drawable/border_bg_corner</item>
   </style>
 </resources>

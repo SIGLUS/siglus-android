@@ -23,6 +23,7 @@ import static org.openlmis.core.utils.Constants.GRANT_TYPE;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.inject.Inject;
+import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
@@ -54,6 +55,7 @@ import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.training.TrainingEnvironmentHelper;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import retrofit.Callback;
@@ -261,7 +263,7 @@ public class LoginPresenter extends Presenter {
         loginRemote(user, fromReSync);
       } else {
         User localUser = userRepository.getLocalUser();
-        if (localUser == null) {
+        if (localUser == null && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
           onLoginFailed(LoginErrorType.NO_INTERNET);
         } else {
           loginLocal(user);
@@ -272,7 +274,10 @@ public class LoginPresenter extends Presenter {
 
   private void loginLocal(User user) {
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-      TrainingEnvironmentHelper.getInstance().setUpData();
+      sharedPreferenceMgr.setLastLoginTrainingTime(DateUtil.formatDate(new Date(), DateUtil.SIMPLE_DATE_FORMAT));
+      if (userRepository.getLocalUser() == null) {
+        TrainingEnvironmentHelper.getInstance().setUpData();
+      }
     }
     setDefaultReportType();
     User localUser = userRepository.mapUserFromLocal(user);

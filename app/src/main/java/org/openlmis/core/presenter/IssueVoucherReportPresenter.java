@@ -50,14 +50,12 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableMap;
-import roboguice.inject.ContextSingleton;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-@ContextSingleton
 public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
   @Inject
@@ -264,13 +262,12 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   }
 
   private boolean needUpdateStockCard(PodProductItem podProductItem) {
-    boolean needUpdate = false;
     for (PodProductLotItem lotItem : podProductItem.getPodProductLotItemsWrapper()) {
       if (lotItem.getAcceptedQuantity() != 0) {
         return true;
       }
     }
-    return needUpdate;
+    return false;
   }
 
   private long getChangeQuality(PodProductItem podProductItem) {

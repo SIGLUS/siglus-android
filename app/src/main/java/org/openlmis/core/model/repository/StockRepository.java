@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.enumeration.StockOnHandStatus;
 import org.openlmis.core.exceptions.LMISException;
@@ -361,8 +360,7 @@ public class StockRepository {
         .query());
   }
 
-  public void batchCreateSyncDownStockCardsAndMovements(final List<StockCard> stockCards)
-      throws SQLException {
+  public void batchCreateSyncDownStockCardsAndMovements(final List<StockCard> stockCards) throws SQLException {
     TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
       for (StockCard stockCard : stockCards) {
         if (stockCard.getId() <= 0) {
@@ -374,6 +372,10 @@ public class StockRepository {
       }
       return null;
     });
+  }
+
+  public void batchSaveLastYearMovements(List<StockCard> stockCards) throws LMISException {
+    stockMovementRepository.batchSaveStockMovements(stockCards);
   }
 
   public void deleteOldData() {
@@ -496,8 +498,7 @@ public class StockRepository {
   }
 
   private List<StockCard> getStockCardById(int stockCardId) throws LMISException {
-    return dbUtil
-        .withDao(StockCard.class, dao -> dao.queryBuilder().where().eq(ID, stockCardId).query());
+    return dbUtil.withDao(StockCard.class, dao -> dao.queryBuilder().where().eq(ID, stockCardId).query());
   }
 
   public void resetLotsOnHand(List<String> productCodeList) {
@@ -608,10 +609,8 @@ public class StockRepository {
     return dbUtil.withDao(LotOnHand.class, dao -> dao.queryRaw(querySql));
   }
 
-  public List<StockCard> queryCheckedStockCards(Set<String> filterStockCardIds) {
-    String querySql = "select * from stock_cards where id NOT IN ("
-        + StringUtils.join(filterStockCardIds, ",")
-        + ")";
+  public List<StockCard> queryCheckedStockCards() {
+    String querySql = "select * from stock_cards";
     List<StockCard> checkedStockCards = new ArrayList<>();
 
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())

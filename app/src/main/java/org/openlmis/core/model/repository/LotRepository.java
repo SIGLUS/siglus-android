@@ -21,6 +21,7 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -168,6 +169,15 @@ public class LotRepository {
         .and()
         .eq(FieldConstants.PRODUCT_ID, productId)
         .queryForFirst());
+  }
+
+  public Map<String, Lot> getLotNumberAndProductIdToLot() throws LMISException {
+    HashMap<String, Lot> lotNumberAndProductIdToLot = new HashMap<>();
+    for (Lot lot : lotGenericDao.queryForAll()) {
+      String key = lot.getLotNumber() + lot.getProduct().getId();
+      lotNumberAndProductIdToLot.put(key, lot);
+    }
+    return lotNumberAndProductIdToLot;
   }
 
   public void createOrUpdateLotsInformation(final List<LotOnHand> lotOnHandListWrapper)

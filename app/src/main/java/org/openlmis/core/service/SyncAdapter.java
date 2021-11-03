@@ -31,8 +31,6 @@ import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.greenrobot.eventbus.EventBus;
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -40,7 +38,6 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.DateUtil;
 import roboguice.RoboGuice;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
@@ -79,7 +76,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
       return;
     }
     Log.d(TAG, "===> Syncing Data to server");
-    if (shouldCorrectData(extras) && shouldStartDataCheck()) {
+    if (shouldCorrectData(extras) && sharedPreferenceMgr.shouldStartHourlyDirtyDataCheck()) {
       List<StockCard> deleteStockCards = dirtyDataManager.correctData();
       if (!CollectionUtils.isEmpty(deleteStockCards)) {
         sendDeletedProductBroadcast();
@@ -89,19 +86,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     triggerSync();
   }
 
-  private boolean shouldStartDataCheck() {
-    long now = LMISApp.getInstance().getCurrentTimeMillis();
-    long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
-    return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
-        && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
-        && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
-  }
-
   private boolean shouldCorrectData(Bundle extras) {
-    return extras != null
-        && extras.getBoolean(Constants.IS_USER_TRIGGERED_SYCED)
-        && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
-        && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
+    return extras != null && extras.getBoolean(Constants.IS_USER_TRIGGERED_SYCED);
   }
 
   private void triggerSync() {

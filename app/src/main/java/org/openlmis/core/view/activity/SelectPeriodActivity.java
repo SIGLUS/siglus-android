@@ -20,7 +20,6 @@ package org.openlmis.core.view.activity;
 
 import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
-import static org.openlmis.core.utils.Constants.PTV_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
@@ -49,7 +48,6 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ProgramUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
@@ -81,6 +79,9 @@ public class SelectPeriodActivity extends BaseActivity implements
   @InjectPresenter(SelectPeriodPresenter.class)
   SelectPeriodPresenter presenter;
 
+  @Inject
+  SharedPreferenceMgr sharedPreferenceMgr;
+
   private SelectPeriodAdapter adapter;
 
   private SelectInventoryViewModel selectedInventory;
@@ -91,9 +92,6 @@ public class SelectPeriodActivity extends BaseActivity implements
 
   @Inject
   DirtyDataManager dirtyDataManager;
-
-  @Inject
-  SharedPreferenceMgr sharedPreferenceMgr;
 
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveDeleteDirtyDataEvent(DeleteDirtyDataEvent event) {
@@ -172,7 +170,7 @@ public class SelectPeriodActivity extends BaseActivity implements
       }
       loading();
       nextBtn.setEnabled(false);
-      if (shouldCheckData() && shouldStartDataCheck()) {
+      if (sharedPreferenceMgr.shouldStartHourlyDirtyDataCheck()) {
         Subscription subscription = presenter
             .correctDirtyObservable(getProgramFromCode(programCode))
             .subscribe(afterCorrectDirtyDataHandler());
@@ -193,25 +191,6 @@ public class SelectPeriodActivity extends BaseActivity implements
 
     setResult(RESULT_OK, intent);
     finish();
-  }
-
-  private boolean shouldStartDataCheck() {
-    long now = LMISApp.getInstance().getCurrentTimeMillis();
-    long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
-    return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
-        && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
-        && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
-  }
-
-  private boolean shouldCheckData() {
-    boolean correctCode = AL_PROGRAM_CODE.equals(programCode)
-        || MMIA_PROGRAM_CODE.equals(programCode)
-        || VIA_PROGRAM_CODE.equals(programCode)
-        || RAPID_TEST_PROGRAM_CODE.equals(programCode)
-        || PTV_PROGRAM_CODE.equals(programCode);
-    return correctCode
-        && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
-        && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
   }
 
   protected Observer<Constants.Program> afterCorrectDirtyDataHandler() {

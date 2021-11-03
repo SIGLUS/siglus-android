@@ -24,7 +24,6 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -53,11 +52,11 @@ public class ProductPresenter extends Presenter {
   public Observable<List<RegimeProductViewModel>> loadRegimeProducts(Regimen.RegimeType type) {
     return Observable.create((Observable.OnSubscribe<List<RegimeProductViewModel>>) subscriber -> {
       try {
-        List<RegimeShortCode> regimeShortCodes = regimenRepository.listRegimeShortCode(type);
+        List<Regimen> regimens = regimenRepository.listNonCustomRegimen(type);
         List<RegimeProductViewModel> regimeProductViewModels = new ArrayList<>();
-        for (RegimeShortCode item : regimeShortCodes) {
+        for (Regimen item : regimens) {
           RegimeProductViewModel regimeProductViewModel = new RegimeProductViewModel(
-              item.getShortCode());
+              item.getName());
           regimeProductViewModels.add(regimeProductViewModel);
         }
         subscriber.onNext(regimeProductViewModels);

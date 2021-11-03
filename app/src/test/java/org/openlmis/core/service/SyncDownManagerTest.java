@@ -126,8 +126,6 @@ public class SyncDownManagerTest {
         return Schedulers.immediate();
       }
     });
-
-    syncDownManager.stockService = stockService;
   }
 
   @Test
@@ -165,7 +163,6 @@ public class SyncDownManagerTest {
   }
 
   @Test
-  @Ignore
   public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
     // given
     mockFacilityInfoResponse();
@@ -481,6 +478,7 @@ public class SyncDownManagerTest {
       bind(ProductRepository.class).toInstance(productRepository);
       bind(StockRepository.class).toInstance(stockRepository);
       bind(StockMovementRepository.class).toInstance(stockMovementRepository);
+      bind(StockService.class).toInstance(stockService);
     }
   }
 }

@@ -28,6 +28,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -35,6 +36,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockCard;
 
@@ -64,31 +66,22 @@ public final class DateUtil {
   }
 
   public static Date getCurrentDate() {
-    if (LMISApp.getInstance() != null && LMISApp.getInstance()
-        .getFeatureToggleFor(R.bool.feature_training)) {
-      Calendar calendar = Calendar.getInstance();
-      calendar.set(2021, 0, 18);
-      return calendar.getTime();
+    if (isTraining()) {
+      return getCurrentCalendarForTraining().getTime();
     }
     return new Date();
   }
 
   public static Date today() {
-    if (LMISApp.getInstance() != null && LMISApp.getInstance()
-        .getFeatureToggleFor(R.bool.feature_training)) {
-      Calendar calendar = Calendar.getInstance();
-      calendar.set(2021, 0, 18);
-      return calendar.getTime();
+    if (isTraining()) {
+      return getCurrentCalendarForTraining().getTime();
     }
     return Calendar.getInstance().getTime();
   }
 
   public static Calendar getCurrentCalendar() {
-    if (LMISApp.getInstance() != null && LMISApp.getInstance()
-        .getFeatureToggleFor(R.bool.feature_training)) {
-      Calendar calendar = Calendar.getInstance();
-      calendar.set(2021, 0, 18);
-      return calendar;
+    if (isTraining()) {
+      return getCurrentCalendarForTraining();
     }
     return Calendar.getInstance();
 
@@ -205,6 +198,12 @@ public final class DateUtil {
     return diffYear * 12 + endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
   }
 
+  public static int calculateDateOffsetToNow(DateTime time) {
+    long currentDateTime = (new Date()).getTime();
+    long difference = (currentDateTime - time.toDate().getTime()) / 86400000;
+    return (int) Math.floor(difference);
+  }
+
   private static Calendar calendarDate(Date date) {
     final Calendar instance = Calendar.getInstance();
     instance.setTime(date);
@@ -276,5 +275,25 @@ public final class DateUtil {
 
   public static String getVirtualLotExpireDate() {
     return new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR, Locale.getDefault()).format(DateUtil.getCurrentDate());
+  }
+
+  private static boolean isTraining() {
+    return LMISApp.getInstance() != null && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
+  }
+
+  private static Calendar getCurrentCalendarForTraining() {
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(2021, 10, 18);
+    String firstLoginTrainingTime = SharedPreferenceMgr.getInstance().getLastLoginTrainingTime();
+    if (firstLoginTrainingTime != null) {
+      String currentDate = DateUtil.formatDate(new Date(), DateUtil.SIMPLE_DATE_FORMAT);
+      long diffTime = DateUtil.parseString(currentDate, DateUtil.SIMPLE_DATE_FORMAT).getTime()
+          - DateUtil.parseString(firstLoginTrainingTime, DateUtil.SIMPLE_DATE_FORMAT).getTime();
+      if (diffTime > 0) {
+        long diffDay =  TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
+        calendar.add(Calendar.DATE, (int) diffDay);
+      }
+    }
+    return calendar;
   }
 }

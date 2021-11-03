@@ -89,6 +89,9 @@ public class StockMovementItem extends BaseModel {
   @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT_WITH_MS)
   private java.util.Date createdTime;
 
+  @DatabaseField
+  private boolean isInitInventory;
+
   @ForeignCollectionField()
   private ForeignCollection<LotMovementItem> foreignLotMovementItems;
 

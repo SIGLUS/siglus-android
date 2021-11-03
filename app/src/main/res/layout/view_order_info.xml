@@ -115,7 +115,7 @@
             android:layout_weight="1">
             <TextView
               style="@style/Pod.header.title"
-              android:layout_weight="5.5"
+              android:layout_weight="5"
               android:text="@string/label_Client">
             </TextView>
             <TextView
@@ -131,7 +131,7 @@
             android:layout_weight="1">
             <TextView
               style="@style/Pod.header.title"
-              android:layout_weight="5.5"
+              android:layout_weight="5"
               android:text="@string/label_requisition_number">
             </TextView>
             <TextView
@@ -163,7 +163,7 @@
           android:layout_weight="5">
           <TextView
             style="@style/Pod.header.title"
-            android:layout_weight="5.5"
+            android:layout_weight="5"
             android:text="@string/label_total_of_volume">
           </TextView>
           <TextView
@@ -193,7 +193,7 @@
           android:layout_weight="5">
           <TextView
             style="@style/Pod.header.title"
-            android:layout_weight="5.5"
+            android:layout_weight="5"
             android:text="@string/label_requisition_date">
           </TextView>
           <TextView
@@ -221,7 +221,7 @@
           android:layout_weight="5">
           <TextView
             style="@style/Pod.header.title"
-            android:layout_weight="5.5"
+            android:layout_weight="5"
             android:text="@string/label_issue_voucher_date">
           </TextView>
           <TextView

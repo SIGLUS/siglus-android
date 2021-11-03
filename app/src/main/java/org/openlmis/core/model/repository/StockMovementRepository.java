@@ -145,17 +145,34 @@ public class StockMovementRepository {
           for (StockMovementItem stockMovementItem : stockMovementItems) {
             updateDateTimeIfEmpty(stockMovementItem);
             dao.createOrUpdate(stockMovementItem);
-            for (LotMovementItem lotMovementItem : stockMovementItem
-                .getLotMovementItemListWrapper()) {
-              Lot existingLot = lotRepository
-                  .getLotByLotNumberAndProductId(lotMovementItem.getLot().getLotNumber(),
-                      lotMovementItem.getLot().getProduct().getId());
+            for (LotMovementItem lotMovementItem : stockMovementItem.getLotMovementItemListWrapper()) {
+              Lot existingLot = lotRepository.getLotByLotNumberAndProductId(lotMovementItem.getLot().getLotNumber(),
+                  lotMovementItem.getLot().getProduct().getId());
               lotMovementItem.setLot(existingLot);
               lotRepository.createLotMovementItem(lotMovementItem);
             }
           }
           return null;
         });
+  }
+
+  public void batchSaveStockMovements(List<StockCard> stockCards) throws LMISException {
+    dbUtil.withDaoAsBatch(StockMovementItem.class, dao -> {
+      Map<String, Lot> lotNumberAndProductIdToLot = lotRepository.getLotNumberAndProductIdToLot();
+      for (StockCard stockCard : stockCards) {
+        for (StockMovementItem stockMovementItem : stockCard.getStockMovementItemsWrapper()) {
+          updateDateTimeIfEmpty(stockMovementItem);
+          dao.createOrUpdate(stockMovementItem);
+          for (LotMovementItem lotMovementItem : stockMovementItem.getLotMovementItemListWrapper()) {
+            Lot existingLot = lotNumberAndProductIdToLot.get(lotMovementItem.getLot().getLotNumber().toUpperCase()
+                    + lotMovementItem.getLot().getProduct().getId());
+            lotMovementItem.setLot(existingLot);
+            lotRepository.createLotMovementItem(lotMovementItem);
+          }
+        }
+      }
+      return null;
+    });
   }
 
   public StockMovementItem getFirstStockMovement() throws LMISException {
@@ -522,7 +539,7 @@ public class StockMovementRepository {
     stockCardsMovements.put(stockCardId, stockMovementItems);
   }
 
-  private List<String> queryMalariaStockMovementDates() {
+  public List<String> queryMalariaStockMovementDates() {
     String rawSql = "SELECT movementDate FROM stock_items s1 "
         + "JOIN stock_cards s2 ON s1.stockCard_id = s2.id "
         + "JOIN products p1 ON s2.product_id = p1.id "

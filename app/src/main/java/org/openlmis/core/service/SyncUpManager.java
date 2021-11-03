@@ -35,6 +35,8 @@ import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.event.SyncPodFinishEvent;
 import org.openlmis.core.event.SyncRnrFinishEvent;
 import org.openlmis.core.event.SyncStatusEvent;
@@ -89,6 +91,8 @@ public class SyncUpManager {
 
   private static final String TAG = "SyncUpManager";
 
+  private static final String FAKE_ORDER_NUMBER = "ErrorOrderNumber";
+
   @Inject
   RnrFormRepository rnrFormRepository;
 
@@ -142,13 +146,12 @@ public class SyncUpManager {
       if (isSyncRnrSuccessful) {
         sharedPreferenceMgr.setRnrLastSyncTime();
       }
-      EventBus.getDefault().post(new SyncRnrFinishEvent());
+
 
       boolean isSyncPodSuccessful = syncPod();
       if (isSyncPodSuccessful) {
         sharedPreferenceMgr.setPodLastSyncTime();
       }
-      EventBus.getDefault().post(new SyncPodFinishEvent());
 
       boolean isSyncStockSuccessful = syncStockCards();
       if (isSyncStockSuccessful) {
@@ -156,7 +159,6 @@ public class SyncUpManager {
         syncArchivedProducts();
       }
 
-      // syncUpUnSyncedStockCardCodes();
       syncAppVersion();
       syncUpCmms();
     }
@@ -185,7 +187,7 @@ public class SyncUpManager {
     }
 
     Observable.from(forms).filter(this::submitRequisition).subscribe(this::markRnrFormSynced);
-
+    EventBus.getDefault().post(new SyncRnrFinishEvent());
     return from(forms).allMatch(RnRForm::isSynced);
   }
 
@@ -211,7 +213,7 @@ public class SyncUpManager {
         return false;
       }
     }).subscribe(this::markRnrFormSynced);
-
+    EventBus.getDefault().post(new SyncRnrFinishEvent());
     return from(forms).allMatch(RnRForm::isSynced);
   }
 
@@ -228,11 +230,17 @@ public class SyncUpManager {
     }
     boolean allSubmitSuccess = true;
     for (Pod pod : pods) {
-      Pod submittedPod = submitPod(pod);
+      Pod submittedPod;
+      if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+        submittedPod = fakeSubmitPod(pod);
+      } else {
+        submittedPod = submitPod(pod);
+      }
       if (!submittedPod.isSynced()) {
         allSubmitSuccess = false;
       }
     }
+    EventBus.getDefault().post(new SyncPodFinishEvent());
     return allSubmitSuccess;
   }
 
@@ -496,6 +504,30 @@ public class SyncUpManager {
       syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.POD, localPod.getId());
       syncErrorsRepository.save(new SyncError(e, SyncType.POD, localPod.getId()));
     }
+    return localPod;
+  }
+
+  private Pod fakeSubmitPod(Pod localPod) {
+    if (FAKE_ORDER_NUMBER.equals(localPod.getOrderCode())) {
+      return localPod;
+    }
+    if (localPod.isLocal()) {
+      localPod.setOrderSupplyFacilityName("DPM ZAMBEZIA");
+      localPod.setOrderSupplyFacilityDistrict("CIDADE DE QUELIMANE");
+      localPod.setOrderSupplyFacilityProvince("ZAMBEZIA");
+      localPod.setOrderSupplyFacilityType("DPM");
+      localPod.setOrderStatus(OrderStatus.RECEIVED);
+      localPod.setPreparedBy("android_user6_ddm");
+      localPod.setConferredBy("android_user6_ddm");
+      localPod.setRequisitionNumber("RNR-NO010412110000039");
+      localPod.setRequisitionStartDate(DateUtil.parseString("2021-10-21", DateUtil.DB_DATE_FORMAT));
+      localPod.setRequisitionEndDate(DateUtil.parseString("2021-11-20", DateUtil.DB_DATE_FORMAT));
+      localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-10-18", DateUtil.DB_DATE_FORMAT));
+      localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-10-18", DateUtil.DB_DATE_FORMAT));
+      localPod.setShippedDate(DateUtil.parseString("2021-11-18", DateUtil.DB_DATE_FORMAT));
+      localPod.setProcessedDate(DateUtil.getCurrentDate());
+    }
+    localPod.setSynced(podRepository.markSynced(localPod));
     return localPod;
   }
 }

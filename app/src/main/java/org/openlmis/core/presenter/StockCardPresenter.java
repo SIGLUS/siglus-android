@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
@@ -41,7 +40,6 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.service.DirtyDataManager;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -94,7 +92,7 @@ public class StockCardPresenter extends Presenter {
 
   private void checkDataAndEmitter(Subscriber<? super List<StockCard>> subscriber, ArchiveStatus status) {
     List<StockCard> allStockCards = stockRepository.list();
-    if (shouldStartDataCheck()) {
+    if (sharedPreferenceMgr.shouldStartHourlyDirtyDataCheck()) {
       dirtyDataManager.correctDataForStockCardOverView(allStockCards, lotsOnHands);
     }
     stockService.monthlyUpdateAvgMonthlyConsumption();
@@ -127,20 +125,12 @@ public class StockCardPresenter extends Presenter {
       view.showWarning();
       return;
     }
-    if (shouldStartDataCheck()) {
+    if (sharedPreferenceMgr.shouldStartHourlyDirtyDataCheck()) {
       Subscription subscription = correctDirtyObservable(status).subscribe(afterLoadHandler);
       subscriptions.add(subscription);
     } else {
       loadStockCardsInner(status);
     }
-  }
-
-  private boolean shouldStartDataCheck() {
-    long now = LMISApp.getInstance().getCurrentTimeMillis();
-    long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
-    return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
-        && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
-        && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
   }
 
   private void loadStockCardsInner(ArchiveStatus status) {
