@@ -271,7 +271,6 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
           movementItem.setStockCard(stockCard);
           movementItem.setStockOnHand(movementItem.getStockOnHand());
           movementItem.buildLotMovementReasonAndDocumentNumber();
-          movementItem.setInitInventory(true);
           stockRepository.addStockMovementAndUpdateStockCard(movementItem, createdTime);
         }
         inventoryRepository.clearInitialDraft();

@@ -46,7 +46,6 @@ import org.openlmis.core.persistence.migrations.AddIsBasicColumnToProductsTable;
 import org.openlmis.core.persistence.migrations.AddIsCustomColumnToRegime;
 import org.openlmis.core.persistence.migrations.AddIsEmergencyColumnToProgram;
 import org.openlmis.core.persistence.migrations.AddIsHIVColumnToProductsTable;
-import org.openlmis.core.persistence.migrations.AddIsInitInventoryToStockMovementTable;
 import org.openlmis.core.persistence.migrations.AddIsKitColumnToProduct;
 import org.openlmis.core.persistence.migrations.AddLastReportEndTimeToReportType;
 import org.openlmis.core.persistence.migrations.AddLotMovementItemsReasonAndDocumentNumber;
@@ -231,7 +230,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new CreateIssueVoucherDraftTables());
     MIGRATIONS.add(new AddProductPrice());
     MIGRATIONS.add(new AddErrorMessageInPortuguese());
-    MIGRATIONS.add(new AddIsInitInventoryToStockMovementTable());
     MIGRATIONS.add(new DropRegimenShortCodeTable());
   }
 
