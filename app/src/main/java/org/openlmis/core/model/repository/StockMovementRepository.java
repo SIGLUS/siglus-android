@@ -67,8 +67,6 @@ public class StockMovementRepository {
           + "',' || movementDate || ',' || createdTime || ',' || reason ,  ';') as movementItems ";
   @Inject
   DbUtil dbUtil;
-  @Inject
-  Context context;
 
   GenericDao<StockMovementItem> genericDao;
 

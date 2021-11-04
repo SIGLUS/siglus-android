@@ -52,7 +52,6 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.Service;
@@ -61,7 +60,6 @@ import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.adapter.PodAdapter;
 import org.openlmis.core.network.adapter.ProductsResponseAdapter;
 import org.openlmis.core.network.adapter.ProgramAdapter;
-import org.openlmis.core.network.adapter.ProgramDataFormAdapter;
 import org.openlmis.core.network.adapter.RegimenAdapter;
 import org.openlmis.core.network.adapter.ReportTypeAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
@@ -171,7 +169,6 @@ public class LMISRestManager {
     return new GsonConverter(new GsonBuilder()
         .registerTypeAdapter(RnRForm.class, new RnrFormAdapter())
         .registerTypeAdapter(StockCardsLocalResponse.class, new StockCardsResponseAdapter())
-        .registerTypeAdapter(ProgramDataForm.class, new ProgramDataFormAdapter())
         .registerTypeAdapter(ReportTypeForm.class, new ReportTypeAdapter())
         .registerTypeAdapter(Service.class, new ServiceAdapter())
         .registerTypeAdapter(Program.class, new ProgramAdapter())
