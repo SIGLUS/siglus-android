@@ -82,9 +82,12 @@ public class IncompleteRequisitionBanner extends LinearLayout {
   }
 
   private String buildTipMessage(List<ReportTypeForm> incompleteReports) {
-    return context.getString(R.string.incomplete_alert_message, FluentIterable.from(incompleteReports)
+    return context.getString(incompleteReports.size() == 1 ? R.string.incomplete_alert_message_for_single_report :
+        R.string.incomplete_alert_message, FluentIterable.from(incompleteReports)
         .transform(ReportTypeForm::getName)
         .toList()
-        .toString());
+        .toString()
+        .replace("[", "")
+        .replace("]", ""));
   }
 }

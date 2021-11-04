@@ -432,6 +432,7 @@
   <string name="ptv_requisition_alert">Your PTV has not been completed</string>
   <string name="missed_requisition_time_range">%1$s to %2$s</string>
   <string name="incomplete_alert_message">"Your %s have not been completed"</string>
+  <string name="incomplete_alert_message_for_single_report">"Your %s has not been completed"</string>
 
   <!-- Add products to requisition form -->
   <string name="label_add_new_drugs_to_via">Add Products</string>
