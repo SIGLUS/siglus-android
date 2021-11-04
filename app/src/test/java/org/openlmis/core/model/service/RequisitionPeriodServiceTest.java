@@ -117,7 +117,7 @@ public class RequisitionPeriodServiceTest {
     ReportTypeForm reportTypeForm = new ReportTypeFormBuilder()
         .setActive(true)
         .setCode(Constants.RAPID_TEST_PROGRAM_CODE)
-        .setName(Constants.RAPID_TEST_OLD_CODE)
+        .setName(Constants.RAPID_TEST_PROGRAM_CODE)
         .setStartTime(
             new DateTime(DateUtil.parseString("2015-01-01", DateUtil.DB_DATE_FORMAT)).toDate())
         .setLastReportEndTime("2020-01-20")
