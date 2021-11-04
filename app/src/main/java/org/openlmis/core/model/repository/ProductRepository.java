@@ -396,7 +396,7 @@ public class ProductRepository {
   }
 
   @NonNull
-  private Product buildProductFromCursor(Cursor cursor) {
+  public Product buildProductFromCursor(Cursor cursor) {
     Product product = new Product();
     product.setBasic(cursor.getInt(cursor.getColumnIndexOrThrow(IS_BASIC)) == 1);
     product.setActive(cursor.getInt(cursor.getColumnIndexOrThrow(IS_ACTIVE)) == 1);
