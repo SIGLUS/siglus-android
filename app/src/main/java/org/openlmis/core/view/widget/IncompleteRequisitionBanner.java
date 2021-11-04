@@ -29,7 +29,6 @@ import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.ReportTypeForm;
-import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.RoboGuice;
@@ -43,9 +42,6 @@ public class IncompleteRequisitionBanner extends LinearLayout {
 
   @Inject
   RequisitionPeriodService requisitionPeriodService;
-
-  @Inject
-  private ReportTypeFormRepository reportTypeFormRepository;
 
   protected Context context;
 

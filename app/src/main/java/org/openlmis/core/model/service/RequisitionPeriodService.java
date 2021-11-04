@@ -229,7 +229,7 @@ public class RequisitionPeriodService {
       } else {
         monthOffset = getMissedPeriodOffsetMonth(reportTypeForm.getCode()) + 1;
       }
-      if (monthOffset > 0 ) {
+      if (monthOffset > 0) {
         incompleteReports.add(reportTypeForm);
       }
     }
