@@ -252,14 +252,6 @@ public class StockRepository {
     });
   }
 
-  private void setStockCardCmmStatus(StockCard stockCard) {
-    stockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(stockCard));
-  }
-
-  protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm rnRForm) throws LMISException {
-    return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(), rnRForm.getPeriodEnd());
-  }
-
   public List<StockCard> getStockCardsAndLotsOnHandForProgram(String programCode)
       throws LMISException {
     String codeBelongPrograms = " SELECT productCode FROM product_programs WHERE programCode = '" + programCode + "'";
@@ -292,8 +284,11 @@ public class StockRepository {
     return stockCardList;
   }
 
-  protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd)
-      throws LMISException {
+  protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm rnRForm) throws LMISException {
+    return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(), rnRForm.getPeriodEnd());
+  }
+
+  protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd) {
     String codeBelongPrograms = getSqlForProgram(programCode);
 
     String rawSql = "SELECT stock_cards.stockOnHand, stock_cards.avgMonthlyConsumption, stock_cards.id as stockCard_id,"
@@ -342,6 +337,10 @@ public class StockRepository {
       cursor.close();
     }
     return stockCardList;
+  }
+
+  private void setStockCardCmmStatus(StockCard stockCard) {
+    stockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(stockCard));
   }
 
   private List<LotOnHand> getLotOnHandByStockCard(final long stockCardId) throws LMISException {

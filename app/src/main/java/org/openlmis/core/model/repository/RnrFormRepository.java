@@ -441,10 +441,9 @@ public class RnrFormRepository {
                   stockCardWithMovement = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
                 }
                 rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCardWithMovement));
-                regimenItemRepository.batchCreateOrUpdate(generateRegimeItems(rnrForm));
-                regimenItemThreeLineRepository.batchCreateOrUpdate(generateRegimeThreeLineItems(rnrForm));
-                baseInfoItemRepository
-                    .batchCreateOrUpdate(generateBaseInfoItems(rnrForm, MMIARepository.ReportType.NEW));
+                saveRegimenItems(rnrForm);
+                saveRegimenThreeLines(rnrForm);
+                saveBaseInfo(rnrForm);
                 genericDao.refresh(rnrForm);
                 return null;
               });
@@ -453,6 +452,27 @@ public class RnrFormRepository {
     }
     assignCategoryForRnrItems(rnrForm);
     return rnrForm;
+  }
+
+  private void saveRegimenItems(RnRForm rnrForm) throws LMISException {
+    List<RegimenItem> regimenItems = generateRegimeItems(rnrForm);
+    if (!CollectionUtils.isEmpty(regimenItems)) {
+      regimenItemRepository.batchCreateOrUpdate(regimenItems);
+    }
+  }
+
+  private void saveRegimenThreeLines(RnRForm rnrForm) throws LMISException {
+    List<RegimenItemThreeLines> regimenItemThreeLines = generateRegimeThreeLineItems(rnrForm);
+    if (!CollectionUtils.isEmpty(regimenItemThreeLines)) {
+      regimenItemThreeLineRepository.batchCreateOrUpdate(regimenItemThreeLines);
+    }
+  }
+
+  private void saveBaseInfo(RnRForm rnrForm) throws LMISException {
+    List<BaseInfoItem> baseInfoItems = generateBaseInfoItems(rnrForm, MMIARepository.ReportType.NEW);
+    if (!CollectionUtils.isEmpty(baseInfoItems)) {
+      baseInfoItemRepository.batchCreateOrUpdate(baseInfoItems);
+    }
   }
 
   private void assignCategoryForRnrItems(RnRForm rnrForm) throws LMISException {
