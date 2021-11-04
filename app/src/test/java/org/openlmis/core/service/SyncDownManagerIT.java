@@ -136,7 +136,6 @@ public class SyncDownManagerIT {
     String endDateStr = DateUtil.formatDate(endDate, DateUtil.DB_DATE_FORMAT);
 
     String fetchProgramsJson = JsonFileReader.readJson(getClass(), "fetchProgramsDown.json");
-    String fetchPTVServiceJson = JsonFileReader.readJson(getClass(), "fetchfetchPTVService.json");
     String fetchReportTypesMapping = JsonFileReader
         .readJson(getClass(), "fetchReportTypesMapping.json");
     String fetchMovementDate = JsonFileReader.readJson(getClass(), "fetchStockMovementDate.json");
@@ -163,8 +162,6 @@ public class SyncDownManagerIT {
     lmisRestManager
         .addNewMockedResponse("/rest-api/programs/" + getDefaultUser().getFacilityId(), 200, "OK",
             fetchProgramsJson);
-    lmisRestManager.addNewMockedResponse("/rest-api/services?" + "programCode=PTV", 200, "OK",
-        fetchPTVServiceJson);
     lmisRestManager
         .addNewMockedResponse("/rest-api/report-types/mapping/" + getDefaultUser().getFacilityId(),
             200, "OK", fetchReportTypesMapping);

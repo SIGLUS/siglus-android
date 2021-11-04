@@ -22,6 +22,7 @@ import static org.openlmis.core.model.Product.IsKit;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.text.TextUtils;
+import android.util.Log;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
@@ -287,7 +288,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
   protected Observable<RnRForm> getRnrFormObservable(final long formId) {
     return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
       try {
+        Log.d("info", "get the data for via");
         RnRForm rnrForm = getRnrForm(formId);
+        Log.d("info 2", "get the data for via");
         convertRnrToViewModel(rnrForm);
         subscriber.onNext(rnrForm);
         subscriber.onCompleted();

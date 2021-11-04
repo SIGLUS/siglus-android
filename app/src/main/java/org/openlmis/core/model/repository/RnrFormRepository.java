@@ -27,7 +27,9 @@ import static org.openlmis.core.constant.FieldConstants.PROGRAM_ID;
 import static org.openlmis.core.constant.FieldConstants.STATUS;
 import static org.openlmis.core.constant.FieldConstants.SUBMITTED_TIME;
 import static org.openlmis.core.constant.FieldConstants.SYNCED;
+import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -577,12 +579,40 @@ public class RnrFormRepository {
   }
 
   private void createOrUpdateRnrWrappers(RnRForm form) throws LMISException {
-    rnrFormItemRepository.batchCreateOrUpdate(form.getRnrFormItemListWrapper());
     signatureRepository.batchCreateOrUpdate(form.getSignaturesWrapper());
-    regimenItemRepository.batchCreateOrUpdate(form.getRegimenItemListWrapper());
-    regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
-    baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
-    testConsumptionLineItemRepository.batchCreateOrUpdate(form.getTestConsumptionItemListWrapper(), form.getId());
+    if (form.getProgram() == null) {
+      return;
+    }
+    saveRnRItems(form);
+    saveRegimens(form);
+    saveRegimenThreeLineAndBaseInfo(form);
+    saveTestConsumption(form);
+  }
+
+  private void saveTestConsumption(RnRForm form) throws LMISException {
+    if (RAPID_TEST_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+      testConsumptionLineItemRepository.batchCreateOrUpdate(form.getTestConsumptionItemListWrapper(), form.getId());
+    }
+  }
+
+  private void saveRegimenThreeLineAndBaseInfo(RnRForm form) throws LMISException {
+    if (MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+      baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
+      regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
+    }
+  }
+
+  private void saveRegimens(RnRForm form) throws LMISException {
+    if (MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
+        || AL_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+      regimenItemRepository.batchCreateOrUpdate(form.getRegimenItemListWrapper());
+    }
+  }
+
+  private void saveRnRItems(RnRForm form) throws LMISException {
+    if (!AL_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+      rnrFormItemRepository.batchCreateOrUpdate(form.getRnrFormItemListWrapper());
+    }
   }
 
   public void deleteOldData() {

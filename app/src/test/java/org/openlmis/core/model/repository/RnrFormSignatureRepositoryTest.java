@@ -14,6 +14,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.builder.RnRFormBuilder;
+import org.openlmis.core.utils.Constants;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
@@ -34,6 +35,7 @@ public class RnrFormSignatureRepositoryTest {
   @Test
   public void shouldGetSignatureByRnrForm() throws LMISException {
     Program program = new Program();
+    program.setProgramCode(Constants.VIA_PROGRAM_CODE);
 
     RnRForm form = new RnRFormBuilder().setComments("Submitted Form")
         .setStatus(Status.SUBMITTED)

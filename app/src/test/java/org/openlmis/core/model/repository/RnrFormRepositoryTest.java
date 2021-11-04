@@ -381,7 +381,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldRecordUpdateTimeWhenAuthorizeRnrForm() throws Exception {
-    Program program = new Program();
+    Program program = buildViaProgram();
 
     RnRForm form = RnRForm
         .init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
@@ -404,7 +404,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldCreateSuccess() throws Exception {
-    Program program = new Program();
+    Program program = Program.builder().programCode(MMIA_PROGRAM_CODE).build();
     RnRForm form = RnRForm
         .init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
     ArrayList<RnRForm> rnRForms = new ArrayList<>();
@@ -685,5 +685,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .withQuantity(quantity)
         .build();
     return inventoryItem;
+  }
+
+  private Program buildViaProgram() {
+    Program program = new Program();
+    program.setProgramCode(VIA_PROGRAM_CODE);
+    return program;
   }
 }
