@@ -523,7 +523,7 @@ public class SyncUpManager {
       localPod.setRequisitionStartDate(DateUtil.parseString("2021-10-21", DateUtil.DB_DATE_FORMAT));
       localPod.setRequisitionEndDate(DateUtil.parseString("2021-11-20", DateUtil.DB_DATE_FORMAT));
       localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-10-18", DateUtil.DB_DATE_FORMAT));
-      localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-10-18", DateUtil.DB_DATE_FORMAT));
+      localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-11-18", DateUtil.DB_DATE_FORMAT));
       localPod.setShippedDate(DateUtil.parseString("2021-11-18", DateUtil.DB_DATE_FORMAT));
       localPod.setProcessedDate(DateUtil.getCurrentDate());
     }

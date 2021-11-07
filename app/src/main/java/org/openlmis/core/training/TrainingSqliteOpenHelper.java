@@ -105,8 +105,8 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
   private void updateStockMovementItemCreatedTime() throws SQLException {
     String sql =
-        "UPDATE stock_items SET createdTime = datetime(createdTime, '+" + monthOffsetFromAnchor + MONTH_FIELD
-            + DATE_TIME_SUFFIX;
+        "UPDATE stock_items SET createdTime = strftime('%Y-%m-%d %H:%M:%S:000',createdTime, '+" + monthOffsetFromAnchor
+            + MONTH;
     dbConnection.update(sql, null, null);
   }
 
