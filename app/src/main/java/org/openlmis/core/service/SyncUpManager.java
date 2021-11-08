@@ -79,38 +79,24 @@ import rx.Observable;
 @SuppressWarnings("PMD")
 public class SyncUpManager {
 
-  private static volatile boolean syncing = false;
-
-  public static synchronized boolean isSyncing() {
-    return SyncUpManager.syncing;
-  }
-
-  public static synchronized void setSyncing(boolean syncing) {
-    SyncUpManager.syncing = syncing;
-  }
-
   private static final String TAG = "SyncUpManager";
-
   private static final String FAKE_ORDER_NUMBER = "ErrorOrderNumber";
-
+  private static volatile boolean syncing = false;
+  protected LMISRestApi lmisRestApi;
   @Inject
   RnrFormRepository rnrFormRepository;
-
   @Inject
   SharedPreferenceMgr sharedPreferenceMgr;
-
   @Inject
   StockMovementRepository stockMovementRepository;
-
   @Inject
   ProductRepository productRepository;
-
   @Inject
   CmmRepository cmmRepository;
-
   @Inject
   ProgramDataFormRepository programDataFormRepository;
-
+  @Inject
+  DbUtil dbUtil;
   @Inject
   private SyncErrorsRepository syncErrorsRepository;
 
@@ -120,13 +106,16 @@ public class SyncUpManager {
   @Inject
   private PodRepository podRepository;
 
-  @Inject
-  DbUtil dbUtil;
-
-  protected LMISRestApi lmisRestApi;
-
   public SyncUpManager() {
     lmisRestApi = LMISApp.getInstance().getRestApi();
+  }
+
+  public static synchronized boolean isSyncing() {
+    return SyncUpManager.syncing;
+  }
+
+  public static synchronized void setSyncing(boolean syncing) {
+    SyncUpManager.syncing = syncing;
   }
 
   public void syncUpData() {
@@ -146,7 +135,6 @@ public class SyncUpManager {
       if (isSyncRnrSuccessful) {
         sharedPreferenceMgr.setRnrLastSyncTime();
       }
-
 
       boolean isSyncPodSuccessful = syncPod();
       if (isSyncPodSuccessful) {
@@ -185,7 +173,14 @@ public class SyncUpManager {
       new LMISException(e, "SyncUpManager:syncRnr").reportToFabric();
       return false;
     }
-
+    for (RnRForm rnRForm : forms) {
+      boolean result = submitRequisition(rnRForm);
+      if (result) {
+        markRnrFormSynced(rnRForm);
+      } else {
+        break;
+      }
+    }
     Observable.from(forms).filter(this::submitRequisition).subscribe(this::markRnrFormSynced);
     EventBus.getDefault().post(new SyncRnrFinishEvent());
     return from(forms).allMatch(RnRForm::isSynced);

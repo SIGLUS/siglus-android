@@ -585,6 +585,7 @@ public class RnrFormRepository {
     }
     return dbUtil.withDao(RnRForm.class, dao -> {
       Where<RnRForm, String> where = dao.queryBuilder()
+          .orderBy(PERIOD_BEGIN, true)
           .where().eq(PROGRAM_ID, programId)
           .and().eq(SYNCED, false)
           .and().eq(STATUS, Status.AUTHORIZED)
