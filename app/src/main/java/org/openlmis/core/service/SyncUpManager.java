@@ -182,7 +182,6 @@ public class SyncUpManager {
         break;
       }
     }
-    Observable.from(forms).filter(this::submitRequisition).subscribe(this::markRnrFormSynced);
     EventBus.getDefault().post(new SyncRnrFinishEvent());
     return from(forms).allMatch(RnRForm::isSynced);
   }
@@ -433,11 +432,7 @@ public class SyncUpManager {
 
   private boolean submitRequisition(RnRForm rnRForm) {
     try {
-      if (rnRForm.isEmergency()) {
-        lmisRestApi.submitEmergencyRequisition(rnRForm);
-      } else {
-        lmisRestApi.submitRequisition(rnRForm);
-      }
+      lmisRestApi.submitRequisition(rnRForm);
       syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, rnRForm.getId());
       Log.d(TAG, "===> SyncRnr : synced ->");
       return true;

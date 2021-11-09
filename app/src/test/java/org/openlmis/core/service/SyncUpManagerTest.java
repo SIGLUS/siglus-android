@@ -161,16 +161,6 @@ public class SyncUpManagerTest {
   }
 
   @Test
-  public void shouldCallEmergencyRequisition() throws Exception {
-    RnRForm form = new RnRForm();
-    form.setEmergency(true);
-    when(mockedRnrFormRepository.queryAllUnsyncedForms()).thenReturn(newArrayList(form));
-
-    syncUpManager.syncRnr();
-    verify(mockedLmisRestApi).submitEmergencyRequisition(any(RnRForm.class));
-  }
-
-  @Test
   public void shouldSyncUnSyncedStockMovementData() throws LMISException, ParseException {
     // given
     LMISTestApp.getInstance().setCurrentTimeMillis(DateTime.parse("2021-07-20").getMillis());
