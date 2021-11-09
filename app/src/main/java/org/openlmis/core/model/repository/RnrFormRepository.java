@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -268,9 +269,13 @@ public class RnrFormRepository {
       rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
     }
     HashMap<String, String> stringToCategory = getProductCodeToCategory();
+    Set<String> stockCardIds = FluentIterable.from(stockCards)
+        .transform(stockCard -> String.valueOf(stockCard.getId())).toSet();
+    Map<String, List<StockMovementItem>> IdToStockMovements = stockMovementRepository
+        .queryStockMovement(stockCardIds,form.getPeriodBegin(), form.getPeriodEnd());
     for (StockCard stockCard : stockCards) {
-      RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(),
-          form.getPeriodEnd());
+      RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard,
+          IdToStockMovements.get(String.valueOf(stockCard.getId())));
       rnrFormItem.setForm(form);
       rnrFormItems.add(rnrFormItem);
       rnrFormItem.setCategory(stringToCategory.get(rnrFormItem.getProduct().getCode()));
@@ -350,11 +355,9 @@ public class RnrFormRepository {
     return rnRForms;
   }
 
-  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate)
-      throws LMISException {
+  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
+      List<StockMovementItem> notFullStockItemsByCreatedData) throws LMISException {
     RnrFormItem rnrFormItem = new RnrFormItem();
-    final List<StockMovementItem> notFullStockItemsByCreatedData = stockMovementRepository
-        .queryNotFullFillStockItemsByCreatedData(stockCard.getId(), startDate, endDate);
     if (notFullStockItemsByCreatedData.isEmpty()) {
       rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
     } else {

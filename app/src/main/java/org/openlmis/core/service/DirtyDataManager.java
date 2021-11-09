@@ -203,7 +203,7 @@ public class DirtyDataManager {
     }
     if (!deleteStockCardIds.isEmpty()) {
       Map<String, List<StockMovementItem>> idToStockItemsForDelete = stockMovementRepository
-          .queryStockMovement(deleteStockCardIds);
+          .queryStockMovement(deleteStockCardIds, null, null);
       return covertMapFromStockIdToProductCode(idToStockItemsForDelete);
     }
     return new HashSet<>();

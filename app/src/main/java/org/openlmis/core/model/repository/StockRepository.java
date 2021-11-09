@@ -50,6 +50,7 @@ import org.openlmis.core.enumeration.StockOnHandStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
@@ -324,21 +325,29 @@ public class StockRepository {
   @NotNull
   private List<StockCard> getStockCardsBySqlSearch(Cursor cursor, String programCode) throws LMISException {
     List<StockCard> stockCardList = new ArrayList<>();
+    List<String> stockCardIds = new ArrayList<>();
     if (cursor.moveToFirst()) {
       do {
         StockCard stockCard = new StockCard();
         stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_CARD_ID)));
+        stockCardIds.add(String.valueOf(stockCard.getId()));
         stockCard.setProduct(productRepository.buildProductFromCursor(cursor));
         stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
-        if (MMIA_PROGRAM_CODE.equals(programCode) || RAPID_TEST_PROGRAM_CODE.equals(programCode)) {
-          stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
-        }
         stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow(AVG_MONTHLY_CONSUMPTION)));
         stockCardList.add(stockCard);
       } while (cursor.moveToNext());
     }
     if (!cursor.isClosed()) {
       cursor.close();
+    }
+
+    if (MMIA_PROGRAM_CODE.equals(programCode) || RAPID_TEST_PROGRAM_CODE.equals(programCode)) {
+      Map<String, List<LotOnHand>> idToLots = getStockIdToLotOnHands(stockCardIds);
+      for (StockCard stockCard : stockCardList) {
+        if (idToLots.containsKey(String.valueOf(stockCard.getId()))) {
+          stockCard.setLotOnHandListWrapper(idToLots.get(String.valueOf(stockCard.getId())));
+        }
+      }
     }
     return stockCardList;
   }
@@ -352,6 +361,21 @@ public class StockRepository {
         .where().eq(STOCK_CARD_ID, stockCardId)
         .query());
   }
+
+  private Map<String, List<LotOnHand>> getStockIdToLotOnHands(final List<String> stockCardIds) {
+    Map<String, List<LotOnHand>> lotInfoMap = new HashMap<>();
+    String rawSql = "select loh.stockCard_id, loh.quantityOnHand, lots.lotNumber, lots.expirationDate "
+            + "from lots_on_hand loh join lots on loh.lot_id = lots.id order by loh.stockCard_id ";
+    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
+        .getWritableDatabase().rawQuery(rawSql, null);
+    if (cursor.moveToFirst()) {
+      do {
+        getLotsOnHandInfo(lotInfoMap, cursor);
+      } while (cursor.moveToNext());
+    }
+    return lotInfoMap;
+  }
+
 
   public void batchCreateSyncDownStockCardsAndMovements(final List<StockCard> stockCards) throws SQLException {
     TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
@@ -580,6 +604,25 @@ public class StockRepository {
         lotInfoMap.put(stockCardId, list);
       }
     }
+  }
+
+  private void getLotsOnHandInfo(Map<String, List<LotOnHand>> stockCardIdToLotOnHand, Cursor cursor) {
+    String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow(STOCK_CARD_ID));
+    StockCard stockCard = new StockCard();
+    stockCard.setId(Long.parseLong(stockCardId));
+    List<LotOnHand> lotOnHands = new ArrayList<>();
+    if (stockCardIdToLotOnHand.containsKey(stockCardId)) {
+      lotOnHands = stockCardIdToLotOnHand.get(stockCardId);
+    }
+
+    String lotNumber = cursor.getString(cursor.getColumnIndexOrThrow(LOT_NUMBER));
+    String expirationDate = cursor.getString(cursor.getColumnIndexOrThrow("expirationDate"));
+    String quantityOnHand = cursor.getString(cursor.getColumnIndexOrThrow("quantityOnHand"));
+    Lot lot = Lot.builder().lotNumber(lotNumber)
+        .expirationDate(DateUtil.parseString(expirationDate, DateUtil.DB_DATE_FORMAT)).build();
+    LotOnHand lotOnHand = new LotOnHand(lot, stockCard, Long.valueOf(quantityOnHand));
+    lotOnHands.add(lotOnHand);
+    stockCardIdToLotOnHand.put(stockCardId, lotOnHands);
   }
 
   private void getLotInfo(List<Map<String, String>> lotList, Cursor cursor) {

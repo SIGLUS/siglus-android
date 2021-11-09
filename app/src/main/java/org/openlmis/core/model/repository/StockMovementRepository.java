@@ -250,35 +250,6 @@ public class StockMovementRepository {
         .query());
   }
 
-
-  //仅查找stockOnHand, movementQuantity, movementType用于填充RnrItem
-  public List<StockMovementItem> queryNotFullFillStockItemsByCreatedData(final long stockCardId,
-      final Date periodBeginDate, final Date periodEndDate) {
-    String rawSql =
-        "SELECT stockOnHand, movementQuantity, movementType FROM stock_items WHERE stockCard_id='"
-            + stockCardId + "'"
-            + " AND movementDate >= '" + DateUtil.formatDateTimeToDay(periodBeginDate) + "'"
-            + " AND movementDate <= '" + DateUtil.formatDateTimeToDay(periodEndDate) + "'"
-            + " ORDER BY movementDate, createdTime";
-    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
-        .rawQuery(rawSql, null);
-    List<StockMovementItem> stockItems = new ArrayList<>();
-    if (cursor.moveToFirst()) {
-      do {
-        StockMovementItem stockMovementItem = new StockMovementItem();
-        stockMovementItem.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
-        stockMovementItem.setMovementQuantity(cursor.getLong(cursor.getColumnIndexOrThrow(MOVEMENT_QUANTITY)));
-        stockMovementItem.setMovementType(
-            MovementReasonManager.MovementType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(MOVEMENT_TYPE))));
-        stockItems.add(stockMovementItem);
-      } while (cursor.moveToNext());
-    }
-    if (!cursor.isClosed()) {
-      cursor.close();
-    }
-    return stockItems;
-  }
-
   public List<StockMovementItem> queryStockMovementsByMovementDate(final long stockCardId,
       final Date startDate, final Date endDate) throws LMISException {
     return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
@@ -348,12 +319,19 @@ public class StockMovementRepository {
     );
   }
 
-  public Map<String, List<StockMovementItem>> queryStockMovement(Set<String> stockCardIds) {
+  public Map<String, List<StockMovementItem>> queryStockMovement(Set<String> stockCardIds, final Date periodBeginDate,
+      final Date periodEndDate) {
     String ids = StringUtils.join(stockCardIds != null ? stockCardIds : new HashSet<>(), ',');
+    String limitQueryPeriod = "";
+    if (periodBeginDate != null && periodEndDate != null) {
+      limitQueryPeriod = " AND movementDate >= '" + DateUtil.formatDateTimeToDay(periodBeginDate) + "'"
+          + " AND movementDate <= '" + DateUtil.formatDateTimeToDay(periodEndDate) + "'";
+    }
     String rawSql = SELECT_RESULT
         + "from stock_items where stockCard_id in ( "
-        + ids
-        + ")  GROUP BY stockCard_id";
+        + ids + ") "
+        + limitQueryPeriod
+        + " GROUP BY stockCard_id";
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
         .getWritableDatabase().rawQuery(rawSql, null);
     Map<String, List<StockMovementItem>> stockCardsMovements = new HashMap<>();

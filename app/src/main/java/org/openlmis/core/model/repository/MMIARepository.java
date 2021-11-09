@@ -291,9 +291,9 @@ public class MMIARepository extends RnrFormRepository {
   }
 
   @Override
-  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate)
-      throws LMISException {
-    RnrFormItem rnrFormItem = this.createMMIARnrFormItemByPeriod(stockCard, startDate, endDate);
+  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
+      List<StockMovementItem> notFullStockItemsByCreatedData) throws LMISException {
+    RnrFormItem rnrFormItem = this.createMMIARnrFormItemByPeriod(stockCard, notFullStockItemsByCreatedData);
 
     rnrFormItem.setProduct(stockCard.getProduct());
     Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
@@ -305,11 +305,9 @@ public class MMIARepository extends RnrFormRepository {
     return rnrFormItem;
   }
 
-  protected RnrFormItem createMMIARnrFormItemByPeriod(StockCard stockCard, Date startDate,
-      Date endDate) throws LMISException {
+  protected RnrFormItem createMMIARnrFormItemByPeriod(StockCard stockCard, List<StockMovementItem> stockMovementItems)
+      throws LMISException {
     RnrFormItem rnrFormItem = new RnrFormItem();
-    List<StockMovementItem> stockMovementItems = stockMovementRepository
-        .queryStockItemsByCreatedDate(stockCard.getId(), startDate, endDate);
 
     if (stockMovementItems.isEmpty()) {
       this.initMMiARnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
