@@ -274,7 +274,9 @@ public class LoginPresenter extends Presenter {
 
   private void loginLocal(User user) {
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-      sharedPreferenceMgr.setLastLoginTrainingTime(DateUtil.formatDate(new Date(), DateUtil.SIMPLE_DATE_FORMAT));
+      if (sharedPreferenceMgr.getLastLoginTrainingTime() == null) {
+        sharedPreferenceMgr.setLastLoginTrainingTime(DateUtil.formatDate(new Date(), DateUtil.SIMPLE_DATE_FORMAT));
+      }
       if (userRepository.getLocalUser() == null) {
         TrainingEnvironmentHelper.getInstance().setUpData();
       }
