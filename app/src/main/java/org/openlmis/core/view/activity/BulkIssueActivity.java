@@ -35,7 +35,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Setter;
@@ -117,7 +116,8 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView, On
           rvBulkIssue.smoothScrollToPosition(position);
         } else {
           BulkEntriesSignatureDialog signatureDialog = new BulkEntriesSignatureDialog();
-          signatureDialog.setArguments(BulkEntriesSignatureDialog.getBundleToMe(DateUtil.formatDate(new Date())));
+          signatureDialog.setArguments(BulkEntriesSignatureDialog.getBundleToMe(
+              DateUtil.formatDate(DateUtil.getCurrentDate())));
           signatureDialog.setDelegate(new DialogDelegate() {
             @Override
             public void onSign(String sign) {
