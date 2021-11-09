@@ -26,6 +26,8 @@ import static org.openlmis.core.constant.FieldConstants.STOCK_CARD_ID;
 import static org.openlmis.core.constant.FieldConstants.STOCK_ON_HAND;
 import static org.openlmis.core.model.Product.MEDICINE_TYPE_DEFAULT;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.RAPID_REPORT;
+import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.content.Context;
@@ -288,7 +290,7 @@ public class StockRepository {
     return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(), rnRForm.getPeriodEnd());
   }
 
-  protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd) {
+  protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd) throws LMISException {
     String codeBelongPrograms = getSqlForProgram(programCode);
 
     String rawSql = "SELECT stock_cards.stockOnHand, stock_cards.avgMonthlyConsumption, stock_cards.id as stockCard_id,"
@@ -305,10 +307,10 @@ public class StockRepository {
 
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
         .getWritableDatabase().rawQuery(rawSql, null);
-    return getStockCardsBySqlSearch(cursor);
+    return getStockCardsBySqlSearch(cursor, programCode);
   }
 
-  public List<StockCard> getStockCardsBelongToProgram(String programCode)  {
+  public List<StockCard> getStockCardsBelongToProgram(String programCode) throws LMISException {
     String rawSql = "SELECT stock_cards.stockOnHand, stock_cards.avgMonthlyConsumption, stock_cards.id as stockCard_id,"
         + " products.* FROM stock_cards"
         + " join products on products.id = stock_cards.product_id"
@@ -317,19 +319,22 @@ public class StockRepository {
         + " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode ='" + programCode + "'))";
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
         .getWritableDatabase().rawQuery(rawSql, null);
-    return getStockCardsBySqlSearch(cursor);
+    return getStockCardsBySqlSearch(cursor, programCode);
   }
 
   @NotNull
-  private List<StockCard> getStockCardsBySqlSearch(Cursor cursor) {
+  private List<StockCard> getStockCardsBySqlSearch(Cursor cursor, String programCode) throws LMISException {
     List<StockCard> stockCardList = new ArrayList<>();
     if (cursor.moveToFirst()) {
       do {
         StockCard stockCard = new StockCard();
+        stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_CARD_ID)));
         stockCard.setProduct(productRepository.buildProductFromCursor(cursor));
         stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
+        if (MMIA_PROGRAM_CODE.equals(programCode) || RAPID_TEST_PROGRAM_CODE.equals(programCode)) {
+          stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
+        }
         stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow(AVG_MONTHLY_CONSUMPTION)));
-        stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_CARD_ID)));
         stockCardList.add(stockCard);
       } while (cursor.moveToNext());
     }
