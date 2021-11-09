@@ -96,26 +96,6 @@ public class StockMovementRepository {
         .and().isNotNull(STOCK_CARD_ID).query());
   }
 
-  protected void batchCreateOrUpdateStockMovementsAndLotInfo(
-      final List<StockMovementItem> stockMovementItems) throws LMISException {
-    dbUtil.withDaoAsBatch(StockMovementItem.class,
-        dao -> {
-          for (StockMovementItem stockMovementItem : stockMovementItems) {
-            updateDateTimeIfEmpty(stockMovementItem);
-            dao.createOrUpdate(stockMovementItem);
-            List<LotMovementItem> lotMovementItems = FluentIterable.from(
-                stockMovementItem.getLotMovementItemListWrapper())
-                .transform(lotMovementItem -> {
-                  lotMovementItem.setReason(stockMovementItem.getReason());
-                  lotMovementItem.setDocumentNumber(stockMovementItem.getDocumentNumber());
-                  return lotMovementItem;
-                }).toList();
-            lotRepository.batchCreateLotsAndLotMovements(lotMovementItems);
-          }
-          return null;
-        });
-  }
-
   private void updateDateTimeIfEmpty(StockMovementItem stockMovementItem) {
     Date now = DateUtil.getCurrentDate();
     if (stockMovementItem.getCreatedTime() == null) {
@@ -270,6 +250,7 @@ public class StockMovementRepository {
         .query());
   }
 
+
   //仅查找stockOnHand, movementQuantity, movementType用于填充RnrItem
   public List<StockMovementItem> queryNotFullFillStockItemsByCreatedData(final long stockCardId,
       final Date periodBeginDate, final Date periodEndDate) {
@@ -421,30 +402,6 @@ public class StockMovementRepository {
         .execSQL(deleteRowSql);
   }
 
-  public Map<String, List<StockMovementItem>> queryNoSignatureStockCardsMovements() {
-    String selectResult = SELECT_RESULT + ",count(*) as count ";
-    String stockCardHavingSignatureNotNull = "( select stockCard_id from stock_items "
-        + "where signature not null group by stockCard_id ) ";
-    String querySql = selectResult
-        + "from stock_items "
-        + "where stockCard_id not in "
-        + stockCardHavingSignatureNotNull
-        + "group by stockCard_id having count >1;";
-    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
-        .getWritableDatabase().rawQuery(querySql, null);
-    Map<String, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
-    if (cursor.moveToFirst()) {
-      do {
-        getStockMovementItems(stockCardsMovements, cursor);
-      } while (cursor.moveToNext());
-    }
-
-    if (!cursor.isClosed()) {
-      cursor.close();
-    }
-    return stockCardsMovements;
-  }
-
   public Map<String, String> queryStockCardIdAndProductCode(Set<String> stockCardsIds) {
     String stockCardIds = StringUtils
         .join(stockCardsIds != null ? stockCardsIds : new HashSet<>(), ',');
@@ -467,46 +424,6 @@ public class StockMovementRepository {
       cursor.close();
     }
     return cardMapProductCode;
-  }
-
-  public Map<String, List<StockMovementItem>> queryDirtyDataNoAffectCalculatedStockCardsMovements(
-      Set<String> filterStockCards) {
-    String filterIds = StringUtils.join(filterStockCards != null ? filterStockCards : new HashSet<>(), ',');
-    String selectResult = SELECT_RESULT;
-    String havingDuplicatedNoSignature =
-        "( select stockCard_id from stock_items where signature IS NULL and stockCard_id not in ( "
-            + filterIds
-            + ") group by stockCard_id having count(stockCard_id) > 1) ";
-    String minSignatureTimeForHavingDirtyData =
-        "( select stockCard_id, min(movementDate) as minMovementDate, "
-            + "min(createdTime) as minCreatedTime from stock_items where stockCard_id in "
-            + havingDuplicatedNoSignature
-            + "and signature not null group by stockCard_id) as minSignatureTimeTable ";
-    String joinStockItemAndMinSignatureTime = "(select stock_items.*, minSignatureTimeTable.* "
-        + "from stock_items left join "
-        + minSignatureTimeForHavingDirtyData
-        + "on minSignatureTimeTable.stockCard_id = stock_items.stockCard_id ) as result ";
-    String querySql = selectResult
-        + "from "
-        + joinStockItemAndMinSignatureTime
-        + "where result.minMovementDate not null "
-        + "and result.MovementDate <= result.minMovementDate "
-        + "and result.createdTime <= minCreatedTime "
-        + "group by stockCard_id having count(stockCard_id) >2 ";
-
-    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
-        .getWritableDatabase().rawQuery(querySql, null);
-    Map<String, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
-    if (cursor.moveToFirst()) {
-      do {
-        getStockMovementItems(stockCardsMovements, cursor);
-      } while (cursor.moveToNext());
-    }
-
-    if (!cursor.isClosed()) {
-      cursor.close();
-    }
-    return stockCardsMovements;
   }
 
   private void getStockMovementItems(Map<String, List<StockMovementItem>> stockCardsMovements,
