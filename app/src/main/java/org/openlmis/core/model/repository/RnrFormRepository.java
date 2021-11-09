@@ -30,6 +30,7 @@ import static org.openlmis.core.constant.FieldConstants.SYNCED;
 import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -441,9 +442,9 @@ public class RnrFormRepository {
                   stockCardWithMovement = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
                 }
                 rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCardWithMovement));
-                saveRegimenItems(rnrForm);
-                saveRegimenThreeLines(rnrForm);
-                saveBaseInfo(rnrForm);
+                saveInitialRegimenItems(rnrForm);
+                saveInitialRegimenThreeLines(rnrForm);
+                saveInitialBaseInfo(rnrForm);
                 genericDao.refresh(rnrForm);
                 return null;
               });
@@ -454,21 +455,21 @@ public class RnrFormRepository {
     return rnrForm;
   }
 
-  private void saveRegimenItems(RnRForm rnrForm) throws LMISException {
+  private void saveInitialRegimenItems(RnRForm rnrForm) throws LMISException {
     List<RegimenItem> regimenItems = generateRegimeItems(rnrForm);
     if (!CollectionUtils.isEmpty(regimenItems)) {
       regimenItemRepository.batchCreateOrUpdate(regimenItems);
     }
   }
 
-  private void saveRegimenThreeLines(RnRForm rnrForm) throws LMISException {
+  private void saveInitialRegimenThreeLines(RnRForm rnrForm) throws LMISException {
     List<RegimenItemThreeLines> regimenItemThreeLines = generateRegimeThreeLineItems(rnrForm);
     if (!CollectionUtils.isEmpty(regimenItemThreeLines)) {
       regimenItemThreeLineRepository.batchCreateOrUpdate(regimenItemThreeLines);
     }
   }
 
-  private void saveBaseInfo(RnRForm rnrForm) throws LMISException {
+  private void saveInitialBaseInfo(RnRForm rnrForm) throws LMISException {
     List<BaseInfoItem> baseInfoItems = generateBaseInfoItems(rnrForm, MMIARepository.ReportType.NEW);
     if (!CollectionUtils.isEmpty(baseInfoItems)) {
       baseInfoItemRepository.batchCreateOrUpdate(baseInfoItems);
@@ -606,7 +607,8 @@ public class RnrFormRepository {
     }
     saveRnRItems(form);
     saveRegimens(form);
-    saveRegimenThreeLineAndBaseInfo(form);
+    saveRegimenThreeLine(form);
+    saveBaseInfo(form);
     saveTestConsumption(form);
   }
 
@@ -616,8 +618,16 @@ public class RnrFormRepository {
     }
   }
 
-  private void saveRegimenThreeLineAndBaseInfo(RnRForm form) throws LMISException {
+  private void saveRegimenThreeLine(RnRForm form) throws LMISException {
     if (MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+      baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
+      regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
+    }
+  }
+
+  private void saveBaseInfo(RnRForm form) throws LMISException {
+    if (VIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
+        || MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
       baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
       regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
     }

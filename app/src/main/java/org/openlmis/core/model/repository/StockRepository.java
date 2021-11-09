@@ -26,7 +26,6 @@ import static org.openlmis.core.constant.FieldConstants.STOCK_CARD_ID;
 import static org.openlmis.core.constant.FieldConstants.STOCK_ON_HAND;
 import static org.openlmis.core.model.Product.MEDICINE_TYPE_DEFAULT;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
-import static org.openlmis.core.utils.Constants.RAPID_REPORT;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
