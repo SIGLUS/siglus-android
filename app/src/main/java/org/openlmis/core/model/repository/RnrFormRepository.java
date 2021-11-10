@@ -271,11 +271,11 @@ public class RnrFormRepository {
     HashMap<String, String> stringToCategory = getProductCodeToCategory();
     Set<String> stockCardIds = FluentIterable.from(stockCards)
         .transform(stockCard -> String.valueOf(stockCard.getId())).toSet();
-    Map<String, List<StockMovementItem>> IdToStockMovements = stockMovementRepository
-        .queryStockMovement(stockCardIds,form.getPeriodBegin(), form.getPeriodEnd());
+    Map<String, List<StockMovementItem>> idToStockMovements = stockMovementRepository
+        .queryStockMovement(stockCardIds, form.getPeriodBegin(), form.getPeriodEnd());
     for (StockCard stockCard : stockCards) {
       RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard,
-          IdToStockMovements.get(String.valueOf(stockCard.getId())));
+          idToStockMovements.get(String.valueOf(stockCard.getId())));
       rnrFormItem.setForm(form);
       rnrFormItems.add(rnrFormItem);
       rnrFormItem.setCategory(stringToCategory.get(rnrFormItem.getProduct().getCode()));
@@ -400,7 +400,9 @@ public class RnrFormRepository {
   }
 
   protected void updateInitialAmount(RnrFormItem rnrFormItem, Long lastInventory) {
-    rnrFormItem.setInitialAmount(lastInventory != null ? lastInventory : 0);
+    if (rnrFormItem.getInitialAmount() == null) {
+      rnrFormItem.setInitialAmount(lastInventory != null ? lastInventory : 0);
+    }
   }
 
   protected void updateDefaultValue(RnrFormItem rnrFormItem) {
