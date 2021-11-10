@@ -20,13 +20,11 @@ package org.openlmis.core.training;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.support.DatabaseConnection;
 import java.sql.SQLException;
 import java.util.Date;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 
@@ -39,50 +37,50 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
   public static final String MONTH = " months')";
   private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2021-07-18", DateUtil.DB_DATE_FORMAT);
   private int monthOffsetFromAnchor;
-
   private DatabaseConnection dbConnection;
+  private static TrainingSqliteOpenHelper trainingSqliteOpenHelper;
 
   private TrainingSqliteOpenHelper(Context context) {
     super(context, "lmis_db", null, LmisSqliteOpenHelper.getDBVersion());
     monthOffsetFromAnchor = DateUtil.calculateDateMonthOffset(TRAINING_ANCHOR_DATE, DateUtil.getCurrentDate());
   }
 
-  public static TrainingSqliteOpenHelper getInstance(Context context) {
-    return new TrainingSqliteOpenHelper(context);
-  }
-
-  private synchronized void getConnection() throws SQLException {
-    if (null == dbConnection) {
-      dbConnection = new TrainingSqliteOpenHelper(LMISApp.getContext()).getConnectionSource().getReadWriteConnection();
+  public static synchronized TrainingSqliteOpenHelper getInstance(Context context) {
+    if (null == trainingSqliteOpenHelper) {
+      trainingSqliteOpenHelper = new TrainingSqliteOpenHelper(context);
     }
+    return trainingSqliteOpenHelper;
   }
 
   @Override
   public void onOpen(SQLiteDatabase db) {
     super.onOpen(db);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-      db.disableWriteAheadLogging();
-    }
+    db.disableWriteAheadLogging();
   }
 
   @Override
   public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
-
+    // do nothing
   }
 
   @Override
   public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-
+    // do nothing
   }
 
   @Override
   public void close() {
     super.close();
     getWritableDatabase().close();
+    closeHelper();
+  }
+
+  public static void closeHelper() {
+    trainingSqliteOpenHelper = null;
   }
 
   public void updateTimeInDB() throws SQLException {
-    getConnection();
+    dbConnection = trainingSqliteOpenHelper.getConnectionSource().getReadWriteConnection();
     updateLotExpirationDate();
     updateProgramDataFromPeriodsAndSubmitTime();
     updateRnRFormPeriodsAndSubmittedTime();
