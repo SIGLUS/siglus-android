@@ -23,18 +23,14 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.Lot;
-import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
-import org.openlmis.core.model.builder.LotMovementItemBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.collect.Lists;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
@@ -256,73 +252,6 @@ public class StockMovementRepositoryTest {
 
     StockMovementItem stockMovementItem = stockMovementRepository.getFirstStockMovement();
     assertTrue(stockMovementItem.getMovementDate().before(new DateTime("2016-01-01").toDate()));
-  }
-
-  @Test
-  public void shouldBatchUpdateStockMovements() throws LMISException, ParseException {
-    StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
-
-    StockMovementItem stockMovementItem = new StockMovementItem();
-    stockMovementItem.setMovementQuantity(100);
-    stockMovementItem.setMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST);
-    stockMovementItem.setMovementDate(DateUtil.parseString("2016-03-11", DateUtil.DB_DATE_FORMAT));
-    stockMovementItem.setStockCard(stockCard);
-    stockMovementItem.setSynced(false);
-
-    Lot lot1 = new Lot();
-    lot1.setProduct(product);
-    lot1.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
-    lot1.setLotNumber("AAA");
-
-    Lot lot2 = new Lot();
-    lot2.setProduct(product);
-    lot2.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
-    lot2.setLotNumber("BBB");
-
-    Lot lot3 = new Lot();
-    lot3.setProduct(product);
-    lot3.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
-    lot3.setLotNumber("CCC");
-
-    LotMovementItem lotMovementItem = new LotMovementItemBuilder()
-        .setStockMovementItem(stockMovementItem)
-        .setLot(lot1)
-        .setMovementQuantity(2L).build();
-
-    LotMovementItem lotMovementItem2 = new LotMovementItemBuilder()
-        .setStockMovementItem(stockMovementItem)
-        .setLot(lot2)
-        .setMovementQuantity(3L).build();
-
-    LotMovementItem lotMovementItem3 = new LotMovementItemBuilder()
-        .setStockMovementItem(stockMovementItem)
-        .setLot(lot3)
-        .setMovementQuantity(5L).build();
-
-    stockMovementItem.setLotMovementItemListWrapper(
-        Lists.newArrayList(lotMovementItem, lotMovementItem2, lotMovementItem3));
-    stockMovementItem.setStockOnHand(stockCard.getStockOnHand() + 100);
-    stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
-
-    stockMovementRepository
-        .batchCreateOrUpdateStockMovementsAndLotInfo(Lists.newArrayList(stockMovementItem));
-
-    stockRepository.refresh(stockCard);
-
-    StockMovementItem stockMovementItem1 = stockCard.getStockMovementItemsWrapper().get(1);
-    stockMovementItem1.getLotMovementItemListWrapper();
-    stockMovementItem1.setForeignLotMovementItems(null);
-    assertEquals(3, stockMovementItem.getLotMovementItemListWrapper().size());
-    assertEquals(stockMovementItem.getStockOnHand(), stockMovementItem1.getStockOnHand());
-    assertEquals(stockMovementItem.getMovementDate(), stockMovementItem1.getMovementDate());
-
-    stockMovementItem.setSynced(true);
-    stockMovementRepository
-        .batchCreateOrUpdateStockMovementsAndLotInfo(Lists.newArrayList(stockMovementItem));
-
-    stockRepository.refresh(stockCard);
-    stockCard.setStockMovementItemsWrapper(null);
-    assertTrue(stockCard.getStockMovementItemsWrapper().get(1).isSynced());
   }
 
   @Test

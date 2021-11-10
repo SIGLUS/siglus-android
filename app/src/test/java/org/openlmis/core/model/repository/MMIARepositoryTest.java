@@ -273,7 +273,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         .thenReturn(new ArrayList<StockMovementItem>());
 
     RnrFormItem rnrFormItemByPeriod = mmiaRepository
-        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        .createRnrFormItemByPeriod(stockCard, new ArrayList<StockMovementItem>());
 
     assertThat(rnrFormItemByPeriod.getValidate(), is("01/02/2015"));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
@@ -281,7 +281,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
     stockCard.setLotOnHandListWrapper(Lists.newArrayList());
     rnrFormItemByPeriod = mmiaRepository
-        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        .createRnrFormItemByPeriod(stockCard, new ArrayList<StockMovementItem>());
     assertNull(rnrFormItemByPeriod.getValidate());
   }
 

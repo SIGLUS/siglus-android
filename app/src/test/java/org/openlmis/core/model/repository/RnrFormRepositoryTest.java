@@ -46,7 +46,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -296,9 +299,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     stockMovementItem.setCreatedTime(new Date());
     when(mockStockMovementRepository.queryFirstStockMovementByStockCardId(anyLong()))
         .thenReturn(stockMovementItem);
+    Map<String, List<StockMovementItem>> idToStockItem = new HashMap<>();
+    idToStockItem.put(String.valueOf(stockCard.getId()), stockMovementItems);
     when(mockStockMovementRepository
-        .queryNotFullFillStockItemsByCreatedData(stockCard.getId(), form.getPeriodBegin(),
-            form.getPeriodEnd())).thenReturn(stockMovementItems);
+        .queryStockMovement(new HashSet<>(Arrays.asList(String.valueOf(stockCard.getId()))), form.getPeriodBegin(),
+            form.getPeriodEnd())).thenReturn(idToStockItem);
 
     ProductProgram productProgram = new ProductProgram();
     productProgram.setCategory("Adult");
@@ -457,7 +462,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .thenReturn(new ArrayList<StockMovementItem>());
 
     RnrFormItem rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
 
     assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
@@ -466,7 +471,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     stockCard.setLotOnHandListWrapper(Lists.newArrayList());
     rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
     assertNull(rnrFormItemByPeriod.getValidate());
   }
 
@@ -481,7 +486,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .listInclude(any(RnRForm.Emergency.class), anyString());
 
     RnrFormItem rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
 
     assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
