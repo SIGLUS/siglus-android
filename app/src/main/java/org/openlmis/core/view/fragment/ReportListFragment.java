@@ -28,12 +28,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.TrackerActions;
@@ -139,6 +142,7 @@ public class ReportListFragment extends BaseReportListFragment {
 
     switch (requestCode) {
       case Constants.REQUEST_FROM_RNR_LIST_PAGE:
+        deleteCacheFragments();
         loadForms();
         break;
       case Constants.REQUEST_SELECT_PERIOD_END:
@@ -238,6 +242,17 @@ public class ReportListFragment extends BaseReportListFragment {
         adapter.notifyDataSetChanged();
       }
     };
+  }
+
+  private void deleteCacheFragments() {
+    List<Fragment> fragments = getParentFragmentManager().getFragments();
+    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+    for (Fragment fragment : fragments) {
+      if (!Objects.equals(fragment.getTag(), this.getTag())) {
+        transaction.remove(fragment);
+      }
+    }
+    transaction.commit();
   }
 
   protected RnRFormItemClickListener rnRFormItemClickListener = new RnRFormItemClickListener() {
