@@ -728,4 +728,5 @@
   <string name="label_issue_conferred_by">Conferred by:</string>
   <string name="label_issue_delivered_by">Delivered by: </string>
   <string name="label_issue_received_by">Received by: </string>
+  <string name="error_sync_previous_period">Sync failed. The previous requisition failed to be synced, please contact the administrator.</string>
 </resources>

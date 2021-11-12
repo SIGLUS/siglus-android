@@ -18,6 +18,7 @@
 
 package org.openlmis.core.service;
 
+import static org.openlmis.core.LMISApp.getContext;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.text.TextUtils;
@@ -174,12 +175,17 @@ public class SyncUpManager {
       new LMISException(e, "SyncUpManager:syncRnr").reportToFabric();
       return false;
     }
-    for (RnRForm rnRForm : forms) {
-      boolean result = submitRequisition(rnRForm);
-      if (result) {
-        markRnrFormSynced(rnRForm);
+    List<Program> needBlockPrograms = new ArrayList<>();
+    for (RnRForm form : forms) {
+      if (needBlockPrograms.contains(form.getProgram())) {
+        markRnrFormBlocked(form);
       } else {
-        break;
+        boolean result = submitRequisition(form);
+        if (result) {
+          markRnrFormSynced(form);
+        } else {
+          needBlockPrograms.add(form.getProgram());
+        }
       }
     }
     EventBus.getDefault().post(new SyncRnrFinishEvent());
@@ -479,6 +485,12 @@ public class SyncUpManager {
       new LMISException(e, "SyncUpManager.markRnrFormSynced").reportToFabric();
       Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());
     }
+  }
+
+  private void markRnrFormBlocked(RnRForm form) {
+    syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, form.getId());
+    syncErrorsRepository.save(new SyncError(getContext().getResources().getString(
+        R.string.error_sync_previous_period), SyncType.RNR_FORM, form.getId()));
   }
 
   private Pod submitPod(Pod localPod) {
