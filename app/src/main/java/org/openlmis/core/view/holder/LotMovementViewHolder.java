@@ -149,14 +149,21 @@ public class LotMovementViewHolder extends BaseViewHolder {
     if (!viewModel.isQuantityLessThanSoh()) {
       setQuantityError(getString(R.string.msg_invalid_quantity));
     } else {
-      if ((PhysicalInventoryActivity.KEY_FROM_PHYSICAL_COMPLETED.equals(viewModel.getFrom())
-          || PhysicalInventoryActivity.KEY_FROM_PHYSICAL_VERIFY.equals(viewModel.getFrom()))
-          && StringUtils.isBlank(etLotAmount.getText())) {
+      if (shouldShowErrorMessage() && StringUtils.isBlank(etLotAmount.getText())) {
         lyLotAmount.setError(getString(R.string.msg_empty_quantity) + etLotAmount.getText());
+      } else if (shouldShowErrorMessage() && Integer.parseInt(etLotAmount.getText().toString()) == 0) {
+        lyLotAmount.setError(getString(R.string.msg_quantity_can_not_be_zero));
       } else {
         lyLotAmount.setError(null);
       }
     }
+  }
+
+  private boolean shouldShowErrorMessage() {
+    return PhysicalInventoryActivity.KEY_FROM_PHYSICAL_COMPLETED.equals(viewModel.getFrom())
+        || PhysicalInventoryActivity.KEY_FROM_PHYSICAL_VERIFY.equals(viewModel.getFrom())
+        || NewStockMovementActivity.KEY_FROM_NEW_MOVEMENT_COMPLETE.equals(viewModel.getFrom())
+        || UnpackKitActivity.KEY_FROM_UNPACK_KIT_COMPLETED.equals(viewModel.getFrom());
   }
 
   private String getString(int id) {
@@ -247,8 +254,29 @@ public class LotMovementViewHolder extends BaseViewHolder {
             setQuantityError(getString(R.string.msg_empty_quantity));
           }
         }
+        if (!StringUtils.isBlank(viewModel.getQuantity())
+            && 0 == Integer.parseInt(viewModel.getQuantity())
+            && viewModel.isNewAdded()) {
+          setQuantityError(getString(R.string.msg_quantity_can_not_be_zero));
+        }
         if (!viewModel.validateQuantityNotGreaterThanSOH()) {
           setQuantityError(getString(R.string.msg_invalid_quantity));
+        }
+      }
+
+      if (context instanceof UnpackKitActivity) {
+        if (viewModel.isNewAdded()) {
+          if (viewModel.validateLotWithPositiveQuantity()) {
+            vgLotSOH.setVisibility(View.GONE);
+          } else {
+            vgLotSOH.setVisibility(View.VISIBLE);
+            setQuantityError(getString(R.string.msg_empty_quantity));
+          }
+        }
+        if (!StringUtils.isBlank(viewModel.getQuantity())
+            && 0 == Integer.parseInt(viewModel.getQuantity())
+            && viewModel.isNewAdded()) {
+          setQuantityError(getString(R.string.msg_quantity_can_not_be_zero));
         }
       }
 

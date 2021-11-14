@@ -34,6 +34,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.widget.MovementDetailsView;
 import org.openlmis.core.view.widget.NewMovementLotListView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -43,6 +44,8 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_new_stock_movement)
 public class NewStockMovementActivity extends BaseActivity implements
     NewStockMovementPresenter.NewStockMovementView {
+
+  public static final String KEY_FROM_NEW_MOVEMENT_COMPLETE = "new movement complete";
 
   @InjectView(R.id.view_movement_details)
   MovementDetailsView movementDetailsView;
@@ -154,7 +157,9 @@ public class NewStockMovementActivity extends BaseActivity implements
             loading();
             btnComplete.setEnabled(false);
             movementDetailsView.setMovementModelValue();
-
+            for (LotMovementViewModel viewModel : presenter.getViewModel().getNewLotMovementViewModelList()) {
+              viewModel.setFrom(KEY_FROM_NEW_MOVEMENT_COMPLETE);
+            }
             if (validate()) {
               presenter.saveStockMovement();
             } else {

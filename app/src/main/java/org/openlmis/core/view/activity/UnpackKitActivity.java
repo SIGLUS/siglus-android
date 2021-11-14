@@ -41,6 +41,7 @@ import org.openlmis.core.utils.keyboard.KeyboardUtil;
 import org.openlmis.core.view.adapter.UnpackKitAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
@@ -50,6 +51,8 @@ import rx.Subscription;
 
 @ContentView(R.layout.activity_kit_unpack)
 public class UnpackKitActivity extends BaseActivity {
+
+  public static final String KEY_FROM_UNPACK_KIT_COMPLETED = "unpack kit complete";
 
   @InjectView(R.id.products_list)
   protected RecyclerView productListRecycleView;
@@ -211,6 +214,7 @@ public class UnpackKitActivity extends BaseActivity {
 
   public boolean validateAll() {
     int position = mAdapter.validateAll();
+    setFromPage();
     if (position >= 0) {
       productListRecycleView.scrollToPosition(position);
       productListRecycleView.post(() -> {
@@ -240,5 +244,13 @@ public class UnpackKitActivity extends BaseActivity {
       }
     });
     dialogFragment.show(getSupportFragmentManager(), "back_confirm_dialog");
+  }
+
+  private void setFromPage() {
+    for (InventoryViewModel inventoryViewModel : mAdapter.getData()) {
+      for (LotMovementViewModel viewModel : inventoryViewModel.getNewLotMovementViewModelList()) {
+        viewModel.setFrom(KEY_FROM_UNPACK_KIT_COMPLETED);
+      }
+    }
   }
 }
