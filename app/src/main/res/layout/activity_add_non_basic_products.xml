@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <TextView
+    android:id="@+id/tv_total"
+    style="@style/Inventory.TextTotal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:text="Total: 136" />
 
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_below="@id/tv_total"
     android:layout_above="@+id/vg_action_panel">
 
     <androidx.recyclerview.widget.RecyclerView
