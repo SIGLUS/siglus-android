@@ -28,6 +28,7 @@ import static org.openlmis.core.constant.FieldConstants.KIT_CODE;
 import static org.openlmis.core.constant.FieldConstants.PRICE;
 import static org.openlmis.core.constant.FieldConstants.PRIMARY_NAME;
 import static org.openlmis.core.constant.FieldConstants.PRODUCT_CODE;
+import static org.openlmis.core.constant.FieldConstants.PROGRAM_CODE;
 import static org.openlmis.core.constant.FieldConstants.STRENGTH;
 import static org.openlmis.core.constant.FieldConstants.TYPE;
 
@@ -42,7 +43,9 @@ import com.j256.ormlite.stmt.Where;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
@@ -88,6 +91,23 @@ public class ProductRepository {
         dao -> dao.queryBuilder().where().eq(IS_ACTIVE, true).and().eq(IS_KIT, isKit.isKit()).query());
     Collections.sort(activeProducts);
     return activeProducts;
+  }
+
+
+  public Map<String, String> listProductCodeToProgramCode() {
+    String rawSql = "SELECT productCode, programCode FROM product_programs";
+    Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+    Map<String, String> productCodeToProgramCode = new HashMap<>();
+    if (cursor.moveToFirst()) {
+      do {
+        productCodeToProgramCode.put(cursor.getString(cursor.getColumnIndexOrThrow(PRODUCT_CODE)),
+            cursor.getString(cursor.getColumnIndexOrThrow(PROGRAM_CODE)));
+      } while (cursor.moveToNext());
+    }
+    if (!cursor.isClosed()) {
+      cursor.close();
+    }
+    return productCodeToProgramCode;
   }
 
   public List<Product> listBasicProducts() throws LMISException {

@@ -19,9 +19,12 @@
 
 package org.openlmis.core.presenter;
 
+import android.util.Log;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -33,6 +36,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import rx.Observable;
 import rx.Observable.OnSubscribe;
 import rx.android.schedulers.AndroidSchedulers;
@@ -58,6 +62,9 @@ public abstract class InventoryPresenter extends Presenter {
   InventoryView view;
 
   @Getter
+  List<Program> programs;
+
+  @Getter
   final List<InventoryViewModel> inventoryViewModelList = new ArrayList<>();
 
   @Override
@@ -67,26 +74,22 @@ public abstract class InventoryPresenter extends Presenter {
 
   public abstract Observable<List<InventoryViewModel>> loadInventory();
 
-  public Observable<List<Program>> loadPrograms() {
-    return Observable.create((OnSubscribe<List<Program>>) subscriber -> {
-      try {
-        final List<Program> queryActiveProgram = programRepository.queryProgramWithoutML();
-        subscriber.onNext(queryActiveProgram);
-      } catch (LMISException exception) {
-        subscriber.onError(exception);
-      }
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-  }
-
   public Observable<List<InventoryViewModel>> getInflatedInventory() {
+    programs = programRepository.queryProgramWithoutML();
+    Map<String, Program> codeToProgram = new HashMap<>();
+    for(Program program : programs) {
+      codeToProgram.put(program.getProgramCode(), program);
+    }
+    Map<String, String> productCodeToProgram = productRepository.listProductCodeToProgramCode();
+    Log.i("test", " load inventory 0.1");
     return loadInventory().doOnNext(inventoryViewModels -> {
       for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
         if (inventoryViewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
             || inventoryViewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER) {
           continue;
         }
-        final Program program = programRepository.queryProgramByProductCode(inventoryViewModel.getProduct().getCode());
-        inventoryViewModel.setProgram(program);
+        inventoryViewModel
+            .setProgram(codeToProgram.get(productCodeToProgram.get(inventoryViewModel.getProduct().getCode())));
       }
     });
   }

@@ -44,6 +44,8 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 @ContentView(R.layout.activity_bulk_initial_inventory)
 public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialInventoryPresenter> {
@@ -212,7 +214,10 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
 
       @Override
       public void onNext(Object o) {
-        Subscription loaded = presenter.loadPrograms().subscribe(getOnProgramsLoadedSubscriber());
+        Subscription loaded = presenter.getInflatedInventory()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe(getOnViewModelsLoadedSubscriber());
         subscriptions.add(loaded);
       }
     };

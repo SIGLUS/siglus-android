@@ -20,6 +20,7 @@ package org.openlmis.core.presenter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
+import android.util.Log;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,12 +53,14 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
 
   @Override
   public Observable<List<InventoryViewModel>> loadInventory() {
+    Log.i("test", "load inventory 1");
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
       try {
         List<StockCard> validStockCardsForPhysicalInventory = getValidStockCardsForPhysicalInventory();
         inventoryViewModelList.addAll(convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory));
         restoreDraftInventory();
         subscriber.onNext(inventoryViewModelList);
+        Log.i("test", "load inventory 2");
         subscriber.onCompleted();
       } catch (LMISException e) {
         subscriber.onError(e);

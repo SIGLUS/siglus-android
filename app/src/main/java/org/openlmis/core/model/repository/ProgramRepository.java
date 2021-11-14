@@ -19,21 +19,26 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.ID;
 import static org.openlmis.core.constant.FieldConstants.IS_SUPPORT_EMERGENCY;
 import static org.openlmis.core.constant.FieldConstants.PRODUCT_CODE;
 import static org.openlmis.core.constant.FieldConstants.PROGRAM_CODE;
+import static org.openlmis.core.constant.FieldConstants.PROGRAM_Name;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
@@ -145,14 +150,23 @@ public class ProgramRepository {
     }).toList();
   }
 
-  public List<Program> queryProgramWithoutML() throws LMISException {
-    final List<Program> programs = genericDao.queryForAll();
-    return FluentIterable.from(programs).filter(program -> {
-      if (program == null) {
-        return false;
-      }
-      return !Program.MALARIA_CODE.equalsIgnoreCase(program.getProgramCode());
-    }).toList();
+  public List<Program> queryProgramWithoutML() {
+    String rawSql = "select id, programCode, ProgramName from programs where programCode != '" +  Program.MALARIA_CODE + "'";
+    Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+    List<Program> programs = new ArrayList<>();
+    if (cursor.moveToFirst()) {
+      do {
+        Program program = new Program();
+        program.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ID)));
+        program.setProgramCode(cursor.getString(cursor.getColumnIndexOrThrow(PROGRAM_CODE)));
+        program.setProgramName(cursor.getString(cursor.getColumnIndexOrThrow(PROGRAM_Name)));
+        programs.add(program);
+      } while (cursor.moveToNext());
+    }
+    if (!cursor.isClosed()) {
+      cursor.close();
+    }
+    return programs;
   }
 
   @Nullable
