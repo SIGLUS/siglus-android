@@ -197,7 +197,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
     super.onCreate(savedInstanceState);
     this.presenter = initPresenter();
     initUI();
-    initDate();
+    initData();
     trackInventoryEvent(TrackerActions.SELECT_INVENTORY);
   }
 
@@ -216,7 +216,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
     mAdapter.setFilterProgram(null);
   }
 
-  protected void initDate() {
+  protected void initData() {
     loading();
     Log.i("test", "load inventory start");
     Subscription subscription = presenter.getInflatedInventoryOnMainThread()
