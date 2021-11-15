@@ -240,8 +240,10 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
 
       @Override
       public void onNext(List<InventoryViewModel> inventoryViewModels) {
-        buildOptionsItem(presenter.getPrograms());
-        invalidateOptionsMenu();
+        if (presenter.getPrograms() != null) {
+          buildOptionsItem(presenter.getPrograms());
+          invalidateOptionsMenu();
+        }
         setUpFastScroller(inventoryViewModels);
         mAdapter.refresh();
         loaded();
