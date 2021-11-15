@@ -25,7 +25,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,30 +37,20 @@ import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.AdditionalProductProgram;
 import org.openlmis.core.model.Pod;
-import org.openlmis.core.model.Product;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.AdditionalProductProgramRepository;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
-import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
-import org.openlmis.core.network.ProgramCacheManager;
 import org.openlmis.core.network.model.FacilityInfoResponse;
-import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
-import org.openlmis.core.network.model.SupportedProgram;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
@@ -103,13 +92,9 @@ public class SyncDownManager {
   @Inject
   StockRepository stockRepository;
   @Inject
-  ProgramRepository programRepository;
-  @Inject
   ProductRepository productRepository;
   @Inject
   ProductProgramRepository productProgramRepository;
-  @Inject
-  ReportTypeFormRepository reportTypeFormRepository;
   @Inject
   StockService stockService;
   @Inject
@@ -357,60 +342,13 @@ public class SyncDownManager {
 
   private void fetchAndSaveProductsWithProgramsAndKits() throws LMISException {
     SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
-    List<Product> productList = new ArrayList<>();
-    for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
-      Product product = productAndSupportedPrograms.getProduct();
-      productProgramRepository.batchSave(product, productAndSupportedPrograms.getProductPrograms());
-      if (Program.MALARIA_CODE.equals(product.getAdditionalProgramCode())) {
-        additionalProductProgramRepository.createOrUpdate(AdditionalProductProgram
-            .builder()
-            .productCode(product.getCode())
-            .programCode(product.getAdditionalProgramCode())
-            .originProgramCode(productAndSupportedPrograms.getProductPrograms().get(0).getProgramCode())
-            .build());
-      }
-      updateDeactivateProductNotifyList(product);
-      productList.add(product);
-    }
-    productRepository.batchCreateOrUpdateProducts(productList);
-    sharedPreferenceMgr.setKeyIsFirstLoginVersion87();
-    sharedPreferenceMgr.setLastSyncProductTime(response.getLastSyncTime());
-  }
-
-  protected void updateDeactivateProductNotifyList(Product product) throws LMISException {
-    Product existingProduct = productRepository.getByCode(product.getCode());
-
-    if (existingProduct == null) {
-      return;
-    }
-
-    if (product.isActive() == existingProduct.isActive()) {
-      return;
-    }
-    if (product.isActive()) {
-      sharedPreferenceMgr
-          .removeShowUpdateBannerTextWhenReactiveProduct(existingProduct.getPrimaryName());
-      return;
-    }
-
-    StockCard stockCard = stockRepository.queryStockCardByProductId(existingProduct.getId());
-    if (stockCard == null) {
-      return;
-    }
-
-    if (stockCard.getProduct().isArchived()) {
-      return;
-    }
-
-    if (stockCard.getStockOnHand() == 0) {
-      sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
-    }
+    productRepository.saveProductAndProductProgram(response);
   }
 
   private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws LMISException {
-    boolean isFirstLoginVersion87 = sharedPreferenceMgr.getKeyIsFirstLoginVersion87();
+    boolean isFirstLoginVersion200 = sharedPreferenceMgr.getKeyIsFirstLoginVersion200();
     return lmisRestApi.fetchLatestProducts(
-        isFirstLoginVersion87 ? null : sharedPreferenceMgr.getLastSyncProductTime());
+        isFirstLoginVersion200 ? null : sharedPreferenceMgr.getLastSyncProductTime());
   }
 
   private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {
@@ -463,30 +401,8 @@ public class SyncDownManager {
       e.reportToFabric();
       throw e;
     }
-    User user = UserInfoMgr.getInstance().getUser();
-    user.setFacilityCode(facilityInfoResponse.getCode());
-    user.setFacilityName(facilityInfoResponse.getName());
-    userRepository.createOrUpdate(user);
-    UserInfoMgr.getInstance().setUser(user);
-    List<Program> programs = covertFacilityInfoToProgram(facilityInfoResponse);
-    ProgramCacheManager.addPrograms(programs);
-    programRepository.batchCreateOrUpdatePrograms(programs);
+    userRepository.saveFacilityInfo(facilityInfoResponse);
     sharedPreferenceMgr.setReportTypesData(facilityInfoResponse.getSupportedReportTypes());
-    reportTypeFormRepository.batchCreateOrUpdateReportTypes(facilityInfoResponse.getSupportedReportTypes());
-  }
-
-  private List<Program> covertFacilityInfoToProgram(FacilityInfoResponse facilityInfoResponse) {
-    List<Program> programs = new ArrayList<>();
-    for (SupportedProgram supportedProgram : facilityInfoResponse.getSupportedPrograms()) {
-      Program program = Program
-          .builder()
-          .programCode(supportedProgram.getCode())
-          .programName(supportedProgram.getName())
-          .isSupportEmergency(supportedProgram.getCode().equals("VC"))
-          .build();
-      programs.add(program);
-    }
-    return programs;
   }
 
   private void fetchAndSaveRegimens() throws LMISException {

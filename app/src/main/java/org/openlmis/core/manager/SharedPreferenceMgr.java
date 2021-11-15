@@ -67,7 +67,7 @@ public class SharedPreferenceMgr {
   private static final String KEY_IS_REQUISITION_DATA_SYNCED = "is_requisition_data_synced";
   public static final String KEY_STOCK_SYNC_END_TIME = "sync_stock_end_time";
   public static final String KEY_LAST_SYNC_PRODUCT_TIME = "last_sync_product_time";
-  public static final String KEY_IS_FIRST_LOGIN_VERSION87 = "is_first_login_version87";
+  public static final String KEY_IS_FIRST_LOGIN_VERSION200 = "is_first_login_version200";
   public static final String KEY_LAST_SYNC_SERVICE_TIME = "last_sync_service_time";
   public static final String KEY_SHOW_PRODUCT_UPDATE_BANNER = "show_product_update_banner";
   public static final String KEY_PRODUCT_UPDATE_BANNER_TEXT = "product_update_banner_text";
@@ -273,12 +273,12 @@ public class SharedPreferenceMgr {
   }
 
 
-  public boolean getKeyIsFirstLoginVersion87() {
-    return sharedPreferences.getBoolean(KEY_IS_FIRST_LOGIN_VERSION87, true);
+  public boolean getKeyIsFirstLoginVersion200() {
+    return sharedPreferences.getBoolean(KEY_IS_FIRST_LOGIN_VERSION200, true);
   }
 
-  public void setKeyIsFirstLoginVersion87() {
-    sharedPreferences.edit().putBoolean(KEY_IS_FIRST_LOGIN_VERSION87, false).apply();
+  public void setKeyIsFirstLoginVersion200() {
+    sharedPreferences.edit().putBoolean(KEY_IS_FIRST_LOGIN_VERSION200, false).apply();
   }
 
 

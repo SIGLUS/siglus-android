@@ -26,6 +26,8 @@ import static org.openlmis.core.constant.FieldConstants.TYPE;
 
 import android.content.Context;
 import com.google.inject.Inject;
+import com.j256.ormlite.misc.TransactionManager;
+import java.sql.SQLException;
 import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
@@ -61,16 +63,19 @@ public class RegimenRepository {
         .withDao(Regimen.class, dao -> dao.queryBuilder().where().eq(CODE, code).queryForFirst());
   }
 
-  public void batchSave(List<Regimen> regimens) {
+  public void batchSave(List<Regimen> regimens) throws LMISException {
     try {
-      for (Regimen regimen : regimens) {
-        if (!regimen.isActive()) {
-          continue;
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        for (Regimen regimen : regimens) {
+          if (!regimen.isActive()) {
+            continue;
+          }
+          createOrUpdate(regimen);
         }
-        createOrUpdate(regimen);
-      }
-    } catch (LMISException e) {
-      new LMISException(e, "RegimenRepository.batchSave").reportToFabric();
+        return null;
+      });
+    } catch (SQLException e) {
+      throw new LMISException(e, "RegimenRepository.batchSave");
     }
   }
 

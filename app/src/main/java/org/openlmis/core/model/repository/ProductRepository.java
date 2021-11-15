@@ -50,9 +50,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.AdditionalProductProgram;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.network.model.ProductAndSupportedPrograms;
+import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -78,6 +83,13 @@ public class ProductRepository {
 
   @Inject
   LotRepository lotRepository;
+
+  @Inject
+  ProductProgramRepository productProgramRepository;
+
+  @Inject
+  AdditionalProductProgramRepository additionalProductProgramRepository;
+
 
   @Inject
   public ProductRepository(Context context) {
@@ -168,6 +180,34 @@ public class ProductRepository {
     });
   }
 
+  public void saveProductAndProductProgram(SyncDownLatestProductsResponse response) throws LMISException {
+    List<Product> productList = new ArrayList<>();
+    try {
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
+          Product product = productAndSupportedPrograms.getProduct();
+          productProgramRepository.batchSave(product, productAndSupportedPrograms.getProductPrograms());
+          if (Program.MALARIA_CODE.equals(product.getAdditionalProgramCode())) {
+            additionalProductProgramRepository.createOrUpdate(AdditionalProductProgram
+                .builder()
+                .productCode(product.getCode())
+                .programCode(product.getAdditionalProgramCode())
+                .originProgramCode(productAndSupportedPrograms.getProductPrograms().get(0).getProgramCode())
+                .build());
+          }
+          updateDeactivateProductNotifyList(product);
+          productList.add(product);
+        }
+        batchCreateOrUpdateProducts(productList);
+        SharedPreferenceMgr.getInstance().setKeyIsFirstLoginVersion200();
+        SharedPreferenceMgr.getInstance().setLastSyncProductTime(response.getLastSyncTime());
+        return null;
+      });
+    } catch (SQLException e) {
+      throw new LMISException(e);
+    }
+  }
+
   //DON'T USE - THIS WILL BE PRIVATE WHEN KIT FEATURE TOGGLE IS ON
   public void createOrUpdate(Product product) throws LMISException {
     Product existingProduct = getByCode(product.getCode());
@@ -183,6 +223,35 @@ public class ProductRepository {
       createKitProductsIfNotExist(product);
     } catch (SQLException e) {
       Log.w(TAG, e);
+    }
+  }
+
+  public void updateDeactivateProductNotifyList(Product product) throws LMISException {
+    Product existingProduct = getByCode(product.getCode());
+
+    if (existingProduct == null) {
+      return;
+    }
+
+    if (product.isActive() == existingProduct.isActive()) {
+      return;
+    }
+    if (product.isActive()) {
+      SharedPreferenceMgr.getInstance().removeShowUpdateBannerTextWhenReactiveProduct(existingProduct.getPrimaryName());
+      return;
+    }
+
+    StockCard stockCard = stockRepository.queryStockCardByProductId(existingProduct.getId());
+    if (stockCard == null) {
+      return;
+    }
+
+    if (stockCard.getProduct().isArchived()) {
+      return;
+    }
+
+    if (stockCard.getStockOnHand() == 0) {
+      SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
     }
   }
 
