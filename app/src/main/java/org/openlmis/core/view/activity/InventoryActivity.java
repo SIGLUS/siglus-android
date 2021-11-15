@@ -54,9 +54,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public abstract class InventoryActivity<T extends InventoryPresenter> extends SearchBarActivity implements
     InventoryPresenter.InventoryView,
@@ -220,14 +218,11 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
 
   protected void initDate() {
     loading();
-    Log.i("test","load inventory start");
-    Subscription subscription = presenter.getInflatedInventory()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io())
+    Log.i("test", "load inventory start");
+    Subscription subscription = presenter.getInflatedInventoryOnMainThread()
         .subscribe(getOnViewModelsLoadedSubscriber());
     subscriptions.add(subscription);
   }
-
 
   @NonNull
   protected Subscriber<List<InventoryViewModel>> getOnViewModelsLoadedSubscriber() {

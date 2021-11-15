@@ -151,7 +151,8 @@ public class ProgramRepository {
   }
 
   public List<Program> queryProgramWithoutML() {
-    String rawSql = "select id, programCode, ProgramName from programs where programCode != '" +  Program.MALARIA_CODE + "'";
+    String rawSql =
+        "select id, programCode, ProgramName from programs where programCode != '" + Program.MALARIA_CODE + "'";
     Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
     List<Program> programs = new ArrayList<>();
     if (cursor.moveToFirst()) {

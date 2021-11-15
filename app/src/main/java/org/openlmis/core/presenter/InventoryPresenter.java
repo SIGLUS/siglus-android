@@ -19,14 +19,12 @@
 
 package org.openlmis.core.presenter;
 
-import android.util.Log;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.repository.InventoryRepository;
@@ -36,9 +34,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import rx.Observable;
-import rx.Observable.OnSubscribe;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -74,10 +70,16 @@ public abstract class InventoryPresenter extends Presenter {
 
   public abstract Observable<List<InventoryViewModel>> loadInventory();
 
+  public Observable<List<InventoryViewModel>> getInflatedInventoryOnMainThread() {
+    return getInflatedInventory()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io());
+  }
+
   public Observable<List<InventoryViewModel>> getInflatedInventory() {
     programs = programRepository.queryProgramWithoutML();
     Map<String, Program> codeToProgram = new HashMap<>();
-    for(Program program : programs) {
+    for (Program program : programs) {
       codeToProgram.put(program.getProgramCode(), program);
     }
     Map<String, String> productCodeToProgram = productRepository.listProductCodeToProgramCode();
