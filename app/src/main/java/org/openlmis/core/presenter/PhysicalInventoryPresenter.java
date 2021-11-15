@@ -69,9 +69,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     return Observable.create(subscriber -> {
       try {
         inventoryRepository.clearDraft();
-        for (InventoryViewModel model : inventoryViewModelList) {
-          inventoryRepository.createDraft(new DraftInventory((PhysicalInventoryViewModel) model));
-        }
+        inventoryRepository.createDraftInventory(inventoryViewModelList);
         subscriber.onNext(null);
         subscriber.onCompleted();
       } catch (LMISException e) {
