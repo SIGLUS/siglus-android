@@ -53,14 +53,12 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
 
   @Override
   public Observable<List<InventoryViewModel>> loadInventory() {
-    Log.i("test", "load inventory 1");
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
       try {
         List<StockCard> validStockCardsForPhysicalInventory = getValidStockCardsForPhysicalInventory();
         inventoryViewModelList.addAll(convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory));
         restoreDraftInventory();
         subscriber.onNext(inventoryViewModelList);
-        Log.i("test", "load inventory 2");
         subscriber.onCompleted();
       } catch (LMISException e) {
         subscriber.onError(e);
@@ -179,24 +177,25 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
   private List<InventoryViewModel> convertStockCardsToStockCardViewModels(
       List<StockCard> validStockCardsForPhysicalInventory) {
     Map<String, List<Map<String, String>>> lotInfoMap = stockRepository.getLotsAndLotOnHandInfo();
-    Map<String, String> lotOnHands = stockRepository.lotOnHands();
     return FluentIterable.from(validStockCardsForPhysicalInventory).transform(stockCard -> {
-      addLotInfoToStockCard(stockCard, lotInfoMap);
-      InventoryViewModel inventoryViewModel = new PhysicalInventoryViewModel(stockCard, lotOnHands);
+      long stockOnHand = addLotInfoToStockCard(stockCard, lotInfoMap);
+      InventoryViewModel inventoryViewModel = new PhysicalInventoryViewModel(stockCard, stockOnHand);
       setExistingLotViewModels(inventoryViewModel);
       return inventoryViewModel;
     }).toList();
   }
 
-  private void addLotInfoToStockCard(StockCard stockCard,
+  private long addLotInfoToStockCard(StockCard stockCard,
       Map<String, List<Map<String, String>>> lotInfoMap) {
     List<LotOnHand> lotOnHands = new ArrayList<>();
+    long stockOnHandValue = 0;
     List<Map<String, String>> lotInfoList = lotInfoMap.get(String.valueOf(stockCard.getId()));
     if (lotInfoList != null) {
       for (Map<String, String> lotInfo : lotInfoList) {
         Lot lot = new Lot();
         LotOnHand lotOnHand = new LotOnHand();
         lotOnHand.setQuantityOnHand(Long.valueOf(lotInfo.get("quantityOnHand")));
+        stockOnHandValue += lotOnHand.getQuantityOnHand();
         lot.setLotNumber(lotInfo.get("lotNumber"));
         lot.setExpirationDate(
             DateUtil.parseString(lotInfo.get("expirationDate"), DateUtil.DB_DATE_FORMAT));
@@ -206,6 +205,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     }
 
     stockCard.setLotOnHandListWrapper(lotOnHands);
+    return stockOnHandValue;
   }
 
   private void saveInventoryDate() {

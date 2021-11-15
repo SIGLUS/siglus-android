@@ -221,7 +221,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
   protected void initDate() {
     loading();
     Log.i("test","load inventory start");
-        Subscription subscription = presenter.getInflatedInventory()
+    Subscription subscription = presenter.getInflatedInventory()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
         .subscribe(getOnViewModelsLoadedSubscriber());

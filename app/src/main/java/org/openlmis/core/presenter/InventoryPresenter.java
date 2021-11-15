@@ -81,7 +81,6 @@ public abstract class InventoryPresenter extends Presenter {
       codeToProgram.put(program.getProgramCode(), program);
     }
     Map<String, String> productCodeToProgram = productRepository.listProductCodeToProgramCode();
-    Log.i("test", " load inventory 0.1");
     return loadInventory().doOnNext(inventoryViewModels -> {
       for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
         if (inventoryViewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER

@@ -23,7 +23,6 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import androidx.core.content.ContextCompat;
 import java.util.List;
-import java.util.Map;
 import lombok.Data;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -44,8 +43,8 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
     super(stockCard);
   }
 
-  public PhysicalInventoryViewModel(StockCard stockCard, Map<String, String> lotsOnHands) {
-    super(stockCard, lotsOnHands);
+  public PhysicalInventoryViewModel(StockCard stockCard, long stockOnHand) {
+    super(stockCard, stockOnHand);
   }
 
   @Override
