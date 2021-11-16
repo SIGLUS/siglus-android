@@ -44,6 +44,7 @@ import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.googleanalytics.ScreenName;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.IssueVoucherDraftPresenter;
 import org.openlmis.core.presenter.IssueVoucherDraftPresenter.IssueVoucherDraftView;
@@ -87,6 +88,8 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
 
   private List<String> selectedProductCodes;
 
+  private Pod originPod;
+
   IssueVoucherDraftProductAdapter issueVoucherDraftProductAdapter = new IssueVoucherDraftProductAdapter();
 
   private final SingleClickButtonListener actionPanelClickListener = new SingleClickButtonListener() {
@@ -111,6 +114,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
     private void openIssueVoucherReportPage() {
       Intent intent = new Intent(IssueVoucherDraftActivity.this, IssueVoucherReportActivity.class);
       intent.putExtra(PARAM_ISSUE_VOUCHER, issueVoucherDraftPresenter.coverToPodFromIssueVoucher(programCode, true));
+      intent.putExtra(IntentConstants.PARAM_ORIGIN_POD, originPod);
       if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
         intent.putExtra(IntentConstants.FROM_PAGE, fromPage);
       }
@@ -233,6 +237,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
     fromPage = (ScreenName) getIntent().getSerializableExtra(IntentConstants.FROM_PAGE);
     productsInReport = (List<String>) getIntent().getSerializableExtra(
         IntentConstants.PARAM_PREVIOUS_SELECTED_PRODUCTS);
+    originPod = (Pod) getIntent().getSerializableExtra(IntentConstants.PARAM_ORIGIN_POD);
     if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
       actionPanelView.setNegativeButtonVisibility(View.GONE);
       LinearLayout.LayoutParams layoutParams = (LayoutParams) actionPanelView.getBtnComplete().getLayoutParams();

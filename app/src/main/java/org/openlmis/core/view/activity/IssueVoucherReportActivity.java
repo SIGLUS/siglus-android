@@ -97,6 +97,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   private IssueVoucherProductAdapter productAdapter;
   private IssueVoucherReportAdapter issueVoucherReportAdapter;
   private RecyclerView.OnScrollListener[] listeners;
+  private Pod originPod;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +105,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     podId = getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 0);
     String toPage = getIntent().getStringExtra(Constants.PARAM_ISSUE_VOUCHER_OR_POD);
     pageName = toPage == null ? Constants.PARAM_ISSUE_VOUCHER : toPage;
+    originPod = (Pod) getIntent().getSerializableExtra(IntentConstants.PARAM_ORIGIN_POD);
     if (getIntent().getExtras() != null) {
       pod = (Pod) getIntent().getExtras().getSerializable(Constants.PARAM_ISSUE_VOUCHER);
       isBackToCurrentPage = ScreenName.ISSUE_VOUCHER_REPORT_SCREEN
@@ -118,7 +120,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     if (savedInstanceState != null && presenter.getIssueVoucherReportViewModel() != null) {
       refreshIssueVoucherForm(presenter.getPod());
     } else if (pod != null) {
-      presenter.loadViewModelByPod(pod, isBackToCurrentPage);
+      presenter.loadViewModelByPod(originPod, pod, isBackToCurrentPage);
     } else {
       presenter.loadData(podId);
     }
@@ -215,6 +217,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
         presenter.getIssueVoucherReportViewModel().getProgram().getProgramCode());
     intent.putExtra(IntentConstants.PARAM_SELECTED_PRODUCTS,
         (Serializable) presenter.getAddedProductCodeList());
+    intent.putExtra(IntentConstants.PARAM_ORIGIN_POD, pod);
     startActivity(intent);
   }
 

@@ -78,7 +78,7 @@ public class IssueVoucherReportPresenterTest {
     when(programRepository.queryByCode(any())).thenReturn(program);
 
     // when
-    presenter.loadViewModelByPod(PodBuilder.generatePod(), false);
+    presenter.loadViewModelByPod(null, PodBuilder.generatePod(), false);
 
     //then
     assertEquals(program.getProgramName(), presenter.getIssueVoucherReportViewModel().getProgram().getProgramName());
@@ -137,7 +137,7 @@ public class IssueVoucherReportPresenterTest {
     presenter.pod = pod;
 
     // when
-    presenter.loadViewModelByPod(pod, true);
+    presenter.loadViewModelByPod(pod, pod, true);
 
     // then
     assertEquals(2, presenter.getPod().getPodProductItemsWrapper().size());

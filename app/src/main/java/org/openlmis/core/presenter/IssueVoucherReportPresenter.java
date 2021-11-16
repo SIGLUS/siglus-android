@@ -119,11 +119,12 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     issueVoucherView = (IssueVoucherView) v;
   }
 
-  public void loadViewModelByPod(Pod podContent, boolean isBackToCurrentPage) {
+  public void loadViewModelByPod(Pod originPod, Pod podContent, boolean isBackToCurrentPage) {
     if (isBackToCurrentPage) {
-      List<PodProductItem> existedProducts = new ArrayList<>(pod.getPodProductItemsWrapper());
+      List<PodProductItem> existedProducts = new ArrayList<>(originPod.getPodProductItemsWrapper());
       existedProducts.addAll(podContent.getPodProductItemsWrapper());
-      pod.setPodProductItemsWrapper(existedProducts);
+      originPod.setPodProductItemsWrapper(existedProducts);
+      pod = originPod;
     } else {
       pod = podContent;
       if (pod.getOrderSupplyFacilityType() != null) {
@@ -223,7 +224,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   }
 
   protected Action1<Pod> loadDataOnNextAction = podContent -> {
-    loadViewModelByPod(podContent, false);
+    loadViewModelByPod(null, podContent, false);
   };
 
   private void saveStockManagement(Pod pod) throws LMISException {
