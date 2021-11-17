@@ -50,6 +50,8 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
 
   public static final int REQUEST_CODE = 1050;
 
+  public static final String KEY_FROM_INITIAL_INVENTORY = "Initial Inventory";
+
   @InjectView(R.id.btn_add_products)
   TextView btnAddProducts;
 

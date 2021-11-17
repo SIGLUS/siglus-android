@@ -153,7 +153,7 @@
   <string name="msg_via_submit_signature">Enter your initials and then approve the requisition amounts</string>
   <string name="msg_rapid_test_submit_signature">Enter your initials and then approve the MMIT amounts</string>
   <string name="msg_mmia_submit_signature">Enter your initials to approve MMIA information</string>
-  <string name="msg_approve_signature_rapid_test">Enter your initials and then approve the Rapid Test</string>
+  <string name="msg_approve_signature_rapid_test">Enter your initials and then approve the MMIT</string>
   <string name="msg_approve_signature_via">Enter your initials and then approve the Requisition Balancete</string>
   <string name="msg_approve_signature_mmia">Enter your initials and then approve the MMIA</string>
   <string name="msg_requisition_signature_message_notify_via">Please hand the device to the person responsible for approval and submission of the Requisition Balancete</string>

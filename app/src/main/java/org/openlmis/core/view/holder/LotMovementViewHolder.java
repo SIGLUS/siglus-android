@@ -168,6 +168,8 @@ public class LotMovementViewHolder extends BaseViewHolder {
   private boolean shouldShowErrorMessage() {
     return PhysicalInventoryActivity.KEY_FROM_PHYSICAL_COMPLETED.equals(viewModel.getFrom())
         || PhysicalInventoryActivity.KEY_FROM_PHYSICAL_VERIFY.equals(viewModel.getFrom())
+        || BulkInitialInventoryActivity.KEY_FROM_INITIAL_INVENTORY.equals(viewModel.getFrom())
+        || InitialInventoryActivity.KEY_ADD_NEW_PRODUCT.equals(viewModel.getFrom())
         || NewStockMovementActivity.KEY_FROM_NEW_MOVEMENT_COMPLETE.equals(viewModel.getFrom())
         || UnpackKitActivity.KEY_FROM_UNPACK_KIT_COMPLETED.equals(viewModel.getFrom());
   }
