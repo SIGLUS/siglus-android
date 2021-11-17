@@ -20,9 +20,11 @@ package org.openlmis.core.presenter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
+import android.util.Log;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openlmis.core.LMISApp;
@@ -120,15 +122,20 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
   }
 
   protected void restoreDraftInventory() throws LMISException {
+    Log.i("performance", "load inventory 1");
     List<DraftInventory> draftList = inventoryRepository.queryAllDraft();
-
-    for (DraftInventory draftInventory : draftList) { // total : N
-      for (InventoryViewModel viewModel : inventoryViewModelList) { // total: N+1
-        if (viewModel.getStockCardId() == draftInventory.getStockCard().getId()) {
-          ((PhysicalInventoryViewModel) viewModel).setDraftInventory(draftInventory);
-        }
+    Map<Long, DraftInventory> stockCardIdToDraftInventory = new HashMap<>();
+    for (DraftInventory draftInventory : draftList) {
+      stockCardIdToDraftInventory.put(draftInventory.getStockCard().getId(), draftInventory);
+    }
+    for (InventoryViewModel viewModel : inventoryViewModelList) {
+      long viewModelStockCardId = viewModel.getStockCardId();
+      if (stockCardIdToDraftInventory.containsKey(viewModel.getStockCardId())) {
+        ((PhysicalInventoryViewModel) viewModel)
+            .setDraftInventory(stockCardIdToDraftInventory.get(viewModelStockCardId));
       }
     }
+    Log.i("performance", "load inventory 2");
   }
 
   protected StockMovementItem calculateAdjustment(InventoryViewModel model, StockCard stockCard) {
