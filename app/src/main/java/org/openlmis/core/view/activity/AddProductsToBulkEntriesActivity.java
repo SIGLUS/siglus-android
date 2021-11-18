@@ -38,7 +38,6 @@ import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.googleanalytics.ScreenName;
-import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.AddProductsToBulkEntriesPresenter;
 import org.openlmis.core.utils.InjectPresenter;
@@ -80,14 +79,11 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
 
   private ScreenName fromPage;
 
-  private Pod originPod;
-
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_PRODUCTS);
     programCode = (String) getIntent().getSerializableExtra(CHOSEN_PROGRAM_CODE);
     fromPage = (ScreenName) getIntent().getSerializableExtra(IntentConstants.FROM_PAGE);
-    originPod = (Pod) getIntent().getSerializableExtra(IntentConstants.PARAM_ORIGIN_POD);
     super.onCreate(savedInstanceState);
     initRecyclerView();
     loading(getString(R.string.add_all_products_loading_message));
@@ -170,7 +166,6 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
           intent.putExtra(IntentConstants.PARAM_PREVIOUS_SELECTED_PRODUCTS, (Serializable) previouslyProductCodes);
           intent.putExtra(CHOSEN_PROGRAM_CODE, programCode);
           intent.putExtra(IntentConstants.FROM_PAGE, fromPage);
-          intent.putExtra(IntentConstants.PARAM_ORIGIN_POD, originPod);
           issueVoucherDraftLauncher.launch(intent);
         } else {
           Intent intent = new Intent();
