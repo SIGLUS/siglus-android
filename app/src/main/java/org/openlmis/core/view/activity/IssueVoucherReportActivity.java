@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.openlmis.core.utils.Constants.PARAM_ISSUE_VOUCHER;
 import static org.openlmis.core.view.widget.DoubleRecycleViewScrollListener.scrollInSync;
 
 import android.content.Intent;
@@ -26,6 +27,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -215,8 +218,17 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
         presenter.getIssueVoucherReportViewModel().getProgram().getProgramCode());
     intent.putExtra(IntentConstants.PARAM_SELECTED_PRODUCTS,
         (Serializable) presenter.getAddedProductCodeList());
-    startActivity(intent);
+    addProductPageLauncher.launch(intent);
   }
+
+  private final ActivityResultLauncher<Intent> addProductPageLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+            pod = (Pod) result.getData().getSerializableExtra(PARAM_ISSUE_VOUCHER);
+            presenter.loadViewModelByPod(pod, true);
+        }
+      });
+
 
   private void initIssueVoucherList() {
     rvIssueVoucherList.setLayoutManager(new LinearLayoutManager(this));

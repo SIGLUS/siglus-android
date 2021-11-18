@@ -113,6 +113,9 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
       intent.putExtra(PARAM_ISSUE_VOUCHER, issueVoucherDraftPresenter.coverToPodFromIssueVoucher(programCode, true));
       if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
         intent.putExtra(IntentConstants.FROM_PAGE, fromPage);
+        setResult(RESULT_OK, intent);
+        finish();
+        return;
       }
       startActivity(intent);
     }
