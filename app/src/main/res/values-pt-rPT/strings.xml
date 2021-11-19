@@ -52,18 +52,6 @@
   <string name="label_kits_stock_cards">Kits</string>
   <string name="label_sync">Sincronizar dados</string>
   <string name="action_add_new_drug">Adicionar novo produto</string>
-  <plurals name="minute_unit">
-    <item quantity="one">%s minuto</item>
-    <item quantity="other">%s minutos</item>
-  </plurals>
-  <plurals name="hour_unit">
-    <item quantity="one">%s Hora</item>
-    <item quantity="other">%s Horas</item>
-  </plurals>
-  <plurals name="day_unit">
-    <item quantity="one">%s dia</item>
-    <item quantity="other">%s dias</item>
-  </plurals>
   <string name="label_last_synced_ago">%s desde a última sincronização</string>
   <string name="label_rnr_form_last_synced_time_ago">Última sincronização da Requisição %s atrás</string>
   <string name="label_stock_card_last_synced_time_ago">Última sincronização das Fichas de Stock a %s atrás</string>
@@ -269,14 +257,6 @@
   <string name="NEGATIVE_ADJUST">Ajustes Negativos</string>
   <string name="POSITIVE_ADJUST">Ajustes Positivos</string>
 
-  <!--Reason/Origin/Destination select dialog-->
-  <string-array name="movement_type_items_array">
-    <item>Entradas</item>
-    <item>Ajustes Negativos</item>
-    <item>Ajustes Positivos</item>
-    <item>Saídas</item>
-  </string-array>
-
   <!--Stock Card List Page-->
   <string name="search_hint">Procurar…</string>
   <string name="action_navigate_archive">Produtos Arquivados</string>
@@ -284,12 +264,6 @@
   <string name="hint_save_requisition_failed">Não foi possível gravar Requisição Balancete, por favor, contacte o administrador.</string>
   <string name="hint_mmia_complete_failed">Não foi possível completar o MMIA, por favor, contacte o administrador.</string>
   <string name="hint_requisition_complete_failed">Não foi possível completar Requisição Balancete, por favor, contacte o administrador.</string>
-  <string-array name="sort_items_array">
-    <item>Ordenar por alfabético: de A a Z</item>
-    <item>Ordenar por alfabético: de Z a A</item>
-    <item>Ordenar por quantidade: Alta para Baixa</item>
-    <item>Ordenar por quantidade: Baixa para Alta</item>
-  </string-array>
   <string name="hint_update_banner_tips">%1$s Foi desactivado e removido para a lista de <![CDATA[<b>produtos arquivados</b>]]> lista</string>
   <string name="msg_expiring_date">Expirando %1$s</string>
   <string name="msg_expired_date">Expirado %1$s</string>
@@ -344,10 +318,6 @@
   <string name="label_unsynced_requisition">Esta <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
   <string name="label_mmia_submitted_message">MMIA enviado com sucesso no dia %1$s</string>
   <string name="label_submitted_message">%1$s enviado com sucesso no dia  %2$s</string>
-  <plurals name="label_drug_count_message">
-    <item quantity="one"><![CDATA[<b>%1$s</b>]]> Producto requisitado</item>
-    <item quantity="other"><![CDATA[<b>%1$s</b>]]> Productos requisitados</item>
-  </plurals>
   <string name="btn_view_requisition">Ver %s</string>
   <string name="label_period_date">%1$s à %2$s</string>
   <string name="label_emergency_date">Requisição de Emergencia – %s</string>
@@ -564,16 +534,6 @@
   <string name="inactive_status">seu status está inativo</string>
   <string name="inactive">inativo</string>
   <string name="ifLeave">Tem certeza que deseja encerrar sem guardar seu trabalho? Se você clicar "SIM", o rascunho será APAGADO?</string>
-
-  <string-array name="movement_date_items_array">
-    <item>Últimos 7 dias</item>
-    <item>Últimos 14 dias</item>
-    <item>Últimos 30 dias</item>
-    <item>Últimos 90 dias</item>
-    <item>Últimos 180 dias</item>
-    <item>Últimos 365 dias</item>
-  </string-array>
-
   <string name="upgrade_download_complete">Download Completed</string>
   <string name="upgrade_download_title">Download</string>
   <string name="upgrade_download_msg">Download Progress: %1$d %%</string>
@@ -589,5 +549,43 @@
 
   <string name="title_issue_voucher_remote_input_order_number">Issue voucher remote</string>
   <string name="title_electronic_issue_voucher">Electronic Issue Voucher</string>
+
+  <plurals name="minute_unit">
+    <item quantity="one">%s minuto</item>
+    <item quantity="other">%s minutos</item>
+  </plurals>
+  <plurals name="hour_unit">
+    <item quantity="one">%s Hora</item>
+    <item quantity="other">%s Horas</item>
+  </plurals>
+  <plurals name="day_unit">
+    <item quantity="one">%s dia</item>
+    <item quantity="other">%s dias</item>
+  </plurals>
+  <plurals name="label_drug_count_message">
+    <item quantity="one"><![CDATA[<b>%1$s</b>]]> Producto requisitado</item>
+    <item quantity="other"><![CDATA[<b>%1$s</b>]]> Productos requisitados</item>
+  </plurals>
+  <!--Reason/Origin/Destination select dialog-->
+  <string-array name="movement_type_items_array">
+    <item>Entradas</item>
+    <item>Ajustes Negativos</item>
+    <item>Ajustes Positivos</item>
+    <item>Saídas</item>
+  </string-array>
+  <string-array name="sort_items_array">
+    <item>Ordenar por alfabético: de A a Z</item>
+    <item>Ordenar por alfabético: de Z a A</item>
+    <item>Ordenar por quantidade: Alta para Baixa</item>
+    <item>Ordenar por quantidade: Baixa para Alta</item>
+  </string-array>
+  <string-array name="movement_date_items_array">
+    <item>Últimos 7 dias</item>
+    <item>Últimos 14 dias</item>
+    <item>Últimos 30 dias</item>
+    <item>Últimos 90 dias</item>
+    <item>Últimos 180 dias</item>
+    <item>Últimos 365 dias</item>
+  </string-array>
 
 </resources>
