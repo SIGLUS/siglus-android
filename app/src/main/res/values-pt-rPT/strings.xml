@@ -101,7 +101,6 @@
   <string name="btn_negative">Não</string>
   <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,\e será submetido automaticamente quando tiver conexão a internet.</string>
   <string name="msg_reason_for_total_not_match"><![CDATA[Adicionar razão para a diferença entre totais de regimes e total de pacientes]]></string>
-  <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \"Observações\".</string>
   <string name="btn_ok">OK</string>
   <string name="label_add_adult_regime">+ Regimes de adultos</string>
   <string name="label_add_child_regime">+ Regime de criancas</string>
@@ -134,7 +133,6 @@
   <string name="label_fnm">FNM</string>
   <string name="label_product_codes">FNM</string>
   <string name="label_product_name">Produto</string>
-  <string name="msg_requisition_submit_tip">A sua Requisição foi gravada com sucesso,\ne vai ser submetida automaticamente quando tiver conexão a internet.</string>
   <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
   <string name="msg_requisition_field_exist_null">Não é possível enviar requisição com campo nulo!</string>
   <string name="btn_approve">Visto</string>
@@ -169,9 +167,7 @@
 
   <!-- MMIT -->
   <string name="balance_test_report">Balancete dos MMIT na Unidade Sanitária</string>
-  <string name="msg_rapid_test_submit_tip">O seu Relatório MMIT foi gravado com sucesso,\ne vai ser submetido automaticamente quando tiver conexão a internet.</string>
   <string name="attention_report_in_kit">(Atenção: Reportados em Kits)</string>
-  <string name="hint_rapid_test_complete_failed">Não foi possível completar o MMIT, por favor, contacte o administrador.</string>
   <string name="unjustified">Injustificados</string>
 
   <!-- PTV -->
@@ -293,8 +289,6 @@
   <string name="error_rnr_field_mandatory_negative">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
   <string name="error_rnr_validation_equation_not_equal">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
   <string name="error_rnr_report_start_date_invalid">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
-  <string name="error_pod_order_number_not_exist">Sync failed. This order number does not exist. Please confirm whether this order number is correct.</string>
-  <string name="error_pod_not_sync">This order did not sync due to lack of internet connection. The form will be submitted as soon as an internet connection is available. </string>
 
   <!--Rnr form historical list-->
   <string name="label_via_name">Requisição Balancete</string>
@@ -370,8 +364,6 @@
 
   <!--update notification text-->
   <string name="action_wipe_data">Limpar e importar dados do servidor</string>
-  <string name="message_warning_wipe_data">Esta operação irá remover todos os dados provenientes do dispositivo &amp; amp; descarregue dados previamente submetidos de volta para o tablet, \ n AVISO todos movimentos ou dados não sincronizados serão perdidos. Você quer continuar?</string>
-  <string name="message_wipe_no_connection">Rede indisponível, por favor, tente novamente quando a rede estiver disponível.</string>
 
   <!--Select Emergency Products-->
   <string name="title_select_emergency_products">Seleccione os produtos para adicionar a sua requisição de emergência</string>
@@ -471,7 +463,6 @@
   <string name="error_empty_rapid_test_product">As informações do Relatório MMIT não podem estar em branco.</string>
   <string name="error_empty_rapid_test_list">A lista de relatórios de MMIT não pode estar vazia.</string>
   <string name="btn_edit">EDITAR</string>
-  <string name="msg_initial_inventory_lot_review_add">Lote <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Inventário</font>]]> de <![CDATA[<font color="#000">%2$d</font>]]> será feito</string>
   <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
   <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\"> Ajuste positivo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>
   <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>
@@ -534,21 +525,129 @@
   <string name="inactive_status">seu status está inativo</string>
   <string name="inactive">inativo</string>
   <string name="ifLeave">Tem certeza que deseja encerrar sem guardar seu trabalho? Se você clicar "SIM", o rascunho será APAGADO.</string>
-  <string name="upgrade_download_complete">Download Completed</string>
-  <string name="upgrade_download_title">Download</string>
-  <string name="upgrade_download_msg">Download Progress: %1$d %%</string>
-  <string name="upgrade_download_Failed">Download Failed</string>
-  <string name="upgrade_download_try">Please try later</string>
-  <string name="upgrade_download_click_install">Click to install</string>
-  <string name="dirty_data_correct_warning">Erro de cálculo de stock do produto %s. O sistema irá apagar os dados da ficha de stock. Actualize os dados do stock usando os ajustes/entradas ou inventário.</string>
 
   <!-- Siglus TO 12 -->
-  <string name="dashboard_product_types">Total Products</string>
-  <string name="hint_error_field_required">This field is required</string>
-  <string name="hint_error_more_than_shipped">You can\'t accept more stock than was shipped</string>
-
   <string name="title_issue_voucher_remote_input_order_number">Issue voucher remote</string>
-  <string name="title_electronic_issue_voucher">Electronic Issue Voucher</string>
+  <string name="msg_regime_total_and_patient_total_not_match">O regime e os totais do paciente não coincidem. Por favor, corrija seus números ou adicione um comentário que explique porque os totais diferem</string>
+  <string name="msg_requisition_submit_tip">Seu formulário de requisição foi salvo com sucesso e será enviado automaticamente quando você tiver uma conexão de dados.</string>
+  <string name="msg_rapid_test_submit_tip">Seu formulário de testes rápidos foi salvo com sucesso e será enviado automaticamente quando você tiver uma conexão de dados</string>
+  <string name="hint_rapid_test_complete_failed">Não foi possível preencher o formulário MMIT, entre em contato com o administrador.</string>
+  <string name="error_pod_order_number_not_exist">A sincronização falhou. Este número de pedido não existe. Confirme se este número de pedido está correto.</string>
+  <string name="error_pod_not_sync">Este pedido não sincronizou devido à falta de conexão com a Internet. O formulário será enviado assim que houver uma conexão com a Internet disponível.</string>
+  <string name="message_warning_wipe_data">Esta operação irá remover todos os dados deste dispositivo e baixar os dados enviados anteriormente sincronizados para o tablet, AVISO Quaisquer movimentos ou dados não sincronizados serão perdidos. Você quer continuar?</string>
+  <string name="message_wipe_no_connection">A rede não está disponível, tente novamente quando tiver a rede</string>
+  <string name="msg_initial_inventory_lot_review_add">Lote <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Inventário</font>]]> <![CDATA[<font color="#000">%2$d</font>]]> será feito</string>
+  <string name="upgrade_download_complete">Transferência concluída</string>
+  <string name="upgrade_download_title">Baixar</string>
+  <string name="upgrade_download_msg">Progresso do download: %1$d %%</string>
+  <string name="upgrade_download_Failed">Falha no Download</string>
+  <string name="upgrade_download_try">Por favor tente mais tarde</string>
+  <string name="upgrade_download_click_install">Clique para instalar</string>
+  <string name="dirty_data_correct_warning">Há um erro de cálculo de stock no produto %s, o sistema apenas exclui os dados sujos. por favor, use receber / inventário físico / ajustes para registrar novamente o estoque do produto.</string>
+  <string name="dashboard_product_types">Produtos Totais</string>
+  <string name="msg_fetching_facility_info">Baixando informações da US…</string>
+  <string name="msg_fetching_facility_info_failed">O download das informações da US falhou, faça login novamente.</string>
+  <string name="home_label_requisition_and_report">Requisição e Relatório</string>
+  <string name="home_label_issue_voucher_and_pod">Emitir Guia de remessa e Relatórrio de entrega</string>
+  <string name="title_issue_voucher_and_pod">Emitir Guia de remessa e Relatórrio de entrega</string>
+  <string name="msg_fetching_regimens">Baixando regimes …</string>
+  <string name="msg_fetching_regimens_failed">O download das informações dos regimes do servidor falhou, faça login novamente.</string>
+  <string name="msg_calculating_cmm">Calculando CMM …</string>
+  <string name="action_bulk_entries">Múltiplas entradas</string>
+  <string name="action_bulk_issues">Saída multíplas</string>
+  <string name="msg_no_product_in_bulk_entries">Não há nenhum produto, por favor, adicione</string>
+  <string name="vc_program_name">Requisição</string>
+  <string name="ml_program_name">Malária</string>
+  <string name="tarv_program_name">MMIA</string>
+  <string name="tr_program_name">MMIT</string>
+  <string name="msg_cannot_create_emergency_requisition">Não é possível criar requisição de emergência</string>
+  <string name="label_stockcard_lot_code">Código de lote</string>
+  <string name="label_stockcard_lot_expire_date">Data de validade</string>
+  <string name="label_stockcard_lot_last_update">Última atualização</string>
+  <string name="btn_add">ADICIONAR</string>
+  <string name="btn_bulk_entries_add_new_lot">ADICIONE NOVO LOTE</string>
+  <string name="add_all_products_loading_message">A carregar produtos</string>
+  <string name="msg_no_product_added">Nenhum produto adicionado</string>
+  <string name="title_bulk_entries">Múltiplas entradas</string>
+  <string name="title_add_product_to_bulk_entries">Adicionar produtos</string>
+  <string name="msg_is_archived">[Arquivado]</string>
+  <string name="msg_bulk_entries_lot_review"><![CDATA[<Strong><big>Lote  <font color="#000">%1$s</font></Strong> Valor recebido: <Strong><font color="#000">%2$d</font></big></Strong>]]></string>
+  <string name="alert_for_fill_in_lot_or_remove_product">Insira um valor maior que 0 em pelo menos um lote ou remova o produto</string>
+  <string name="msg_isAndroid_False">O login falhou, este usuário não é um usuário Android, entre em contato com o administrador</string>
+  <string name="label_inventory_options_all_product">Todos os produtos</string>
+  <string name="msg_validate_failed_tips">Conclua o inventário de todos os produtos</string>
+  <string name="msg_empty_document_number">O número do documento não pode ficar em branco</string>
+  <string name="msg_remove_confirm">Tem certeza de que deseja remover o produto? Se você clicar em \'sim\', o produto será removido.</string>
+  <string name="hint_bulk_entries_signature">Assinatura</string>
+  <string name="msg_complete_successfully">Concluído com sucesso</string>
+  <string name="title_bulk_issue">Saída multíplas</string>
+  <string name="unsuccessfully_saved">Gravado sem sucesso</string>
+  <string name="msg_fetching_pods">Baixando os relatório de recepção…</string>
+  <string name="msg_sync_pod_failed">A sincronização dos relatórios de recepção falhou</string>
+  <string name="label_create_issue_voucher_draft">Criar rascunho de relatório de recepção</string>
+  <string name="label_issue_voucher">Emitir relatório de recepção</string>
+  <string name="label_pod">relatório de recepção</string>
+  <string name="hint_order_number">Número do pedido</string>
+  <string name="hint_program">Programa</string>
+  <string name="hint_origin_of_movement">Origem do Movimento</string>
+  <string name="msg_order_number_existed">Já existe este número do relatório de recepção na página da lista de relatórios de recepção, verifique.</string>
+  <string name="alert_order_number_can_not_be_blank">O número do ordem não pode ficar em branco</string>
+  <string name="alert_program_can_not_be_blank">O programa não pode ficar em branco</string>
+  <string name="alert_movement_reason_can_not_be_blank">O motivo do movimento não pode ficar em branco</string>
+  <string name="label_ordering_facility">Unidade de pedidos</string>
+  <string name="label_program">Programa</string>
+  <string name="label_supplying_depot">Depósito de abastecimento</string>
+  <string name="label_shipping_date">Data de envio</string>
+  <string name="title_issue_voucher_draft">Rascunho da guia de remessa</string>
+  <string name="label_requesting_facility">Solicitando US</string>
+  <string name="label_reporting_period">Período de Relatório</string>
+  <string name="label_view">VISUALIZAR</string>
+  <string name="msg_issue_voucher_remove_confirm">Tem certeza de que deseja apagar esta guia de remessa? Se você clicar em \'sim\', a guia será apagada.</string>
+  <string name="msg_cant_create_issue_voucher">Você não tem permissão para criar uma nova de guia de remessa até concluir o último rascunho.</string>
+  <string name="label_confirm">CONFIRME</string>
+  <string name="msg_has_incomplete_manual_issue_voucher">Preencha PRIMEIRO o manual de emissão do voucher de %1$s na página de emissão do voucher.</string>
+  <string name="msg_has_incomplete_electronic_issue_voucher">Por favor, preencha PRIMEIRO a guia de remessa %1$s na página da guia de remessa.</string>
+  <string name="label_product_unit">Unidade de Produto</string>
+  <string name="label_quantity_ordered">Quantidade Pedida</string>
+  <string name="label_partial_fulfilled">Aviamento parcial</string>
+  <string name="label_quantity_shipped">quantidade aviada</string>
+  <string name="label_note">Observação</string>
+  <string name="label_default_rejection_reason">Selecione uma opção</string>
+  <string name="hint_error_field_required">Este campo é obrigatório</string>
+  <string name="hint_error_more_than_shipped">Você não pode confirmar stock acima da quantidade aviada</string>
+  <string name="hint_quantity_shipped">Quantidade aviada</string>
+  <string name="hint_quantity_accepted">Quantidade aceite</string>
+  <string name="alert_issue_voucher_can_not_be_blank">Insira a quantidade para pelo menos um lote ou remova o produto</string>
+  <string name="msg_issue_voucher_back_confirm">Tem certeza de que deseja sair sem gravar o seu trabalho? Se você clicar em "sim", seu rascunho será apagado.</string>
+  <string name="msg_shipped_quantity_less_than_accepted_quantity">Você não pode aceitar mais estoque do que foi enviado</string>
+  <string name="msg_shipped_quantity_can_not_be_blank">A quantidade aviada não pode estar em branco</string>
+  <string name="msg_accepted_quantity_can_not_be_blank">A quantidade aceita não pode estar em branco</string>
+  <string name="msg_shipped_quantity_can_not_be_zero">Quantidade aviada não pode ser 0</string>
+  <string name="title_electronic_issue_voucher">Guia de remessa electrónica</string>
+  <string name="hint_save_issue_voucher_failed">Não foi possível gravar a guia de remessa, por favor entre em contato com o administrador.</string>
+  <string name="msg_title_for_signature">Comprovante de entrega para</string>
+  <string name="msg_receive_for_signature">Recebido por</string>
+  <string name="msg_delivered_for_signature">Entregue por</string>
+  <string name="btn_next">Próximo</string>
+  <string name="label_issue_voucher_number">GUIA DE REMESSA Nº</string>
+  <string name="label_supplier">Depósito Fornecedor</string>
+  <string name="label_district">Distrito</string>
+  <string name="label_province">Província</string>
+  <string name="label_Client">Unidade Dependente</string>
+  <string name="label_requisition_number">N° de Requisição</string>
+  <string name="label_total_of_volume">N°Total de volumes</string>
+  <string name="label_requisition_date">Data da requisição</string>
+  <string name="label_issue_voucher_date">Data da remessa</string>
+  <string name="label_supply">Fornecimento</string>
+  <string name="label_returned">Devolução</string>
+  <string name="label_expired">Expirado</string>
+  <string name="label_reception_date">Data da recepção</string>
+  <string name="label_overstocked">Acumulado</string>
+  <string name="label_issue_voucher_number_title">"REPÚBLICA DE MOÇAMBIQUE        </string>
+  <string name="label_pod_header">ENTRADA</string>
+  <string name="label_number">N°</string>
+  <string name="msg_remove_lot_title">Remover lote</string>
+  <string name="msg_remove_lot"><![CDATA[Remova o lote <b>%1$s</b> que está expirando em %2$s de <b>%3$s</b>]]></string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>

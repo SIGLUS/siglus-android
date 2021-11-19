@@ -691,6 +691,9 @@
   <string name="label_issue_received_by">Received by: </string>
   <string name="error_sync_previous_period">Sync failed. The previous requisition failed to be synced, please contact the administrator.</string>
   <string name="msg_quantity_can_not_be_zero">Quantity cannot be 0</string>
+  <string name="label_supplying_depot">Supplying Depot</string>
+  <string name="label_shipping_date">Shipping Date</string>
+  <string name="label_requesting_facility">Requesting Facility</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minute</item>
