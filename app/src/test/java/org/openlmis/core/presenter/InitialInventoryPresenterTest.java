@@ -3,6 +3,7 @@ package org.openlmis.core.presenter;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyByte;
@@ -312,7 +313,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
     assertEquals(2, initialInventoryPresenter.getInventoryViewModelList().size());
     assertFalse(initialInventoryPresenter.getInventoryViewModelList().get(0).isBasic());
     assertEquals(DEFAULT_ID, initialInventoryPresenter.getInventoryViewModelList().get(0).getProductId());
-    assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(1).getProductId() != DEFAULT_ID);
+    assertNotEquals(DEFAULT_ID, initialInventoryPresenter.getInventoryViewModelList().get(1).getProductId());
   }
 
   @Test
@@ -325,7 +326,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
     assertEquals(2, initialInventoryPresenter.getInventoryViewModelList().size());
     assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(0).isBasic());
     assertEquals(DEFAULT_ID, initialInventoryPresenter.getInventoryViewModelList().get(0).getProductId());
-    assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(1).getProductId() != DEFAULT_ID);
+    assertNotEquals(DEFAULT_ID, initialInventoryPresenter.getInventoryViewModelList().get(1).getProductId());
   }
 
 

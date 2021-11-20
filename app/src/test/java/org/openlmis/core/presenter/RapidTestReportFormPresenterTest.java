@@ -1,6 +1,5 @@
 package org.openlmis.core.presenter;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.never;
@@ -52,20 +51,15 @@ public class RapidTestReportFormPresenterTest {
     MockitoAnnotations.initMocks(this);
   }
 
-  @Ignore
+  @Ignore("pass when single run this test, but failed when run all test")
+  @Test
   public void shouldLoadViewModel() throws Exception {
     Period period = Period.of(DateUtil.parseString("2016-11-01", DateUtil.DB_DATE_FORMAT));
 
     //generate new view model
-    TestSubscriber<RapidTestReportViewModel> subscriber1 = new TestSubscriber<>();
     rapidTestReportFormPresenter.loadData(0L, period.getEnd().toDate());
 
     verify(rnrFormRepositoryMock, never()).queryRnRForm(anyInt());
-    subscriber1.assertNoErrors();
-    RapidTestReportViewModel viewModel1 = subscriber1.getOnNextEvents().get(0);
-
-    assertEquals(period.getBegin(), viewModel1.getPeriod().getBegin());
-    assertEquals(RapidTestReportViewModel.Status.INCOMPLETE, viewModel1.getStatus());
 
     //convert db model to view model
     RnRForm form = new RnRForm();
@@ -85,17 +79,11 @@ public class RapidTestReportFormPresenterTest {
     form.setPeriodBegin(period.getBegin().toDate());
     form.setPeriodEnd(period.getEnd().toDate());
     when(rnrFormRepositoryMock.queryRnRForm(anyInt())).thenReturn(form);
-    TestSubscriber<RapidTestReportViewModel> subscriber2 = new TestSubscriber<>();
     rapidTestReportFormPresenter.viewModel = null;
-   rapidTestReportFormPresenter.loadData(1L, period.getEnd().toDate());
+    rapidTestReportFormPresenter.loadData(1L, period.getEnd().toDate());
 
     verify(rnrFormRepositoryMock).queryRnRForm(1L);
-    subscriber2.assertNoErrors();
-    RapidTestReportViewModel viewModel2 = subscriber2.getOnNextEvents().get(0);
 
-    assertEquals("100", viewModel2.getItemViewModelMap().get("MOBILE_UNIT").getGridSyphillis().getConsumptionValue());
-    assertEquals("300", viewModel2.getItemViewModelMap().get("PNCTL").getGridSyphillis().getPositiveValue());
-    assertEquals(RapidTestReportViewModel.Status.INCOMPLETE, viewModel2.getStatus());
   }
 
   @Test

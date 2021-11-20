@@ -202,7 +202,7 @@ public final class DateUtil {
   public static int calculateDateOffsetToNow(DateTime time) {
     long currentDateTime = (new Date()).getTime();
     long difference = (currentDateTime - time.toDate().getTime()) / 86400000;
-    return (int) Math.floor(difference);
+    return (int) difference;
   }
 
   private static Calendar calendarDate(Date date) {

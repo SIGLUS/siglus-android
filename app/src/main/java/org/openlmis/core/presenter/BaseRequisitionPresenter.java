@@ -115,9 +115,9 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     if (draftRequisition != null) {
       return draftRequisition;
     }
-    RnRForm rnRForm = rnrFormRepository.initNormalRnrForm(periodEndDate);
+    RnRForm form = rnrFormRepository.initNormalRnrForm(periodEndDate);
     Log.d("info", "get rnr end");
-    return rnRForm;
+    return form;
   }
 
   public void submitRequisition() {

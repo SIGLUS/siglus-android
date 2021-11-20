@@ -3,7 +3,6 @@ package org.openlmis.core.network.adapter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -134,10 +133,18 @@ public class StockCardsResponseAdapterTest {
     MovementType issueWithUnpackKit = mapToLocalMovementType(NetworkMovementType.UNPACK_KIT.name(), -100);
     MovementType positiveAdjustWithAdjustment = mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), 100);
     MovementType negativeAdjustWithAdjustment = mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), -100);
-    IllegalArgumentException adjustmentIllegalException = assertThrows(IllegalArgumentException.class,
-        () -> mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), 0));
-    LMISException errorTypeException = assertThrows(LMISException.class,
-        () -> mapToLocalMovementType("ERROR_TYPE", 0));
+    IllegalArgumentException adjustmentIllegalException = new IllegalArgumentException("test1");
+    try {
+      mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), 0);
+    } catch (IllegalArgumentException e) {
+      adjustmentIllegalException = e;
+    }
+    LMISException errorTypeException = new LMISException("test2");
+    try {
+      mapToLocalMovementType("ERROR_TYPE", 0);
+    } catch (LMISException e) {
+      errorTypeException = e;
+    }
 
     // then
     assertEquals(MovementType.PHYSICAL_INVENTORY, physicalInventory);

@@ -118,11 +118,11 @@ public class InventoryRepositoryTest {
     repository.createDraftInventory(Arrays.asList(draftInventory));
     DraftInventory draftInventoryQueried = repository.queryAllDraft().get(0);
 
-    assertEquals(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getLotNumber(), "A111");
-    assertEquals(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getProduct(), product);
-    assertEquals(DateUtil.formatDate(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(),
-        DB_DATE_FORMAT), "2015-02-28");
-    assertEquals(draftInventoryQueried.getStockCard().getProduct(), product);
+    assertEquals("A111", draftInventoryQueried.getDraftLotItemListWrapper().get(0).getLotNumber());
+    assertEquals(product, draftInventoryQueried.getDraftLotItemListWrapper().get(0).getProduct());
+    assertEquals("2015-02-28", DateUtil.formatDate(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(),
+        DB_DATE_FORMAT));
+    assertEquals(product, draftInventoryQueried.getStockCard().getProduct());
     assertEquals(draftInventoryQueried.getDraftLotItemListWrapper().get(0).isNewAdded(), false);
 
     assertEquals(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getQuantity(), Long.valueOf(20));
