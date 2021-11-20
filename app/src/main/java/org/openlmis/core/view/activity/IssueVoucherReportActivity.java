@@ -259,6 +259,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
       @Override
       public void negativeClick(String tag) {
+        // do nothing
       }
     });
   }

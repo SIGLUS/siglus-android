@@ -109,6 +109,10 @@ public class FieldConstants {
 
   public static final String ERROR_MESSAGE = "errorMessage";
 
+  public static final String EXPIRATION_DATE = "expirationDate";
+
+  public static final String QUANTITY_ON_HAND = "quantityOnHand";
+
   // id
   public static final String STOCK_CARD_ID = "stockCard_id";
 

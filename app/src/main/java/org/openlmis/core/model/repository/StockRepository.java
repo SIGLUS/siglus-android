@@ -19,9 +19,11 @@
 package org.openlmis.core.model.repository;
 
 import static org.openlmis.core.constant.FieldConstants.AVG_MONTHLY_CONSUMPTION;
+import static org.openlmis.core.constant.FieldConstants.EXPIRATION_DATE;
 import static org.openlmis.core.constant.FieldConstants.ID;
 import static org.openlmis.core.constant.FieldConstants.LOT_NUMBER;
 import static org.openlmis.core.constant.FieldConstants.PRODUCT_ID;
+import static org.openlmis.core.constant.FieldConstants.QUANTITY_ON_HAND;
 import static org.openlmis.core.constant.FieldConstants.STOCK_CARD_ID;
 import static org.openlmis.core.constant.FieldConstants.STOCK_ON_HAND;
 import static org.openlmis.core.model.Product.MEDICINE_TYPE_DEFAULT;
@@ -85,6 +87,8 @@ public class StockRepository {
 
   GenericDao<StockCard> genericDao;
 
+  private static final String ADD_STOCK_ERROR = "StockRepository.addStock";
+
   @Inject
   public StockRepository(Context context) {
     genericDao = new GenericDao<>(StockCard.class, context);
@@ -143,7 +147,7 @@ public class StockRepository {
         return null;
       });
     } catch (SQLException e) {
-      new LMISException(e, "StockRepository.addStock").reportToFabric();
+      new LMISException(e, ADD_STOCK_ERROR).reportToFabric();
     }
   }
 
@@ -160,7 +164,7 @@ public class StockRepository {
         return null;
       });
     } catch (SQLException e) {
-      new LMISException(e, "StockRepository.addStock").reportToFabric();
+      new LMISException(e, ADD_STOCK_ERROR).reportToFabric();
     }
   }
 
@@ -184,7 +188,7 @@ public class StockRepository {
         return null;
       });
     } catch (SQLException e) {
-      new LMISException(e, "StockRepository.addStock").reportToFabric();
+      new LMISException(e, ADD_STOCK_ERROR).reportToFabric();
     }
   }
 
@@ -286,11 +290,11 @@ public class StockRepository {
     return stockCardList;
   }
 
-  protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm rnRForm) throws LMISException {
+  protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm rnRForm) {
     return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(), rnRForm.getPeriodEnd());
   }
 
-  protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd) throws LMISException {
+  protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd) {
     String codeBelongPrograms = getSqlForProgram(programCode);
 
     String rawSql = "SELECT stock_cards.stockOnHand, stock_cards.avgMonthlyConsumption, stock_cards.id as stockCard_id,"
@@ -310,7 +314,7 @@ public class StockRepository {
     return getStockCardsBySqlSearch(cursor, programCode);
   }
 
-  public List<StockCard> getStockCardsBelongToProgram(String programCode) throws LMISException {
+  public List<StockCard> getStockCardsBelongToProgram(String programCode) {
     String rawSql = "SELECT stock_cards.stockOnHand, stock_cards.avgMonthlyConsumption, stock_cards.id as stockCard_id,"
         + " products.* FROM stock_cards"
         + " join products on products.id = stock_cards.product_id"
@@ -323,14 +327,12 @@ public class StockRepository {
   }
 
   @NotNull
-  private List<StockCard> getStockCardsBySqlSearch(Cursor cursor, String programCode) throws LMISException {
+  private List<StockCard> getStockCardsBySqlSearch(Cursor cursor, String programCode) {
     List<StockCard> stockCardList = new ArrayList<>();
-    List<String> stockCardIds = new ArrayList<>();
     if (cursor.moveToFirst()) {
       do {
         StockCard stockCard = new StockCard();
         stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_CARD_ID)));
-        stockCardIds.add(String.valueOf(stockCard.getId()));
         stockCard.setProduct(productRepository.buildProductFromCursor(cursor));
         stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
         stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow(AVG_MONTHLY_CONSUMPTION)));
@@ -342,7 +344,7 @@ public class StockRepository {
     }
 
     if (MMIA_PROGRAM_CODE.equals(programCode) || RAPID_TEST_PROGRAM_CODE.equals(programCode)) {
-      Map<String, List<LotOnHand>> idToLots = getStockIdToLotOnHands(stockCardIds);
+      Map<String, List<LotOnHand>> idToLots = getStockIdToLotOnHands();
       for (StockCard stockCard : stockCardList) {
         if (idToLots.containsKey(String.valueOf(stockCard.getId()))) {
           stockCard.setLotOnHandListWrapper(idToLots.get(String.valueOf(stockCard.getId())));
@@ -362,7 +364,7 @@ public class StockRepository {
         .query());
   }
 
-  private Map<String, List<LotOnHand>> getStockIdToLotOnHands(final List<String> stockCardIds) {
+  private Map<String, List<LotOnHand>> getStockIdToLotOnHands() {
     Map<String, List<LotOnHand>> lotInfoMap = new HashMap<>();
     String rawSql = "select loh.stockCard_id, loh.quantityOnHand, lots.lotNumber, lots.expirationDate "
             + "from lots_on_hand loh join lots on loh.lot_id = lots.id order by loh.stockCard_id ";
@@ -616,8 +618,8 @@ public class StockRepository {
     }
 
     String lotNumber = cursor.getString(cursor.getColumnIndexOrThrow(LOT_NUMBER));
-    String expirationDate = cursor.getString(cursor.getColumnIndexOrThrow("expirationDate"));
-    String quantityOnHand = cursor.getString(cursor.getColumnIndexOrThrow("quantityOnHand"));
+    String expirationDate = cursor.getString(cursor.getColumnIndexOrThrow(EXPIRATION_DATE));
+    String quantityOnHand = cursor.getString(cursor.getColumnIndexOrThrow(QUANTITY_ON_HAND));
     Lot lot = Lot.builder().lotNumber(lotNumber)
         .expirationDate(DateUtil.parseString(expirationDate, DateUtil.DB_DATE_FORMAT)).build();
     LotOnHand lotOnHand = new LotOnHand(lot, stockCard, Long.valueOf(quantityOnHand));
@@ -628,13 +630,13 @@ public class StockRepository {
   private void getLotInfo(List<Map<String, String>> lotList, Cursor cursor) {
     String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow(STOCK_CARD_ID));
     String lotNumber = cursor.getString(cursor.getColumnIndexOrThrow(LOT_NUMBER));
-    String expirationDate = cursor.getString(cursor.getColumnIndexOrThrow("expirationDate"));
-    String quantityOnHand = cursor.getString(cursor.getColumnIndexOrThrow("quantityOnHand"));
+    String expirationDate = cursor.getString(cursor.getColumnIndexOrThrow(EXPIRATION_DATE));
+    String quantityOnHand = cursor.getString(cursor.getColumnIndexOrThrow(QUANTITY_ON_HAND));
     Map<String, String> infoMap = new HashMap<>();
     infoMap.put("stockCardId", stockCardId);
     infoMap.put("lotNumber", lotNumber);
-    infoMap.put("expirationDate", expirationDate);
-    infoMap.put("quantityOnHand", quantityOnHand);
+    infoMap.put(EXPIRATION_DATE, expirationDate);
+    infoMap.put(QUANTITY_ON_HAND, quantityOnHand);
     lotList.add(infoMap);
   }
 

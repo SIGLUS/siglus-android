@@ -30,6 +30,7 @@ import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
+import org.openlmis.core.model.BaseModel;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
@@ -101,7 +102,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
   @Override
   public void deleteDraft() {
-
+    // do nothing
   }
 
   @Override
@@ -111,7 +112,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
   @Override
   protected void addSignature(String signature) {
-
+    // do nothing
   }
 
   @Override
@@ -293,7 +294,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
       return stockMovementItem;
     }
     ImmutableMap<Long, LotOnHand> lotIdToLotOnHands = FluentIterable.from(stockCard.getLotOnHandListWrapper())
-        .uniqueIndex(lotOnHand -> lotOnHand.getId());
+        .uniqueIndex(BaseModel::getId);
     stockMovementItem.setLotMovementItemListWrapper(
         FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
             .filter(podLotItem -> podLotItem.getAcceptedQuantity() > 0)

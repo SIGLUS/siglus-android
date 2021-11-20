@@ -26,7 +26,6 @@ import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_NO
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.util.Log;
-import androidx.annotation.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -284,7 +283,6 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
   }
 
-  @VisibleForTesting
   public Observable<Object> autofillAllProductInventory(DebugInitialInventoryEvent event) {
     // clear non basic item
     return Observable.create(subscriber -> {

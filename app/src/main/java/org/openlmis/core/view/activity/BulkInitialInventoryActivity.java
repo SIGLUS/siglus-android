@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import java.io.Serializable;
@@ -101,7 +100,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     super.onBackPressed();
   }
 
-  @VisibleForTesting
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveInitialInventory(DebugInitialInventoryEvent event) {
     loading();
