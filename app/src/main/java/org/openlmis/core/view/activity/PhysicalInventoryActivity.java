@@ -69,12 +69,6 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
   }
 
   @Override
-  protected void onDestroy() {
-    EventBus.getDefault().unregister(this);
-    super.onDestroy();
-  }
-
-  @Override
   public void onBackPressed() {
     if (isSearchViewActivity()) {
       searchView.onActionViewCollapsed();
@@ -85,6 +79,12 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
       return;
     }
     super.onBackPressed();
+  }
+
+  @Override
+  protected void onDestroy() {
+    EventBus.getDefault().unregister(this);
+    super.onDestroy();
   }
 
   @VisibleForTesting

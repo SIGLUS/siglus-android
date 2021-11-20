@@ -131,13 +131,6 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView, On
   };
 
   @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    super.onCreateOptionsMenu(menu);
-    getMenuInflater().inflate(R.menu.menu_bulk_issue, menu);
-    return true;
-  }
-
-  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     if (item.getItemId() == R.id.action_add_product) {
       openAddProducts();
@@ -146,6 +139,14 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView, On
       return super.onOptionsItemSelected(item);
     }
   }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    super.onCreateOptionsMenu(menu);
+    getMenuInflater().inflate(R.menu.menu_bulk_issue, menu);
+    return true;
+  }
+
 
   @Override
   public void onRefreshViewModels() {

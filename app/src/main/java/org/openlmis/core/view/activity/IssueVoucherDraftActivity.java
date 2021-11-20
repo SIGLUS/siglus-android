@@ -198,6 +198,11 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   }
 
   @Override
+  public void onRemove(int productPosition, int lotPosition) {
+    // do nothing
+  }
+
+  @Override
   public void onRemove(int position) {
     SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
         null,
@@ -217,11 +222,6 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
         dialogFragment.dismiss();
       }
     });
-  }
-
-  @Override
-  public void onRemove(int productPosition, int lotPosition) {
-    // do nothing
   }
 
   @Override

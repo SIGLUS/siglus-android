@@ -101,22 +101,11 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     etReceived.setFilters(TextStyleUtil.getSignatureLimitation());
   }
 
-  private SingleClickButtonListener getSingleClickButtonListener() {
-    return new SingleClickButtonListener() {
-      @Override
-      public void onSingleClick(View v) {
-        switch (v.getId()) {
-          case R.id.btn_done:
-            onDone();
-            break;
-          case R.id.btn_cancel:
-            onCancel();
-            break;
-          default:
-            break;
-        }
-      }
-    };
+  private void onCancel() {
+    dismiss();
+    if (hasDelegate()) {
+      delegate.onCancel();
+    }
   }
 
   private void onDone() {
@@ -136,11 +125,22 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     }
   }
 
-  private void onCancel() {
-    dismiss();
-    if (hasDelegate()) {
-      delegate.onCancel();
-    }
+  private SingleClickButtonListener getSingleClickButtonListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        switch (v.getId()) {
+          case R.id.btn_done:
+            onDone();
+            break;
+          case R.id.btn_cancel:
+            onCancel();
+            break;
+          default:
+            break;
+        }
+      }
+    };
   }
 
   private void setDialogAttributes() {

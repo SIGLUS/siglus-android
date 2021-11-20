@@ -66,17 +66,17 @@ public class RapidTestReportFormPresenter extends BaseRequisitionPresenter {
   }
 
   @Override
+  public void updateUIAfterSubmit() {
+    view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
+  }
+
+  @Override
   public void loadData(long formId, Date periodEndDate) {
     this.periodEndDate = periodEndDate;
     view.loading();
     Subscription subscription = getRnrFormObservable(formId)
         .subscribe(loadDataOnNextAction, loadDataOnErrorAction);
     subscriptions.add(subscription);
-  }
-
-  @Override
-  public void updateUIAfterSubmit() {
-    view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
   }
 
   @Override

@@ -2,6 +2,7 @@ package org.openlmis.core.model.repository;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.RECEIVE;
 import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
@@ -123,7 +124,7 @@ public class InventoryRepositoryTest {
     assertEquals("2015-02-28", DateUtil.formatDate(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(),
         DB_DATE_FORMAT));
     assertEquals(product, draftInventoryQueried.getStockCard().getProduct());
-    assertEquals(draftInventoryQueried.getDraftLotItemListWrapper().get(0).isNewAdded(), false);
+    assertFalse(draftInventoryQueried.getDraftLotItemListWrapper().get(0).isNewAdded());
 
     assertEquals(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getQuantity(), Long.valueOf(20));
   }
