@@ -23,7 +23,7 @@ import static org.openlmis.core.constant.FieldConstants.ID;
 import static org.openlmis.core.constant.FieldConstants.IS_SUPPORT_EMERGENCY;
 import static org.openlmis.core.constant.FieldConstants.PRODUCT_CODE;
 import static org.openlmis.core.constant.FieldConstants.PROGRAM_CODE;
-import static org.openlmis.core.constant.FieldConstants.PROGRAM_Name;
+import static org.openlmis.core.constant.FieldConstants.PROGRAM_NAME;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -160,7 +160,7 @@ public class ProgramRepository {
         Program program = new Program();
         program.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ID)));
         program.setProgramCode(cursor.getString(cursor.getColumnIndexOrThrow(PROGRAM_CODE)));
-        program.setProgramName(cursor.getString(cursor.getColumnIndexOrThrow(PROGRAM_Name)));
+        program.setProgramName(cursor.getString(cursor.getColumnIndexOrThrow(PROGRAM_NAME)));
         programs.add(program);
       } while (cursor.moveToNext());
     }

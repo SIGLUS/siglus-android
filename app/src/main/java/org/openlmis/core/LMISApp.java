@@ -29,7 +29,6 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Build;
-import android.os.Bundle;
 import androidx.multidex.MultiDex;
 import com.facebook.stetho.Stetho;
 import java.io.File;
@@ -54,8 +53,6 @@ public class LMISApp extends Application {
 
   private static LMISApp instance;
 
-  private static Activity activeActivity;
-
   private static final int JOB_ID_NETWORK_CHANGE = 123;
 
   @Override
@@ -74,7 +71,6 @@ public class LMISApp extends Application {
     registerNetWorkChangeListener();
     DebugReceiver.registerDebugBoardCastReceiver(this);
     configAutoSize();
-    setupActivityListener();
   }
 
   public boolean isRoboUniTest() {
@@ -83,10 +79,6 @@ public class LMISApp extends Application {
 
   public static LMISApp getInstance() {
     return instance;
-  }
-
-  public static Activity getActiveActivity() {
-    return activeActivity;
   }
 
   public long getCurrentTimeMillis() {
@@ -170,40 +162,6 @@ public class LMISApp extends Application {
       @Override
       public void onAdaptAfter(Object target, Activity activity) {
         // do nothing
-      }
-    });
-  }
-
-  private void setupActivityListener() {
-    registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-      @Override
-      public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-      }
-
-      @Override
-      public void onActivityStarted(Activity activity) {
-      }
-
-      @Override
-      public void onActivityResumed(Activity activity) {
-        activeActivity = activity;
-      }
-
-      @Override
-      public void onActivityPaused(Activity activity) {
-        activeActivity = null;
-      }
-
-      @Override
-      public void onActivityStopped(Activity activity) {
-      }
-
-      @Override
-      public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-      }
-
-      @Override
-      public void onActivityDestroyed(Activity activity) {
       }
     });
   }

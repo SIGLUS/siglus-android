@@ -67,7 +67,7 @@ public class FieldConstants {
 
   public static final String PROGRAM_CODE = "programCode";
 
-  public static final String PROGRAM_Name = "programName";
+  public static final String PROGRAM_NAME = "programName";
 
   public static final String CATEGORY = "category";
 
