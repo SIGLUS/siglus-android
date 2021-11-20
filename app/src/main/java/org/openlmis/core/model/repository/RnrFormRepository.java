@@ -371,12 +371,12 @@ public class RnrFormRepository {
   protected ArrayList<RnrFormItem> fillAllProducts(RnRForm form, List<RnrFormItem> basicItems)
       throws LMISException {
     List<Long> productIds;
-    String programCode = form.getProgram().getProgramCode();
-    if (programCode.equals(MMIA_PROGRAM_CODE)) {
-      productIds = productProgramRepository.queryActiveProductIdsForMMIA(programCode);
+    String formProgramCode = form.getProgram().getProgramCode();
+    if (formProgramCode.equals(MMIA_PROGRAM_CODE)) {
+      productIds = productProgramRepository.queryActiveProductIdsForMMIA(formProgramCode);
     } else {
       productIds = productProgramRepository.queryActiveProductIdsByProgramWithKits(
-          programCode, false);
+          formProgramCode, false);
     }
     List<Product> products = productRepository.queryProductsByProductIds(productIds);
     ArrayList<RnrFormItem> result = new ArrayList<>();
@@ -406,6 +406,7 @@ public class RnrFormRepository {
   }
 
   protected void updateDefaultValue(RnrFormItem rnrFormItem) {
+    // do nothing
   }
 
   protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
@@ -700,8 +701,8 @@ public class RnrFormRepository {
       getProgramCodeCursor.close();
     }
 
-    for (String programCode : programCodes) {
-      deleteRnrData(programCode);
+    for (String formProgramCode : programCodes) {
+      deleteRnrData(formProgramCode);
     }
 
   }
