@@ -67,20 +67,20 @@ public class StockMovementHistoryViewModel {
     }
   }
 
-  public String getReceived() {
-    return typeQuantityMap.get(MovementType.RECEIVE);
-  }
-
   public String getIssued() {
     return typeQuantityMap.get(MovementType.ISSUE);
   }
 
-  public String getNegativeAdjustment() {
-    return typeQuantityMap.get(MovementType.NEGATIVE_ADJUST);
+  public String getReceived() {
+    return typeQuantityMap.get(MovementType.RECEIVE);
   }
 
   public String getPositiveAdjustment() {
     return typeQuantityMap.get(MovementType.POSITIVE_ADJUST);
+  }
+
+  public String getNegativeAdjustment() {
+    return typeQuantityMap.get(MovementType.NEGATIVE_ADJUST);
   }
 
   public boolean isNoStock() {

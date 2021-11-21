@@ -208,7 +208,6 @@ public class VIARequisitionPresenterTest {
 
     //when
     presenter.processSign("userSignature");
-    waitObservableToExecute();
 
     //then
     assertThat(Status.SUBMITTED, is(form.getStatus()));

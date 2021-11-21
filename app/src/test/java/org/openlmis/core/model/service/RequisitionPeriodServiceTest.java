@@ -1,7 +1,5 @@
 package org.openlmis.core.model.service;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
@@ -16,7 +14,6 @@ import com.google.inject.AbstractModule;
 import java.util.ArrayList;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -26,7 +23,6 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -156,8 +152,6 @@ public class RequisitionPeriodServiceTest {
 
   }
 
-  // TODO confirm generateNextPeriod logic
-  @Ignore
   @Test
   public void shouldGeneratePeriodOfFeb18ToMarWhenRnrNotExists() throws Exception {
     when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString()))
@@ -173,56 +167,8 @@ public class RequisitionPeriodServiceTest {
     Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
 
     assertThat(period.getBegin(),
-        is(new DateTime(DateUtil.parseString("2016-02-18 00:00:00", DateUtil.DATE_TIME_FORMAT))));
+        is(new DateTime(DateUtil.parseString("2016-02-21 00:00:00", DateUtil.DATE_TIME_FORMAT))));
     assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
-  }
-
-  @Test
-  //TODO later
-  @Ignore
-  public void shouldGeneratePeriodOfFeb21ToMarWhenRnrNotExists() throws Exception {
-    when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString()))
-        .thenReturn(new DateTime("2016-02-26").toDate());
-
-    Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
-    assertThat(period.getBegin(), is(new DateTime("2016-02-21")));
-    assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
-  }
-
-  @Test
-  //TODO later
-  @Ignore
-  public void shouldReturnTrueWhenPreviousPeriodIsMissed() throws Exception {
-    requisitionPeriodService = spy(requisitionPeriodService);
-
-    LMISTestApp.getInstance().setCurrentTimeMillis(
-        DateUtil.parseString("2015-05-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
-    DateTime nextPeriodBegin = new DateTime(
-        DateUtil.parseString("2015-01-21", DateUtil.DB_DATE_FORMAT));
-    DateTime nextPeriodEnd = new DateTime(
-        DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
-    Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
-
-    doReturn(nextPeriodInSchedule).when(requisitionPeriodService).generateNextPeriod("P1", null);
-    assertTrue(requisitionPeriodService.hasMissedPeriod("P1"));
-  }
-
-  @Test
-  @Ignore
-  public void shouldReturnFalseWhenPreviousPeriodIsNotMissed() throws Exception {
-    requisitionPeriodService = spy(requisitionPeriodService);
-
-    LMISTestApp.getInstance().setCurrentTimeMillis(
-        DateUtil.parseString("2015-02-25 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
-    DateTime nextPeriodBegin = new DateTime(
-        DateUtil.parseString("2015-01-21", DateUtil.DB_DATE_FORMAT));
-    DateTime nextPeriodEnd = new DateTime(
-        DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
-    Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
-
-    doReturn(nextPeriodInSchedule).when(requisitionPeriodService).generateNextPeriod("P1", null);
-
-    assertFalse(requisitionPeriodService.hasMissedPeriod("P1"));
   }
 
   @Test
@@ -271,59 +217,6 @@ public class RequisitionPeriodServiceTest {
     doReturn(nextPeriodInSchedule).when(requisitionPeriodService).generateNextPeriod("P1", null);
 
     assertThat(requisitionPeriodService.getMissedPeriodOffsetMonth("P1"), is(1));
-  }
-
-  @Test
-  //TODO later
-  @Ignore
-  public void shouldGeneratePeriodOfDes21ToJanWhenRnrNotExists() throws Exception {
-    when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString()))
-        .thenReturn(new DateTime("2016-01-06").toDate());
-
-    Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
-    assertThat(period.getBegin(), is(new DateTime("2015-12-21")));
-    assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(1));
-  }
-
-  @Test
-  //TODO later
-  @Ignore
-  public void shouldGeneratePeriodOfDes19ToJanWhenRnrNotExists() throws Exception {
-    DateTime dateTime = new DateTime("2015-12-19").plusMonths(1);
-    DateTime expectedPeriodEnd = DateUtil.cutTimeStamp(
-        dateTime.withDate(dateTime.getYear(), dateTime.getMonthOfYear(), Period.END_DAY));
-    when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString()))
-        .thenReturn(new DateTime("2015-12-19").toDate());
-
-    Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
-    assertThat(period.getBegin(), is(new DateTime("2015-12-19")));
-    assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(1));
-    assertThat(period.getEnd(), is(expectedPeriodEnd));
-  }
-
-  @Test
-  //TODO later
-  @Ignore
-  public void shouldReturnTrueIfRnrFromPreviousPeriodExistsButIsNotAuthorized() throws Exception {
-    requisitionPeriodService = spy(requisitionPeriodService);
-
-    LMISTestApp.getInstance().setCurrentTimeMillis(
-        DateUtil.parseString("2015-06-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
-    DateTime nextPeriodBegin = new DateTime(
-        DateUtil.parseString("2015-05-18", DateUtil.DB_DATE_FORMAT));
-    DateTime nextPeriodEnd = new DateTime(
-        DateUtil.parseString("2015-06-20", DateUtil.DB_DATE_FORMAT));
-    Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
-
-    doReturn(nextPeriodInSchedule).when(requisitionPeriodService).generateNextPeriod("P1", null);
-    RnRForm rnRForm = new RnRForm();
-    rnRForm.setStatus(Status.DRAFT_MISSED);
-    rnRForm.setPeriodBegin(DateUtil.parseString("2015-04-18", DateUtil.DB_DATE_FORMAT));
-    rnRForm.setPeriodEnd(DateUtil.parseString("2015-05-18", DateUtil.DB_DATE_FORMAT));
-    when(mockRnrFormRepository.listInclude(RnRForm.Emergency.NO, "P1"))
-        .thenReturn(newArrayList(rnRForm));
-
-    assertTrue(requisitionPeriodService.hasMissedPeriod("P1"));
   }
 
   public class MyTestModule extends AbstractModule {

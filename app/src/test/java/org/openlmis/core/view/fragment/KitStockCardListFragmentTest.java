@@ -40,15 +40,13 @@ public class KitStockCardListFragmentTest {
     RoboGuice.Util.reset();
   }
 
-  // TODO: robolectric.android.controller.FragmentController with RoboContext
-  @Ignore
+  @Ignore("robolectric.android.controller.FragmentController with RoboContext")
   @Test
   public void shouldCreateStockCardsForKitsIfNotExist() throws Exception {
     verify(mockStockCardPresenter).loadKits();
   }
 
-  // TODO: robolectric.android.controller.FragmentController with RoboContext
-  @Ignore
+  @Ignore("robolectric.android.controller.FragmentController with RoboContext")
   @Test
   public void shouldUseKitStockCardListAdapter() throws Exception {
     assertThat(fragment.mAdapter).isInstanceOf(KitStockCardListAdapter.class);

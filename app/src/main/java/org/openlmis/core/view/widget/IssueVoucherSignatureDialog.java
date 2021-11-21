@@ -95,6 +95,10 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     super.show(manager, "signature_dialog");
   }
 
+  protected boolean checkSignature(String signature) {
+    return signature.length() >= 3 && signature.length() <= 5 && signature.matches("\\D+");
+  }
+
   private void initUI() {
     btnCancel.setOnClickListener(getSingleClickButtonListener());
     btnSign.setOnClickListener(getSingleClickButtonListener());
@@ -112,9 +116,7 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     if (!hasDelegate()) {
       return;
     }
-
     String received = etReceived.getText().toString().trim();
-
     if (!checkSignature(received)) {
       lyReceived.setError(getString(R.string.hint_signature_error_message));
     } else {
@@ -123,6 +125,10 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
       delegate.onSign(received);
       dismiss();
     }
+  }
+
+  private boolean hasDelegate() {
+    return delegate != null;
   }
 
   private SingleClickButtonListener getSingleClickButtonListener() {
@@ -151,14 +157,6 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     }
     params.width = (int) (getDialog().getContext().getResources().getDisplayMetrics().widthPixels * 0.8);
     getDialog().getWindow().setAttributes(params);
-  }
-
-  private boolean hasDelegate() {
-    return delegate != null;
-  }
-
-  protected boolean checkSignature(String signature) {
-    return signature.length() >= 3 && signature.length() <= 5 && signature.matches("\\D+");
   }
 
   public abstract static class DialogDelegate {

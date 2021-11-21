@@ -35,8 +35,8 @@ public final class HashUtil {
       byte[] messageDigest = digest.digest();
 
       StringBuilder hexString = new StringBuilder();
-      for (int i = 0; i < messageDigest.length; i++) {
-        hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+      for (byte b : messageDigest) {
+        hexString.append(String.format("%02X", b));
       }
       return hexString.toString();
 

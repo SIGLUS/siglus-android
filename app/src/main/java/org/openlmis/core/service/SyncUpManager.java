@@ -411,7 +411,7 @@ public class SyncUpManager {
             }
           }).toList();
       boolean isSyncedSuccessed = true;
-      for (int start = 0; start < entries.size(); ) {
+      for (int start = 0; start < entries.size(); start += unitCount) {
         int end = Math.min((start + unitCount), entries.size());
         List<DirtyDataItemEntry> sub = entries.subList(start, end);
         try {
@@ -428,7 +428,6 @@ public class SyncUpManager {
           isSyncedSuccessed = false;
           new LMISException(e, "SyncUpManager.syncUpDeletedData").reportToFabric();
         }
-        start += unitCount;
       }
       return isSyncedSuccessed;
     } else {

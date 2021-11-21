@@ -93,12 +93,10 @@ public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddPro
     if (position < 0 || position >= models.size()) {
       return null;
     }
-
     String name = models.get(position).getProduct().getPrimaryName();
     if (name == null || name.length() < 1) {
       return null;
     }
-
     return models.get(position).getProduct().getPrimaryName().substring(0, 1);
   }
 }

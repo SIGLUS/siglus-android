@@ -4,7 +4,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -28,7 +27,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -39,7 +37,6 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
@@ -182,28 +179,6 @@ public class SyncDownManagerTest {
     // then
     assertEquals(12, firstEnterSubscriber.syncProgresses.size());
     assertEquals(0, laterEnterSubscriber.syncProgresses.size());
-  }
-
-  @Ignore
-  @Test
-  public void shouldSyncDownNewLatestProductList() throws Exception {
-    mockFacilityInfoResponse();
-    mockSyncDownLatestProductResponse();
-    mockRequisitionResponse();
-    mockStockCardsResponse();
-    when(productRepository.getByCode(anyString())).thenReturn(new Product());
-
-    Program program = new Program();
-    when(programRepository.queryByCode("PR")).thenReturn(program);
-
-    SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
-    syncDownManager.syncDownServerData(subscriber);
-    subscriber.awaitTerminalEvent();
-    subscriber.assertNoErrors();
-
-    verify(lmisRestApi).fetchLatestProducts(anyString());
-    verify(productRepository).batchCreateOrUpdateProducts(anyList());
-    verify(sharedPreferenceMgr).setLastSyncProductTime("today");
   }
 
   @Test
