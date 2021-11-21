@@ -104,7 +104,6 @@ public class LMISRestManager {
     lmisRestApi = restBuilder.build().create(LMISRestApi.class);
     syncService = RoboGuice.getInjector(context).getInstance(SyncService.class);
     userRepository = RoboGuice.getInjector(context).getInstance(UserRepository.class);
-    instance = this;
   }
 
   @NonNull

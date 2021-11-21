@@ -255,22 +255,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     return RoboGuice.getInjector(LMISApp.getContext()).getInstance(VIARepository.class);
   }
 
-  @Override
-  protected Observable<Void> createOrUpdateRnrForm() {
-    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
-      try {
-        rnrFormRepository.createOrUpdateWithItems(rnRForm);
-        subscriber.onNext(null);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "VIARequisitionPresenter.createOrUpdateRnrForm").reportToFabric();
-        subscriber.onError(e);
-      } finally {
-        stockService.monthlyUpdateAvgMonthlyConsumption();
-      }
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-  }
-
   protected List<RequisitionFormItemViewModel> getViewModelsFromRnrForm(RnRForm form) {
     if (!requisitionFormItemViewModels.isEmpty()) {
       return requisitionFormItemViewModels;

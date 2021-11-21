@@ -124,34 +124,12 @@ public class ProductRepository {
 
   public List<Product> listBasicProducts() throws LMISException {
     String rawSql = SELECT_PRODUCTS + "AND products.isbasic = '1' " + ARCHIVED;
-    Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
-    List<Product> activeProducts = new ArrayList<>();
-    if (cursor.moveToFirst()) {
-      do {
-        activeProducts.add(buildProductFromCursor(cursor));
-      } while (cursor.moveToNext());
-    }
-    if (!cursor.isClosed()) {
-      cursor.close();
-    }
-    Collections.sort(activeProducts);
-    return activeProducts;
+    return queryProducts(rawSql);
   }
 
   public List<Product> listProductsArchivedOrNotInStockCard() throws LMISException {
     String rawSql = SELECT_PRODUCTS + "AND products.iskit = '0' " + ARCHIVED;
-    Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
-    List<Product> activeProducts = new ArrayList<>();
-    if (cursor.moveToFirst()) {
-      do {
-        activeProducts.add(buildProductFromCursor(cursor));
-      } while (cursor.moveToNext());
-    }
-    if (!cursor.isClosed()) {
-      cursor.close();
-    }
-    Collections.sort(activeProducts);
-    return activeProducts;
+    return queryProducts(rawSql);
   }
 
   public List<Product> listAllProductsWithoutKit() throws LMISException {
@@ -428,18 +406,7 @@ public class ProductRepository {
         + "WHERE id IN (SELECT product_id FROM stock_cards WHERE stockOnHand > 0) "
         + "AND isKit = 0 "
         + "AND isArchived = 0;";
-    Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
-    List<Product> activeProducts = new ArrayList<>();
-    if (cursor.moveToFirst()) {
-      do {
-        activeProducts.add(buildProductFromCursor(cursor));
-      } while (cursor.moveToNext());
-    }
-    if (!cursor.isClosed()) {
-      cursor.close();
-    }
-    Collections.sort(activeProducts);
-    return activeProducts;
+    return queryProducts(rawSql);
   }
 
   public List<Product> queryProductsByProgramCode(String programCode) {
@@ -498,5 +465,20 @@ public class ProductRepository {
     product.setType(cursor.getString(cursor.getColumnIndexOrThrow(TYPE)));
     product.setPrice(cursor.getString(cursor.getColumnIndexOrThrow(PRICE)));
     return product;
+  }
+
+  private List<Product> queryProducts(String rawSql){
+    Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+    List<Product> activeProducts = new ArrayList<>();
+    if (cursor.moveToFirst()) {
+      do {
+        activeProducts.add(buildProductFromCursor(cursor));
+      } while (cursor.moveToNext());
+    }
+    if (!cursor.isClosed()) {
+      cursor.close();
+    }
+    Collections.sort(activeProducts);
+    return activeProducts;
   }
 }
