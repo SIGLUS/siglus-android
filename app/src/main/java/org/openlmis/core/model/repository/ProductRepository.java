@@ -467,7 +467,7 @@ public class ProductRepository {
     return product;
   }
 
-  private List<Product> queryProducts(String rawSql){
+  private List<Product> queryProducts(String rawSql) {
     Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
     List<Product> activeProducts = new ArrayList<>();
     if (cursor.moveToFirst()) {
