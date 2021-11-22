@@ -128,7 +128,7 @@ public class SelectPeriodActivity extends BaseActivity implements
 
   @Override
   protected int getThemeRes() {
-    return ProgramUtil.getThemeRes(programCode);
+    return ProgramUtil.getThemeRes(Constants.VIA_PROGRAM_CODE);
   }
 
   private void init() {
