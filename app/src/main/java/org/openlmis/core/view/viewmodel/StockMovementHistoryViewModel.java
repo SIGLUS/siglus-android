@@ -98,9 +98,6 @@ public class StockMovementHistoryViewModel {
   private void buildLotViewModelList(StockMovementItem item) {
     lotViewModelList.clear();
     for (LotMovementItem lotMovementItem : item.getLotMovementItemListWrapper()) {
-      if (lotMovementItem.isUselessMovement()) {
-        continue;
-      }
       lotViewModelList.add(new LotMovementHistoryViewModel(item.getMovementType(), lotMovementItem));
     }
     Collections.sort(lotViewModelList);

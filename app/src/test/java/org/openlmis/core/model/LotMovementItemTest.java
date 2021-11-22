@@ -2,10 +2,8 @@ package org.openlmis.core.model;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 
@@ -28,17 +26,4 @@ public class LotMovementItemTest {
     assertThat(lotMovementItem.getMovementQuantity(), is(20L));
   }
 
-  @Test
-  public void testIsUselessMovement() {
-    // given
-    StockMovementItem stockMovementItem = Mockito.mock(StockMovementItem.class);
-    Mockito.when(stockMovementItem.isNegativeMovement()).thenReturn(true);
-    LotMovementItem lotMovementItem = new LotMovementItem();
-    lotMovementItem.setStockMovementItem(stockMovementItem);
-    lotMovementItem.setMovementQuantity(0L);
-
-    // when & then
-    assertTrue(lotMovementItem.isUselessMovement());
-
-  }
 }
