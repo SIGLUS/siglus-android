@@ -38,7 +38,7 @@ public class MMIARequisitionActivity extends BaseActivity {
 
   @Override
   protected int getThemeRes() {
-    return R.style.AppTheme_AMBER;
+    return R.style.AppTheme_PURPLE;
   }
 
   @Override
