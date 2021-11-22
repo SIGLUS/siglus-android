@@ -77,8 +77,8 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
         if (!viewModel.isVirtualLot()) {
           setText(R.id.tv_lot_number_and_date, viewModel.getLotNumber());
         }
-        setText(R.id.tv_quantity_shipped, "Quantity shipped: " + viewModel.getShippedQuantity());
-        setText(R.id.tv_quantity_accepted, "Quantity accepted: " + viewModel.getAcceptedQuantity());
+        setText(R.id.tv_quantity_shipped, "Supplied Quantity: " + viewModel.getShippedQuantity());
+        setText(R.id.tv_quantity_accepted, "Quantity Received: " + viewModel.getAcceptedQuantity());
       } else {
         if (!viewModel.isVirtualLot()) {
           setText(R.id.tv_lot_number_and_date, MessageFormat.format("{0} - {1}",
