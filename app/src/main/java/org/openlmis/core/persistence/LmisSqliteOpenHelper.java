@@ -74,6 +74,7 @@ import org.openlmis.core.persistence.migrations.AddVersionCodeToProgramProductTa
 import org.openlmis.core.persistence.migrations.ChangeMalariaTreatments;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.persistence.migrations.ChangeProgramTableName;
+import org.openlmis.core.persistence.migrations.ClearDatabase;
 import org.openlmis.core.persistence.migrations.ConvertEssMedsToVIAProgram;
 import org.openlmis.core.persistence.migrations.CreateAdditionalProductProgramTable;
 import org.openlmis.core.persistence.migrations.CreateBulkEntriesDraftTables;
@@ -214,6 +215,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new CreateDirtyDataProductTable());
     MIGRATIONS.add(new AddVersionCodeToProgramProductTable());
     MIGRATIONS.add(new AddLastReportEndTimeToReportType());
+    MIGRATIONS.add(new ClearDatabase());
     MIGRATIONS.add(new DeletePrograms());
     MIGRATIONS.add(new DeleteReportTypes());
     MIGRATIONS.add(new UpdateStockCardSOHStatus());
