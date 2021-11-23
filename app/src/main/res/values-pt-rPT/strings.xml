@@ -617,8 +617,6 @@
   <string name="label_default_rejection_reason">Selecione uma opção</string>
   <string name="hint_error_field_required">Este campo é obrigatório</string>
   <string name="hint_error_more_than_shipped">Você não pode confirmar stock acima da quantidade aviada</string>
-  <string name="hint_quantity_shipped">Quantidade aviada</string>
-  <string name="hint_quantity_accepted">Quantidade aceite</string>
   <string name="alert_issue_voucher_can_not_be_blank">Insira a quantidade para pelo menos um lote ou remova o produto</string>
   <string name="msg_issue_voucher_back_confirm">Tem certeza de que deseja sair sem gravar o seu trabalho? Se você clicar em "sim", seu rascunho será apagado.</string>
   <string name="msg_shipped_quantity_less_than_accepted_quantity">Você não pode aceitar mais estoque do que foi enviado</string>
@@ -651,18 +649,18 @@
   <string name="msg_remove_lot_title">Remover lote</string>
   <string name="msg_remove_lot"><![CDATA[Remova o lote <b>%1$s</b> que está expirando em %2$s de <b>%3$s</b>]]></string>
 
+  <string name="supplied_quantity">Quantidade Fornecida</string>
+  <string name="quantity_received">Quantidade Recebida</string>
   <string name="label_destination_product">Designação</string>
   <string name="label_dosage">Dosagem</string>
   <string name="label_designation">Forma Farmacêutica</string>
   <string name="label_header_lot_number">N° de Lote</string>
   <string name="label_expiring_date">Prazo de Validade</string>
-  <string name="label_supplied_quantity">Quantidade Fornecida</string>
   <string name="label_qf">QF</string>
   <string name="label_price">Preço Unitário</string>
   <string name="label_pu">PU</string>
   <string name="label_value">Valor</string>
   <string name="label_qf_pu">QF×PU</string>
-  <string name="label_quantity_received">Quantidade Recebida</string>
   <string name="label_qr">QR</string>
   <string name="label_qr_qf">QR-QF</string>
   <string name="label_reason_for_adjustment">Razão para ajuste</string>

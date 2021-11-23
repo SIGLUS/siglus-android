@@ -80,9 +80,9 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
         }
 
         setText(R.id.tv_quantity_shipped,  LMISApp.getContext().getResources()
-            .getString(R.string.label_supplied_quantity) + ": " + viewModel.getShippedQuantity());
+            .getString(R.string.supplied_quantity) + ": " + viewModel.getShippedQuantity());
         setText(R.id.tv_quantity_accepted, LMISApp.getContext().getResources()
-            .getString(R.string.hint_quantity_accepted)  + ": " + viewModel.getAcceptedQuantity());
+            .getString(R.string.quantity_received)  + ": " + viewModel.getAcceptedQuantity());
       } else {
         if (!viewModel.isVirtualLot()) {
           setText(R.id.tv_lot_number_and_date, MessageFormat.format("{0} - {1}",
