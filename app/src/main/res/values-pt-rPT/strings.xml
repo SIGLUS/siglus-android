@@ -8,8 +8,8 @@
   <string name="title_kit_stock_cards">Visão geral de Kits</string>
   <string name="title_unpack_kit">Desembalar Kit</string>
   <string name="title_requisition">Criar Requisição Balancete para Via clássica</string>
-  <string name="title_pod">Proof of Delivery for %1$s</string>
-  <string name="title_issue_voucher">Issue Voucher for %1$s</string>
+  <string name="title_pod">Comprovante de entrega para %1$s</string>
+  <string name="title_issue_voucher">Voucher de emissão eletrônica %1$s</string>
 
   <string name="hint_network_error">Falha na conexão, verifique sua conexão a rede</string>
 
@@ -113,8 +113,8 @@
   <!--VIA Form-->
   <string name="label_via_kit_received">No. de Kits recebidos</string>
   <string name="label_via_kit_opened">No. de Kits abertos</string>
-  <string name="label_via_kit_hf">HF</string>
-  <string name="label_via_kit_chw">CHW</string>
+  <string name="label_via_kit_hf">US</string>
+  <string name="label_via_kit_chw">APE</string>
   <string name="label_requisition_title">Requisição- %1$s a %2$s</string>
   <string name="label_rapid_test_title">MMIT- %1$s a %2$s</string>
   <string name="label_requisition_header_consultation_header">Requisição normal</string>
@@ -393,6 +393,8 @@
   <string name="via_and_ptv_requisition_alert">Suas Requisições Balancete e seus PTV não foram concluídos</string>
   <string name="ptv_requisition_alert">Seu PTV não foi concluído</string>
   <string name="missed_requisition_time_range">%1$s para %2$s</string>
+  <string name="incomplete_alert_message">"Suas %s não foram concluídos"</string>
+  <string name="incomplete_alert_message_for_single_report">"Seu %s não foi concluído"</string>
 
   <!--Add products to requisition form-->
   <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
@@ -648,6 +650,30 @@
   <string name="label_number">N°</string>
   <string name="msg_remove_lot_title">Remover lote</string>
   <string name="msg_remove_lot"><![CDATA[Remova o lote <b>%1$s</b> que está expirando em %2$s de <b>%3$s</b>]]></string>
+
+  <string name="label_destination_product">Designação</string>
+  <string name="label_dosage">Dosagem</string>
+  <string name="label_designation">Forma Farmacêutica</string>
+  <string name="label_header_lot_number">N° de Lote</string>
+  <string name="label_expiring_date">Prazo de Validade</string>
+  <string name="label_supplied_quantity">Quantidade Fornecida</string>
+  <string name="label_qf">QF</string>
+  <string name="label_price">Preço Unitário</string>
+  <string name="label_pu">PU</string>
+  <string name="label_value">Valor</string>
+  <string name="label_qf_pu">QF×PU</string>
+  <string name="label_quantity_received">Quantidade Recebida</string>
+  <string name="label_qr">QR</string>
+  <string name="label_qr_qf">QR-QF</string>
+  <string name="label_reason_for_adjustment">Razão para ajuste</string>
+  <string name="label_issue_voucher_total">Valor da remessa:</string>
+  <string name="label_issue_prepared_by">Elaborado por::</string>
+  <string name="label_issue_conferred_by">Conferido por:</string>
+  <string name="label_issue_delivered_by">Entregue por: </string>
+  <string name="label_issue_received_by">recebido por: </string>
+  <string name="error_sync_previous_period">A sincronização falhou. A requisição anterior falhou ao ser sincronizada, entre em contato com o administrador.</string>
+  <string name="msg_quantity_can_not_be_zero">Quantidade não pode estar em 0</string>
+  <string name="label_issued_amount">Montante emitido:&#160;</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>

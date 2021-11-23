@@ -33,6 +33,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
@@ -77,8 +78,11 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
         if (!viewModel.isVirtualLot()) {
           setText(R.id.tv_lot_number_and_date, viewModel.getLotNumber());
         }
-        setText(R.id.tv_quantity_shipped, "Supplied Quantity: " + viewModel.getShippedQuantity());
-        setText(R.id.tv_quantity_accepted, "Quantity Received: " + viewModel.getAcceptedQuantity());
+
+        setText(R.id.tv_quantity_shipped,  LMISApp.getContext().getResources()
+            .getString(R.string.label_supplied_quantity) + ": " + viewModel.getShippedQuantity());
+        setText(R.id.tv_quantity_accepted, LMISApp.getContext().getResources()
+            .getString(R.string.hint_quantity_accepted)  + ": " + viewModel.getAcceptedQuantity());
       } else {
         if (!viewModel.isVirtualLot()) {
           setText(R.id.tv_lot_number_and_date, MessageFormat.format("{0} - {1}",

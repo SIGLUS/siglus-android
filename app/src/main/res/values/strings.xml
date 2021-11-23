@@ -601,7 +601,6 @@
   <string name="alert_movement_reason_can_not_be_blank">Movement reason cannot be blank</string>
   <string name="label_ordering_facility">Ordering Facility</string>
   <string name="label_program">Program</string>
-  <string name="label_shipping_date_capitalize">Issue Voucher Date</string>
   <string name="label_delivered_by">Delivered By</string>
   <string name="label_received_by">Received By</string>
   <string name="title_issue_voucher_draft">Issue voucher draft</string>

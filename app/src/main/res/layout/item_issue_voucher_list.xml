@@ -178,7 +178,7 @@
         <TextView
           android:layout_width="@dimen/px_200"
           android:layout_height="wrap_content"
-          android:text="@string/label_shipping_date_capitalize"
+          android:text="@string/label_issue_voucher_date"
           android:textColor="@color/color_606162"
           android:textSize="@dimen/px_20" />
 
