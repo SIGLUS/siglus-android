@@ -620,9 +620,9 @@
   <string name="alert_issue_voucher_can_not_be_blank">Insira a quantidade para pelo menos um lote ou remova o produto</string>
   <string name="msg_issue_voucher_back_confirm">Tem certeza de que deseja sair sem gravar o seu trabalho? Se você clicar em "sim", seu rascunho será apagado.</string>
   <string name="msg_shipped_quantity_less_than_accepted_quantity">Você não pode aceitar mais estoque do que foi enviado</string>
-  <string name="msg_shipped_quantity_can_not_be_blank">A quantidade aviada não pode estar em branco</string>
-  <string name="msg_accepted_quantity_can_not_be_blank">A quantidade aceita não pode estar em branco</string>
-  <string name="msg_shipped_quantity_can_not_be_zero">Quantidade aviada não pode ser 0</string>
+  <string name="msg_shipped_quantity_can_not_be_blank">A quantidade fornecida não pode estar em branco</string>
+  <string name="msg_accepted_quantity_can_not_be_blank">A quantidade recebida não pode estar em branco</string>
+  <string name="msg_shipped_quantity_can_not_be_zero">Quantidade fornecida não pode ser 0</string>
   <string name="title_electronic_issue_voucher">Guia de remessa electrónica</string>
   <string name="hint_save_issue_voucher_failed">Não foi possível gravar a guia de remessa, por favor entre em contato com o administrador.</string>
   <string name="msg_title_for_signature">Comprovante de entrega para</string>
