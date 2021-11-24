@@ -35,7 +35,6 @@ public class ClearDatabase extends Migration {
     execSQL("DELETE FROM regime_items");
     execSQL("DELETE FROM regime_short_code");
     execSQL("DELETE FROM regime_three_lines");
-    execSQL("DELETE FROM regimes");
     execSQL("DELETE FROM reports_type");
     execSQL("DELETE FROM rnr_baseInfo_items");
     execSQL("DELETE FROM rnr_form_items");
@@ -51,7 +50,7 @@ public class ClearDatabase extends Migration {
     execSQL("DELETE FROM programs");
     execSQL("DELETE FROM products");
     execSQL("DELETE FROM lots");
-    execSQL("UPDATE sqlite_sequence set seq = 0");
+    execSQL("UPDATE sqlite_sequence set seq = 0 where name != 'regimes'");
     clearSharedPreference();
 
   }
