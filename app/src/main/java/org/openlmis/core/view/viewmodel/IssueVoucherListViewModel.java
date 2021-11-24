@@ -83,7 +83,7 @@ public class IssueVoucherListViewModel implements Comparable<IssueVoucherListVie
   }
 
   public boolean isRemoteIssueVoucherOrPod() {
-    return  !pod.isLocal();
+    return !pod.isLocal();
   }
 
   public boolean isNeedEnterInputOrderNumber() {
@@ -93,7 +93,8 @@ public class IssueVoucherListViewModel implements Comparable<IssueVoucherListVie
 
   public boolean shouldShowOperationIcon() {
     return pod.isLocal() && (isIssueVoucher()
-        || (!isIssueVoucher() && StringUtils.contains(getErrorMsg(), Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST)));
+        || (!isIssueVoucher() && (StringUtils.contains(getErrorMsg(), Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST)
+        || StringUtils.contains(getErrorMsg(), Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST_IN_PORTUGUESE))));
   }
 
   @Nullable
