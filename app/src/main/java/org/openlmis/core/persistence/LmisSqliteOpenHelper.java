@@ -302,4 +302,9 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
       db.disableWriteAheadLogging();
     }
   }
+
+  public void checkDatabaseVersion() {
+    int version = this.getWritableDatabase().getVersion();
+    Log.d("database version: ", String.valueOf(version));
+  }
 }

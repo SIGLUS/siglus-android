@@ -41,6 +41,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.NetworkSchedulerService;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.receiver.DebugReceiver;
 import org.openlmis.core.receiver.NetworkChangeReceiver;
 import org.openlmis.core.utils.AutoSizeUtil;
@@ -71,6 +72,7 @@ public class LMISApp extends Application {
     registerNetWorkChangeListener();
     DebugReceiver.registerDebugBoardCastReceiver(this);
     configAutoSize();
+    LmisSqliteOpenHelper.getInstance(this).checkDatabaseVersion();
   }
 
   public boolean isRoboUniTest() {
