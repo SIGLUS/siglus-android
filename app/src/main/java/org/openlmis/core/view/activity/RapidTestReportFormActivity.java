@@ -75,7 +75,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements Keyboar
 
   @Override
   protected int getThemeRes() {
-    return R.style.AppTheme_BlueGray;
+    return R.style.AppTheme_PURPLE;
   }
 
   @Override

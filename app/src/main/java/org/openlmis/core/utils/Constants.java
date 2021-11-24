@@ -33,7 +33,6 @@ public final class Constants {
     MMIA_PROGRAM(MMIA_PROGRAM_CODE, R.string.mmia_list, MMIA_REPORT),
     VIA_PROGRAM(VIA_PROGRAM_CODE, R.string.requisition_list, VIA_REPORT),
     AL_PROGRAM(AL_PROGRAM_CODE, R.string.label_al_name, AL_REPORT),
-    PTV_PROGRAM(PTV_PROGRAM_CODE, R.string.label_ptv_name, PTV_REPORT),
     RAPID_TEST_PROGRAM(RAPID_TEST_PROGRAM_CODE, R.string.title_rapid_test_reports, RAPID_REPORT);
 
 
@@ -65,14 +64,10 @@ public final class Constants {
   public static final String VIA_PROGRAM_CODE = "VC";
   public static final String AL_PROGRAM_CODE = "ML";
   public static final String RAPID_TEST_PROGRAM_CODE = "TR";
-  public static final String RAPID_TEST_OLD_CODE = "RAPID_TEST";
-  public static final String PTV_PROGRAM_CODE = "PTV";
-  public static final String VIA_PROGRAM_CHILD_CODE_TARV = "TARV";
   public static final List<Constants.Program> PROGRAMS = Collections
       .unmodifiableList(Arrays.asList(Constants.Program.VIA_PROGRAM,
           Constants.Program.MMIA_PROGRAM,
           Constants.Program.AL_PROGRAM,
-          Constants.Program.PTV_PROGRAM,
           Constants.Program.RAPID_TEST_PROGRAM));
 
   //Don't change these reportTypes codes!!!

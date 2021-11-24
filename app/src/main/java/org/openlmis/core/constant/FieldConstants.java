@@ -67,6 +67,8 @@ public class FieldConstants {
 
   public static final String PROGRAM_CODE = "programCode";
 
+  public static final String PROGRAM_NAME = "programName";
+
   public static final String CATEGORY = "category";
 
   public static final String ACTIVE = "active";
@@ -106,6 +108,10 @@ public class FieldConstants {
   public static final String IS_SYNCED = "isSynced";
 
   public static final String ERROR_MESSAGE = "errorMessage";
+
+  public static final String EXPIRATION_DATE = "expirationDate";
+
+  public static final String QUANTITY_ON_HAND = "quantityOnHand";
 
   // id
   public static final String STOCK_CARD_ID = "stockCard_id";

@@ -18,6 +18,7 @@
 
 package org.openlmis.core.service;
 
+import static org.openlmis.core.LMISApp.getContext;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.text.TextUtils;
@@ -48,6 +49,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockMovementItem;
@@ -79,38 +81,24 @@ import rx.Observable;
 @SuppressWarnings("PMD")
 public class SyncUpManager {
 
-  private static volatile boolean syncing = false;
-
-  public static synchronized boolean isSyncing() {
-    return SyncUpManager.syncing;
-  }
-
-  public static synchronized void setSyncing(boolean syncing) {
-    SyncUpManager.syncing = syncing;
-  }
-
   private static final String TAG = "SyncUpManager";
-
   private static final String FAKE_ORDER_NUMBER = "ErrorOrderNumber";
-
+  private static volatile boolean syncing = false;
+  protected LMISRestApi lmisRestApi;
   @Inject
   RnrFormRepository rnrFormRepository;
-
   @Inject
   SharedPreferenceMgr sharedPreferenceMgr;
-
   @Inject
   StockMovementRepository stockMovementRepository;
-
   @Inject
   ProductRepository productRepository;
-
   @Inject
   CmmRepository cmmRepository;
-
   @Inject
   ProgramDataFormRepository programDataFormRepository;
-
+  @Inject
+  DbUtil dbUtil;
   @Inject
   private SyncErrorsRepository syncErrorsRepository;
 
@@ -120,13 +108,16 @@ public class SyncUpManager {
   @Inject
   private PodRepository podRepository;
 
-  @Inject
-  DbUtil dbUtil;
-
-  protected LMISRestApi lmisRestApi;
-
   public SyncUpManager() {
     lmisRestApi = LMISApp.getInstance().getRestApi();
+  }
+
+  public static synchronized boolean isSyncing() {
+    return SyncUpManager.syncing;
+  }
+
+  public static synchronized void setSyncing(boolean syncing) {
+    SyncUpManager.syncing = syncing;
   }
 
   public void syncUpData() {
@@ -146,7 +137,6 @@ public class SyncUpManager {
       if (isSyncRnrSuccessful) {
         sharedPreferenceMgr.setRnrLastSyncTime();
       }
-
 
       boolean isSyncPodSuccessful = syncPod();
       if (isSyncPodSuccessful) {
@@ -185,8 +175,19 @@ public class SyncUpManager {
       new LMISException(e, "SyncUpManager:syncRnr").reportToFabric();
       return false;
     }
-
-    Observable.from(forms).filter(this::submitRequisition).subscribe(this::markRnrFormSynced);
+    List<Program> needBlockPrograms = new ArrayList<>();
+    for (RnRForm form : forms) {
+      if (needBlockPrograms.contains(form.getProgram())) {
+        markRnrFormBlocked(form);
+      } else {
+        boolean result = submitRequisition(form);
+        if (result) {
+          markRnrFormSynced(form);
+        } else {
+          needBlockPrograms.add(form.getProgram());
+        }
+      }
+    }
     EventBus.getDefault().post(new SyncRnrFinishEvent());
     return from(forms).allMatch(RnRForm::isSynced);
   }
@@ -410,7 +411,7 @@ public class SyncUpManager {
             }
           }).toList();
       boolean isSyncedSuccessed = true;
-      for (int start = 0; start < entries.size(); ) {
+      for (int start = 0; start < entries.size(); start += unitCount) {
         int end = Math.min((start + unitCount), entries.size());
         List<DirtyDataItemEntry> sub = entries.subList(start, end);
         try {
@@ -427,7 +428,6 @@ public class SyncUpManager {
           isSyncedSuccessed = false;
           new LMISException(e, "SyncUpManager.syncUpDeletedData").reportToFabric();
         }
-        start += unitCount;
       }
       return isSyncedSuccessed;
     } else {
@@ -437,11 +437,7 @@ public class SyncUpManager {
 
   private boolean submitRequisition(RnRForm rnRForm) {
     try {
-      if (rnRForm.isEmergency()) {
-        lmisRestApi.submitEmergencyRequisition(rnRForm);
-      } else {
-        lmisRestApi.submitRequisition(rnRForm);
-      }
+      lmisRestApi.submitRequisition(rnRForm);
       syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, rnRForm.getId());
       Log.d(TAG, "===> SyncRnr : synced ->");
       return true;
@@ -490,6 +486,12 @@ public class SyncUpManager {
     }
   }
 
+  private void markRnrFormBlocked(RnRForm form) {
+    syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, form.getId());
+    syncErrorsRepository.save(new SyncError(getContext().getResources().getString(
+        R.string.error_sync_previous_period), SyncType.RNR_FORM, form.getId()));
+  }
+
   private Pod submitPod(Pod localPod) {
     try {
       Pod remotePod = lmisRestApi.submitPod(new PodEntry(localPod));
@@ -512,19 +514,36 @@ public class SyncUpManager {
       return localPod;
     }
     if (localPod.isLocal()) {
-      localPod.setOrderSupplyFacilityName("DPM ZAMBEZIA");
-      localPod.setOrderSupplyFacilityDistrict("CIDADE DE QUELIMANE");
-      localPod.setOrderSupplyFacilityProvince("ZAMBEZIA");
-      localPod.setOrderSupplyFacilityType("DPM");
+      if (Program.VIA_CODE.equals(localPod.getRequisitionProgramCode())) {
+        localPod.setOrderSupplyFacilityName("DDM de Mopeia");
+        localPod.setOrderSupplyFacilityDistrict("MOPEIA");
+        localPod.setOrderSupplyFacilityProvince("ZAMBEZIA");
+        localPod.setOrderSupplyFacilityType("DDM");
+        localPod.setPreparedBy("android_user6_ddm");
+        localPod.setConferredBy("android_user6_ddm");
+      } else {
+        localPod.setOrderSupplyFacilityName("DPM ZAMBEZIA");
+        localPod.setOrderSupplyFacilityDistrict("CIDADE DE QUELIMANE");
+        localPod.setOrderSupplyFacilityProvince("ZAMBEZIA");
+        localPod.setOrderSupplyFacilityType("DPM");
+        localPod.setPreparedBy("android_user6_dpm");
+        localPod.setConferredBy("android_user6_dpm");
+      }
       localPod.setOrderStatus(OrderStatus.RECEIVED);
-      localPod.setPreparedBy("android_user6_ddm");
-      localPod.setConferredBy("android_user6_ddm");
       localPod.setRequisitionNumber("RNR-NO010412110000039");
-      localPod.setRequisitionStartDate(DateUtil.parseString("2021-10-21", DateUtil.DB_DATE_FORMAT));
-      localPod.setRequisitionEndDate(DateUtil.parseString("2021-11-20", DateUtil.DB_DATE_FORMAT));
-      localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-10-18", DateUtil.DB_DATE_FORMAT));
-      localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-10-18", DateUtil.DB_DATE_FORMAT));
-      localPod.setShippedDate(DateUtil.parseString("2021-11-18", DateUtil.DB_DATE_FORMAT));
+      if ("ORDER-7SUPER".equals(localPod.getOrderCode())) {
+        localPod.setRequisitionStartDate(DateUtil.parseString("2021-08-21", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionEndDate(DateUtil.parseString("2021-09-20", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-08-21", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-09-18", DateUtil.DB_DATE_FORMAT));
+        localPod.setShippedDate(DateUtil.parseString("2021-10-05", DateUtil.DB_DATE_FORMAT));
+      } else {
+        localPod.setRequisitionStartDate(DateUtil.parseString("2021-10-21", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionEndDate(DateUtil.parseString("2021-11-20", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-10-18", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-11-18", DateUtil.DB_DATE_FORMAT));
+        localPod.setShippedDate(DateUtil.parseString("2021-11-18", DateUtil.DB_DATE_FORMAT));
+      }
       localPod.setProcessedDate(DateUtil.getCurrentDate());
     }
     localPod.setSynced(podRepository.markSynced(localPod));

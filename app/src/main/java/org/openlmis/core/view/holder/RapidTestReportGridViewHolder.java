@@ -146,9 +146,6 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         case R.id.et_positive_rapid_test_report_grid:
           column = RapidTestGridColumnCode.POSITIVE;
           break;
-        case R.id.et_unjustified_rapid_test_report_grid:
-          column = RapidTestGridColumnCode.UNJUSTIFIED;
-          break;
         default:
           // do nothing
       }

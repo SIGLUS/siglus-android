@@ -25,6 +25,10 @@ import android.view.inputmethod.InputMethodManager;
 
 public class KeyboardUtil {
 
+  private KeyboardUtil() {
+    // do nothing
+  }
+
   public static void hideKeyboard(View view) {
     InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
         Context.INPUT_METHOD_SERVICE);

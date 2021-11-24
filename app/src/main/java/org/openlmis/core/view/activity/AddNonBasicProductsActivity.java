@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -61,6 +62,9 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
   @InjectView(R.id.btn_add_products)
   Button btnAddProducts;
 
+  @InjectView(R.id.tv_total)
+  TextView tvTotal;
+
   @InjectPresenter(AddNonBasicProductsPresenter.class)
   AddNonBasicProductsPresenter presenter;
 
@@ -93,8 +97,13 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
   @Override
   public boolean onSearchStart(String query) {
     adapter.filter(query);
+    setTotal(adapter.getItemCount());
     setUpFastScroller(adapter.getFilteredList());
     return false;
+  }
+
+  protected void setTotal(int total) {
+    tvTotal.setText(getString(R.string.label_total, total));
   }
 
   @Override
@@ -133,6 +142,7 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
       public void onNext(List<NonBasicProductsViewModel> inventoryViewModels) {
         loaded();
         adapter.filter(EMPTY_STRING);
+        setTotal(adapter.getItemCount());
         setUpFastScroller(inventoryViewModels);
         adapter.notifyDataSetChanged();
       }

@@ -17,7 +17,7 @@
       android:id="@+id/et_quantity_shipped"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/hint_quantity_shipped"
+      android:hint="@string/supplied_quantity"
       android:inputType="number"
       android:maxLength="@integer/document_number_length"
       android:textSize="@dimen/px_18"/>
@@ -37,7 +37,7 @@
       android:id="@+id/et_quantity_accepted"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/hint_quantity_accepted"
+      android:hint="@string/quantity_received"
       android:inputType="number"
       android:maxLength="@integer/document_number_length"
       android:textSize="@dimen/px_18"/>

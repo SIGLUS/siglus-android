@@ -113,6 +113,9 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
       intent.putExtra(PARAM_ISSUE_VOUCHER, issueVoucherDraftPresenter.coverToPodFromIssueVoucher(programCode, true));
       if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
         intent.putExtra(IntentConstants.FROM_PAGE, fromPage);
+        setResult(RESULT_OK, intent);
+        finish();
+        return;
       }
       startActivity(intent);
     }
@@ -195,6 +198,11 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   }
 
   @Override
+  public void onRemove(int productPosition, int lotPosition) {
+    // do nothing
+  }
+
+  @Override
   public void onRemove(int position) {
     SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
         null,
@@ -214,11 +222,6 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
         dialogFragment.dismiss();
       }
     });
-  }
-
-  @Override
-  public void onRemove(int productPosition, int lotPosition) {
-    // do nothing
   }
 
   @Override

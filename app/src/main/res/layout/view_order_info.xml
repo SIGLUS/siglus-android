@@ -359,7 +359,7 @@
           android:layout_marginTop="@dimen/px_10"
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintLeft_toLeftOf="parent"
-          android:text="@string/label_reception_date"></TextView>
+          android:text="@string/label_reception_date" />
         <TextView
           android:id="@+id/tv_reception_date_value"
           style="@style/Pod.header.title"

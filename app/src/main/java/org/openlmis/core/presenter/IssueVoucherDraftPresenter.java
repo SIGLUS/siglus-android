@@ -267,9 +267,9 @@ public class IssueVoucherDraftPresenter extends Presenter {
   private Observable<List<IssueVoucherProductViewModel>> getObservableFromDraft(Long podId) {
     return Observable.create(subscriber -> {
       try {
-        Pod pod = podRepository.queryById(podId);
-        orderNumber = pod.getOrderCode();
-        movementReasonCode = pod.getStockManagementReason();
+        Pod existedPod = podRepository.queryById(podId);
+        orderNumber = existedPod.getOrderCode();
+        movementReasonCode = existedPod.getStockManagementReason();
         List<DraftIssueVoucherProductItem> productItems = issueVoucherDraftRepository.queryByPodId(podId);
         List<IssueVoucherProductViewModel> productViewModels = FluentIterable.from(productItems)
             .transform(DraftIssueVoucherProductItem::from).toList();

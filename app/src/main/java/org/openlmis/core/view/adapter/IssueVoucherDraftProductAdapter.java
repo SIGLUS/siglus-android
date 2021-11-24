@@ -168,16 +168,6 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
       };
     }
 
-    private SingleClickButtonListener getEditClickListener() {
-      return new SingleClickButtonListener() {
-        @Override
-        public void onSingleClick(View v) {
-          viewModel.setDone(false);
-          notifyItemChanged(getLayoutPosition());
-        }
-      };
-    }
-
     private SingleClickButtonListener getVerifyClickListener() {
       return new SingleClickButtonListener() {
         @Override
@@ -190,6 +180,16 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
           if (!viewModel.getProduct().isKit()) {
             rvLots.requestFocus();
           }
+        }
+      };
+    }
+
+    private SingleClickButtonListener getEditClickListener() {
+      return new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          viewModel.setDone(false);
+          notifyItemChanged(getLayoutPosition());
         }
       };
     }

@@ -38,7 +38,7 @@ public class ALRequisitionActivity extends BaseActivity {
 
   @Override
   protected int getThemeRes() {
-    return R.style.AppTheme_LIGHT_BLUE;
+    return R.style.AppTheme_PURPLE;
   }
 
   @Override

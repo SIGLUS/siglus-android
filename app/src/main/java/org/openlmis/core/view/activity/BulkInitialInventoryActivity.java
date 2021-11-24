@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import java.io.Serializable;
@@ -49,6 +48,8 @@ import rx.Subscription;
 public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialInventoryPresenter> {
 
   public static final int REQUEST_CODE = 1050;
+
+  public static final String KEY_FROM_INITIAL_INVENTORY = "Initial Inventory";
 
   @InjectView(R.id.btn_add_products)
   TextView btnAddProducts;
@@ -99,7 +100,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     super.onBackPressed();
   }
 
-  @VisibleForTesting
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveInitialInventory(DebugInitialInventoryEvent event) {
     loading();
@@ -212,7 +212,8 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
 
       @Override
       public void onNext(Object o) {
-        Subscription loaded = presenter.loadPrograms().subscribe(getOnProgramsLoadedSubscriber());
+        Subscription loaded = presenter.getInflatedInventoryOnMainThread()
+            .subscribe(getOnViewModelsLoadedSubscriber());
         subscriptions.add(loaded);
       }
     };

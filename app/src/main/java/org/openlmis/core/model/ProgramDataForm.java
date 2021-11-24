@@ -74,10 +74,10 @@ public class ProgramDataForm extends BaseModel {
   @SerializedName("programDataFormBasicItems")
   private List<ProgramDataFormBasicItem> formBasicItemListWrapper;
   @ForeignCollectionField()
-  private ForeignCollection<ProgramDataFormSignature> signatures;
+  private transient ForeignCollection<ProgramDataFormSignature> signatures;
   @Expose
   @SerializedName("programDataFormSignatures")
-  private List<ProgramDataFormSignature> signaturesWrapper;
+  private transient List<ProgramDataFormSignature> signaturesWrapper;
 
   public List<ProgramDataFormSignature> getSignaturesWrapper() {
     signaturesWrapper = ListUtil.wrapOrEmpty(signatures, signaturesWrapper);

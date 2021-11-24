@@ -20,30 +20,21 @@ package org.openlmis.core.utils;
 
 import static android.widget.Toast.makeText;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.core.content.ContextCompat;
-import com.github.johnpersano.supertoasts.library.Style;
-import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
 public final class ToastUtil {
 
-  public static SuperActivityToast activityToast;
-
   private ToastUtil() {
   }
 
-  @SuppressLint("WrongConstant")
   public static void show(CharSequence text) {
     if (TextUtils.isEmpty(text)) {
       return;
@@ -66,28 +57,6 @@ public final class ToastUtil {
     Toast toast = makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG);
     setSystemToastLayout(toast);
     toast.show();
-  }
-
-  private static void showSystemToast(String text) {
-    Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG).show();
-  }
-
-  private static void showActivityToast(String text, int gravity, int yOffset) {
-    WindowManager wm = (WindowManager) LMISApp.getContext().getSystemService(Context.WINDOW_SERVICE);
-    int width = wm.getDefaultDisplay().getWidth();
-    Activity currentActivity = LMISApp.getActiveActivity();
-    if (currentActivity != null) {
-      activityToast = SuperActivityToast.create(currentActivity, new Style(), Style.TYPE_STANDARD);
-      activityToast.setText(text)
-          .setColor(LMISApp.getContext().getResources().getColor(R.color.color_6b6b6b))
-          .setDuration(Style.DURATION_VERY_LONG)
-          .setGravity(Gravity.CENTER, 0,
-              (int) LMISApp.getContext().getResources().getDimension(R.dimen.px_180))
-          .setWidth(width - 100)
-          .setFrame(Style.FRAME_STANDARD)
-          .setAnimations(Style.ANIMATIONS_FADE)
-          .show();
-    }
   }
 
   private static void setSystemToastLayout(Toast toast) {

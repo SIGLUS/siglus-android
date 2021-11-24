@@ -69,14 +69,15 @@ public class IssueVoucherListActivity extends BaseActivity {
     }
 
     @Override
+    public void onPageScrollStateChanged(int state) {
+      magicIndicator.onPageScrollStateChanged(state);
+    }
+
+    @Override
     public void onPageSelected(int position) {
       magicIndicator.onPageSelected(position);
     }
 
-    @Override
-    public void onPageScrollStateChanged(int state) {
-      magicIndicator.onPageScrollStateChanged(state);
-    }
   };
 
   @Override

@@ -21,22 +21,40 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 import android.util.Log;
 import com.google.inject.Inject;
+import com.j256.ormlite.misc.TransactionManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
+import org.openlmis.core.network.ProgramCacheManager;
+import org.openlmis.core.network.model.FacilityInfoResponse;
+import org.openlmis.core.network.model.SupportedProgram;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
 public class UserRepository {
 
   @Inject
   DbUtil dbUtil;
 
+  @Inject
+  ProgramRepository programRepository;
+
+  @Inject
+  ReportTypeFormRepository reportTypeFormRepository;
+
   GenericDao<User> genericDao;
+
+  private final Context context;
 
   @Inject
   public UserRepository(Context context) {
     genericDao = new GenericDao<>(User.class, context);
+    this.context = context;
   }
 
   public User mapUserFromLocal(final User user) {
@@ -52,6 +70,25 @@ public class UserRepository {
       new LMISException(e, "UserRepository.mapUserFromLocal").reportToFabric();
     }
     return null;
+  }
+
+  public void saveFacilityInfo(FacilityInfoResponse facilityInfoResponse) throws LMISException {
+    User user = UserInfoMgr.getInstance().getUser();
+    user.setFacilityCode(facilityInfoResponse.getCode());
+    user.setFacilityName(facilityInfoResponse.getName());
+    UserInfoMgr.getInstance().setUser(user);
+    try {
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        createOrUpdate(user);
+        List<Program> programs = covertFacilityInfoToProgram(facilityInfoResponse);
+        ProgramCacheManager.addPrograms(programs);
+        programRepository.batchCreateOrUpdatePrograms(programs);
+        reportTypeFormRepository.batchCreateOrUpdateReportTypes(facilityInfoResponse.getSupportedReportTypes());
+        return null;
+      });
+    } catch (SQLException e) {
+      throw new LMISException(e);
+    }
   }
 
   public void createOrUpdate(final User user) {
@@ -91,5 +128,19 @@ public class UserRepository {
       Log.w("UserRepository", e);
       new LMISException(e, "UserReposirory.deleteLocalUser").reportToFabric();
     }
+  }
+
+  private List<Program> covertFacilityInfoToProgram(FacilityInfoResponse facilityInfoResponse) {
+    List<Program> programs = new ArrayList<>();
+    for (SupportedProgram supportedProgram : facilityInfoResponse.getSupportedPrograms()) {
+      Program program = Program
+          .builder()
+          .programCode(supportedProgram.getCode())
+          .programName(supportedProgram.getName())
+          .isSupportEmergency(supportedProgram.getCode().equals("VC"))
+          .build();
+      programs.add(program);
+    }
+    return programs;
   }
 }

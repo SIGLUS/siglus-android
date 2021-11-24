@@ -46,7 +46,6 @@ import org.openlmis.core.persistence.migrations.AddIsBasicColumnToProductsTable;
 import org.openlmis.core.persistence.migrations.AddIsCustomColumnToRegime;
 import org.openlmis.core.persistence.migrations.AddIsEmergencyColumnToProgram;
 import org.openlmis.core.persistence.migrations.AddIsHIVColumnToProductsTable;
-import org.openlmis.core.persistence.migrations.AddIsInitInventoryToStockMovementTable;
 import org.openlmis.core.persistence.migrations.AddIsKitColumnToProduct;
 import org.openlmis.core.persistence.migrations.AddLastReportEndTimeToReportType;
 import org.openlmis.core.persistence.migrations.AddLotMovementItemsReasonAndDocumentNumber;
@@ -75,6 +74,7 @@ import org.openlmis.core.persistence.migrations.AddVersionCodeToProgramProductTa
 import org.openlmis.core.persistence.migrations.ChangeMalariaTreatments;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.persistence.migrations.ChangeProgramTableName;
+import org.openlmis.core.persistence.migrations.ClearDatabase;
 import org.openlmis.core.persistence.migrations.ConvertEssMedsToVIAProgram;
 import org.openlmis.core.persistence.migrations.CreateAdditionalProductProgramTable;
 import org.openlmis.core.persistence.migrations.CreateBulkEntriesDraftTables;
@@ -215,6 +215,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new CreateDirtyDataProductTable());
     MIGRATIONS.add(new AddVersionCodeToProgramProductTable());
     MIGRATIONS.add(new AddLastReportEndTimeToReportType());
+    MIGRATIONS.add(new ClearDatabase());
     MIGRATIONS.add(new DeletePrograms());
     MIGRATIONS.add(new DeleteReportTypes());
     MIGRATIONS.add(new UpdateStockCardSOHStatus());
@@ -231,7 +232,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new CreateIssueVoucherDraftTables());
     MIGRATIONS.add(new AddProductPrice());
     MIGRATIONS.add(new AddErrorMessageInPortuguese());
-    MIGRATIONS.add(new AddIsInitInventoryToStockMovementTable());
     MIGRATIONS.add(new DropRegimenShortCodeTable());
   }
 
@@ -301,5 +301,10 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
       db.disableWriteAheadLogging();
     }
+  }
+
+  public void checkDatabaseVersion() {
+    int version = this.getWritableDatabase().getVersion();
+    Log.d("database version: ", String.valueOf(version));
   }
 }

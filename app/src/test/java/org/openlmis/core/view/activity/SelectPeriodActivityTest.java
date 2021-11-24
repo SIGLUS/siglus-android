@@ -24,7 +24,6 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -120,7 +119,6 @@ public class SelectPeriodActivityTest {
         is(expectedFormattedText.toString()));
   }
 
-  @Ignore
   @Test
   public void shouldInVisibleWarningWhenUserChoseTheInventory() throws Exception {
     // given
@@ -145,6 +143,8 @@ public class SelectPeriodActivityTest {
         .subscribe(new TestSubscriber());
 
     selectPeriodActivity.nextBtn.performClick();
+
+    RobolectricUtils.waitLooperIdle();
 
     assertTrue(selectPeriodActivity.isFinishing());
     assertThat(shadowOf(selectPeriodActivity).getResultCode(), is(Activity.RESULT_OK));

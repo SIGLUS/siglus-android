@@ -19,6 +19,7 @@
 package org.openlmis.core.view.adapter;
 
 import java.util.List;
+import org.openlmis.core.view.activity.BulkInitialInventoryActivity;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
 public class BulkInitialInventoryLotMovementAdapter extends LotMovementAdapter {
@@ -54,6 +55,7 @@ public class BulkInitialInventoryLotMovementAdapter extends LotMovementAdapter {
     for (LotMovementViewModel lotMovementViewModel : lotList) {
       lotMovementViewModel.setValid(true);
       lotMovementViewModel.setQuantityLessThanSoh(true);
+      lotMovementViewModel.setFrom(BulkInitialInventoryActivity.KEY_FROM_INITIAL_INVENTORY);
     }
     for (int i = 0; i < lotList.size(); i++) {
       if (!lotList.get(i).validateLotWithPositiveQuantity()) {

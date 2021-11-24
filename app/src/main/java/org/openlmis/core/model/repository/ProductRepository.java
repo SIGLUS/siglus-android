@@ -28,6 +28,7 @@ import static org.openlmis.core.constant.FieldConstants.KIT_CODE;
 import static org.openlmis.core.constant.FieldConstants.PRICE;
 import static org.openlmis.core.constant.FieldConstants.PRIMARY_NAME;
 import static org.openlmis.core.constant.FieldConstants.PRODUCT_CODE;
+import static org.openlmis.core.constant.FieldConstants.PROGRAM_CODE;
 import static org.openlmis.core.constant.FieldConstants.STRENGTH;
 import static org.openlmis.core.constant.FieldConstants.TYPE;
 
@@ -42,14 +43,21 @@ import com.j256.ormlite.stmt.Where;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.AdditionalProductProgram;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.network.model.ProductAndSupportedPrograms;
+import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -77,6 +85,13 @@ public class ProductRepository {
   LotRepository lotRepository;
 
   @Inject
+  ProductProgramRepository productProgramRepository;
+
+  @Inject
+  AdditionalProductProgramRepository additionalProductProgramRepository;
+
+
+  @Inject
   public ProductRepository(Context context) {
     this.context = context;
     genericDao = new GenericDao<>(Product.class, context);
@@ -90,36 +105,31 @@ public class ProductRepository {
     return activeProducts;
   }
 
-  public List<Product> listBasicProducts() throws LMISException {
-    String rawSql = SELECT_PRODUCTS + "AND products.isbasic = '1' " + ARCHIVED;
+
+  public Map<String, String> listProductCodeToProgramCode() {
+    String rawSql = "SELECT productCode, programCode FROM product_programs";
     Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
-    List<Product> activeProducts = new ArrayList<>();
+    Map<String, String> productCodeToProgramCode = new HashMap<>();
     if (cursor.moveToFirst()) {
       do {
-        activeProducts.add(buildProductFromCursor(cursor));
+        productCodeToProgramCode.put(cursor.getString(cursor.getColumnIndexOrThrow(PRODUCT_CODE)),
+            cursor.getString(cursor.getColumnIndexOrThrow(PROGRAM_CODE)));
       } while (cursor.moveToNext());
     }
     if (!cursor.isClosed()) {
       cursor.close();
     }
-    Collections.sort(activeProducts);
-    return activeProducts;
+    return productCodeToProgramCode;
+  }
+
+  public List<Product> listBasicProducts() throws LMISException {
+    String rawSql = SELECT_PRODUCTS + "AND products.isbasic = '1' " + ARCHIVED;
+    return queryProducts(rawSql);
   }
 
   public List<Product> listProductsArchivedOrNotInStockCard() throws LMISException {
     String rawSql = SELECT_PRODUCTS + "AND products.iskit = '0' " + ARCHIVED;
-    Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
-    List<Product> activeProducts = new ArrayList<>();
-    if (cursor.moveToFirst()) {
-      do {
-        activeProducts.add(buildProductFromCursor(cursor));
-      } while (cursor.moveToNext());
-    }
-    if (!cursor.isClosed()) {
-      cursor.close();
-    }
-    Collections.sort(activeProducts);
-    return activeProducts;
+    return queryProducts(rawSql);
   }
 
   public List<Product> listAllProductsWithoutKit() throws LMISException {
@@ -148,6 +158,34 @@ public class ProductRepository {
     });
   }
 
+  public void saveProductAndProductProgram(SyncDownLatestProductsResponse response) throws LMISException {
+    List<Product> productList = new ArrayList<>();
+    try {
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
+          Product product = productAndSupportedPrograms.getProduct();
+          productProgramRepository.batchSave(product, productAndSupportedPrograms.getProductPrograms());
+          if (Program.MALARIA_CODE.equals(product.getAdditionalProgramCode())) {
+            additionalProductProgramRepository.createOrUpdate(AdditionalProductProgram
+                .builder()
+                .productCode(product.getCode())
+                .programCode(product.getAdditionalProgramCode())
+                .originProgramCode(productAndSupportedPrograms.getProductPrograms().get(0).getProgramCode())
+                .build());
+          }
+          updateDeactivateProductNotifyList(product);
+          productList.add(product);
+        }
+        batchCreateOrUpdateProducts(productList);
+        SharedPreferenceMgr.getInstance().setKeyIsFirstLoginVersion200();
+        SharedPreferenceMgr.getInstance().setLastSyncProductTime(response.getLastSyncTime());
+        return null;
+      });
+    } catch (SQLException e) {
+      throw new LMISException(e);
+    }
+  }
+
   //DON'T USE - THIS WILL BE PRIVATE WHEN KIT FEATURE TOGGLE IS ON
   public void createOrUpdate(Product product) throws LMISException {
     Product existingProduct = getByCode(product.getCode());
@@ -163,6 +201,35 @@ public class ProductRepository {
       createKitProductsIfNotExist(product);
     } catch (SQLException e) {
       Log.w(TAG, e);
+    }
+  }
+
+  public void updateDeactivateProductNotifyList(Product product) throws LMISException {
+    Product existingProduct = getByCode(product.getCode());
+
+    if (existingProduct == null) {
+      return;
+    }
+
+    if (product.isActive() == existingProduct.isActive()) {
+      return;
+    }
+    if (product.isActive()) {
+      SharedPreferenceMgr.getInstance().removeShowUpdateBannerTextWhenReactiveProduct(existingProduct.getPrimaryName());
+      return;
+    }
+
+    StockCard stockCard = stockRepository.queryStockCardByProductId(existingProduct.getId());
+    if (stockCard == null) {
+      return;
+    }
+
+    if (stockCard.getProduct().isArchived()) {
+      return;
+    }
+
+    if (stockCard.getStockOnHand() == 0) {
+      SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
     }
   }
 
@@ -339,18 +406,7 @@ public class ProductRepository {
         + "WHERE id IN (SELECT product_id FROM stock_cards WHERE stockOnHand > 0) "
         + "AND isKit = 0 "
         + "AND isArchived = 0;";
-    Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
-    List<Product> activeProducts = new ArrayList<>();
-    if (cursor.moveToFirst()) {
-      do {
-        activeProducts.add(buildProductFromCursor(cursor));
-      } while (cursor.moveToNext());
-    }
-    if (!cursor.isClosed()) {
-      cursor.close();
-    }
-    Collections.sort(activeProducts);
-    return activeProducts;
+    return queryProducts(rawSql);
   }
 
   public List<Product> queryProductsByProgramCode(String programCode) {
@@ -396,7 +452,7 @@ public class ProductRepository {
   }
 
   @NonNull
-  private Product buildProductFromCursor(Cursor cursor) {
+  public Product buildProductFromCursor(Cursor cursor) {
     Product product = new Product();
     product.setBasic(cursor.getInt(cursor.getColumnIndexOrThrow(IS_BASIC)) == 1);
     product.setActive(cursor.getInt(cursor.getColumnIndexOrThrow(IS_ACTIVE)) == 1);
@@ -409,5 +465,20 @@ public class ProductRepository {
     product.setType(cursor.getString(cursor.getColumnIndexOrThrow(TYPE)));
     product.setPrice(cursor.getString(cursor.getColumnIndexOrThrow(PRICE)));
     return product;
+  }
+
+  private List<Product> queryProducts(String rawSql) {
+    Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+    List<Product> activeProducts = new ArrayList<>();
+    if (cursor.moveToFirst()) {
+      do {
+        activeProducts.add(buildProductFromCursor(cursor));
+      } while (cursor.moveToNext());
+    }
+    if (!cursor.isClosed()) {
+      cursor.close();
+    }
+    Collections.sort(activeProducts);
+    return activeProducts;
   }
 }

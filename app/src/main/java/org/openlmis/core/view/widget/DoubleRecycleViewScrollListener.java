@@ -22,6 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public final class DoubleRecycleViewScrollListener {
 
+  private DoubleRecycleViewScrollListener() {
+    // do nothing
+  }
+
   public static RecyclerView.OnScrollListener[] scrollInSync(RecyclerView rvHostView, RecyclerView rvViceView) {
     final RecyclerView.OnScrollListener[] scrollListeners = new RecyclerView.OnScrollListener[2];
     scrollListeners[0] = new RecyclerView.OnScrollListener() {

@@ -33,7 +33,6 @@ import static org.mockito.Mockito.when;
 import android.util.Log;
 import com.google.inject.AbstractModule;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -242,15 +241,6 @@ public class MMIARequisitionPresenterTest {
     } catch (InterruptedException e) {
       Log.w("waitObservableToExecute", e);
     }
-  }
-
-  private ArrayList<RegimenItem> generateRegimenItems() {
-    ArrayList<RegimenItem> regimenItems = new ArrayList<>();
-    RegimenItem regimenItem = new RegimenItem();
-    regimenItem.setAmount(100L);
-    regimenItems.add(regimenItem);
-
-    return regimenItems;
   }
 
   public class MyTestModule extends AbstractModule {

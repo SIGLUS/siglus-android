@@ -141,11 +141,17 @@ public class SignatureDialog extends BaseDialogFragment {
     };
   }
 
+  private void onCancel() {
+    dismiss();
+    if (hasDelegate()) {
+      delegate.onCancel();
+    }
+  }
+
   private void onDone() {
     if (!hasDelegate()) {
       return;
     }
-
     String signature = etSignature.getText().toString().trim();
     if (checkSignature(signature)) {
       btnSign.setEnabled(false);
@@ -157,12 +163,6 @@ public class SignatureDialog extends BaseDialogFragment {
     }
   }
 
-  private void onCancel() {
-    dismiss();
-    if (hasDelegate()) {
-      delegate.onCancel();
-    }
-  }
 
   private boolean hasDelegate() {
     return delegate != null;

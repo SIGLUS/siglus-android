@@ -19,13 +19,16 @@
 package org.openlmis.core.model.repository;
 
 import static org.openlmis.core.constant.FieldConstants.AVG_MONTHLY_CONSUMPTION;
+import static org.openlmis.core.constant.FieldConstants.EXPIRATION_DATE;
 import static org.openlmis.core.constant.FieldConstants.ID;
 import static org.openlmis.core.constant.FieldConstants.LOT_NUMBER;
 import static org.openlmis.core.constant.FieldConstants.PRODUCT_ID;
+import static org.openlmis.core.constant.FieldConstants.QUANTITY_ON_HAND;
 import static org.openlmis.core.constant.FieldConstants.STOCK_CARD_ID;
 import static org.openlmis.core.constant.FieldConstants.STOCK_ON_HAND;
 import static org.openlmis.core.model.Product.MEDICINE_TYPE_DEFAULT;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.content.Context;
@@ -43,11 +46,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
+import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.enumeration.StockOnHandStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
@@ -81,6 +86,8 @@ public class StockRepository {
   CmmRepository cmmRepository;
 
   GenericDao<StockCard> genericDao;
+
+  private static final String ADD_STOCK_ERROR = "StockRepository.addStock";
 
   @Inject
   public StockRepository(Context context) {
@@ -140,7 +147,7 @@ public class StockRepository {
         return null;
       });
     } catch (SQLException e) {
-      new LMISException(e, "StockRepository.addStock").reportToFabric();
+      new LMISException(e, ADD_STOCK_ERROR).reportToFabric();
     }
   }
 
@@ -157,7 +164,7 @@ public class StockRepository {
         return null;
       });
     } catch (SQLException e) {
-      new LMISException(e, "StockRepository.addStock").reportToFabric();
+      new LMISException(e, ADD_STOCK_ERROR).reportToFabric();
     }
   }
 
@@ -181,7 +188,7 @@ public class StockRepository {
         return null;
       });
     } catch (SQLException e) {
-      new LMISException(e, "StockRepository.addStock").reportToFabric();
+      new LMISException(e, ADD_STOCK_ERROR).reportToFabric();
     }
   }
 
@@ -251,50 +258,6 @@ public class StockRepository {
     });
   }
 
-  private void setStockCardCmmStatus(StockCard stockCard) {
-    stockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(stockCard));
-  }
-
-  protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm rnRForm) throws LMISException {
-    return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(), rnRForm.getPeriodEnd());
-  }
-
-  protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd)
-      throws LMISException {
-    String codeBelongPrograms = getSqlForProgram(programCode);
-
-    String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
-        + " SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND code IN ("
-        + codeBelongPrograms
-        + " ))"
-        + " AND id NOT IN ("
-        + " SELECT stockCard_id FROM stock_items WHERE stockCard_id NOT IN ("
-        + " SELECT stockCard_id FROM stock_items"
-        + " WHERE movementDate <= '" + DateUtil.formatDateTime(periodEnd) + "'"
-        + " AND createdTime <= '" + DateUtil.formatDateTime(periodEnd) + "'))";
-
-    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
-        .getWritableDatabase().rawQuery(rawSql, null);
-    List<StockCard> stockCardList = new ArrayList<>();
-    if (cursor.moveToFirst()) {
-      do {
-        StockCard stockCard = new StockCard();
-        stockCard.setProduct(productRepository
-            .getProductById(cursor.getLong(cursor.getColumnIndexOrThrow(PRODUCT_ID))));
-        stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
-        stockCard.setAvgMonthlyConsumption(
-            cursor.getFloat(cursor.getColumnIndexOrThrow(AVG_MONTHLY_CONSUMPTION)));
-        stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
-        stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
-        stockCardList.add(stockCard);
-      } while (cursor.moveToNext());
-    }
-    if (!cursor.isClosed()) {
-      cursor.close();
-    }
-    return stockCardList;
-  }
-
   public List<StockCard> getStockCardsAndLotsOnHandForProgram(String programCode)
       throws LMISException {
     String codeBelongPrograms = " SELECT productCode FROM product_programs WHERE programCode = '" + programCode + "'";
@@ -327,31 +290,72 @@ public class StockRepository {
     return stockCardList;
   }
 
-  public List<StockCard> getStockCardsBelongToProgram(String programCode) throws LMISException {
-    String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
+  protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm rnRForm) {
+    return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(), rnRForm.getPeriodEnd());
+  }
+
+  protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd) {
+    String codeBelongPrograms = getSqlForProgram(programCode);
+
+    String rawSql = "SELECT stock_cards.stockOnHand, stock_cards.avgMonthlyConsumption, stock_cards.id as stockCard_id,"
+        + " products.* FROM stock_cards"
+        + " join products on products.id = stock_cards.product_id"
+        + " WHERE product_id IN ("
         + " SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND code IN ("
-        + " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode IN ("
-        + " SELECT programCode FROM programs WHERE parentCode= '" + programCode + "'"
-        + " OR programCode='" + programCode + "')))";
+        + codeBelongPrograms + " ))"
+        + " AND stock_cards.id NOT IN ("
+        + " SELECT stockCard_id FROM stock_items WHERE stockCard_id NOT IN ("
+        + " SELECT stockCard_id FROM stock_items"
+        + " WHERE movementDate <= '" + DateUtil.formatDateTime(periodEnd) + "'"
+        + " AND createdTime <= '" + DateUtil.formatDateTime(periodEnd) + "'))";
+
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
         .getWritableDatabase().rawQuery(rawSql, null);
+    return getStockCardsBySqlSearch(cursor, programCode);
+  }
+
+  public List<StockCard> getStockCardsBelongToProgram(String programCode) {
+    String rawSql = "SELECT stock_cards.stockOnHand, stock_cards.avgMonthlyConsumption, stock_cards.id as stockCard_id,"
+        + " products.* FROM stock_cards"
+        + " join products on products.id = stock_cards.product_id"
+        + " WHERE product_id IN ("
+        + " SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND code IN ("
+        + " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode ='" + programCode + "'))";
+    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
+        .getWritableDatabase().rawQuery(rawSql, null);
+    return getStockCardsBySqlSearch(cursor, programCode);
+  }
+
+  @NotNull
+  private List<StockCard> getStockCardsBySqlSearch(Cursor cursor, String programCode) {
     List<StockCard> stockCardList = new ArrayList<>();
     if (cursor.moveToFirst()) {
       do {
         StockCard stockCard = new StockCard();
-        stockCard.setProduct(productRepository
-            .getProductById(cursor.getLong(cursor.getColumnIndexOrThrow(PRODUCT_ID))));
+        stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_CARD_ID)));
+        stockCard.setProduct(productRepository.buildProductFromCursor(cursor));
         stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
-        stockCard.setAvgMonthlyConsumption(
-            cursor.getFloat(cursor.getColumnIndexOrThrow(AVG_MONTHLY_CONSUMPTION)));
-        stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow(ID)));
+        stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow(AVG_MONTHLY_CONSUMPTION)));
         stockCardList.add(stockCard);
       } while (cursor.moveToNext());
     }
     if (!cursor.isClosed()) {
       cursor.close();
     }
+
+    if (MMIA_PROGRAM_CODE.equals(programCode) || RAPID_TEST_PROGRAM_CODE.equals(programCode)) {
+      Map<String, List<LotOnHand>> idToLots = getStockIdToLotOnHands();
+      for (StockCard stockCard : stockCardList) {
+        if (idToLots.containsKey(String.valueOf(stockCard.getId()))) {
+          stockCard.setLotOnHandListWrapper(idToLots.get(String.valueOf(stockCard.getId())));
+        }
+      }
+    }
     return stockCardList;
+  }
+
+  private void setStockCardCmmStatus(StockCard stockCard) {
+    stockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(stockCard));
   }
 
   private List<LotOnHand> getLotOnHandByStockCard(final long stockCardId) throws LMISException {
@@ -359,6 +363,21 @@ public class StockRepository {
         .where().eq(STOCK_CARD_ID, stockCardId)
         .query());
   }
+
+  private Map<String, List<LotOnHand>> getStockIdToLotOnHands() {
+    Map<String, List<LotOnHand>> lotInfoMap = new HashMap<>();
+    String rawSql = "select loh.stockCard_id, loh.quantityOnHand, lots.lotNumber, lots.expirationDate "
+            + "from lots_on_hand loh join lots on loh.lot_id = lots.id order by loh.stockCard_id ";
+    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
+        .getWritableDatabase().rawQuery(rawSql, null);
+    if (cursor.moveToFirst()) {
+      do {
+        getLotsOnHandInfo(lotInfoMap, cursor);
+      } while (cursor.moveToNext());
+    }
+    return lotInfoMap;
+  }
+
 
   public void batchCreateSyncDownStockCardsAndMovements(final List<StockCard> stockCards) throws SQLException {
     TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
@@ -589,16 +608,35 @@ public class StockRepository {
     }
   }
 
+  private void getLotsOnHandInfo(Map<String, List<LotOnHand>> stockCardIdToLotOnHand, Cursor cursor) {
+    String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow(STOCK_CARD_ID));
+    StockCard stockCard = new StockCard();
+    stockCard.setId(Long.parseLong(stockCardId));
+    List<LotOnHand> lotOnHands = new ArrayList<>();
+    if (stockCardIdToLotOnHand.containsKey(stockCardId)) {
+      lotOnHands = stockCardIdToLotOnHand.get(stockCardId);
+    }
+
+    String lotNumber = cursor.getString(cursor.getColumnIndexOrThrow(LOT_NUMBER));
+    String expirationDate = cursor.getString(cursor.getColumnIndexOrThrow(EXPIRATION_DATE));
+    String quantityOnHand = cursor.getString(cursor.getColumnIndexOrThrow(QUANTITY_ON_HAND));
+    Lot lot = Lot.builder().lotNumber(lotNumber)
+        .expirationDate(DateUtil.parseString(expirationDate, DateUtil.DB_DATE_FORMAT)).build();
+    LotOnHand lotOnHand = new LotOnHand(lot, stockCard, Long.valueOf(quantityOnHand));
+    lotOnHands.add(lotOnHand);
+    stockCardIdToLotOnHand.put(stockCardId, lotOnHands);
+  }
+
   private void getLotInfo(List<Map<String, String>> lotList, Cursor cursor) {
     String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow(STOCK_CARD_ID));
     String lotNumber = cursor.getString(cursor.getColumnIndexOrThrow(LOT_NUMBER));
-    String expirationDate = cursor.getString(cursor.getColumnIndexOrThrow("expirationDate"));
-    String quantityOnHand = cursor.getString(cursor.getColumnIndexOrThrow("quantityOnHand"));
+    String expirationDate = cursor.getString(cursor.getColumnIndexOrThrow(EXPIRATION_DATE));
+    String quantityOnHand = cursor.getString(cursor.getColumnIndexOrThrow(QUANTITY_ON_HAND));
     Map<String, String> infoMap = new HashMap<>();
     infoMap.put("stockCardId", stockCardId);
     infoMap.put("lotNumber", lotNumber);
-    infoMap.put("expirationDate", expirationDate);
-    infoMap.put("quantityOnHand", quantityOnHand);
+    infoMap.put(EXPIRATION_DATE, expirationDate);
+    infoMap.put(QUANTITY_ON_HAND, quantityOnHand);
     lotList.add(infoMap);
   }
 

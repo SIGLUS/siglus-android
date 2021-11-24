@@ -95,10 +95,40 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     super.show(manager, "signature_dialog");
   }
 
+  protected boolean checkSignature(String signature) {
+    return signature.length() >= 3 && signature.length() <= 5 && signature.matches("\\D+");
+  }
+
   private void initUI() {
     btnCancel.setOnClickListener(getSingleClickButtonListener());
     btnSign.setOnClickListener(getSingleClickButtonListener());
     etReceived.setFilters(TextStyleUtil.getSignatureLimitation());
+  }
+
+  private void onCancel() {
+    dismiss();
+    if (hasDelegate()) {
+      delegate.onCancel();
+    }
+  }
+
+  private void onDone() {
+    if (!hasDelegate()) {
+      return;
+    }
+    String received = etReceived.getText().toString().trim();
+    if (!checkSignature(received)) {
+      lyReceived.setError(getString(R.string.hint_signature_error_message));
+    } else {
+      btnSign.setEnabled(false);
+      btnCancel.setEnabled(false);
+      delegate.onSign(received);
+      dismiss();
+    }
+  }
+
+  private boolean hasDelegate() {
+    return delegate != null;
   }
 
   private SingleClickButtonListener getSingleClickButtonListener() {
@@ -119,30 +149,6 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     };
   }
 
-  private void onDone() {
-    if (!hasDelegate()) {
-      return;
-    }
-
-    String received = etReceived.getText().toString().trim();
-
-    if (!checkSignature(received)) {
-      lyReceived.setError(getString(R.string.hint_signature_error_message));
-    } else {
-      btnSign.setEnabled(false);
-      btnCancel.setEnabled(false);
-      delegate.onSign(received);
-      dismiss();
-    }
-  }
-
-  private void onCancel() {
-    dismiss();
-    if (hasDelegate()) {
-      delegate.onCancel();
-    }
-  }
-
   private void setDialogAttributes() {
     WindowManager.LayoutParams params = new WindowManager.LayoutParams();
     Window window = Objects.requireNonNull(getDialog()).getWindow();
@@ -151,14 +157,6 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     }
     params.width = (int) (getDialog().getContext().getResources().getDisplayMetrics().widthPixels * 0.8);
     getDialog().getWindow().setAttributes(params);
-  }
-
-  private boolean hasDelegate() {
-    return delegate != null;
-  }
-
-  protected boolean checkSignature(String signature) {
-    return signature.length() >= 3 && signature.length() <= 5 && signature.matches("\\D+");
   }
 
   public abstract static class DialogDelegate {

@@ -49,7 +49,6 @@ public class StockMovementEntry {
   Long requested;
   long stockOnHand;
   long quantity;
-  boolean isInitInventory;
   List<LotMovementEntry> lotEventList = new ArrayList<>();
 
   public StockMovementEntry(StockMovementItem stockMovementItem) {
@@ -62,7 +61,6 @@ public class StockMovementEntry {
     this.setStockOnHand(stockMovementItem.getStockOnHand());
     this.setQuantity(getQuantityWithSign(stockMovementItem));
     this.setRequested(stockMovementItem.getRequested());
-    this.setInitInventory(stockMovementItem.isInitInventory());
     if (stockMovementItem.getLotMovementItemListWrapper().isEmpty()) {
       this.setReasonName(this.type.equals(UNPACK_KIT) ? "" : stockMovementItem.getReason());
     } else {

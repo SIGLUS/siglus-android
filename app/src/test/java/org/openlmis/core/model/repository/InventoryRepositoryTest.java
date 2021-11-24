@@ -1,12 +1,16 @@
 package org.openlmis.core.model.repository;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.RECEIVE;
+import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import androidx.annotation.NonNull;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.hamcrest.core.Is;
@@ -20,7 +24,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftInitialInventory;
 import org.openlmis.core.model.DraftInitialInventoryLotItem;
 import org.openlmis.core.model.DraftInventory;
-import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
@@ -37,6 +40,8 @@ import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
+import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
@@ -103,31 +108,25 @@ public class InventoryRepositoryTest {
     stockMovementItem1.setStockCard(stockCard);
     stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem1);
 
-    DraftInventory draftInventory = new DraftInventory();
+    PhysicalInventoryViewModel draftInventory = new PhysicalInventoryViewModel(stockCard, 20L);
     draftInventory.setStockCard(stockCard);
-    DraftLotItem draftLotItem = new DraftLotItem();
-    draftLotItem.setProduct(product);
+    LotMovementViewModel draftLotItem = new LotMovementViewModel();
     draftLotItem.setLotNumber("A111");
-    draftLotItem.setExpirationDate(new Date());
-    draftLotItem.setDraftInventory(draftInventory);
-    draftLotItem.setNewAdded(false);
-    draftLotItem.setQuantity(20L);
-    draftInventory.setDraftLotItemListWrapper(newArrayList(draftLotItem));
-    draftInventory.setQuantity(20L);
-    draftInventory.setExpireDates("Feb 2015");
+    draftLotItem.setExpiryDate("Feb 2015");
+    draftLotItem.setQuantity("20");
+    draftInventory.setExistingLotMovementViewModelList(Arrays.asList(draftLotItem));
 
-    repository.createDraft(draftInventory);
+    repository.createDraftInventory(Arrays.asList(draftInventory));
     DraftInventory draftInventoryQueried = repository.queryAllDraft().get(0);
 
-    assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getLotNumber(),
-        is("A111"));
-    assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getProduct(), is(product));
-    assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(),
-        is(DateUtil.parseString(DateUtil.formatDate(new Date(), DateUtil.DB_DATE_FORMAT),
-            DateUtil.DB_DATE_FORMAT)));
-    assertThat(draftInventoryQueried.getStockCard().getProduct(), is(product));
-    assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).isNewAdded(), is(false));
-    assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getQuantity(), is(20L));
+    assertEquals("A111", draftInventoryQueried.getDraftLotItemListWrapper().get(0).getLotNumber());
+    assertEquals(product, draftInventoryQueried.getDraftLotItemListWrapper().get(0).getProduct());
+    assertEquals("2015-02-28", DateUtil.formatDate(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(),
+        DB_DATE_FORMAT));
+    assertEquals(product, draftInventoryQueried.getStockCard().getProduct());
+    assertFalse(draftInventoryQueried.getDraftLotItemListWrapper().get(0).isNewAdded());
+
+    assertEquals(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getQuantity(), Long.valueOf(20));
   }
 
 
@@ -166,8 +165,8 @@ public class InventoryRepositoryTest {
         is("A111"));
     assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getProduct(), is(product));
     assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(),
-        is(DateUtil.parseString(DateUtil.formatDate(new Date(), DateUtil.DB_DATE_FORMAT),
-            DateUtil.DB_DATE_FORMAT)));
+        is(DateUtil.parseString(DateUtil.formatDate(new Date(), DB_DATE_FORMAT),
+            DB_DATE_FORMAT)));
     assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getQuantity(), is(20L));
   }
 
@@ -216,15 +215,14 @@ public class InventoryRepositoryTest {
   }
 
   private void saveDraftInventory() throws LMISException {
-    DraftInventory draftInventory1 = new DraftInventory();
-    draftInventory1.setQuantity(10L);
-    draftInventory1.setExpireDates("11/10/2015");
-    DraftInventory draftInventory2 = new DraftInventory();
-    draftInventory2.setQuantity(20L);
-    draftInventory2.setExpireDates("12/10/2015");
-
-    repository.createDraft(draftInventory1);
-    repository.createDraft(draftInventory2);
+    Product product = new Product();
+    StockCard stockCard = new StockCard();
+    stockCard.setProduct(product);
+    PhysicalInventoryViewModel viewModel = new PhysicalInventoryViewModel(stockCard, 10L);
+    StockCard stockCard2 = new StockCard();
+    stockCard2.setProduct(product);
+    PhysicalInventoryViewModel viewModel2 = new PhysicalInventoryViewModel(stockCard2, 20L);
+    repository.createDraftInventory(Arrays.asList(viewModel, viewModel2));
   }
 
   private StockCard createNewStockCard(String code, String parentCode, Product product,

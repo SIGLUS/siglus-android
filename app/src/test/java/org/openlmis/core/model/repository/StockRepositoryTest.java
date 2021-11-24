@@ -95,7 +95,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
   }
 
   // TODO fix sqlite exception
-  @Ignore
+  @Ignore("sqlite insert delay")
   @Test
   public void shouldCreateOrUpdateStockCard() throws LMISException {
     StockCard stockCard = new StockCard();

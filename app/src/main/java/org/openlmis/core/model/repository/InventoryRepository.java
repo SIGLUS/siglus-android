@@ -34,6 +34,8 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 
 public class InventoryRepository {
 
@@ -75,15 +77,19 @@ public class InventoryRepository {
         .query());
   }
 
-  public void createDraft(final DraftInventory draftInventory) throws LMISException {
+  public void createDraftInventory(final List<InventoryViewModel> draftInventories) throws LMISException {
     dbUtil.withDaoAsBatch(DraftInventory.class, dao -> {
-      draftInventoryGenericDao.createOrUpdate(draftInventory);
-      for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
-        draftLotItemGenericDao.createOrUpdate(draftLotItem);
+      for (InventoryViewModel inventoryViewModel : draftInventories) {
+        DraftInventory draftInventory = new DraftInventory((PhysicalInventoryViewModel) inventoryViewModel);
+        draftInventoryGenericDao.createOrUpdate(draftInventory);
+        for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
+          draftLotItemGenericDao.createOrUpdate(draftLotItem);
+        }
       }
       return null;
     });
   }
+
 
   public List<DraftInventory> queryAllDraft() throws LMISException {
     return draftInventoryGenericDao.queryForAll();

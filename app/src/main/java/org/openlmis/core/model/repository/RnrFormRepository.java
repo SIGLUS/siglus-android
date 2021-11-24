@@ -27,7 +27,10 @@ import static org.openlmis.core.constant.FieldConstants.PROGRAM_ID;
 import static org.openlmis.core.constant.FieldConstants.STATUS;
 import static org.openlmis.core.constant.FieldConstants.SUBMITTED_TIME;
 import static org.openlmis.core.constant.FieldConstants.SYNCED;
+import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -43,6 +46,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -265,9 +269,13 @@ public class RnrFormRepository {
       rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
     }
     HashMap<String, String> stringToCategory = getProductCodeToCategory();
+    Set<String> stockCardIds = FluentIterable.from(stockCards)
+        .transform(stockCard -> String.valueOf(stockCard.getId())).toSet();
+    Map<String, List<StockMovementItem>> idToStockMovements = stockMovementRepository
+        .queryStockMovement(stockCardIds, form.getPeriodBegin(), form.getPeriodEnd());
     for (StockCard stockCard : stockCards) {
-      RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(),
-          form.getPeriodEnd());
+      RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard,
+          idToStockMovements.get(String.valueOf(stockCard.getId())));
       rnrFormItem.setForm(form);
       rnrFormItems.add(rnrFormItem);
       rnrFormItem.setCategory(stringToCategory.get(rnrFormItem.getProduct().getCode()));
@@ -347,11 +355,9 @@ public class RnrFormRepository {
     return rnRForms;
   }
 
-  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate)
-      throws LMISException {
+  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
+      List<StockMovementItem> notFullStockItemsByCreatedData) throws LMISException {
     RnrFormItem rnrFormItem = new RnrFormItem();
-    final List<StockMovementItem> notFullStockItemsByCreatedData = stockMovementRepository
-        .queryNotFullFillStockItemsByCreatedData(stockCard.getId(), startDate, endDate);
     if (notFullStockItemsByCreatedData.isEmpty()) {
       rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
     } else {
@@ -365,12 +371,12 @@ public class RnrFormRepository {
   protected ArrayList<RnrFormItem> fillAllProducts(RnRForm form, List<RnrFormItem> basicItems)
       throws LMISException {
     List<Long> productIds;
-    String programCode = form.getProgram().getProgramCode();
-    if (programCode.equals(MMIA_PROGRAM_CODE)) {
-      productIds = productProgramRepository.queryActiveProductIdsForMMIA(programCode);
+    String formProgramCode = form.getProgram().getProgramCode();
+    if (formProgramCode.equals(MMIA_PROGRAM_CODE)) {
+      productIds = productProgramRepository.queryActiveProductIdsForMMIA(formProgramCode);
     } else {
       productIds = productProgramRepository.queryActiveProductIdsByProgramWithKits(
-          programCode, false);
+          formProgramCode, false);
     }
     List<Product> products = productRepository.queryProductsByProductIds(productIds);
     ArrayList<RnrFormItem> result = new ArrayList<>();
@@ -394,10 +400,13 @@ public class RnrFormRepository {
   }
 
   protected void updateInitialAmount(RnrFormItem rnrFormItem, Long lastInventory) {
-    rnrFormItem.setInitialAmount(lastInventory != null ? lastInventory : 0);
+    if (rnrFormItem.getInitialAmount() == null) {
+      rnrFormItem.setInitialAmount(lastInventory != null ? lastInventory : 0);
+    }
   }
 
   protected void updateDefaultValue(RnrFormItem rnrFormItem) {
+    // do nothing
   }
 
   protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
@@ -439,10 +448,9 @@ public class RnrFormRepository {
                   stockCardWithMovement = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
                 }
                 rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCardWithMovement));
-                regimenItemRepository.batchCreateOrUpdate(generateRegimeItems(rnrForm));
-                regimenItemThreeLineRepository.batchCreateOrUpdate(generateRegimeThreeLineItems(rnrForm));
-                baseInfoItemRepository
-                    .batchCreateOrUpdate(generateBaseInfoItems(rnrForm, MMIARepository.ReportType.NEW));
+                saveInitialRegimenItems(rnrForm);
+                saveInitialRegimenThreeLines(rnrForm);
+                saveInitialBaseInfo(rnrForm);
                 genericDao.refresh(rnrForm);
                 return null;
               });
@@ -451,6 +459,27 @@ public class RnrFormRepository {
     }
     assignCategoryForRnrItems(rnrForm);
     return rnrForm;
+  }
+
+  private void saveInitialRegimenItems(RnRForm rnrForm) throws LMISException {
+    List<RegimenItem> regimenItems = generateRegimeItems(rnrForm);
+    if (!CollectionUtils.isEmpty(regimenItems)) {
+      regimenItemRepository.batchCreateOrUpdate(regimenItems);
+    }
+  }
+
+  private void saveInitialRegimenThreeLines(RnRForm rnrForm) throws LMISException {
+    List<RegimenItemThreeLines> regimenItemThreeLines = generateRegimeThreeLineItems(rnrForm);
+    if (!CollectionUtils.isEmpty(regimenItemThreeLines)) {
+      regimenItemThreeLineRepository.batchCreateOrUpdate(regimenItemThreeLines);
+    }
+  }
+
+  private void saveInitialBaseInfo(RnRForm rnrForm) throws LMISException {
+    List<BaseInfoItem> baseInfoItems = generateBaseInfoItems(rnrForm, MMIARepository.ReportType.NEW);
+    if (!CollectionUtils.isEmpty(baseInfoItems)) {
+      baseInfoItemRepository.batchCreateOrUpdate(baseInfoItems);
+    }
   }
 
   private void assignCategoryForRnrItems(RnRForm rnrForm) throws LMISException {
@@ -563,6 +592,7 @@ public class RnrFormRepository {
     }
     return dbUtil.withDao(RnRForm.class, dao -> {
       Where<RnRForm, String> where = dao.queryBuilder()
+          .orderBy(PERIOD_BEGIN, true)
           .where().eq(PROGRAM_ID, programId)
           .and().eq(SYNCED, false)
           .and().eq(STATUS, Status.AUTHORIZED)
@@ -577,12 +607,49 @@ public class RnrFormRepository {
   }
 
   private void createOrUpdateRnrWrappers(RnRForm form) throws LMISException {
-    rnrFormItemRepository.batchCreateOrUpdate(form.getRnrFormItemListWrapper());
     signatureRepository.batchCreateOrUpdate(form.getSignaturesWrapper());
-    regimenItemRepository.batchCreateOrUpdate(form.getRegimenItemListWrapper());
-    regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
-    baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
-    testConsumptionLineItemRepository.batchCreateOrUpdate(form.getTestConsumptionItemListWrapper(), form.getId());
+    if (form.getProgram() == null) {
+      return;
+    }
+    saveRnRItems(form);
+    saveRegimens(form);
+    saveRegimenThreeLine(form);
+    saveBaseInfo(form);
+    saveTestConsumption(form);
+  }
+
+  private void saveTestConsumption(RnRForm form) throws LMISException {
+    if (RAPID_TEST_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+      testConsumptionLineItemRepository.batchCreateOrUpdate(form.getTestConsumptionItemListWrapper(), form.getId());
+    }
+  }
+
+  private void saveRegimenThreeLine(RnRForm form) throws LMISException {
+    if (MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+      baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
+      regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
+    }
+  }
+
+  private void saveBaseInfo(RnRForm form) throws LMISException {
+    if (VIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
+        || MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+      baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
+      regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
+    }
+  }
+
+  private void saveRegimens(RnRForm form) throws LMISException {
+    if (MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
+        || AL_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+      regimenItemRepository.batchCreateOrUpdate(form.getRegimenItemListWrapper());
+    }
+  }
+
+  private void saveRnRItems(RnRForm form) throws LMISException {
+    if (!AL_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+      rnrFormItemRepository.batchCreateOrUpdate(form.getRnrFormItemListWrapper());
+    }
   }
 
   public void deleteOldData() {
@@ -634,8 +701,8 @@ public class RnrFormRepository {
       getProgramCodeCursor.close();
     }
 
-    for (String programCode : programCodes) {
-      deleteRnrData(programCode);
+    for (String formProgramCode : programCodes) {
+      deleteRnrData(formProgramCode);
     }
 
   }

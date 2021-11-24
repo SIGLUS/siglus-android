@@ -92,9 +92,9 @@ public class RnRForm extends BaseModel {
   private List<BaseInfoItem> baseInfoItemListWrapper;
 
   @ForeignCollectionField()
-  private ForeignCollection<RnRFormSignature> signatures;
+  private transient ForeignCollection<RnRFormSignature> signatures;
 
-  private List<RnRFormSignature> signaturesWrapper;
+  private transient List<RnRFormSignature> signaturesWrapper;
 
   @Expose
   @SerializedName("comments")

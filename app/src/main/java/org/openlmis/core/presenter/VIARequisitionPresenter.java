@@ -22,6 +22,7 @@ import static org.openlmis.core.model.Product.IsKit;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.text.TextUtils;
+import android.util.Log;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
@@ -254,22 +255,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     return RoboGuice.getInjector(LMISApp.getContext()).getInstance(VIARepository.class);
   }
 
-  @Override
-  protected Observable<Void> createOrUpdateRnrForm() {
-    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
-      try {
-        rnrFormRepository.createOrUpdateWithItems(rnRForm);
-        subscriber.onNext(null);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "VIARequisitionPresenter.createOrUpdateRnrForm").reportToFabric();
-        subscriber.onError(e);
-      } finally {
-        stockService.monthlyUpdateAvgMonthlyConsumption();
-      }
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-  }
-
   protected List<RequisitionFormItemViewModel> getViewModelsFromRnrForm(RnRForm form) {
     if (!requisitionFormItemViewModels.isEmpty()) {
       return requisitionFormItemViewModels;
@@ -287,7 +272,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
   protected Observable<RnRForm> getRnrFormObservable(final long formId) {
     return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
       try {
+        Log.d("info", "get the data for via");
         RnRForm rnrForm = getRnrForm(formId);
+        Log.d("info 2", "get the data for via");
         convertRnrToViewModel(rnrForm);
         subscriber.onNext(rnrForm);
         subscriber.onCompleted();

@@ -46,10 +46,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
@@ -296,9 +298,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     stockMovementItem.setCreatedTime(new Date());
     when(mockStockMovementRepository.queryFirstStockMovementByStockCardId(anyLong()))
         .thenReturn(stockMovementItem);
+    Map<String, List<StockMovementItem>> idToStockItem = new HashMap<>();
+    idToStockItem.put(String.valueOf(stockCard.getId()), stockMovementItems);
     when(mockStockMovementRepository
-        .queryNotFullFillStockItemsByCreatedData(stockCard.getId(), form.getPeriodBegin(),
-            form.getPeriodEnd())).thenReturn(stockMovementItems);
+        .queryStockMovement(new HashSet<>(Arrays.asList(String.valueOf(stockCard.getId()))), form.getPeriodBegin(),
+            form.getPeriodEnd())).thenReturn(idToStockItem);
 
     ProductProgram productProgram = new ProductProgram();
     productProgram.setCategory("Adult");
@@ -381,7 +385,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldRecordUpdateTimeWhenAuthorizeRnrForm() throws Exception {
-    Program program = new Program();
+    Program program = buildViaProgram();
 
     RnRForm form = RnRForm
         .init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
@@ -404,7 +408,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldCreateSuccess() throws Exception {
-    Program program = new Program();
+    Program program = Program.builder().programCode(MMIA_PROGRAM_CODE).build();
     RnRForm form = RnRForm
         .init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
     ArrayList<RnRForm> rnRForms = new ArrayList<>();
@@ -457,7 +461,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .thenReturn(new ArrayList<StockMovementItem>());
 
     RnrFormItem rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
 
     assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
@@ -466,7 +470,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     stockCard.setLotOnHandListWrapper(Lists.newArrayList());
     rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
     assertNull(rnrFormItemByPeriod.getValidate());
   }
 
@@ -481,7 +485,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .listInclude(any(RnRForm.Emergency.class), anyString());
 
     RnrFormItem rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
 
     assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
@@ -572,75 +576,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     assertThat(listWithEmergency.size(), is(2));
   }
 
-  @Test
-  //TODO later
-  @Ignore
-  public void shouldDeleteOldRnrFormData() throws Exception {
-    Program programEss = new Program();
-    programEss.setId(1L);
-    programEss.setProgramCode("ESS_MEDS");
-
-    Program programVIA = new Program();
-    programVIA.setId(2L);
-    programVIA.setProgramCode(VIA_PROGRAM_CODE);
-    programEss.setParentCode(VIA_PROGRAM_CODE);
-
-    Program programMMIA = new Program();
-    programMMIA.setId(3L);
-    programMMIA.setProgramCode(MMIA_PROGRAM_CODE);
-
-    when(mockProgramRepository.queryByCode(MMIA_PROGRAM_CODE)).thenReturn(programMMIA);
-    RnRForm formEss = new RnRForm();
-    formEss.setProgram(programEss);
-    formEss.setStatus(Status.AUTHORIZED);
-    formEss.setEmergency(false);
-    formEss.setPeriodEnd(DateUtil.parseString("2015-09-01", DateUtil.DB_DATE_FORMAT));
-
-    RnRForm formVIA = new RnRForm();
-    formVIA.setProgram(programVIA);
-    formVIA.setStatus(Status.AUTHORIZED);
-    formVIA.setEmergency(false);
-    formVIA.setPeriodEnd(DateUtil.parseString("2015-09-01", DateUtil.DB_DATE_FORMAT));
-
-    RnRForm formMMIA = new RnRForm();
-    formMMIA.setProgram(programMMIA);
-    formMMIA.setStatus(Status.AUTHORIZED);
-    formMMIA.setEmergency(true);
-    formMMIA.setPeriodBegin(DateUtil.dateMinusMonth(new Date(), 1));
-    formMMIA.setPeriodEnd(new Period(new DateTime()).getEnd().toDate());
-
-    List<RnrFormItem> rnrFormItemList = new ArrayList<>();
-
-    Program program = new Program();
-    program.setProgramCode("1");
-    Product product = new Product();
-    product.setId(1);
-
-    rnrFormItemList.add(getRnrFormItem(formMMIA, product, 1));
-
-    RnrFormItemRepository rnrFormItemRepository = RoboGuice
-        .getInjector(RuntimeEnvironment.application).getInstance(RnrFormItemRepository.class);
-    rnrFormItemRepository.batchCreateOrUpdate(rnrFormItemList);
-
-    formMMIA.setRegimenItemListWrapper(new ArrayList<RegimenItem>());
-    formMMIA.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>());
-
-    rnrFormRepository.createAndRefresh(formEss);
-    rnrFormRepository.createAndRefresh(formVIA);
-    rnrFormRepository.createAndRefresh(formMMIA);
-
-    rnrFormRepository.deleteOldData();
-
-    List<RnRForm> rnRFormsQueried = rnrFormRepository.queryAllUnsyncedForms();
-    List<RnrFormItem> rnrFormItemListFromDB = rnrFormItemRepository.listAllNewRnrItems();
-
-    assertEquals(1, rnRFormsQueried.size());
-    assertEquals(new Period(new DateTime()).getEnd().toDate(),
-        rnRFormsQueried.get(0).getPeriodEnd());
-    assertEquals(0, rnrFormItemListFromDB.size());
-
-  }
-
   public class MyTestModule extends AbstractModule {
 
     @Override
@@ -685,5 +620,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .withQuantity(quantity)
         .build();
     return inventoryItem;
+  }
+
+  private Program buildViaProgram() {
+    Program program = new Program();
+    program.setProgramCode(VIA_PROGRAM_CODE);
+    return program;
   }
 }

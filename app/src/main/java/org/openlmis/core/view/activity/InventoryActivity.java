@@ -21,6 +21,7 @@ package org.openlmis.core.view.activity;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,9 +54,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public abstract class InventoryActivity<T extends InventoryPresenter> extends SearchBarActivity implements
     InventoryPresenter.InventoryView,
@@ -198,7 +197,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
     super.onCreate(savedInstanceState);
     this.presenter = initPresenter();
     initUI();
-    initDate();
+    initData();
     trackInventoryEvent(TrackerActions.SELECT_INVENTORY);
   }
 
@@ -217,38 +216,12 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
     mAdapter.setFilterProgram(null);
   }
 
-  protected void initDate() {
+  protected void initData() {
     loading();
-    final Subscription subscription = presenter.loadPrograms().subscribe(getOnProgramsLoadedSubscriber());
+    Log.i("test", "load inventory start");
+    Subscription subscription = presenter.getInflatedInventoryOnMainThread()
+        .subscribe(getOnViewModelsLoadedSubscriber());
     subscriptions.add(subscription);
-  }
-
-  @NonNull
-  protected Subscriber<List<Program>> getOnProgramsLoadedSubscriber() {
-    return new Subscriber<List<Program>>() {
-      @Override
-      public void onCompleted() {
-        // do nothing
-      }
-
-      @Override
-      public void onError(Throwable e) {
-        ToastUtil.show(e.getMessage());
-        loaded();
-        finish();
-      }
-
-      @Override
-      public void onNext(List<Program> programs) {
-        buildOptionsItem(programs);
-        invalidateOptionsMenu();
-        Subscription subscription = presenter.getInflatedInventory()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe(getOnViewModelsLoadedSubscriber());
-        subscriptions.add(subscription);
-      }
-    };
   }
 
   @NonNull
@@ -267,9 +240,14 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
 
       @Override
       public void onNext(List<InventoryViewModel> inventoryViewModels) {
+        if (presenter.getPrograms() != null) {
+          buildOptionsItem(presenter.getPrograms());
+          invalidateOptionsMenu();
+        }
         setUpFastScroller(inventoryViewModels);
         mAdapter.refresh();
         loaded();
+        Log.i("test", "load inventory end");
       }
     };
   }

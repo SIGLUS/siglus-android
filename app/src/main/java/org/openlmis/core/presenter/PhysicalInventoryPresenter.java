@@ -20,9 +20,11 @@ package org.openlmis.core.presenter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
+import android.util.Log;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openlmis.core.LMISApp;
@@ -69,9 +71,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     return Observable.create(subscriber -> {
       try {
         inventoryRepository.clearDraft();
-        for (InventoryViewModel model : inventoryViewModelList) {
-          inventoryRepository.createDraft(new DraftInventory((PhysicalInventoryViewModel) model));
-        }
+        inventoryRepository.createDraftInventory(inventoryViewModelList);
         subscriber.onNext(null);
         subscriber.onCompleted();
       } catch (LMISException e) {
@@ -122,15 +122,20 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
   }
 
   protected void restoreDraftInventory() throws LMISException {
+    Log.i("performance", "load inventory 1");
     List<DraftInventory> draftList = inventoryRepository.queryAllDraft();
-
-    for (DraftInventory draftInventory : draftList) { // total : N
-      for (InventoryViewModel viewModel : inventoryViewModelList) { // total: N+1
-        if (viewModel.getStockCardId() == draftInventory.getStockCard().getId()) {
-          ((PhysicalInventoryViewModel) viewModel).setDraftInventory(draftInventory);
-        }
+    Map<Long, DraftInventory> stockCardIdToDraftInventory = new HashMap<>();
+    for (DraftInventory draftInventory : draftList) {
+      stockCardIdToDraftInventory.put(draftInventory.getStockCard().getId(), draftInventory);
+    }
+    for (InventoryViewModel viewModel : inventoryViewModelList) {
+      long viewModelStockCardId = viewModel.getStockCardId();
+      if (stockCardIdToDraftInventory.containsKey(viewModel.getStockCardId())) {
+        ((PhysicalInventoryViewModel) viewModel)
+            .setDraftInventory(stockCardIdToDraftInventory.get(viewModelStockCardId));
       }
     }
+    Log.i("performance", "load inventory 2");
   }
 
   protected StockMovementItem calculateAdjustment(InventoryViewModel model, StockCard stockCard) {
@@ -176,24 +181,25 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
   private List<InventoryViewModel> convertStockCardsToStockCardViewModels(
       List<StockCard> validStockCardsForPhysicalInventory) {
     Map<String, List<Map<String, String>>> lotInfoMap = stockRepository.getLotsAndLotOnHandInfo();
-    Map<String, String> lotOnHands = stockRepository.lotOnHands();
     return FluentIterable.from(validStockCardsForPhysicalInventory).transform(stockCard -> {
-      addLotInfoToStockCard(stockCard, lotInfoMap);
-      InventoryViewModel inventoryViewModel = new PhysicalInventoryViewModel(stockCard, lotOnHands);
+      long stockOnHand = addLotInfoToStockCard(stockCard, lotInfoMap);
+      InventoryViewModel inventoryViewModel = new PhysicalInventoryViewModel(stockCard, stockOnHand);
       setExistingLotViewModels(inventoryViewModel);
       return inventoryViewModel;
     }).toList();
   }
 
-  private void addLotInfoToStockCard(StockCard stockCard,
+  private long addLotInfoToStockCard(StockCard stockCard,
       Map<String, List<Map<String, String>>> lotInfoMap) {
     List<LotOnHand> lotOnHands = new ArrayList<>();
+    long stockOnHandValue = 0;
     List<Map<String, String>> lotInfoList = lotInfoMap.get(String.valueOf(stockCard.getId()));
     if (lotInfoList != null) {
       for (Map<String, String> lotInfo : lotInfoList) {
         Lot lot = new Lot();
         LotOnHand lotOnHand = new LotOnHand();
         lotOnHand.setQuantityOnHand(Long.valueOf(lotInfo.get("quantityOnHand")));
+        stockOnHandValue += lotOnHand.getQuantityOnHand();
         lot.setLotNumber(lotInfo.get("lotNumber"));
         lot.setExpirationDate(
             DateUtil.parseString(lotInfo.get("expirationDate"), DateUtil.DB_DATE_FORMAT));
@@ -203,6 +209,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     }
 
     stockCard.setLotOnHandListWrapper(lotOnHands);
+    return stockOnHandValue;
   }
 
   private void saveInventoryDate() {

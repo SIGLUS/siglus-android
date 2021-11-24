@@ -4,11 +4,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -30,7 +27,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -41,14 +37,12 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
@@ -185,109 +179,6 @@ public class SyncDownManagerTest {
     // then
     assertEquals(12, firstEnterSubscriber.syncProgresses.size());
     assertEquals(0, laterEnterSubscriber.syncProgresses.size());
-  }
-
-  @Ignore
-  @Test
-  public void shouldSyncDownNewLatestProductList() throws Exception {
-    mockFacilityInfoResponse();
-    mockSyncDownLatestProductResponse();
-    mockRequisitionResponse();
-    mockStockCardsResponse();
-    when(productRepository.getByCode(anyString())).thenReturn(new Product());
-
-    Program program = new Program();
-    when(programRepository.queryByCode("PR")).thenReturn(program);
-
-    SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
-    syncDownManager.syncDownServerData(subscriber);
-    subscriber.awaitTerminalEvent();
-    subscriber.assertNoErrors();
-
-    verify(lmisRestApi).fetchLatestProducts(anyString());
-    verify(productRepository).batchCreateOrUpdateProducts(anyList());
-    verify(sharedPreferenceMgr).setLastSyncProductTime("today");
-  }
-
-  @Test
-  public void shouldUpdateNotifyBannerListWhenSOHIsZeroAndProductIsDeActive() throws Exception {
-    // given
-    Product product = new Product();
-    product.setPrimaryName("name");
-    product.setActive(false);
-    product.setCode("code");
-    product.setArchived(false);
-
-    Product existingProduct = ProductBuilder.create().setCode("code").setIsActive(true)
-        .setIsArchived(true).build();
-    when(productRepository.getByCode(product.getCode())).thenReturn(existingProduct);
-
-    StockCard stockCard = new StockCard();
-    stockCard.setProduct(product);
-    stockCard.setStockOnHand(0);
-    when(stockRepository.queryStockCardByProductId(anyLong())).thenReturn(stockCard);
-
-    // when
-    syncDownManager.updateDeactivateProductNotifyList(product);
-
-    // then
-    verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, "name");
-  }
-
-  @Test
-  public void shouldNotUpdateNotifyBannerListWhenProductIsArchived() throws Exception {
-    // given
-    Product product = new Product();
-    product.setPrimaryName("name");
-    product.setActive(false);
-    product.setCode("code");
-    product.setArchived(true);
-
-    Product existingProduct = ProductBuilder.create().setCode("code").setIsActive(true)
-        .setIsArchived(true).build();
-    when(productRepository.getByCode(product.getCode())).thenReturn(existingProduct);
-
-    StockCard stockCard = new StockCard();
-    stockCard.setProduct(product);
-    stockCard.setStockOnHand(0);
-    when(stockRepository.queryStockCardByProductId(anyLong())).thenReturn(stockCard);
-
-    // when
-    syncDownManager.updateDeactivateProductNotifyList(product);
-
-    // then
-    verify(sharedPreferenceMgr, never()).setIsNeedShowProductsUpdateBanner(true, "name");
-  }
-
-  @Test
-  public void shouldRemoveNotifyBannerListWhenReactiveProduct() throws Exception {
-    // given
-    Product product = new Product();
-    product.setPrimaryName("new name");
-    product.setActive(true);
-    product.setCode("code");
-
-    Product existingProduct = ProductBuilder.create().setCode("code").setIsActive(false)
-        .setPrimaryName("name").build();
-    when(productRepository.getByCode(product.getCode())).thenReturn(existingProduct);
-
-    StockCard stockCard = new StockCard();
-    stockCard.setStockOnHand(0);
-    when(stockRepository.queryStockCardByProductId(anyLong())).thenReturn(stockCard);
-
-    // when
-    syncDownManager.updateDeactivateProductNotifyList(product);
-
-    // then
-    verify(sharedPreferenceMgr).removeShowUpdateBannerTextWhenReactiveProduct("name");
-  }
-
-  @Test
-  public void shouldNotUpdateBannerWhenExistingProductIsNull() throws Exception {
-    Product product = new Product();
-    when(productRepository.getByCode(anyString())).thenReturn(null);
-    syncDownManager.updateDeactivateProductNotifyList(product);
-    verify(stockRepository, times(0)).queryStockCardByProductId(anyLong());
   }
 
   @Test

@@ -26,7 +26,6 @@ import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_NO
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.util.Log;
-import androidx.annotation.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -271,7 +270,6 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
           movementItem.setStockCard(stockCard);
           movementItem.setStockOnHand(movementItem.getStockOnHand());
           movementItem.buildLotMovementReasonAndDocumentNumber();
-          movementItem.setInitInventory(true);
           stockRepository.addStockMovementAndUpdateStockCard(movementItem, createdTime);
         }
         inventoryRepository.clearInitialDraft();
@@ -285,7 +283,6 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
   }
 
-  @VisibleForTesting
   public Observable<Object> autofillAllProductInventory(DebugInitialInventoryEvent event) {
     // clear non basic item
     return Observable.create(subscriber -> {
@@ -297,33 +294,36 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
         }
       }
       addNonBasicProducts(from(productRepository.listNonBasicProducts())
-          .filter(product -> !KIT_PRODUCTS.contains(product.getCode()))
+          .filter(product -> !KIT_PRODUCTS.contains(Objects.requireNonNull(product).getCode()))
           .limit(event.getNonBasicProductAmount())
           .toList());
 
-      // generate lot movement
-      int lotAddedBasicProductAmount = 0;
-      int lotAddedNonBasicProductAmount = 0;
-      for (InventoryViewModel inventoryViewModel : inventoryViewModelList) {
-        if (inventoryViewModel.getViewType() == ITEM_BASIC_HEADER
-            || inventoryViewModel.getViewType() == ITEM_NON_BASIC_HEADER) {
-          continue;
-        }
-        if (inventoryViewModel.getViewType() == ITEM_BASIC
-            && lotAddedBasicProductAmount <= event.getBasicProductAmount()) {
-          lotAddedBasicProductAmount++;
-          generateLotViewModel(event.getLotAmountPerProduct(), inventoryViewModel);
-        }
-        if (inventoryViewModel.getViewType() == ITEM_NO_BASIC
-            && lotAddedNonBasicProductAmount <= event.getNonBasicProductAmount()) {
-          lotAddedNonBasicProductAmount++;
-          generateLotViewModel(event.getLotAmountPerProduct(), inventoryViewModel);
-        }
-        ((BulkInitialInventoryViewModel) inventoryViewModel).setDone(true);
-      }
+      generateLotMovement(event);
       subscriber.onNext(null);
       subscriber.onCompleted();
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+  }
+
+  private void generateLotMovement(DebugInitialInventoryEvent event) {
+    int lotAddedBasicProductAmount = 0;
+    int lotAddedNonBasicProductAmount = 0;
+    for (InventoryViewModel inventoryViewModel : inventoryViewModelList) {
+      if (inventoryViewModel.getViewType() == ITEM_BASIC_HEADER
+          || inventoryViewModel.getViewType() == ITEM_NON_BASIC_HEADER) {
+        continue;
+      }
+      if (inventoryViewModel.getViewType() == ITEM_BASIC
+          && lotAddedBasicProductAmount <= event.getBasicProductAmount()) {
+        lotAddedBasicProductAmount++;
+        generateLotViewModel(event.getLotAmountPerProduct(), inventoryViewModel);
+      }
+      if (inventoryViewModel.getViewType() == ITEM_NO_BASIC
+          && lotAddedNonBasicProductAmount <= event.getNonBasicProductAmount()) {
+        lotAddedNonBasicProductAmount++;
+        generateLotViewModel(event.getLotAmountPerProduct(), inventoryViewModel);
+      }
+      ((BulkInitialInventoryViewModel) inventoryViewModel).setDone(true);
+    }
   }
 
   private void generateLotViewModel(int lotAmountPerProduct, InventoryViewModel inventoryViewModel) {

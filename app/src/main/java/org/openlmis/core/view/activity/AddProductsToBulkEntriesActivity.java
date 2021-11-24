@@ -18,6 +18,9 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.openlmis.core.constant.IntentConstants.FROM_PAGE;
+import static org.openlmis.core.utils.Constants.PARAM_ISSUE_VOUCHER;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -83,7 +86,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_PRODUCTS);
     programCode = (String) getIntent().getSerializableExtra(CHOSEN_PROGRAM_CODE);
-    fromPage = (ScreenName) getIntent().getSerializableExtra(IntentConstants.FROM_PAGE);
+    fromPage = (ScreenName) getIntent().getSerializableExtra(FROM_PAGE);
     super.onCreate(savedInstanceState);
     initRecyclerView();
     loading(getString(R.string.add_all_products_loading_message));
@@ -165,7 +168,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
           intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
           intent.putExtra(IntentConstants.PARAM_PREVIOUS_SELECTED_PRODUCTS, (Serializable) previouslyProductCodes);
           intent.putExtra(CHOSEN_PROGRAM_CODE, programCode);
-          intent.putExtra(IntentConstants.FROM_PAGE, fromPage);
+          intent.putExtra(FROM_PAGE, fromPage);
           issueVoucherDraftLauncher.launch(intent);
         } else {
           Intent intent = new Intent();
@@ -180,6 +183,13 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   private final ActivityResultLauncher<Intent> issueVoucherDraftLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
         if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null) {
+          finish();
+        }
+        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+          Intent intent = new Intent();
+          intent.putExtra(PARAM_ISSUE_VOUCHER, result.getData().getSerializableExtra(PARAM_ISSUE_VOUCHER));
+          intent.putExtra(FROM_PAGE, result.getData().getSerializableExtra(FROM_PAGE));
+          setResult(RESULT_OK, intent);
           finish();
         }
       });

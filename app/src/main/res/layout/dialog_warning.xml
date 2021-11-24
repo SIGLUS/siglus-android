@@ -12,7 +12,7 @@
     android:layout_height="wrap_content"
     android:minHeight="@dimen/px_180"
     android:textColor="@color/color_red"
-    android:gravity="left|center_vertical"
+    android:gravity="center"
     tools:text="@string/msg_del_requisition" />
 
   <LinearLayout

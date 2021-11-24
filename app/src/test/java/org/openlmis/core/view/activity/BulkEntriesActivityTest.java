@@ -63,7 +63,7 @@ public class BulkEntriesActivityTest {
   @Test
   public void shouldGetScreenNameSuccess() {
     // then
-    assertEquals(bulkEntriesActivity.getScreenName(), ScreenName.BULK_ENTRIES_SCREEN);
+    assertEquals(ScreenName.BULK_ENTRIES_SCREEN, bulkEntriesActivity.getScreenName());
   }
 
   @Test

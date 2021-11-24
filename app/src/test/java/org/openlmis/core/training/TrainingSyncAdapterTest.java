@@ -41,8 +41,8 @@ public class TrainingSyncAdapterTest {
   }
 
   @Test
-  @Ignore
-  // TODO local: success, GOCD : failed
+  @Ignore("local: success, GOCD : failed")
+  //
   /**
    *
    *     Expected: is <28>

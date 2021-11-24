@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.view.activity.BulkInitialInventoryActivity;
 import org.openlmis.core.view.holder.BaseViewHolder;
 import org.openlmis.core.view.holder.BulkInitialInventoryWithLotViewHolder;
 import org.openlmis.core.view.holder.BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener;
@@ -76,6 +77,7 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
     int position = -1;
     for (int i = 0; i < data.size(); i++) {
       final InventoryViewModel viewModel = data.get(i);
+      ((BulkInitialInventoryViewModel) viewModel).setFrom(BulkInitialInventoryActivity.KEY_FROM_INITIAL_INVENTORY);
       if (viewModel.validate()
           || viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
           || viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER) {

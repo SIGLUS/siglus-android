@@ -31,7 +31,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.view.activity.InitialInventoryActivity;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> extends
@@ -123,6 +125,11 @@ public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> ex
       }
       if (position == -1) {
         position = i;
+      }
+    }
+    for (InventoryViewModel inventoryViewModel : data) {
+      for (LotMovementViewModel viewModel : inventoryViewModel.getNewLotMovementViewModelList()) {
+        viewModel.setFrom(InitialInventoryActivity.KEY_ADD_NEW_PRODUCT);
       }
     }
     this.notifyDataSetChanged();

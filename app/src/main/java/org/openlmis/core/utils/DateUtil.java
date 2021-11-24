@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
@@ -201,7 +202,7 @@ public final class DateUtil {
   public static int calculateDateOffsetToNow(DateTime time) {
     long currentDateTime = (new Date()).getTime();
     long difference = (currentDateTime - time.toDate().getTime()) / 86400000;
-    return (int) Math.floor(difference);
+    return (int) difference;
   }
 
   private static Calendar calendarDate(Date date) {
@@ -287,8 +288,8 @@ public final class DateUtil {
     String firstLoginTrainingTime = SharedPreferenceMgr.getInstance().getLastLoginTrainingTime();
     if (firstLoginTrainingTime != null) {
       String currentDate = DateUtil.formatDate(new Date(), DateUtil.SIMPLE_DATE_FORMAT);
-      long diffTime = DateUtil.parseString(currentDate, DateUtil.SIMPLE_DATE_FORMAT).getTime()
-          - DateUtil.parseString(firstLoginTrainingTime, DateUtil.SIMPLE_DATE_FORMAT).getTime();
+      long diffTime = Objects.requireNonNull(DateUtil.parseString(currentDate, DateUtil.SIMPLE_DATE_FORMAT)).getTime()
+          - Objects.requireNonNull(DateUtil.parseString(firstLoginTrainingTime, DateUtil.SIMPLE_DATE_FORMAT)).getTime();
       if (diffTime > 0) {
         long diffDay =  TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
         calendar.add(Calendar.DATE, (int) diffDay);

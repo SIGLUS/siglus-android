@@ -36,7 +36,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -252,7 +251,8 @@ public class BulkEntriesActivity extends BaseActivity {
 
   private void showSignDialog() {
     BulkEntriesSignatureDialog signatureDialog = new BulkEntriesSignatureDialog();
-    signatureDialog.setArguments(BulkEntriesSignatureDialog.getBundleToMe(DateUtil.formatDate(new Date())));
+    signatureDialog.setArguments(BulkEntriesSignatureDialog.getBundleToMe(
+        DateUtil.formatDate(DateUtil.getCurrentDate())));
     signatureDialog.setDelegate(getSignatureDialogDelegate());
     signatureDialog.show(getSupportFragmentManager());
   }

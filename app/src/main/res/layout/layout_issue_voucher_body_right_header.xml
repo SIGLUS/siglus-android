@@ -58,7 +58,7 @@
       style="@style/Pod.list.header"
       android:layout_width="match_parent"
       android:layout_weight="1"
-      android:text="@string/label_supplied_quantity" />
+      android:text="@string/supplied_quantity" />
     <TextView
       style="@style/Pod.list.header"
       android:layout_width="match_parent"
@@ -109,7 +109,7 @@
       style="@style/Pod.list.header"
       android:layout_width="match_parent"
       android:layout_weight="1"
-      android:text="@string/label_quantity_received" />
+      android:text="@string/quantity_received" />
     <TextView
       style="@style/Pod.list.header"
       android:layout_width="match_parent"

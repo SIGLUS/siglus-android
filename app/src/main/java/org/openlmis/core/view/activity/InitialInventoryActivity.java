@@ -37,6 +37,8 @@ public class InitialInventoryActivity extends InventoryActivity<InitialInventory
 
   protected boolean isAddNewDrug;
 
+  public static final String KEY_ADD_NEW_PRODUCT = "Add new product complete";
+
   protected InitialInventoryViewHolder.ViewHistoryListener viewHistoryListener = stockCard -> startActivity(
       StockMovementHistoryActivity.getIntentToMe(InitialInventoryActivity.this,
           stockCard.getId(),

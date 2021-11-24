@@ -96,7 +96,7 @@ public class BulkInitialInventoryViewModelTest {
     assertThat(viewModel.getFormattedProductUnit(), is("serious Adult"));
     assertTrue(viewModel.isDataChanged());
 
-    assertEquals(viewModel.getGreenName().toString(), "Primary product name [productCode]");
-    assertEquals(viewModel.getGreenUnit().toString(), "serious Adult");
+    assertEquals("Primary product name [productCode]", viewModel.getGreenName().toString());
+    assertEquals("serious Adult", viewModel.getGreenUnit().toString());
   }
 }

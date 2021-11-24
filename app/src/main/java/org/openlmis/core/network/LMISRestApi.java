@@ -34,7 +34,6 @@ import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncUpDeletedMovementResponse;
-import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.network.model.UserResponse;
 import retrofit.Callback;
@@ -82,9 +81,6 @@ public interface LMISRestApi {
 
   @POST("/api/siglusapi/android/me/facility/requisitions")
   Void submitRequisition(@Body RnRForm rnRForm) throws LMISException;
-
-  @POST("/api/siglusapi/android/me/facility/requisitions")
-  SyncUpRequisitionResponse submitEmergencyRequisition(@Body RnRForm rnRForm) throws LMISException;
 
   @POST("/api/siglusapi/android/me/facility/stockCards")
   SyncUpStockMovementDataSplitResponse syncUpStockMovementDataSplit(@Body List<StockMovementEntry> entries)

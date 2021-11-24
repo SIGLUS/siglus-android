@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.openlmis.core.utils.Constants.PARAM_ISSUE_VOUCHER;
 import static org.openlmis.core.view.widget.DoubleRecycleViewScrollListener.scrollInSync;
 
 import android.content.Intent;
@@ -26,6 +27,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -198,93 +201,6 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     }
   }
 
-  private void updateMenuStatus() {
-    isVisible = presenter.getIssueVoucherReportViewModel().getPod().isLocal()
-        && presenter.getIssueVoucherReportViewModel().getPod().isDraft();
-    if (addProductMenu != null) {
-      addProductMenu.findItem(R.id.action_add_product).setVisible(isVisible);
-    }
-  }
-
-  private void openAddProducts() {
-    presenter.updatePodItems();
-    Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
-    intent.putExtra(IntentConstants.IS_FROM_BULK_ISSUE, false);
-    intent.putExtra(IntentConstants.FROM_PAGE, getScreenName());
-    intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE,
-        presenter.getIssueVoucherReportViewModel().getProgram().getProgramCode());
-    intent.putExtra(IntentConstants.PARAM_SELECTED_PRODUCTS,
-        (Serializable) presenter.getAddedProductCodeList());
-    startActivity(intent);
-  }
-
-  private void initIssueVoucherList() {
-    rvIssueVoucherList.setLayoutManager(new LinearLayoutManager(this));
-    issueVoucherReportAdapter = new IssueVoucherReportAdapter();
-    rvIssueVoucherList.setAdapter(issueVoucherReportAdapter);
-  }
-
-  private void initProductList() {
-    rvProductList.setLayoutManager(new LinearLayoutManager(this));
-    productAdapter = new IssueVoucherProductAdapter();
-    rvProductList.setAdapter(productAdapter);
-  }
-
-  private void showConfirmDialog() {
-    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-        null,
-        getString(R.string.msg_back_confirm),
-        getString(R.string.btn_positive),
-        getString(R.string.btn_negative),
-        "back_confirm_dialog");
-    dialogFragment.show(getSupportFragmentManager(), "back_confirm_dialog");
-    dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
-      @Override
-      public void positiveClick(String tag) {
-        presenter.deleteIssueVoucher();
-        backToIssueVoucherListActivity();
-      }
-
-      @Override
-      public void negativeClick(String tag) {
-      }
-    });
-  }
-
-  @NonNull
-  private SingleClickButtonListener getOnCompleteListener() {
-    return new SingleClickButtonListener() {
-      @Override
-      public void onSingleClick(View v) {
-        int position = issueVoucherReportAdapter.validateAll();
-        if (position >= 0) {
-          rvIssueVoucherList.requestFocus();
-          rvIssueVoucherList.post(() -> rvIssueVoucherList.scrollToPosition(position));
-          rvProductList.post(() -> {
-            rvProductList.removeOnScrollListener(listeners[1]);
-            rvProductList.scrollToPosition(position);
-            rvProductList.removeOnScrollListener(listeners[1]);
-          });
-        } else {
-          showSignDialog();
-        }
-      }
-    };
-  }
-
-  @NonNull
-  private SingleClickButtonListener getOnSaveListener() {
-    return new SingleClickButtonListener() {
-      @Override
-      public void onSingleClick(View v) {
-        loading();
-        Subscription subscription = presenter.getSaveFormObservable()
-            .subscribe(getOnSavedSubscriber());
-        subscriptions.add(subscription);
-      }
-    };
-  }
-
   @NonNull
   public Subscriber<Void> getOnSavedSubscriber() {
     return new Subscriber<Void>() {
@@ -423,5 +339,102 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     presenter.getIssueVoucherReportViewModel().removeLotAtPosition(productPosition, lotPosition);
     productAdapter.notifyDataSetChanged();
     issueVoucherReportAdapter.notifyDataSetChanged();
+  }
+
+  @NonNull
+  private SingleClickButtonListener getOnSaveListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        loading();
+        Subscription subscription = presenter.getSaveFormObservable()
+            .subscribe(getOnSavedSubscriber());
+        subscriptions.add(subscription);
+      }
+    };
+  }
+
+  @NonNull
+  private SingleClickButtonListener getOnCompleteListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        int position = issueVoucherReportAdapter.validateAll();
+        if (position >= 0) {
+          rvIssueVoucherList.requestFocus();
+          rvIssueVoucherList.post(() -> rvIssueVoucherList.scrollToPosition(position));
+          rvProductList.post(() -> {
+            rvProductList.removeOnScrollListener(listeners[1]);
+            rvProductList.scrollToPosition(position);
+            rvProductList.removeOnScrollListener(listeners[1]);
+          });
+        } else {
+          showSignDialog();
+        }
+      }
+    };
+  }
+
+  private void updateMenuStatus() {
+    isVisible = presenter.getIssueVoucherReportViewModel().getPod().isLocal()
+        && presenter.getIssueVoucherReportViewModel().getPod().isDraft();
+    if (addProductMenu != null) {
+      addProductMenu.findItem(R.id.action_add_product).setVisible(isVisible);
+    }
+  }
+
+  private void openAddProducts() {
+    presenter.updatePodItems();
+    Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
+    intent.putExtra(IntentConstants.IS_FROM_BULK_ISSUE, false);
+    intent.putExtra(IntentConstants.FROM_PAGE, getScreenName());
+    intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE,
+        presenter.getIssueVoucherReportViewModel().getProgram().getProgramCode());
+    intent.putExtra(IntentConstants.PARAM_SELECTED_PRODUCTS,
+        (Serializable) presenter.getAddedProductCodeList());
+    addProductPageLauncher.launch(intent);
+  }
+
+  private final ActivityResultLauncher<Intent> addProductPageLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+          pod = (Pod) result.getData().getSerializableExtra(PARAM_ISSUE_VOUCHER);
+          presenter.loadViewModelByPod(pod, true);
+        }
+      });
+
+
+  private void initIssueVoucherList() {
+    rvIssueVoucherList.setLayoutManager(new LinearLayoutManager(this));
+    issueVoucherReportAdapter = new IssueVoucherReportAdapter();
+    rvIssueVoucherList.setAdapter(issueVoucherReportAdapter);
+  }
+
+  private void initProductList() {
+    rvProductList.setLayoutManager(new LinearLayoutManager(this));
+    productAdapter = new IssueVoucherProductAdapter();
+    rvProductList.setAdapter(productAdapter);
+  }
+
+  private void showConfirmDialog() {
+    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+        null,
+        getString(R.string.msg_back_confirm),
+        getString(R.string.btn_positive),
+        getString(R.string.btn_negative),
+        "back_confirm_dialog");
+    dialogFragment.show(getSupportFragmentManager(), "back_confirm_dialog");
+    dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+      @Override
+      public void positiveClick(String tag) {
+        presenter.deleteIssueVoucher();
+        backToIssueVoucherListActivity();
+      }
+
+      @Override
+      public void negativeClick(String tag) {
+        // do nothing
+      }
+    });
   }
 }

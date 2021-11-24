@@ -48,7 +48,7 @@ public class InitialInventoryActivityTest {
   @Before
   public void setUp() throws LMISException {
     mockedPresenter = mock(InitialInventoryPresenter.class);
-    when(mockedPresenter.loadPrograms()).thenReturn(Observable.empty());
+    when(mockedPresenter.getInflatedInventoryOnMainThread()).thenReturn(Observable.empty());
 
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
       @Override
@@ -123,7 +123,7 @@ public class InitialInventoryActivityTest {
   @Test
   public void shouldInitUIWhenInitialInventory() {
     assertTrue(initialInventoryActivity.loadingDialog.isShowing());
-    verify(mockedPresenter).loadPrograms();
+    verify(mockedPresenter).getInflatedInventoryOnMainThread();
   }
 
   @Test

@@ -29,6 +29,10 @@ import org.openlmis.core.manager.MovementReasonManager.MovementType;
 
 public class MovementQuantityHelper {
 
+  private MovementQuantityHelper() {
+
+  }
+
   public static Map<MovementType, String> generateTypeQuantityMap(MovementType type, String reason,
       long movementQuantity) {
     EnumMap<MovementType, String> typeQuantityMap = new EnumMap<>(MovementType.class);

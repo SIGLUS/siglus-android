@@ -34,10 +34,11 @@ import androidx.annotation.NonNull;
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
@@ -76,8 +77,8 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
   ProgramRepository mockProgramRepository;
   ProductProgramRepository productProgramRepository;
   RequisitionPeriodService mockRequisitionPeriodService;
-  private Program program;
   RegimenItemRepository regimenItemRepository;
+  private Program program;
   private StockMovementRepository mockStockMovementRepository;
   private ReportTypeFormRepository mockReportTypeFormRepository;
 
@@ -101,8 +102,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
   }
 
 
-  // TODO: fix the test
-  @Ignore
   @Test
   public void shouldCalculateInfoFromStockCardByPeriod() throws Exception {
     Date mockDay1 = DateUtil.parseString("2017-01-10", DateUtil.DB_DATE_FORMAT);
@@ -124,6 +123,18 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     StockMovementItem stockMovementItem3 = createMovementItem(
         MovementReasonManager.MovementType.POSITIVE_ADJUST, 30, stockCard, mockDay3, mockDay3);
 
+    Map<String, List<StockMovementItem>> idToStockMovements = new HashMap<>();
+    idToStockMovements.put("1", newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
+
+    ReportTypeForm reportTypeForm = ReportTypeForm
+        .builder()
+        .code("T")
+        .name("TARV")
+        .active(true)
+        .startTime(DateUtil.parseString("2019-09-24", DateUtil.DB_DATE_FORMAT))
+        .build();
+
+    when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
     when(mockRequisitionPeriodService.generateNextPeriod(anyString(), any(Date.class)))
         .thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
     when(mockStockMovementRepository
@@ -131,6 +142,8 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
     when(mockStockRepository.getStockCardsBeforePeriodEnd(any(RnRForm.class)))
         .thenReturn(stockCards);
+    when(mockStockMovementRepository.queryStockMovement(any(), any(Date.class), any(Date.class)))
+        .thenReturn(idToStockMovements);
 
     ProductProgram productProgram = new ProductProgram();
     productProgram.setCategory("Adult");
@@ -165,12 +178,11 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     StockCard stockCard = new StockCard();
     stockCard.setProduct(product);
     stockCard.setStockOnHand(10);
+    stockCard.setId(1L);
     stockCard.setCreatedAt(RnRForm.init(program, DateUtil.today()).getPeriodEnd());
     return stockCard;
   }
 
-  // TODO : fix the test
-  @Ignore
   @Test
   public void shouldSaveSuccess() throws Exception {
     ReportTypeForm reportTypeForm = ReportTypeForm
@@ -273,7 +285,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         .thenReturn(new ArrayList<StockMovementItem>());
 
     RnrFormItem rnrFormItemByPeriod = mmiaRepository
-        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        .createRnrFormItemByPeriod(stockCard, new ArrayList<StockMovementItem>());
 
     assertThat(rnrFormItemByPeriod.getValidate(), is("01/02/2015"));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
@@ -281,7 +293,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
     stockCard.setLotOnHandListWrapper(Lists.newArrayList());
     rnrFormItemByPeriod = mmiaRepository
-        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        .createRnrFormItemByPeriod(stockCard, new ArrayList<StockMovementItem>());
     assertNull(rnrFormItemByPeriod.getValidate());
   }
 
@@ -317,6 +329,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
       bind(ProductProgramRepository.class).toInstance(productProgramRepository);
       bind(RegimenItemRepository.class).toInstance(regimenItemRepository);
       bind(StockMovementRepository.class).toInstance(mockStockMovementRepository);
+      bind(ReportTypeFormRepository.class).toInstance(mockReportTypeFormRepository);
     }
   }
 }
