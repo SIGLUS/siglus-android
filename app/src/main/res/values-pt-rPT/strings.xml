@@ -550,8 +550,8 @@
   <string name="msg_fetching_facility_info">Baixando informações da US…</string>
   <string name="msg_fetching_facility_info_failed">O download das informações da US falhou, faça login novamente.</string>
   <string name="home_label_requisition_and_report">Requisição e Relatório</string>
-  <string name="home_label_issue_voucher_and_pod">Emitir Guia de remessa e Relatórrio de entrega</string>
-  <string name="title_issue_voucher_and_pod">Emitir Guia de remessa e Relatórrio de entrega</string>
+  <string name="home_label_issue_voucher_and_pod">Emitir Guia de remessa e Relatório de entrega</string>
+  <string name="title_issue_voucher_and_pod">Emitir Guia de remessa e Relatório de entrega</string>
   <string name="msg_fetching_regimens">Baixando regimes …</string>
   <string name="msg_fetching_regimens_failed">O download das informações dos regimes do servidor falhou, faça login novamente.</string>
   <string name="msg_calculating_cmm">Calculando CMM …</string>
@@ -588,7 +588,7 @@
   <string name="msg_sync_pod_failed">A sincronização dos relatórios de recepção falhou</string>
   <string name="label_create_issue_voucher_draft">Criar rascunho de relatório de recepção</string>
   <string name="label_issue_voucher">Emitir relatório de recepção</string>
-  <string name="label_pod">relatório de recepção</string>
+  <string name="label_pod">Relatório de recepção</string>
   <string name="hint_order_number">Número do pedido</string>
   <string name="hint_program">Programa</string>
   <string name="hint_origin_of_movement">Origem do Movimento</string>
