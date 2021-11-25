@@ -130,7 +130,8 @@ public class PodRepository {
       }
       do {
         String errorMsg = cursor.getString(cursor.getColumnIndexOrThrow(FieldConstants.ERROR_MESSAGE));
-        if (StringUtils.isNotEmpty(errorMsg) && errorMsg.contains(Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST)) {
+        if (StringUtils.isNotEmpty(errorMsg) && (errorMsg.contains(Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST))
+            || errorMsg.contains(Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST_IN_PORTUGUESE)) {
           return true;
         }
       } while (cursor.moveToNext());

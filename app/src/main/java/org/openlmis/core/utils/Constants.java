@@ -229,6 +229,8 @@ public final class Constants {
 
   public static final String SIGLUS_API_ORDER_NUMBER_NOT_EXIST = "This order number does not exist";
 
+  public static final String SIGLUS_API_ORDER_NUMBER_NOT_EXIST_IN_PORTUGUESE = "Este número de pedido não existe";
+
   public static final String SERVER_FAILED_MESSAGE_IN_ENGLISH =
       "Sync failed due to technical problem on the server. Please contact system administrator.";
 
