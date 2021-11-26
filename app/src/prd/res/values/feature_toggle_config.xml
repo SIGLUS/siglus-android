@@ -8,4 +8,5 @@
   <bool name="feature_patient_data">false</bool>
   <bool name="feature_https_trust_all">false</bool>
   <bool name="feature_debug">false</bool>
+  <bool name="feature_flipper">false</bool>
 </resources>
