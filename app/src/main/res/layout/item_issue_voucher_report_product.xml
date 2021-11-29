@@ -42,7 +42,7 @@
     <TextView style="@style/Pod.list.product"
       android:layout_width="@dimen/px_200" />
     <TextView style="@style/Pod.list.product"
-      android:layout_width="@dimen/px_400"/>
+      android:layout_width="@dimen/px_608"/>
   </LinearLayout>
 
   <ListView
