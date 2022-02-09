@@ -180,7 +180,7 @@ public class LMISApp extends Application {
   }
 
   private void integrateFlipper() {
-    if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
+    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_flipper) && FlipperUtils.shouldEnableFlipper(this)) {
       final FlipperClient client = AndroidFlipperClient.getInstance(this);
       client.addPlugin(new InspectorFlipperPlugin(this, DescriptorMapping.withDefaults()));
       client.addPlugin(new DatabasesFlipperPlugin(this));
