@@ -124,30 +124,31 @@ public class RequisitionPeriodServiceTest {
     Period period = requisitionPeriodService
         .generateNextPeriod(new ArrayList<>(), programMMIA.getProgramCode(), null);
     final DateTime dateTime = new DateTime();
+    final int year = new DateTime().minusMonths(13).getYear();
     final int dayOfMonth = dateTime.dayOfMonth().get();
     final int monthOfYear = dateTime.monthOfYear().get();
     if (dayOfMonth >= Period.INVENTORY_BEGIN_DAY && dayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
       assertThat(period.getBegin(),
           is(new DateTime(DateUtil
-              .parseString(String.format("2020-%s-%s 12:00:00", (monthOfYear - 1), dayOfMonth),
+              .parseString(String.format("%s-%s-%s 12:00:00", year, (monthOfYear - 1), dayOfMonth),
                   DateUtil.DB_DATE_FORMAT))));
       assertThat(period.getEnd(),
           is(new DateTime(
-              DateUtil.parseString(String.format("2020-%s-20 12:00:00", monthOfYear), DateUtil.DB_DATE_FORMAT))));
+              DateUtil.parseString(String.format("%s-%s-20 12:00:00", year, monthOfYear), DateUtil.DB_DATE_FORMAT))));
     } else if (dayOfMonth >= Period.INVENTORY_END_DAY_NEXT) {
       assertThat(period.getBegin(),
           is(new DateTime(
-              DateUtil.parseString(String.format("2020-%s-21 12:00:00", (monthOfYear - 1)), DateUtil.DB_DATE_FORMAT))));
+              DateUtil.parseString(String.format("%s-%s-21 12:00:00", year, (monthOfYear - 1)), DateUtil.DB_DATE_FORMAT))));
       assertThat(period.getEnd(),
           is(new DateTime(
-              DateUtil.parseString(String.format("2020-%s-20 12:00:00", (monthOfYear)), DateUtil.DB_DATE_FORMAT))));
+              DateUtil.parseString(String.format("%s-%s-20 12:00:00", year, (monthOfYear)), DateUtil.DB_DATE_FORMAT))));
     } else {
       assertThat(period.getBegin(),
           is(new DateTime(
-              DateUtil.parseString(String.format("2020-%s-21 12:00:00", (monthOfYear - 2)), DateUtil.DB_DATE_FORMAT))));
+              DateUtil.parseString(String.format("%s-%s-21 12:00:00", year, (monthOfYear - 2)), DateUtil.DB_DATE_FORMAT))));
       assertThat(period.getEnd(),
           is(new DateTime(
-              DateUtil.parseString(String.format("2020-%s-20 12:00:00", (monthOfYear - 1)), DateUtil.DB_DATE_FORMAT))));
+              DateUtil.parseString(String.format("%s-%s-20 12:00:00", year, (monthOfYear - 1)), DateUtil.DB_DATE_FORMAT))));
     }
 
   }
