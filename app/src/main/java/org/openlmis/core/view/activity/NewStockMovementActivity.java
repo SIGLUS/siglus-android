@@ -29,6 +29,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -94,7 +95,7 @@ public class NewStockMovementActivity extends BaseActivity implements
   @Override
   protected void onStart() {
     super.onStart();
-    if (!presenter.shouldLoadKitMovementPage()) {
+    if (SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()) {
       ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
       finish();
     }

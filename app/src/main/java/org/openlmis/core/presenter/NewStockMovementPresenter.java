@@ -167,10 +167,6 @@ public class NewStockMovementPresenter extends Presenter {
     return reasonDescriptionList;
   }
 
-  public boolean shouldLoadKitMovementPage() {
-    return !(isKit() && SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData());
-  }
-
   public boolean validateKitQuantity() {
     MovementReasonManager.MovementType movementType = viewModel.getTypeQuantityMap().keySet()
         .iterator().next();
