@@ -686,6 +686,7 @@
   <string name="label_supplying_depot">Supplying Depot</string>
   <string name="label_shipping_date">Shipping Date</string>
   <string name="label_requesting_facility">Requesting Facility</string>
+  <string name="msg_initial_dirty_data_check">The app is checking for dirty data, this process will take about a few minutes. \n Please wait...</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minute</item>

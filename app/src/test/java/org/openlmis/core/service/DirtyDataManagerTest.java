@@ -100,7 +100,7 @@ public class DirtyDataManagerTest {
         .thenReturn(stockMovementsForStockCard2);
     when(stockRepository.lotOnHands()).thenReturn(lotsOnHands);
     //When
-    SharedPreferenceMgr.getInstance().setIsInitialDataCheck(false);
+    SharedPreferenceMgr.getInstance().setShouldInitialDirtyDataCheck(false);
     List<StockCard> wrongStockCards = dirtyDataManager.correctData();
 
     //Then
@@ -139,7 +139,7 @@ public class DirtyDataManagerTest {
 
     when(stockMovementRepository.listLastTwoStockMovements()).thenReturn(duplicateMovement);
 
-    SharedPreferenceMgr.getInstance().setIsInitialDataCheck(false);
+    SharedPreferenceMgr.getInstance().setShouldInitialDirtyDataCheck(false);
     Map<String, String> lotsOnHands = new HashMap<>();
     lotsOnHands.put("1", "0");
     List<StockCard> wrongStockCards = dirtyDataManager

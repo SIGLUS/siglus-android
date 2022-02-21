@@ -42,6 +42,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.event.DeleteDirtyDataEvent;
+import org.openlmis.core.event.InitialDirtyDataCheckEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
@@ -172,9 +173,13 @@ public class DirtyDataManager {
     if (sharedPreferenceMgr.shouldInitialDataCheck()
         && !sharedPreferenceMgr.shouldSyncLastYearStockData()
         && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+      sharedPreferenceMgr.setKeyIsInitialDirtyDataChecking(true);
+      EventBus.getDefault().post(new InitialDirtyDataCheckEvent(true, false));
       Set<String> deleteProducts = checkSoh();
       saveToSharePreferenceMgr(deleteProducts);
-      sharedPreferenceMgr.setIsInitialDataCheck(false);
+      sharedPreferenceMgr.setKeyIsInitialDirtyDataChecking(false);
+      sharedPreferenceMgr.setShouldInitialDirtyDataCheck(false);
+      EventBus.getDefault().post(new InitialDirtyDataCheckEvent(false, !deleteProducts.isEmpty()));
     }
   }
 
