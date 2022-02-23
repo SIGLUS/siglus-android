@@ -1,5 +1,6 @@
 package org.openlmis.core.view.widget;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,15 @@ public class InitialDirtyDataCheckDialog extends BaseDialogFragment {
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     return inflater.inflate(R.layout.dialog_initial_dirty_data_check, container, false);
+  }
+
+  @NonNull
+  @Override
+  public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    Dialog dialog =  super.onCreateDialog(savedInstanceState);
+    dialog.setCanceledOnTouchOutside(false);
+    setCancelable(false);
+    return dialog;
   }
 
   public void show(FragmentManager manager) {

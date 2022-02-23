@@ -167,6 +167,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     refreshDashboard();
   }
 
+  @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveInitialDirtyDataCheckEvent(InitialDirtyDataCheckEvent event) {
     if (!event.isChecking()) {
       initialDirtyDataCheckDialog.dismiss();

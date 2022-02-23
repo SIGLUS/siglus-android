@@ -154,6 +154,8 @@ public class DirtyDataManager {
         .subscribe(new Subscriber<Void>() {
           @Override
           public void onCompleted() {
+            EventBus.getDefault().post(new InitialDirtyDataCheckEvent(false,
+                !sharedPreferenceMgr.getDeletedProduct().isEmpty()));
             Log.d("dirty data", "monthly check finished");
           }
 
@@ -175,11 +177,13 @@ public class DirtyDataManager {
         && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
       sharedPreferenceMgr.setKeyIsInitialDirtyDataChecking(true);
       EventBus.getDefault().post(new InitialDirtyDataCheckEvent(true, false));
+      Log.d("check", "start");
       Set<String> deleteProducts = checkSoh();
+      Log.d("check", "end");
       saveToSharePreferenceMgr(deleteProducts);
       sharedPreferenceMgr.setKeyIsInitialDirtyDataChecking(false);
       sharedPreferenceMgr.setShouldInitialDirtyDataCheck(false);
-      EventBus.getDefault().post(new InitialDirtyDataCheckEvent(false, !deleteProducts.isEmpty()));
+      dirtyDataMonthlyCheck();
     }
   }
 
