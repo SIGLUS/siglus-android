@@ -169,7 +169,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveInitialDirtyDataCheckEvent(InitialDirtyDataCheckEvent event) {
-    if (!event.isChecking()) {
+    if (!event.isChecking() &&
+        getSupportFragmentManager().findFragmentByTag("initial_dirty_data_check_dialog") != null) {
       initialDirtyDataCheckDialog.dismiss();
       if (event.isExistingDirtyData()) {
         showDeletedWarningDialog(dirtyDataManager::deleteAndReset);
