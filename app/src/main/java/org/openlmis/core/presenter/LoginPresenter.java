@@ -137,7 +137,7 @@ public class LoginPresenter extends Presenter {
       view.showPasswordEmpty();
       return;
     }
-
+    view.loading(LMISApp.getInstance().getString(R.string.msg_logging_in));
     User user = new User(userName.trim(), password);
     internetCheck.check(checkNetworkConnected(user, fromReSync));
   }

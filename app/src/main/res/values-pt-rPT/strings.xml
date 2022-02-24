@@ -682,6 +682,7 @@
   <string name="alert_issue_voucher_can_not_be_blank_for_kit">Insira a quantidade ou remova o produto</string>
   <string name="msg_delete_dirty_data">Excluindo dados sujos…</string>
   <string name="msg_initial_dirty_data_check">O aplicativo está verificando dados sujos, esse processo levará um tempo. \n Por favor aguardar...</string>
+  <string name="msg_logging_in">logando...</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>
