@@ -24,7 +24,6 @@ import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.utils.ToastUtil;
 import rx.Observable;
 import rx.Observable.OnSubscribe;
 import rx.Observer;
@@ -46,13 +45,11 @@ public class InternetCheck {
     @Override
     public void onError(Throwable throwable) {
       Log.w(TAG, throwable);
-      ToastUtil.show("connect failed");
       listener.onResult(false);
     }
 
     @Override
     public void onNext(Boolean result) {
-      ToastUtil.show("connect success");
       listener.onResult(Boolean.TRUE == result);
     }
   };

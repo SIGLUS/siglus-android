@@ -137,7 +137,6 @@ public class LoginPresenter extends Presenter {
       view.showPasswordEmpty();
       return;
     }
-    view.loading("start login");
 
     User user = new User(userName.trim(), password);
     internetCheck.check(checkNetworkConnected(user, fromReSync));
@@ -260,10 +259,8 @@ public class LoginPresenter extends Presenter {
   protected InternetCheckListener checkNetworkConnected(User user, boolean fromReSync) {
     return internet -> {
       if (internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-        view.loading("start login remote");
         loginRemote(user, fromReSync);
       } else {
-        view.loading("start login local");
         User localUser = userRepository.getLocalUser();
         if (localUser == null && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
           onLoginFailed(LoginErrorType.NO_INTERNET);
