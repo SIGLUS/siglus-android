@@ -129,7 +129,7 @@ public class LoginPresenter extends Presenter {
     this.view = (LoginView) v;
   }
 
-  private static final int TIMEOUT = 30 * 1000;
+  private static final int TIMEOUT = 10 * 1000;
 
   private User user;
 
