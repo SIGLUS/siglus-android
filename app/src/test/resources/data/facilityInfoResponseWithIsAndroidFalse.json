@@ -1,4 +1,4 @@
 {
-  "messageKey": "siglusapi.error.notAndroid",
+  "messageKey": "siglusapi.error.notAndroidUser",
   "message": "Not an android user."
 }

@@ -358,6 +358,7 @@ public class LoginPresenter extends Presenter {
 
           @Override
           public void failure(RetrofitError error) {
+            subscriber.onCompleted();
             if (error.getCause() instanceof NetWorkException) {
               User localUser = userRepository.getLocalUser();
               if (localUser == null) {
