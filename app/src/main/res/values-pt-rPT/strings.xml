@@ -8,8 +8,8 @@
   <string name="title_kit_stock_cards">Visão geral de Kits</string>
   <string name="title_unpack_kit">Desembalar Kit</string>
   <string name="title_requisition">Criar Requisição Balancete para Via clássica</string>
-  <string name="title_pod">Comprovante de entrega para %1$s</string>
-  <string name="title_issue_voucher">Voucher de emissão eletrônica %1$s</string>
+  <string name="title_pod">Prova de entrega para %1$s</string>
+  <string name="title_issue_voucher">Guia de remessa eletrônica %1$s</string>
 
   <string name="hint_network_error">Falha na conexão, verifique sua conexão a rede</string>
 
@@ -291,7 +291,7 @@
   <string name="error_rnr_report_start_date_invalid">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
 
   <!--Rnr form historical list-->
-  <string name="label_via_name">Requisição Balancete</string>
+  <string name="label_via_name">uma Requisição Balancete</string>
   <string name="label_mmia_name">MMIA</string>
   <string name="label_al_name">AL</string>
   <string name="label_ptv_name">PTV</string>
@@ -317,7 +317,7 @@
   <string name="label_emergency_date">Requisição de Emergência – %s</string>
   <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>Você será capaz de criar um MMIA a partir do dia 18 de %1$s</b>]]></string>
   <string name="label_training_can_not_create_rapid_Test_rnr"><![CDATA[<b>Você poderá criar um Relatório de MMIT no próximo período</b>]]>></string>
-  <string name="label_can_not_create_report_rnr"><![CDATA[<b>Você será capaz de criar um %1$s a partir do dia 18 de %2$s</b>]]></string>
+  <string name="label_can_not_create_report_rnr"><![CDATA[<b>Você será capaz de criar %1$s a partir do dia 18 de %2$s</b>]]></string>
   <string name="label_training_can_not_create_report_rnr"><![CDATA[<b>Você poderá criar um %1$s no próximo período</b>]]></string>
   <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
   <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do stock fisico do fim do período]]></string>
@@ -546,7 +546,7 @@
   <string name="upgrade_download_try">Por favor tente mais tarde</string>
   <string name="upgrade_download_click_install">Clique para instalar</string>
   <string name="dirty_data_correct_warning">Há um erro de cálculo de stock no produto %s, o sistema apenas exclui os dados sujos. por favor, use receber / inventário físico / ajustes para registrar novamente o estoque do produto.</string>
-  <string name="dashboard_product_types">Produtos Totais</string>
+  <string name="dashboard_product_types">Total de produtos</string>
   <string name="msg_fetching_facility_info">Baixando informações da US…</string>
   <string name="msg_fetching_facility_info_failed">O download das informações da US falhou, faça login novamente.</string>
   <string name="home_label_requisition_and_report">Requisição e Relatório</string>
@@ -556,12 +556,12 @@
   <string name="msg_fetching_regimens_failed">O download das informações dos regimes do servidor falhou, faça login novamente.</string>
   <string name="msg_calculating_cmm">Calculando CMM …</string>
   <string name="action_bulk_entries">Múltiplas entradas</string>
-  <string name="action_bulk_issues">Saída multíplas</string>
+  <string name="action_bulk_issues">Multiplas saídas</string>
   <string name="msg_no_product_in_bulk_entries">Não há nenhum produto, por favor, adicione</string>
   <string name="vc_program_name">Requisição</string>
-  <string name="ml_program_name">Malária</string>
-  <string name="tarv_program_name">MMIA</string>
-  <string name="tr_program_name">MMIT</string>
+  <string name="ml_program_name">um Relatório de AL</string>
+  <string name="tarv_program_name">um MMIA</string>
+  <string name="tr_program_name">um MMIT</string>
   <string name="msg_cannot_create_emergency_requisition">Não é possível criar requisição de emergência</string>
   <string name="label_stockcard_lot_code">Código de lote</string>
   <string name="label_stockcard_lot_expire_date">Data de validade</string>
@@ -582,7 +582,7 @@
   <string name="msg_remove_confirm">Tem certeza de que deseja remover o produto? Se você clicar em \'sim\', o produto será removido.</string>
   <string name="hint_bulk_entries_signature">Assinatura</string>
   <string name="msg_complete_successfully">Concluído com sucesso</string>
-  <string name="title_bulk_issue">Saída multíplas</string>
+  <string name="title_bulk_issue">Multiplas saídas</string>
   <string name="unsuccessfully_saved">Gravado sem sucesso</string>
   <string name="msg_fetching_pods">Baixando os relatório de recepção…</string>
   <string name="msg_sync_pod_failed">A sincronização dos relatórios de recepção falhou</string>
@@ -625,7 +625,7 @@
   <string name="msg_shipped_quantity_can_not_be_zero">Quantidade fornecida não pode ser 0</string>
   <string name="title_electronic_issue_voucher">Guia de remessa electrónica</string>
   <string name="hint_save_issue_voucher_failed">Não foi possível gravar a guia de remessa, por favor entre em contato com o administrador.</string>
-  <string name="msg_title_for_signature">Comprovante de entrega para</string>
+  <string name="msg_title_for_signature">Prova de entrega para</string>
   <string name="msg_receive_for_signature">Recebido por</string>
   <string name="msg_delivered_for_signature">Entregue por</string>
   <string name="btn_next">Próximo</string>
