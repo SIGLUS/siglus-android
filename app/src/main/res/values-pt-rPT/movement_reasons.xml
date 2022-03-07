@@ -41,7 +41,6 @@
     <item>POSITIVE_ADJUST|DEFAULT_POSITIVE_ADJUSTMENT|Positive adjustment</item>
 
     <item>REJECTION|DAMAGED|Danificado/quebrado/derramado</item>
-    <item>REJECTION|OVER_ISSUE|Recebido a mais</item>
     <item>REJECTION|INSUFFICIENT|Recebido a menos</item>
     <item>REJECTION|EXPIRED|Fora do prazo de validade</item>
     <item>REJECTION|UNEATABLE|Impróprio para o consumo</item>

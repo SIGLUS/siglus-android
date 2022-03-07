@@ -165,7 +165,7 @@ public class IssueVoucherReportLotAdapterTest {
     // given
     lotViewModel.setShippedQuantity(null);
     lotViewModel.setAcceptedQuantity(null);
-    lotViewModel.setRejectedReason("OVER_ISSUE");
+    lotViewModel.setRejectedReason("INSUFFICIENT");
     lotViewModel.setOrderStatus(OrderStatus.RECEIVED);
 
     // when
@@ -177,7 +177,7 @@ public class IssueVoucherReportLotAdapterTest {
     TextView returnedValue = holder.getView(R.id.tv_quantity_returned);
     assertEquals("", returnedValue.getText().toString());
     TextView reason = holder.getView(R.id.tv_rejection_reason);
-    assertEquals("Received more quantities than expected", (reason.getText().toString()));
+    assertEquals("Received less quantities than expected", (reason.getText().toString()));
     ImageView reasonLogo = holder.getView(R.id.iv_rejection_reason);
     assertEquals(View.GONE, reasonLogo.getVisibility());
   }
