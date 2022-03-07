@@ -16,6 +16,7 @@
     <item>ISSUE|PAV|PAV</item>
     <item>ISSUE|DENTAL_WARD|Dental ward</item>
     <item>ISSUE|UNPACK_KIT|Unpack kit</item>
+    <item>ISSUE|APE|APE</item>
 
     <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Drugs in quarantine have expired, returned to Supplier</item>
     <item>NEGATIVE_ADJUST|DAMAGED|Damaged in the warehouse</item>

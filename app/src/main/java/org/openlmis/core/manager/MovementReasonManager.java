@@ -136,6 +136,20 @@ public final class MovementReasonManager {
         .toList();
   }
 
+  public List<MovementReason> buildReasonListForKitMovementType(final MovementType type, boolean isKit) {
+    if (isKit && MovementType.ISSUE.equals(type)) {
+      return FluentIterable.from(currentReasonList)
+          .filter(movementReason -> movementReason.getCode().equals("APE")
+              && movementReason.canBeDisplayOnMovementMenu())
+          .toList();
+    }
+    return FluentIterable.from(currentReasonList)
+        .filter(movementReason -> movementReason.getMovementType() == type
+            && !movementReason.getCode().equals("APE")
+            && movementReason.canBeDisplayOnMovementMenu())
+        .toList();
+  }
+
   public MovementReason queryByDesc(MovementType movementType, String reason) throws MovementReasonNotFoundException {
     return queryByDesc(movementType, reason, context.getResources().getConfiguration().locale);
   }

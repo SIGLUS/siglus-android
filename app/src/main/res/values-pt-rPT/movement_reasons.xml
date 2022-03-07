@@ -16,6 +16,7 @@
     <item>ISSUE|PAV|PAV</item>
     <item>ISSUE|DENTAL_WARD|Estomatologia</item>
     <item>ISSUE|UNPACK_KIT|Desembalar Kit</item>
+    <item>ISSUE|APE|APE</item>
 
     <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Devolução de expirados quarentena (ou depósito fornecedor)</item>
     <item>NEGATIVE_ADJUST|DAMAGED|Danificado no depósito</item>
