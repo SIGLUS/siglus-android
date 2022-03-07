@@ -171,8 +171,8 @@ public class IssueVoucherListActivity extends BaseActivity {
     @Override
     public IPagerIndicator getIndicator(Context context) {
       FillPageIndicator indicator = new FillPageIndicator(context);
-      indicator.setSelectedBackgroundColor(ContextCompat.getColor(context, R.color.color_80ffa000));
-      indicator.setLineColors(ContextCompat.getColor(context, R.color.color_amber_dark));
+      indicator.setSelectedBackgroundColor(ContextCompat.getColor(context, R.color.general_background_color));
+      indicator.setLineColors(ContextCompat.getColor(context, R.color.general_background_color));
       return indicator;
     }
   }

@@ -11,7 +11,7 @@
       android:layout_width="match_parent"
       android:layout_height="@dimen/px_80"
       app:layout_constraintTop_toTopOf="parent"
-      android:background="@color/color_white"
+      android:background="@color/color_80ffa000"
       />
     <androidx.viewpager2.widget.ViewPager2
       android:id="@+id/vp_issue_voucher"
