@@ -550,8 +550,8 @@
   <string name="msg_fetching_facility_info">Baixando informações da US…</string>
   <string name="msg_fetching_facility_info_failed">O download das informações da US falhou, faça login novamente.</string>
   <string name="home_label_requisition_and_report">Requisição e Relatório</string>
-  <string name="home_label_issue_voucher_and_pod">Emitir Guia de remessa e Relatório de entrega</string>
-  <string name="title_issue_voucher_and_pod">Emitir Guia de remessa e Relatório de entrega</string>
+  <string name="home_label_issue_voucher_and_pod">Guias de remessa e Relatórios de recepção</string>
+  <string name="title_issue_voucher_and_pod">Guias de remessa e Relatórios de recepção</string>
   <string name="msg_fetching_regimens">Baixando regimes …</string>
   <string name="msg_fetching_regimens_failed">O download das informações dos regimes do servidor falhou, faça login novamente.</string>
   <string name="msg_calculating_cmm">Calculando CMM …</string>
@@ -587,7 +587,7 @@
   <string name="msg_fetching_pods">Baixando os relatório de recepção…</string>
   <string name="msg_sync_pod_failed">A sincronização dos relatórios de recepção falhou</string>
   <string name="label_create_issue_voucher_draft">Criar rascunho de relatório de recepção</string>
-  <string name="label_issue_voucher">Emitir relatório de recepção</string>
+  <string name="label_issue_voucher">Guia de Remessa</string>
   <string name="label_pod">Relatório de recepção</string>
   <string name="hint_order_number">Número do pedido</string>
   <string name="hint_program">Programa</string>
@@ -672,7 +672,7 @@
   <string name="error_sync_previous_period">A sincronização falhou. A requisição anterior teve erro de sincronização. Por favor contacte o administrador.</string>
   <string name="msg_quantity_can_not_be_zero">Quantidade não pode estar em 0</string>
   <string name="label_issued_amount">Montante emitido:&#160;</string>
-  <string name="edit_order_number">Editar o número do pedido</string>
+  <string name="edit_order_number">Editar número da guia de remessa</string>
   <string name="label_old_order_number">Número de guia de remessa antigo</string>
   <string name="label_new_order_number">Número de guia de remessa novo</string>
   <string name="msg_new_order_number_error">O número da guia de remessa não pode estar em branco</string>
@@ -683,6 +683,7 @@
   <string name="msg_delete_dirty_data">Excluindo dados sujos…</string>
   <string name="msg_initial_dirty_data_check">O aplicativo está verificando dados sujos, esse processo levará um tempo. \n Por favor aguardar...</string>
   <string name="msg_logging_in">logando...</string>
+  <string name="TR_program_name_for_issue_voucher_title">Testes Rápidos</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>

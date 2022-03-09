@@ -688,6 +688,7 @@
   <string name="label_requesting_facility">Requesting Facility</string>
   <string name="msg_initial_dirty_data_check">The app is checking for dirty data, this process will take a while. \n Please wait...</string>
   <string name="msg_logging_in">logging in...</string>
+  <string name="TR_program_name_for_issue_voucher_title">Testes Rápidos</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minute</item>
