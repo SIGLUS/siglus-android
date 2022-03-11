@@ -8,7 +8,7 @@
   <string name="title_kit_stock_cards">Visão geral de Kits</string>
   <string name="title_unpack_kit">Desembalar Kit</string>
   <string name="title_requisition">Criar Requisição Balancete para Via clássica</string>
-  <string name="title_pod">Prova de entrega para %1$s</string>
+  <string name="title_pod">Relatório de entrega para %1$s</string>
   <string name="title_issue_voucher">Guia de remessa eletrônica %1$s</string>
 
   <string name="hint_network_error">Falha na conexão, verifique sua conexão a rede</string>
@@ -625,7 +625,7 @@
   <string name="msg_shipped_quantity_can_not_be_zero">Quantidade fornecida não pode ser 0</string>
   <string name="title_electronic_issue_voucher">Guia de remessa electrónica</string>
   <string name="hint_save_issue_voucher_failed">Não foi possível gravar a guia de remessa, por favor entre em contato com o administrador.</string>
-  <string name="msg_title_for_signature">Prova de entrega para</string>
+  <string name="msg_title_for_signature">Relatório de entrega para</string>
   <string name="msg_receive_for_signature">Recebido por</string>
   <string name="msg_delivered_for_signature">Entregue por</string>
   <string name="btn_next">Próximo</string>
