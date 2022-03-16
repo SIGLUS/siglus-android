@@ -36,6 +36,7 @@ import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
 
 public class RequisitionFormViewHolder extends BaseViewHolder {
@@ -114,12 +115,15 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
       adjustTheoreticalIcon.setVisibility(View.GONE);
     } else {
       adjustTheoreticalIcon.setVisibility(View.VISIBLE);
-      adjustTheoreticalIcon.setOnClickListener(v -> {
-        DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-            Html.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()),
-            context.getString(R.string.btn_ok));
-        dialogFragment
-            .show(((FragmentActivity) context).getSupportFragmentManager(), "adjustmentTheoreticalDialog");
+      adjustTheoreticalIcon.setOnClickListener(new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
+              Html.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()),
+              context.getString(R.string.btn_ok));
+          dialogFragment
+              .show(((FragmentActivity) context).getSupportFragmentManager(), "adjustmentTheoreticalDialog");
+        }
       });
     }
   }

@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
@@ -105,7 +104,7 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView, On
     }
   };
 
-  private final OnClickListener clickListener = new SingleClickButtonListener() {
+  private final SingleClickButtonListener clickListener = new SingleClickButtonListener() {
     @Override
     public void onSingleClick(View v) {
       if (v.getId() == R.id.btn_save) {

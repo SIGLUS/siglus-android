@@ -27,6 +27,7 @@ import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
 import org.openlmis.core.view.widget.BulkInitialInventoryLotListView;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
 
 public class BulkInitialInventoryWithLotViewHolder extends BaseViewHolder {
@@ -73,8 +74,13 @@ public class BulkInitialInventoryWithLotViewHolder extends BaseViewHolder {
 
 
   @NonNull
-  private final View.OnClickListener removeProductListener = v -> removeNonBasicProductListener
-      .removeNoneBasicProduct(viewModel);
+  private final SingleClickButtonListener removeProductListener = new SingleClickButtonListener() {
+    @Override
+    public void onSingleClick(View v) {
+      removeNonBasicProductListener
+          .removeNoneBasicProduct(viewModel);
+    }
+  };
 
   private void highlightQueryKeyWord(BulkInitialInventoryViewModel inventoryViewModel,
       String queryKeyWord, boolean done) {

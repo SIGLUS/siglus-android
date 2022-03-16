@@ -135,7 +135,7 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
   }
 
   @NonNull
-  private View.OnClickListener getMovementReasonOnClickListener() {
+  private SingleClickButtonListener getMovementReasonOnClickListener() {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View view) {

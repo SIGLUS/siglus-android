@@ -37,6 +37,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
@@ -66,12 +67,15 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     return true;
   }
 
-  public View.OnClickListener goToAddNonBasicProductsLister() {
-    return v -> {
-      Intent intent = new Intent(getApplicationContext(), AddNonBasicProductsActivity.class);
-      intent.putExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS,
-          (Serializable) presenter.getAllAddedNonBasicProduct());
-      startActivityForResult(intent, REQUEST_CODE);
+  public SingleClickButtonListener goToAddNonBasicProductsLister() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        Intent intent = new Intent(getApplicationContext(), AddNonBasicProductsActivity.class);
+        intent.putExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS,
+            (Serializable) presenter.getAllAddedNonBasicProduct());
+        startActivityForResult(intent, REQUEST_CODE);
+      }
     };
   }
 

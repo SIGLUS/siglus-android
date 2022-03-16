@@ -124,7 +124,7 @@ public class NewStockMovementActivity extends BaseActivity implements
   }
 
   @NonNull
-  private View.OnClickListener getMovementReasonOnClickListener() {
+  private SingleClickButtonListener getMovementReasonOnClickListener() {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View view) {

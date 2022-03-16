@@ -133,12 +133,20 @@ public class BulkEntriesLotListView extends BaseLotListView {
   @Override
   protected void init(Context context) {
     super.init(context);
-    btnVerify.setOnClickListener(v -> {
-      if (verifyValidation()) {
-        markDone(true);
+    btnVerify.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        if (verifyValidation()) {
+          markDone(true);
+        }
       }
     });
-    btnEdit.setOnClickListener(v -> markDone(false));
+    btnEdit.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        markDone(false);
+      }
+    });
   }
 
   @Override

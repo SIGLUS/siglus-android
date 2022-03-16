@@ -151,9 +151,14 @@ public class MMIARegimeList extends LinearLayout {
         .inflate(R.layout.item_add_custom_regime, this, false);
     view.setText(R.string.label_add_adult_regime);
     view.setBackgroundResource(R.color.color_green_light);
-    view.setOnClickListener(v -> getFragment().startActivityForResult(
-        SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults),
-        MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME));
+    view.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        getFragment().startActivityForResult(
+            SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults),
+            MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
+      }
+    });
     addView(view);
   }
 
@@ -162,9 +167,14 @@ public class MMIARegimeList extends LinearLayout {
         .inflate(R.layout.item_add_custom_regime, this, false);
     view.setText(R.string.label_add_child_regime);
     view.setBackgroundResource(R.color.color_regime_baby);
-    view.setOnClickListener(v -> getFragment().startActivityForResult(SelectRegimeProductsActivity
-            .getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics),
-        MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME));
+    view.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        getFragment().startActivityForResult(SelectRegimeProductsActivity
+                .getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics),
+            MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
+      }
+    });
     addView(view);
   }
 
@@ -261,7 +271,12 @@ public class MMIARegimeList extends LinearLayout {
   private void setDelIconForCustomRegime(final RegimenItem item, View view) {
     if (item.getRegimen().isCustom() && isCustomEnable()) {
       View ivDel = ((ViewStub) view.findViewById(R.id.vs_del)).inflate();
-      ivDel.setOnClickListener(v -> showDelConfirmDialog(item));
+      ivDel.setOnClickListener(new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          showDelConfirmDialog(item);
+        }
+      });
     }
   }
 

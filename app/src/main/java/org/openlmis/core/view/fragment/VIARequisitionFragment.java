@@ -194,7 +194,12 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
   private void refreshEmergencyRnr(RnRForm rnRForm) {
     if (!rnRForm.isAuthorized()) {
-      View.OnClickListener onClickListener = v -> ToastUtil.show(R.string.msg_emergency_requisition_cant_edit);
+      SingleClickButtonListener onClickListener = new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          ToastUtil.show(R.string.msg_emergency_requisition_cant_edit);
+        }
+      };
       consultationView.setEditClickListener(onClickListener);
       kitView.setEditClickListener(onClickListener);
     }

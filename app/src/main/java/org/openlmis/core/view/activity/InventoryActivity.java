@@ -51,6 +51,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
@@ -203,8 +204,19 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
 
   protected void initUI() {
     initRecyclerView();
-    btnSave.setOnClickListener(v -> onSaveClick());
-    btnDone.setOnClickListener(v -> onCompleteClick());
+    btnSave.setOnClickListener(
+        new SingleClickButtonListener() {
+          @Override
+          public void onSingleClick(View v) {
+            onSaveClick();
+          }
+        });
+    btnDone.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        onCompleteClick();
+      }
+    });
     mAdapter.registerAdapterDataObserver(dataObserver);
   }
 

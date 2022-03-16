@@ -101,7 +101,7 @@ public class BulkInitialInventoryActivityTest {
     when(mockedPresenter.getAllAddedNonBasicProduct()).thenReturn(Collections.singletonList("test"));
 
     // when
-    bulkInventoryActivity.goToAddNonBasicProductsLister().onClick(null);
+    bulkInventoryActivity.goToAddNonBasicProductsLister().onSingleClick(null);
 
     // then
     Intent startIntent = shadowOf(bulkInventoryActivity).getNextStartedActivity();

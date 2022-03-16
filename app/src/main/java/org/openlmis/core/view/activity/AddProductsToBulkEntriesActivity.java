@@ -47,6 +47,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.AddProductsToBulkEntriesAdapter;
 import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -152,29 +153,32 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   }
 
   @NonNull
-  private View.OnClickListener addProductsListener() {
-    return v -> {
-      List<Product> selectedProducts = new ArrayList<>();
-      for (ProductsToBulkEntriesViewModel model : adapter.getModels()) {
-        if (model.isChecked()) {
-          selectedProducts.add(model.getProduct());
+  private SingleClickButtonListener addProductsListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        List<Product> selectedProducts = new ArrayList<>();
+        for (ProductsToBulkEntriesViewModel model : adapter.getModels()) {
+          if (model.isChecked()) {
+            selectedProducts.add(model.getProduct());
+          }
         }
-      }
-      if (selectedProducts.isEmpty()) {
-        ToastUtil.show(R.string.msg_no_product_added);
-      } else {
-        if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
-          Intent intent = new Intent(this, IssueVoucherDraftActivity.class);
-          intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
-          intent.putExtra(IntentConstants.PARAM_PREVIOUS_SELECTED_PRODUCTS, (Serializable) previouslyProductCodes);
-          intent.putExtra(CHOSEN_PROGRAM_CODE, programCode);
-          intent.putExtra(FROM_PAGE, fromPage);
-          issueVoucherDraftLauncher.launch(intent);
+        if (selectedProducts.isEmpty()) {
+          ToastUtil.show(R.string.msg_no_product_added);
         } else {
-          Intent intent = new Intent();
-          intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
-          setResult(Activity.RESULT_OK, intent);
-          finish();
+          if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
+            Intent intent = new Intent(getApplicationContext(), IssueVoucherDraftActivity.class);
+            intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
+            intent.putExtra(IntentConstants.PARAM_PREVIOUS_SELECTED_PRODUCTS, (Serializable) previouslyProductCodes);
+            intent.putExtra(CHOSEN_PROGRAM_CODE, programCode);
+            intent.putExtra(FROM_PAGE, fromPage);
+            issueVoucherDraftLauncher.launch(intent);
+          } else {
+            Intent intent = new Intent();
+            intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+          }
         }
       }
     };

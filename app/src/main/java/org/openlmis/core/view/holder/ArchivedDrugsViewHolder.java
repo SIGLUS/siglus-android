@@ -24,6 +24,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
 
 public class ArchivedDrugsViewHolder extends BaseViewHolder {
@@ -63,15 +64,21 @@ public class ArchivedDrugsViewHolder extends BaseViewHolder {
 
   private void setActionListeners(final InventoryViewModel inventoryViewModel,
       final ArchiveStockCardListener listener) {
-    tvViewHistory.setOnClickListener(v -> {
-      if (listener != null) {
-        listener.viewMovementHistory(inventoryViewModel.getStockCard());
+    tvViewHistory.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        if (listener != null) {
+          listener.viewMovementHistory(inventoryViewModel.getStockCard());
+        }
       }
     });
 
-    tvArchiveBack.setOnClickListener(v -> {
-      if (listener != null) {
-        listener.archiveStockCardBack(inventoryViewModel.getStockCard());
+    tvArchiveBack.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        if (listener != null) {
+          listener.archiveStockCardBack(inventoryViewModel.getStockCard());
+        }
       }
     });
   }
