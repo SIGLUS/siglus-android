@@ -63,6 +63,8 @@ public class RapidTestReportViewModel {
   private RnRForm rapidTestForm = new RnRForm();
 
   public static final long DEFAULT_FORM_ID = 0;
+  private static final String PUB_PHARMACY = "PUB_PHARMACY";
+  private static final String APE = "APE";
 
   public RapidTestReportViewModel(Period period) {
     this.period = period;
@@ -84,7 +86,8 @@ public class RapidTestReportViewModel {
     movementReasonManager = MovementReasonManager.getInstance();
     List<MovementReasonManager.MovementReason> issueReasons = FluentIterable.from(
         movementReasonManager.buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE))
-        .filter(movementReason -> !movementReason.getCode().equals("PUB_PHARMACY")).toList();
+        .filter(movementReason -> !PUB_PHARMACY.equals(movementReason.getCode())
+            && !APE.equals(movementReason.getCode())).toList();
 
     for (MovementReasonManager.MovementReason movementReason : issueReasons) {
       RapidTestFormItemViewModel item = new RapidTestFormItemViewModel(movementReason);
