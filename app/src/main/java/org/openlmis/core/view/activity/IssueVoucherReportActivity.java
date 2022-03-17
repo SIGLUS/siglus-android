@@ -61,6 +61,7 @@ import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.IssueVoucherSignatureDialog;
 import org.openlmis.core.view.widget.OrderInfoView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
+import org.openlmis.core.view.widget.SingleClickMenuListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -69,33 +70,33 @@ import rx.Subscription;
 @ContentView(R.layout.activity_issue_voucher_report)
 public class IssueVoucherReportActivity extends BaseActivity implements IssueVoucherView, OnUpdatePodListener {
 
+  @InjectPresenter(IssueVoucherReportPresenter.class)
+  IssueVoucherReportPresenter presenter;
+  @Inject
+  InternetCheck internetCheck;
+  @Inject
+  SyncService syncService;
   @Setter
   @InjectView(R.id.view_orderInfo)
   private OrderInfoView orderInfo;
-
   @InjectView(R.id.product_name_list_view)
   private RecyclerView rvProductList;
-
   @InjectView(R.id.form_list_view)
   private RecyclerView rvIssueVoucherList;
-
   @Getter
   @InjectView(R.id.action_panel)
   private ActionPanelView actionPanelView;
-
-  @InjectPresenter(IssueVoucherReportPresenter.class)
-  IssueVoucherReportPresenter presenter;
-
-  @Inject
-  InternetCheck internetCheck;
-
-  @Inject
-  SyncService syncService;
-
   private Menu addProductMenu;
   private boolean isVisible = false;
   private Long podId;
   private Pod pod;
+  private final ActivityResultLauncher<Intent> addProductPageLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+          pod = (Pod) result.getData().getSerializableExtra(PARAM_ISSUE_VOUCHER);
+          presenter.loadViewModelByPod(pod, true);
+        }
+      });
   private String pageName;
   private boolean isBackToCurrentPage;
   private IssueVoucherProductAdapter productAdapter;
@@ -190,18 +191,15 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
     addProductMenu = menu;
-    addProductMenu.findItem(R.id.action_add_product).setVisible(isVisible);
+    MenuItem item = addProductMenu.findItem(R.id.action_add_product);
+    item.setVisible(isVisible);
+    item.setOnMenuItemClickListener(new SingleClickMenuListener() {
+      @Override
+      public void onSingleClick(MenuItem item) {
+        openAddProducts();
+      }
+    });
     return super.onPrepareOptionsMenu(menu);
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == R.id.action_add_product) {
-      openAddProducts();
-      return true;
-    } else {
-      return super.onOptionsItemSelected(item);
-    }
   }
 
   @NonNull
@@ -397,15 +395,6 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
         (Serializable) presenter.getAddedProductCodeList());
     addProductPageLauncher.launch(intent);
   }
-
-  private final ActivityResultLauncher<Intent> addProductPageLauncher = registerForActivityResult(
-      new StartActivityForResult(), result -> {
-        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-          pod = (Pod) result.getData().getSerializableExtra(PARAM_ISSUE_VOUCHER);
-          presenter.loadViewModelByPod(pod, true);
-        }
-      });
-
 
   private void initIssueVoucherList() {
     rvIssueVoucherList.setLayoutManager(new LinearLayoutManager(this));

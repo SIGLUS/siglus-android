@@ -18,6 +18,7 @@
 
 package org.openlmis.core.model;
 
+import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
@@ -112,6 +113,9 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
   }
 
   public String getProductNameWithoutStrengthAndType() {
+    if (getPrimaryName() == null) {
+      Log.d("error product", getCode());
+    }
     return getPrimaryName().replace(getStrength() + getType(), "");
   }
 

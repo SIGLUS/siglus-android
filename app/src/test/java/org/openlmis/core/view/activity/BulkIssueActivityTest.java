@@ -173,13 +173,15 @@ public class BulkIssueActivityTest {
   }
 
   @Test
-  public void shouldCorrectOpenAddProducts() {
+  public void
+  shouldCorrectOpenAddProducts() {
     // given
     MenuItem mockMenuItem = mock(MenuItem.class);
     when(mockMenuItem.getItemId()).thenReturn(R.id.action_add_product);
     when(mockedPresenter.getAddedProductCodeList()).thenReturn(Collections.singletonList(""));
 
     // when
+    RobolectricUtils.resetNextClickTime();
     bulkIssueActivity.onOptionsItemSelected(mockMenuItem);
 
     // then

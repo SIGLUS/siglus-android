@@ -50,6 +50,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
+import org.openlmis.core.view.widget.SingleClickMenuListener;
 import org.openlmis.core.view.widget.ViaKitView;
 import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
 import org.openlmis.core.view.widget.ViaRequisitionBodyView;
@@ -133,7 +134,24 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
       return;
     }
     shouldDisplayAddButton = presenter.isFormProductEditable();
-    menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(shouldDisplayAddButton);
+    MenuItem item = menu.findItem(R.id.action_add_new_drugs_to_via);
+    item.setVisible(shouldDisplayAddButton);
+    if (shouldDisplayAddButton) {
+      item.setOnMenuItemClickListener(new SingleClickMenuListener() {
+        @Override
+        public void onSingleClick(MenuItem item) {
+          ArrayList<String> productCodes = new ArrayList<>(FluentIterable
+              .from(presenter.getRequisitionFormItemViewModels())
+              .transform(RequisitionFormItemViewModel::getFmn)
+              .toList());
+
+          startActivityForResult(
+              AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), productCodes),
+              REQUEST_ADD_DRUGS_TO_VIA);
+        }
+      });
+    }
+
   }
 
   @Override
@@ -142,22 +160,6 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     inflater.inflate(R.menu.menu_via_requisition, menu);
     this.menu = menu;
     menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(shouldDisplayAddButton);
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == R.id.action_add_new_drugs_to_via) {
-      ArrayList<String> productCodes = new ArrayList<>(FluentIterable
-          .from(presenter.getRequisitionFormItemViewModels())
-          .transform(RequisitionFormItemViewModel::getFmn)
-          .toList());
-
-      startActivityForResult(
-          AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), productCodes),
-          REQUEST_ADD_DRUGS_TO_VIA);
-      return true;
-    }
-    return super.onOptionsItemSelected(item);
   }
 
   private void loadData() {
