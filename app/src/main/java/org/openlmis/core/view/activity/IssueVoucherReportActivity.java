@@ -42,7 +42,6 @@ import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Pod;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter;
@@ -162,14 +161,12 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     IssueVoucherReportViewModel viewModel = presenter.getIssueVoucherReportViewModel();
     productAdapter.setList(viewModel.getViewModels());
     issueVoucherReportAdapter.setList(viewModel.getViewModels());
-    String programName = viewModel.getProgram().getProgramCode().equals(Program.RAPID_TEST_CODE)
-        ? getString(R.string.TR_program_name_for_issue_voucher_title) : viewModel.getProgram().getProgramName();
     if (viewModel.getPodStatus() == OrderStatus.RECEIVED) {
       actionPanelView.setVisibility(View.GONE);
-      setTitle(LMISApp.getContext().getString(R.string.title_pod, programName));
+      setTitle(LMISApp.getContext().getString(R.string.title_pod, viewModel.getProgram().getProgramName()));
       orderInfo.refresh(pod, viewModel);
     } else {
-      setTitle(LMISApp.getContext().getString(R.string.title_issue_voucher, programName));
+      setTitle(LMISApp.getContext().getString(R.string.title_issue_voucher, viewModel.getProgram().getProgramName()));
       if (viewModel.getIsLocal()) {
         orderInfo.setVisibility(View.GONE);
       } else {
