@@ -46,6 +46,7 @@ import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.view.fragment.IssueVoucherListFragment;
 import org.openlmis.core.view.widget.FillPageIndicator;
+import org.openlmis.core.view.widget.SingleClickMenuListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -84,16 +85,14 @@ public class IssueVoucherListActivity extends BaseActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
     getMenuInflater().inflate(R.menu.menu_issue_voucher_list, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (R.id.action_create_issue_voucher != item.getItemId()) {
-      return super.onOptionsItemSelected(item);
-    }
-    Intent intent = new Intent(LMISApp.getContext(), IssueVoucherInputOrderNumberActivity.class);
-    startActivity(intent);
+    MenuItem item = menu.findItem(R.id.action_create_issue_voucher);
+    item.setOnMenuItemClickListener(new SingleClickMenuListener() {
+      @Override
+      public void onSingleClick(MenuItem item) {
+        Intent intent = new Intent(LMISApp.getContext(), IssueVoucherInputOrderNumberActivity.class);
+        startActivity(intent);
+      }
+    });
     return true;
   }
 
