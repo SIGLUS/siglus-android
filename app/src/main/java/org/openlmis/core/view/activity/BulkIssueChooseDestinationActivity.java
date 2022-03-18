@@ -54,23 +54,6 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_bulk_issue_choose_destination)
 public class BulkIssueChooseDestinationActivity extends BaseActivity {
 
-  @InjectView(R.id.til_destination)
-  private TextInputLayout tilDestination;
-
-  @Getter(AccessLevel.PACKAGE)
-  @InjectView(R.id.et_destination)
-  private EditText etDestination;
-
-  @InjectView(R.id.et_bulk_issue_document_number)
-  private EditText etDocumentNumber;
-
-  @Getter(AccessLevel.PACKAGE)
-  @InjectView(R.id.bt_next)
-  private Button btNext;
-
-  @Setter(AccessLevel.PACKAGE)
-  private MovementReason chosenReason = null;
-
   private final ActivityResultLauncher<Intent> bulkIssueActivityResultLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
@@ -79,7 +62,18 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
         finish();
       }
   );
-
+  @InjectView(R.id.til_destination)
+  private TextInputLayout tilDestination;
+  @Getter(AccessLevel.PACKAGE)
+  @InjectView(R.id.et_destination)
+  private EditText etDestination;
+  @InjectView(R.id.et_bulk_issue_document_number)
+  private EditText etDocumentNumber;
+  @Getter(AccessLevel.PACKAGE)
+  @InjectView(R.id.bt_next)
+  private Button btNext;
+  @Setter(AccessLevel.PACKAGE)
+  private MovementReason chosenReason = null;
   private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
         if (result.getResultCode() != Activity.RESULT_OK) {
@@ -140,7 +134,7 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
       @Override
       public void onSingleClick(View view) {
         List<MovementReason> movementReasons = MovementReasonManager.getInstance()
-            .buildReasonListForMovementType(MovementType.ISSUE);
+            .buildReasonListForKitMovementType(MovementType.ISSUE, false);
         String[] reasonArray = FluentIterable.from(movementReasons).transform(MovementReason::getDescription)
             .toArray(String.class);
         Bundle bundle = new Bundle();
