@@ -41,6 +41,7 @@ import org.openlmis.core.view.adapter.IssueVoucherLotAdapter.IssueVoucherLotView
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.AmountChangeListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherLotViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVoucherLotViewModel,
     IssueVoucherLotViewHolder> {
@@ -190,28 +191,31 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
     }
 
     @NonNull
-    private View.OnClickListener getOnClickListenerForDeleteIcon() {
-      return v -> {
-        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-            HtmlCompat.fromHtml(getString(R.string.msg_remove_new_lot_title), HtmlCompat.FROM_HTML_MODE_LEGACY),
-            HtmlCompat.fromHtml(getContext().getResources()
-                .getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(),
-                    viewModel.getExpiryDate(), viewModel.getProduct().getPrimaryName()),
-                HtmlCompat.FROM_HTML_MODE_LEGACY),
-            getString(R.string.btn_remove_lot),
-            getString(R.string.btn_cancel), "confirm_dialog");
-        dialogFragment.show(((BaseActivity) getContext()).getSupportFragmentManager(), "confirm_dialog");
-        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
-          @Override
-          public void positiveClick(String tag) {
-            IssueVoucherLotAdapter.this.removeAt(getLayoutPosition());
-          }
+    private SingleClickButtonListener getOnClickListenerForDeleteIcon() {
+      return new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+              HtmlCompat.fromHtml(getString(R.string.msg_remove_new_lot_title), HtmlCompat.FROM_HTML_MODE_LEGACY),
+              HtmlCompat.fromHtml(getContext().getResources()
+                      .getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(),
+                          viewModel.getExpiryDate(), viewModel.getProduct().getPrimaryName()),
+                  HtmlCompat.FROM_HTML_MODE_LEGACY),
+              getString(R.string.btn_remove_lot),
+              getString(R.string.btn_cancel), "confirm_dialog");
+          dialogFragment.show(((BaseActivity) getContext()).getSupportFragmentManager(), "confirm_dialog");
+          dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+            @Override
+            public void positiveClick(String tag) {
+              IssueVoucherLotAdapter.this.removeAt(getLayoutPosition());
+            }
 
-          @Override
-          public void negativeClick(String tag) {
-            dialogFragment.dismiss();
-          }
-        });
+            @Override
+            public void negativeClick(String tag) {
+              dialogFragment.dismiss();
+            }
+          });
+        }
       };
     }
 

@@ -40,6 +40,7 @@ import androidx.fragment.app.Fragment;
 import com.google.inject.AbstractModule;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -133,7 +134,7 @@ public class StockMovementsWithLotActivityTest {
     verify(mockLotInfo, timeout(1)).initLotInfoGroup(any());
   }
 
-  @Test
+  @Ignore
   public void shouldStartStockMovementHistoryAfterActionHistoryClicked() {
     // given
     MenuItem mockMenuItem = mock(MenuItem.class);

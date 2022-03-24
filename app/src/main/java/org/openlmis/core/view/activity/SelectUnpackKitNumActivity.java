@@ -30,6 +30,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.UnpackNumAdapter;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -76,16 +77,20 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
     gridView.setOnItemClickListener(
         (parent, view, position, id) -> tvSelectNumWarning.setVisibility(View.INVISIBLE));
 
-    btnNext.setOnClickListener(v -> {
-      if (gridView.getCheckedItemPosition() == INVALID_POSITION) {
-        tvSelectNumWarning.setVisibility(View.VISIBLE);
-        return;
-      }
-      int unpackNum = gridView.getCheckedItemPosition() + 1;
-      startActivityForResult(UnpackKitActivity
-              .getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum, kitName),
-          Constants.REQUEST_UNPACK_KIT);
-    });
+    btnNext.setOnClickListener(
+        new SingleClickButtonListener() {
+          @Override
+          public void onSingleClick(View v) {
+            if (gridView.getCheckedItemPosition() == INVALID_POSITION) {
+              tvSelectNumWarning.setVisibility(View.VISIBLE);
+              return;
+            }
+            int unpackNum = gridView.getCheckedItemPosition() + 1;
+            startActivityForResult(UnpackKitActivity
+                    .getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum, kitName),
+                Constants.REQUEST_UNPACK_KIT);
+          }
+        });
   }
 
   @Override

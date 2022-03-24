@@ -20,6 +20,7 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -62,12 +63,21 @@ public class PhysicalInventoryLotListView extends BaseLotListView {
   @Override
   protected void init(Context context) {
     super.init(context);
-    btnDone.setOnClickListener(v -> {
-      if (validateLotList()) {
-        markDone(true);
+    btnDone.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        if (validateLotList()) {
+          markDone(true);
+        }
       }
     });
-    btnEdit.setOnClickListener(v -> markDone(false));
+
+    btnEdit.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        markDone(false);
+      }
+    });
   }
 
   public void initLotListView(InventoryViewModel viewModel,

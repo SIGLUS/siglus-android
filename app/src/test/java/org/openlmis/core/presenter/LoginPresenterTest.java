@@ -230,7 +230,7 @@ public class LoginPresenterTest {
     // given
     User user = new User("CS_Role1", "password1");
     when(userRepository.getLocalUser()).thenReturn(user);
-    InternetCheckListener internetCheckListener = presenter.checkNetworkConnected(user, false);
+    InternetCheckListener internetCheckListener = presenter.checkNetworkConnected(false);
 
     // when
     internetCheckListener.onResult(false);

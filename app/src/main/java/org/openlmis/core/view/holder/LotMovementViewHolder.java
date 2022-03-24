@@ -46,6 +46,7 @@ import org.openlmis.core.view.activity.UnpackKitActivity;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
 
 @SuppressWarnings("PMD")
@@ -182,7 +183,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
     lyLotAmount.setError(string);
   }
 
-  private void updateDeleteIcon(View.OnClickListener onClickListenerForDeleteIcon) {
+  private void updateDeleteIcon(SingleClickButtonListener onClickListenerForDeleteIcon) {
     if (viewModel.isNewAdded()) {
       iconDel.setVisibility(View.VISIBLE);
       iconDel.setOnClickListener(onClickListenerForDeleteIcon);
@@ -191,30 +192,33 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
   @SuppressWarnings("squid:S1874")
   @NonNull
-  private View.OnClickListener getOnClickListenerForDeleteIcon(LotMovementAdapter lotMovementAdapter) {
-    return v -> {
-      final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-          Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
-          Html.fromHtml(context.getResources()
-              .getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(),
-                  viewModel.getExpiryDate(), lotMovementAdapter.getProductName())),
-          getString(R.string.btn_remove_lot),
-          getString(R.string.btn_cancel), "confirm_dialog");
-      dialogFragment.show(((BaseActivity) context).getSupportFragmentManager(), "confirm_dialog");
-      dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
-        @Override
-        public void positiveClick(String tag) {
-          lotMovementAdapter.remove(viewModel);
-          if (context instanceof InventoryActivity) {
-            ((InventoryActivity) context).productListRecycleView.getAdapter().notifyDataSetChanged();
+  private SingleClickButtonListener getOnClickListenerForDeleteIcon(LotMovementAdapter lotMovementAdapter) {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+            Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
+            Html.fromHtml(context.getResources()
+                .getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(),
+                    viewModel.getExpiryDate(), lotMovementAdapter.getProductName())),
+            getString(R.string.btn_remove_lot),
+            getString(R.string.btn_cancel), "confirm_dialog");
+        dialogFragment.show(((BaseActivity) context).getSupportFragmentManager(), "confirm_dialog");
+        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+          @Override
+          public void positiveClick(String tag) {
+            lotMovementAdapter.remove(viewModel);
+            if (context instanceof InventoryActivity) {
+              ((InventoryActivity) context).productListRecycleView.getAdapter().notifyDataSetChanged();
+            }
           }
-        }
 
-        @Override
-        public void negativeClick(String tag) {
-          dialogFragment.dismiss();
-        }
-      });
+          @Override
+          public void negativeClick(String tag) {
+            dialogFragment.dismiss();
+          }
+        });
+      }
     };
   }
 

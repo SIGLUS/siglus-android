@@ -133,7 +133,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   }
 
   @NonNull
-  private View.OnClickListener getMovementReasonOnClickListener(LotMovementViewModel viewModel) {
+  private SingleClickButtonListener getMovementReasonOnClickListener(LotMovementViewModel viewModel) {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View view) {
@@ -192,28 +192,31 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
 
   @NonNull
-  private View.OnClickListener getOnClickListenerForDeleteIcon(final LotMovementViewModel viewModel,
+  private SingleClickButtonListener getOnClickListenerForDeleteIcon(final LotMovementViewModel viewModel,
       final BulkEntriesLotMovementAdapter bulkEntriesLotMovementAdapter) {
-    return v -> {
-      final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-          Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
-          Html.fromHtml(context.getResources()
-              .getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(),
-                  viewModel.getExpiryDate(), bulkEntriesLotMovementAdapter.getProductName())),
-          getString(R.string.btn_remove_lot),
-          getString(R.string.btn_cancel), "confirm_dialog");
-      dialogFragment.show(((BaseActivity) context).getSupportFragmentManager(), "confirm_dialog");
-      dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
-        @Override
-        public void positiveClick(String tag) {
-          bulkEntriesLotMovementAdapter.remove(viewModel);
-        }
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+            Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
+            Html.fromHtml(context.getResources()
+                .getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(),
+                    viewModel.getExpiryDate(), bulkEntriesLotMovementAdapter.getProductName())),
+            getString(R.string.btn_remove_lot),
+            getString(R.string.btn_cancel), "confirm_dialog");
+        dialogFragment.show(((BaseActivity) context).getSupportFragmentManager(), "confirm_dialog");
+        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+          @Override
+          public void positiveClick(String tag) {
+            bulkEntriesLotMovementAdapter.remove(viewModel);
+          }
 
-        @Override
-        public void negativeClick(String tag) {
-          dialogFragment.dismiss();
-        }
-      });
+          @Override
+          public void negativeClick(String tag) {
+            dialogFragment.dismiss();
+          }
+        });
+      }
     };
   }
 

@@ -39,6 +39,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.AddNonBasicProductsAdapter;
 import org.openlmis.core.view.viewmodel.NonBasicProductsViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -150,24 +151,32 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
   }
 
   @NonNull
-  private View.OnClickListener addProductsListener() {
-    return v -> {
-      List<Product> selectedProducts = new ArrayList<>();
-      for (NonBasicProductsViewModel model : adapter.getModels()) {
-        if (model.isChecked()) {
-          selectedProducts.add(model.getProduct());
+  private SingleClickButtonListener addProductsListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        List<Product> selectedProducts = new ArrayList<>();
+        for (NonBasicProductsViewModel model : adapter.getModels()) {
+          if (model.isChecked()) {
+            selectedProducts.add(model.getProduct());
+          }
         }
+        Intent intent = new Intent();
+        intent.putExtra(SELECTED_NON_BASIC_PRODUCTS, (Serializable) selectedProducts);
+        setResult(RESULT_CODE, intent);
+        finish();
       }
-      Intent intent = new Intent();
-      intent.putExtra(SELECTED_NON_BASIC_PRODUCTS, (Serializable) selectedProducts);
-      setResult(RESULT_CODE, intent);
-      finish();
     };
   }
 
   @NonNull
-  private View.OnClickListener cancelListener() {
-    return v -> finish();
+  private SingleClickButtonListener cancelListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        finish();
+      }
+    };
   }
 
   private void initRecyclerView() {

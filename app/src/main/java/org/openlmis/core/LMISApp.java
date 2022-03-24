@@ -30,6 +30,14 @@ import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import androidx.multidex.MultiDex;
+import com.facebook.flipper.android.AndroidFlipperClient;
+import com.facebook.flipper.android.utils.FlipperUtils;
+import com.facebook.flipper.core.FlipperClient;
+import com.facebook.flipper.plugins.databases.DatabasesFlipperPlugin;
+import com.facebook.flipper.plugins.inspector.DescriptorMapping;
+import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin;
+import com.facebook.flipper.plugins.sharedpreferences.SharedPreferencesFlipperPlugin;
+import com.facebook.soloader.SoLoader;
 import com.facebook.stetho.Stetho;
 import java.io.File;
 import me.jessyan.autosize.AutoSizeConfig;
@@ -49,6 +57,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FileUtil;
 import roboguice.RoboGuice;
 
+
 @SuppressWarnings({"squid:S2696", "squid:S5803"})
 public class LMISApp extends Application {
 
@@ -61,6 +70,7 @@ public class LMISApp extends Application {
     super.onCreate();
     if (!isRoboUniTest()) {
       Stetho.initializeWithDefaults(this);
+      SoLoader.init(this, false);
     }
     JodaTimeAndroid.init(this);
     RoboGuice.getInjector(this).injectMembersWithoutViews(this);
@@ -72,6 +82,7 @@ public class LMISApp extends Application {
     registerNetWorkChangeListener();
     DebugReceiver.registerDebugBoardCastReceiver(this);
     configAutoSize();
+    integrateFlipper();
     LmisSqliteOpenHelper.getInstance(this).checkDatabaseVersion();
   }
 
@@ -166,6 +177,16 @@ public class LMISApp extends Application {
         // do nothing
       }
     });
+  }
+
+  private void integrateFlipper() {
+    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_flipper) && FlipperUtils.shouldEnableFlipper(this)) {
+      final FlipperClient client = AndroidFlipperClient.getInstance(this);
+      client.addPlugin(new InspectorFlipperPlugin(this, DescriptorMapping.withDefaults()));
+      client.addPlugin(new DatabasesFlipperPlugin(this));
+      client.addPlugin(new SharedPreferencesFlipperPlugin(this, "LMISPreference"));
+      client.start();
+    }
   }
 
 }

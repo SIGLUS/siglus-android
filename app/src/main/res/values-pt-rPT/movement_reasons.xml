@@ -16,6 +16,7 @@
     <item>ISSUE|PAV|PAV</item>
     <item>ISSUE|DENTAL_WARD|Estomatologia</item>
     <item>ISSUE|UNPACK_KIT|Desembalar Kit</item>
+    <item>ISSUE|APE|APE</item>
 
     <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Devolução de expirados quarentena (ou depósito fornecedor)</item>
     <item>NEGATIVE_ADJUST|DAMAGED|Danificado no depósito</item>
@@ -41,7 +42,6 @@
     <item>POSITIVE_ADJUST|DEFAULT_POSITIVE_ADJUSTMENT|Positive adjustment</item>
 
     <item>REJECTION|DAMAGED|Danificado/quebrado/derramado</item>
-    <item>REJECTION|OVER_ISSUE|Recebido a mais</item>
     <item>REJECTION|INSUFFICIENT|Recebido a menos</item>
     <item>REJECTION|EXPIRED|Fora do prazo de validade</item>
     <item>REJECTION|UNEATABLE|Impróprio para o consumo</item>

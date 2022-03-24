@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.RapidTestReportFormPresenter;
@@ -102,6 +103,13 @@ public class RapidTestReportFormFragment extends BaseReportFragment
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
+    if (SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()) {
+      ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
+      finish();
+      return;
+    }
+
     loading();
     long formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
     Date periodEndDate = ((Date) getActivity().getIntent()

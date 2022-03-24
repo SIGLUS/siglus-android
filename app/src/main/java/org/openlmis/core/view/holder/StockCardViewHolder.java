@@ -38,6 +38,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.StockcardListLotAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
@@ -114,11 +115,14 @@ public class StockCardViewHolder extends BaseViewHolder {
   }
 
   private void setListener(final InventoryViewModel inventoryViewModel) {
-    itemView.setOnClickListener(v -> {
-      if (listener != null) {
-        AnalyticsTracker.getInstance()
-            .trackEvent(TrackerCategories.STOCK_MOVEMENT, TrackerActions.SELECT_STOCK_CARD);
-        listener.onItemViewClick(inventoryViewModel);
+    itemView.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        if (listener != null) {
+          AnalyticsTracker.getInstance()
+              .trackEvent(TrackerCategories.STOCK_MOVEMENT, TrackerActions.SELECT_STOCK_CARD);
+          listener.onItemViewClick(inventoryViewModel);
+        }
       }
     });
   }

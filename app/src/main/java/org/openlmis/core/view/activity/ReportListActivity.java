@@ -39,6 +39,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.ReportListNavigatorAdapter;
 import org.openlmis.core.view.adapter.ReportListPageAdapter;
+import org.openlmis.core.view.widget.SingleClickMenuListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -92,17 +93,14 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
     getMenuInflater().inflate(R.menu.menu_rnr_list, menu);
+    MenuItem item = menu.findItem(R.id.action_create_emergency_rnr);
+    item.setOnMenuItemClickListener(new SingleClickMenuListener() {
+      @Override
+      public void onSingleClick(MenuItem item) {
+        checkAndGotoEmergencyPage();
+      }
+    });
     return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (R.id.action_create_emergency_rnr == item.getItemId()) {
-      checkAndGotoEmergencyPage();
-      return true;
-    } else {
-      return super.onOptionsItemSelected(item);
-    }
   }
 
   protected void checkAndGotoEmergencyPage() {

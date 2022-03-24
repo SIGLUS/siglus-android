@@ -27,6 +27,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.InitialInventoryLotListView;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
 
 
@@ -123,9 +124,12 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
   private void initHistoryView(final ViewHistoryListener listener) {
     tvHistoryAction.setVisibility(viewModel.getProduct().isArchived() ? View.VISIBLE : View.GONE);
-    tvHistoryAction.setOnClickListener(v -> {
-      if (listener != null) {
-        listener.viewHistory(viewModel.getStockCard());
+    tvHistoryAction.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        if (listener != null) {
+          listener.viewHistory(viewModel.getStockCard());
+        }
       }
     });
   }

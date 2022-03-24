@@ -49,6 +49,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.DeleteDirtyDataEvent;
+import org.openlmis.core.event.InitialDirtyDataCheckEvent;
 import org.openlmis.core.event.SyncPercentEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.exceptions.LMISException;
@@ -69,6 +70,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.DashboardView;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
+import org.openlmis.core.view.widget.InitialDirtyDataCheckDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.SyncTimeView;
 import roboguice.inject.ContentView;
@@ -124,6 +126,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private int syncedCount = 0;
 
+  private final InitialDirtyDataCheckDialog initialDirtyDataCheckDialog = new InitialDirtyDataCheckDialog();
+
   public void syncData() {
     syncService.requestSyncImmediatelyFromUserTrigger();
   }
@@ -161,6 +165,20 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   public void onReceiveSyncPercentEvent(SyncPercentEvent event) {
     this.syncedCount = event.getSyncedCount();
     refreshDashboard();
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveInitialDirtyDataCheckEvent(InitialDirtyDataCheckEvent event) {
+    if (!event.isChecking()
+        && getSupportFragmentManager().findFragmentByTag("initial_dirty_data_check_dialog") != null) {
+      initialDirtyDataCheckDialog.dismiss();
+      if (event.isExistingDirtyData()) {
+        showDeletedWarningDialog(dirtyDataManager::deleteAndReset);
+      }
+    } else {
+      showInitialDirtyDataCheckDialog();
+    }
+
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
@@ -450,6 +468,12 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       return true;
     }
     return false;
+  }
+
+  private void showInitialDirtyDataCheckDialog() {
+    if (sharedPreferenceMgr.isInitialDirtyDataChecking()) {
+      initialDirtyDataCheckDialog.show(getSupportFragmentManager());
+    }
   }
 
   private void refreshDashboard() {

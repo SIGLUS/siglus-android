@@ -124,6 +124,7 @@ public class VIARequisitionFragmentTest {
 
     viaRequisitionFragment.refreshRequisitionForm(rnRForm);
 
+    RobolectricUtils.resetNextClickTime();
     viaRequisitionFragment.consultationView.findViewById(R.id.et_external_consultations_performed).performClick();
 
     assertEquals("This information is not used when creating an emergency requisition",

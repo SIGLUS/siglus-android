@@ -37,7 +37,8 @@
     <activity
       android:label="@string/title_init_inventory"
       android:name=".view.activity.InitialInventoryActivity"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:windowSoftInputMode="adjustNothing|stateHidden" />
     <activity
       android:label="@string/title_init_inventory"
       android:name=".view.activity.BulkInitialInventoryActivity"
@@ -172,6 +173,9 @@
     <activity
       android:name=".view.activity.EditOrderNumberActivity"
       android:label="@string/edit_order_number" />
+    <activity
+      android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
+      android:exported="true"/>
 
     <provider
       android:authorities="@string/sync_content_authority"

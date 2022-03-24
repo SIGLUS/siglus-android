@@ -49,6 +49,7 @@ import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.LotInfoGroup;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
+import org.openlmis.core.view.widget.SingleClickMenuListener;
 import org.openlmis.core.view.widget.StockMovementHeaderView;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.inject.ContentView;
@@ -57,6 +58,7 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_stock_movements)
 public class StockMovementsWithLotActivity extends BaseActivity implements
     StockMovementsPresenter.StockMovementView {
+
   private static final List<String> codes = Arrays.asList("26A01", "26B01");
 
   @InjectView(R.id.rv_stock_movement)
@@ -85,19 +87,24 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
 
   @InjectPresenter(StockMovementsPresenter.class)
   StockMovementsPresenter presenter;
-
+  List<MovementReasonManager.MovementType> movementTypes;
+  SimpleSelectDialogFragment newMovementDialog;
   private long stockId;
   private String stockName;
-
   private StockMovementAdapter stockMovementAdapter;
   private boolean isStockCardArchivable;
   private boolean isActivated;
   private boolean isKit;
 
 
-  List<MovementReasonManager.MovementType> movementTypes;
-  SimpleSelectDialogFragment newMovementDialog;
-
+  public static Intent getIntentToMe(Context context, InventoryViewModel inventoryViewModel, boolean isKit) {
+    Intent intent = new Intent(context, StockMovementsWithLotActivity.class);
+    intent.putExtra(Constants.PARAM_STOCK_CARD_ID, inventoryViewModel.getStockCardId());
+    intent.putExtra(Constants.PARAM_STOCK_NAME, inventoryViewModel.getProduct().getFormattedProductName());
+    intent.putExtra(Constants.PARAM_IS_ACTIVATED, inventoryViewModel.getProduct().isActive());
+    intent.putExtra(Constants.PARAM_IS_KIT, isKit);
+    return intent;
+  }
 
   @Override
   protected ScreenName getScreenName() {
@@ -217,24 +224,26 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
     super.onCreateOptionsMenu(menu);
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.menu_stock_movement, menu);
+    MenuItem historyItem = menu.findItem(R.id.action_history);
+    historyItem.setOnMenuItemClickListener(new SingleClickMenuListener() {
+      @Override
+      public void onSingleClick(MenuItem item) {
+        startActivity(
+            StockMovementHistoryActivity.getIntentToMe(getApplicationContext(), stockId, stockName, false, isKit));
+      }
+    });
     return true;
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.action_history:
-        startActivity(
-            StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName, false, isKit));
-        return true;
-      case R.id.action_archive:
-        presenter.archiveStockCard();
-        ToastUtil.show(getString(R.string.msg_drug_archived));
-        onBackPressed();
-        return true;
-      default:
-        return super.onOptionsItemSelected(item);
+    if (item.getItemId() == R.id.action_archive) {
+      presenter.archiveStockCard();
+      ToastUtil.show(getString(R.string.msg_drug_archived));
+      onBackPressed();
+      return true;
     }
+    return super.onOptionsItemSelected(item);
   }
 
   private void unpackKit() {
@@ -254,15 +263,6 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
       loadStockCard();
       presenter.loadStockMovementViewModels();
     }
-  }
-
-  public static Intent getIntentToMe(Context context, InventoryViewModel inventoryViewModel, boolean isKit) {
-    Intent intent = new Intent(context, StockMovementsWithLotActivity.class);
-    intent.putExtra(Constants.PARAM_STOCK_CARD_ID, inventoryViewModel.getStockCardId());
-    intent.putExtra(Constants.PARAM_STOCK_NAME, inventoryViewModel.getProduct().getFormattedProductName());
-    intent.putExtra(Constants.PARAM_IS_ACTIVATED, inventoryViewModel.getProduct().isActive());
-    intent.putExtra(Constants.PARAM_IS_KIT, isKit);
-    return intent;
   }
 
   public SingleClickButtonListener getSingleClickButtonListener() {

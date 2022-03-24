@@ -13,6 +13,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
@@ -53,6 +54,7 @@ public class ArchivedDrugsViewHolderTest {
 
   @Test
   public void shouldViewMovementHistoryWhenHistoryViewClicked() {
+    RobolectricUtils.resetNextClickTime();
     viewHolder.tvViewHistory.performClick();
 
     verify(mockedListener).viewMovementHistory(viewModel.getStockCard());
@@ -60,6 +62,7 @@ public class ArchivedDrugsViewHolderTest {
 
   @Test
   public void shouldArchiveDrugBackWhenArchiveBackViewClicked() {
+    RobolectricUtils.resetNextClickTime();
     viewHolder.tvArchiveBack.performClick();
 
     verify(mockedListener).archiveStockCardBack(viewModel.getStockCard());

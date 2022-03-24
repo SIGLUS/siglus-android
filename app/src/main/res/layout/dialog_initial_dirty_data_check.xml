@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  style="@style/Dialog.Container">
+
+  <TextView
+    android:id="@+id/dialog_message"
+    style="@style/Dialog.Title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/px_160"
+    android:textColor="@color/color_black"
+    android:gravity="center"
+    android:text="@string/msg_initial_dirty_data_check" />
+
+  <ProgressBar
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

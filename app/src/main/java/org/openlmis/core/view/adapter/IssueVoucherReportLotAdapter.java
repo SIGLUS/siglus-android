@@ -51,6 +51,7 @@ import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public class IssueVoucherReportLotAdapter extends BaseAdapter {
@@ -205,18 +206,21 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     private void setRejectReason() {
       if (lotViewModel.getDifferenceQuality() != null && lotViewModel.getDifferenceQuality() < 0) {
         setRejectReasonForCanSelectStatus();
-        vRejectionReason.setOnClickListener(v -> {
-          Bundle bundle = new Bundle();
-          List<MovementReason> movementReasons = MovementReasonManager.getInstance()
-              .buildReasonListForMovementType(MovementType.REJECTION);
-          String[] reasonArray = FluentIterable.from(movementReasons).transform(MovementReason::getDescription)
-              .toArray(String.class);
-          bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonArray);
-          SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
-          reasonsDialog.setArguments(bundle);
-          reasonsDialog
-              .setItemClickListener(new MovementTypeOnClickListener(reasonsDialog, lotViewModel, movementReasons));
-          reasonsDialog.show(((BaseActivity) itemView.getContext()).getSupportFragmentManager(), "SELECT_REASONS");
+        vRejectionReason.setOnClickListener(new SingleClickButtonListener() {
+          @Override
+          public void onSingleClick(View v) {
+            Bundle bundle = new Bundle();
+            List<MovementReason> movementReasons = MovementReasonManager.getInstance()
+                .buildReasonListForMovementType(MovementType.REJECTION);
+            String[] reasonArray = FluentIterable.from(movementReasons).transform(MovementReason::getDescription)
+                .toArray(String.class);
+            bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonArray);
+            SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
+            reasonsDialog.setArguments(bundle);
+            reasonsDialog
+                .setItemClickListener(new MovementTypeOnClickListener(reasonsDialog, lotViewModel, movementReasons));
+            reasonsDialog.show(((BaseActivity) itemView.getContext()).getSupportFragmentManager(), "SELECT_REASONS");
+          }
         });
         setRejectReasonText();
       } else {
@@ -354,29 +358,33 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     @NonNull
-    private View.OnClickListener getOnClickListenerForDeleteIcon() {
-      return v -> {
-        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-            HtmlCompat.fromHtml(getString(R.string.msg_remove_lot_title),
-                HtmlCompat.FROM_HTML_MODE_LEGACY),
-            HtmlCompat.fromHtml(getContext().getResources()
-                    .getString(R.string.msg_remove_lot, lotViewModel.getLot().getLotNumber(),
-                        lotViewModel.getLot().getExpirationDate(), lotViewModel.getLot().getProduct().getPrimaryName()),
-                HtmlCompat.FROM_HTML_MODE_LEGACY),
-            getString(R.string.btn_remove_lot),
-            getString(R.string.btn_cancel), "confirm_dialog");
-        dialogFragment.show(((BaseActivity) itemView.getContext()).getSupportFragmentManager(), "confirm_dialog");
-        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
-          @Override
-          public void positiveClick(String tag) {
-            onUpdatePodListener.onRemove(position);
-          }
+    private SingleClickButtonListener getOnClickListenerForDeleteIcon() {
+      return new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+              HtmlCompat.fromHtml(getString(R.string.msg_remove_lot_title),
+                  HtmlCompat.FROM_HTML_MODE_LEGACY),
+              HtmlCompat.fromHtml(getContext().getResources()
+                      .getString(R.string.msg_remove_lot, lotViewModel.getLot().getLotNumber(),
+                          lotViewModel.getLot().getExpirationDate(),
+                          lotViewModel.getLot().getProduct().getPrimaryName()),
+                  HtmlCompat.FROM_HTML_MODE_LEGACY),
+              getString(R.string.btn_remove_lot),
+              getString(R.string.btn_cancel), "confirm_dialog");
+          dialogFragment.show(((BaseActivity) itemView.getContext()).getSupportFragmentManager(), "confirm_dialog");
+          dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+            @Override
+            public void positiveClick(String tag) {
+              onUpdatePodListener.onRemove(position);
+            }
 
-          @Override
-          public void negativeClick(String tag) {
-            dialogFragment.dismiss();
-          }
-        });
+            @Override
+            public void negativeClick(String tag) {
+              dialogFragment.dismiss();
+            }
+          });
+        }
       };
     }
 

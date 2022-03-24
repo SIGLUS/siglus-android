@@ -98,6 +98,7 @@ public class SharedPreferenceMgr {
   public static final String KEY_KEEP_MOVEMENT_LINE = "keep_movement_line";
   public static final String KEY_IS_POD_DATA_SYNCED = "key_is_pod_data_synced";
   public static final String KEY_TRAINING_FIRST_LOGIN_TIME = "training_first_login_time";
+  public static final String KEY_IS_INITIAL_DIRTY_DATA_CHECKING = "key_is_initial_dirty_data_checking";
 
   static final int MONTH_OFFSET = 13;
   protected StockRepository stockRepository;
@@ -151,9 +152,18 @@ public class SharedPreferenceMgr {
     return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_SHOULD_INITIAL_DATA_CHECK, true);
   }
 
-  public void setIsInitialDataCheck(boolean isInitialDataCheck) {
+  public void setShouldInitialDirtyDataCheck(boolean isInitialDataCheck) {
     sharedPreferences.edit()
         .putBoolean(SharedPreferenceMgr.KEY_SHOULD_INITIAL_DATA_CHECK, isInitialDataCheck).apply();
+  }
+
+  public boolean isInitialDirtyDataChecking() {
+    return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_IS_INITIAL_DIRTY_DATA_CHECKING, false);
+  }
+
+  public void setKeyIsInitialDirtyDataChecking(boolean isInitialDirtyDataChecking) {
+    sharedPreferences.edit()
+        .putBoolean(SharedPreferenceMgr.KEY_IS_INITIAL_DIRTY_DATA_CHECKING, isInitialDirtyDataChecking).apply();
   }
 
   public boolean isSyncingLastYearStockCards() {

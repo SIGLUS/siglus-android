@@ -69,8 +69,8 @@ public class ReportListNavigatorAdapter extends CommonNavigatorAdapter {
   @Override
   public IPagerIndicator getIndicator(Context context) {
     FillPageIndicator indicator = new FillPageIndicator(context);
-    indicator.setLineColors(ContextCompat.getColor(context, R.color.color_purple));
-    indicator.setSelectedBackgroundColor(ContextCompat.getColor(context, R.color.color_requisition_background));
+    indicator.setLineColors(ContextCompat.getColor(context, R.color.general_background_color));
+    indicator.setSelectedBackgroundColor(ContextCompat.getColor(context, R.color.general_background_color));
     return indicator;
   }
 }

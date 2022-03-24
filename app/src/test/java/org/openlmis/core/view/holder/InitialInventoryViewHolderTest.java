@@ -14,6 +14,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder.ViewHistoryListener;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
@@ -64,6 +65,7 @@ public class InitialInventoryViewHolderTest {
 
     assertThat(viewHolder.tvHistoryAction.getVisibility()).isEqualTo(View.VISIBLE);
 
+    RobolectricUtils.resetNextClickTime();
     viewHolder.tvHistoryAction.performClick();
 
     verify(mockedListener).viewHistory(viewModel.getStockCard());

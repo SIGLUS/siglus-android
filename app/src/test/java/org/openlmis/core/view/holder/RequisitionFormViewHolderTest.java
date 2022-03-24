@@ -95,7 +95,7 @@ public class RequisitionFormViewHolderTest {
   public void shouldShowPopTipsTotalReminderIconClicked() {
     viewModel.setAdjustmentViewModels(Arrays.asList(generateAdjustmentViewModel()));
     viewHolder.populate(viewModel, Status.DRAFT);
-
+    RobolectricUtils.resetNextClickTime();
     viewHolder.adjustTheoreticalIcon.performClick();
 
     RobolectricUtils.waitLooperIdle();

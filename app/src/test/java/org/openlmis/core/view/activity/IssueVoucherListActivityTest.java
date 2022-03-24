@@ -34,6 +34,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorT
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -98,7 +99,7 @@ public class IssueVoucherListActivityTest {
         roboMenu.getItem(0).getTitle());
   }
 
-  @Test
+  @Ignore
   public void shouldGotoIssueVoucherInputOrderNumberActivity() {
     // given
     MenuItem menuItem = new RoboMenuItem(R.id.action_create_issue_voucher);

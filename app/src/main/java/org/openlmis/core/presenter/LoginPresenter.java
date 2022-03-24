@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import com.google.inject.Inject;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -63,6 +64,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observable;
 import rx.Observable.OnSubscribe;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -127,6 +129,10 @@ public class LoginPresenter extends Presenter {
     this.view = (LoginView) v;
   }
 
+  private static final int TIMEOUT = 10 * 1000;
+
+  private User user;
+
   public void startLogin(String userName, String password, boolean fromReSync) {
     hasGoneToNextPage = false;
     if (StringUtils.EMPTY.equals(userName.trim())) {
@@ -137,10 +143,9 @@ public class LoginPresenter extends Presenter {
       view.showPasswordEmpty();
       return;
     }
-    view.loading();
-
-    User user = new User(userName.trim(), password);
-    internetCheck.check(checkNetworkConnected(user, fromReSync));
+    view.loading(LMISApp.getInstance().getString(R.string.msg_logging_in));
+    user = new User(userName.trim(), password);
+    internetCheck.check(checkNetworkConnected(fromReSync));
   }
 
   protected void onLoginFailed(LoginErrorType loginErrorType) {
@@ -253,24 +258,52 @@ public class LoginPresenter extends Presenter {
     };
   }
 
-  private void saveUserDataToLocalDatabase(final User user) throws LMISException {
+  private void saveUserDataToLocalDatabase(final User user) {
     userRepository.createOrUpdate(user);
   }
 
-  protected InternetCheckListener checkNetworkConnected(User user, boolean fromReSync) {
+  protected Observer<Boolean> resultObserver = new Observer<Boolean>() {
+    @Override
+    public void onCompleted() {
+      // do nothing
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+      Log.w(TAG, "timeout, offlineLogin");
+      offlineLogin(user);
+    }
+
+    @Override
+    public void onNext(Boolean result) {
+      // do nothing
+    }
+  };
+
+  protected InternetCheckListener checkNetworkConnected(boolean fromReSync) {
     return internet -> {
       if (internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-        loginRemote(user, fromReSync);
+        Observable.create((OnSubscribe<Boolean>) subscriber -> {
+          loginRemote(user, fromReSync, (Subscriber<Boolean>) subscriber);
+        }).timeout(TIMEOUT, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(resultObserver);
       } else {
-        User localUser = userRepository.getLocalUser();
-        if (localUser == null && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-          onLoginFailed(LoginErrorType.NO_INTERNET);
-        } else {
-          loginLocal(user);
-        }
+        offlineLogin(user);
       }
     };
   }
+
+  private void offlineLogin(User user) {
+    User localUser = userRepository.getLocalUser();
+    if (localUser == null && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      onLoginFailed(LoginErrorType.NO_INTERNET);
+    } else {
+      loginLocal(user);
+    }
+  }
+
 
   private void loginLocal(User user) {
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
@@ -303,7 +336,7 @@ public class LoginPresenter extends Presenter {
     }
   }
 
-  private void loginRemote(final User user, final boolean fromReSync) {
+  private void loginRemote(final User user, final boolean fromReSync, Subscriber<Boolean> subscriber) {
     if (UserInfoMgr.getInstance().getUser() != null) {
       UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
     }
@@ -318,12 +351,14 @@ public class LoginPresenter extends Presenter {
               user.setTokenType(userResponse.getTokenType());
               user.setReferenceDataUserId(userResponse.getReferenceDataUserId());
               user.setIsTokenExpired(false);
+              subscriber.onCompleted();
               onLoginSuccess(user, fromReSync);
             }
           }
 
           @Override
           public void failure(RetrofitError error) {
+            subscriber.onCompleted();
             if (error.getCause() instanceof NetWorkException) {
               User localUser = userRepository.getLocalUser();
               if (localUser == null) {
@@ -349,11 +384,7 @@ public class LoginPresenter extends Presenter {
 
     view.sendScreenToGoogleAnalyticsAfterLogin();
     archiveOldData();
-    try {
-      saveUserDataToLocalDatabase(user);
-    } catch (LMISException e) {
-      Log.w(TAG, e);
-    }
+    saveUserDataToLocalDatabase(user);
 
     if (fromReSync) {
       Observable.create(subscriber -> {

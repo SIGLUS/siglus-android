@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
@@ -196,7 +195,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   }
 
   @NonNull
-  private View.OnClickListener getProgramOnClickListener() {
+  private SingleClickButtonListener getProgramOnClickListener() {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View view) {
@@ -218,7 +217,7 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   }
 
   @NonNull
-  private View.OnClickListener getMovementReasonOnClickListener() {
+  private SingleClickButtonListener getMovementReasonOnClickListener() {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View view) {
@@ -265,8 +264,13 @@ public class IssueVoucherInputOrderNumberActivity extends BaseActivity {
   }
 
   @NonNull
-  private OnClickListener getBackgroundClickListener() {
-    return v -> hideKeyboard();
+  private SingleClickButtonListener getBackgroundClickListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        hideKeyboard();
+      }
+    };
   }
 
   private void hideKeyboard() {

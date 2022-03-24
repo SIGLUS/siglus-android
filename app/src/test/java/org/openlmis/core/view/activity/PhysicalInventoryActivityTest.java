@@ -17,6 +17,7 @@ import com.google.inject.AbstractModule;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -154,6 +155,7 @@ public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
     Mockito.verify(mockedPresenter,times(1)).saveDraftInventoryObservable();
   }
 
+  @Ignore
   @Test
   public void shouldShowErrorWhenOnErrorCalled() {
     String errorMessage = "This is throwable error";

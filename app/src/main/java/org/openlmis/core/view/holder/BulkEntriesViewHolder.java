@@ -34,6 +34,7 @@ import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel.ValidationType;
 import org.openlmis.core.view.widget.BulkEntriesLotListView;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
 
 public class BulkEntriesViewHolder extends BaseViewHolder {
@@ -65,7 +66,12 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
   public void populate(BulkEntriesViewModel bulkEntriesViewModel,
       final BulkEntriesAdapter bulkEntriesAdapter) {
     this.bulkEntriesViewModel = bulkEntriesViewModel;
-    icTrashcan.setOnClickListener(v -> showConfirmDialog());
+    icTrashcan.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        showConfirmDialog();
+      }
+    });
     setMovementDone();
     setInvalidStatus();
     bulkEntriesLotListView

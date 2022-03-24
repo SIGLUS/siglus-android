@@ -70,7 +70,7 @@ public class NewStockMovementPresenter extends Presenter {
       boolean isKit) {
     try {
       movementReasons = MovementReasonManager.getInstance()
-          .buildReasonListForMovementType(movementType);
+          .buildReasonListForKitMovementType(movementType, isKit);
       stockCard = stockRepository.queryStockCardById(stockCardId);
       viewModel.setProduct(stockCard.getProduct());
       viewModel.setMovementType(movementType);
@@ -165,10 +165,6 @@ public class NewStockMovementPresenter extends Presenter {
           .transform(MovementReason::getDescription).toArray(String.class);
     }
     return reasonDescriptionList;
-  }
-
-  public boolean shouldLoadKitMovementPage() {
-    return !(isKit() && SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData());
   }
 
   public boolean validateKitQuantity() {

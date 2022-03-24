@@ -82,25 +82,36 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
   @Override
   protected void init(Context context) {
     super.init(context);
-    btnNoStockDone.setOnClickListener(v -> {
-      if (validateLotList()) {
-        markDone(true);
+    btnNoStockDone.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        if (validateLotList()) {
+          markDone(true);
+        }
       }
     });
-    btnEdit.setOnClickListener(v -> markDone(false));
+    btnEdit.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        markDone(false);
+      }
+    });
   }
 
   @SuppressWarnings("squid:S3776")
   public void initLotListView(BulkInitialInventoryViewModel viewModel,
       BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener statusChangeListener,
-      View.OnClickListener removeProductListener) {
+      SingleClickButtonListener removeProductListener) {
     this.statusChangeListener = statusChangeListener;
     super.initLotListView(viewModel);
     if (BulkInitialInventoryAdapter.ITEM_BASIC == viewModel.getViewType()) {
       btnVerify.setVisibility(getLotNumbers().size() == 0 ? View.GONE : View.VISIBLE);
-      btnVerify.setOnClickListener(v -> {
-        if (validateLotList()) {
-          markDone(true);
+      btnVerify.setOnClickListener(new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          if (validateLotList()) {
+            markDone(true);
+          }
         }
       });
       btnRemoveProduct.setVisibility(View.GONE);
@@ -108,9 +119,12 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     } else if (BulkInitialInventoryAdapter.ITEM_NO_BASIC == viewModel.getViewType()) {
       btnRemoveProduct.setOnClickListener(removeProductListener);
       btnVerify.setVisibility(getLotNumbers().size() == 0 ? View.GONE : View.VISIBLE);
-      btnVerify.setOnClickListener(v -> {
-        if (validateLotList()) {
-          markDone(true);
+      btnVerify.setOnClickListener(new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          if (validateLotList()) {
+            markDone(true);
+          }
         }
       });
       btnRemoveProduct.setVisibility(getLotNumbers().size() == 0 ? View.VISIBLE : View.GONE);

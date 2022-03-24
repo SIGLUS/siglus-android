@@ -31,6 +31,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
 import org.openlmis.core.event.DebugPhysicalInventoryEvent;
 import org.openlmis.core.googleanalytics.TrackerActions;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
@@ -66,6 +67,16 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     EventBus.getDefault().register(this);
+  }
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    if (SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()) {
+      ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
+      finish();
+      return;
+    }
   }
 
   @Override
