@@ -107,7 +107,7 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
     rvIssueVoucher.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
     adapter = new IssueVoucherListAdapter();
     adapter.setListener(this);
-    adapter.setNewInstance(presenter.getViewModels());
+    adapter.setList(presenter.getViewModels());
     if (adapter.getHeaderLayoutCount() == 0 && adapter.getFooterLayoutCount() == 0) {
       adapter.addHeaderView(generateHeaderView());
       adapter.addFooterView(generateHeaderView());
@@ -126,6 +126,7 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
 
   @Override
   public void onRefreshList() {
+    adapter.setList(presenter.getViewModels());
     adapter.notifyDataSetChanged();
   }
 
