@@ -62,6 +62,7 @@ public class InitialInventoryLotListView extends BaseLotListView {
           default:
             // do nothing
         }
+        addLotDialogFragment = null;
       }
     };
   }
