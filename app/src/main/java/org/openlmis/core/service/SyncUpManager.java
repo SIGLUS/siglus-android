@@ -475,8 +475,13 @@ public class SyncUpManager {
     try {
       for (RnrFormItem rnrFormItem : rnRForm.getRnrFormItemListWrapper()) {
         if (rnrFormItem.getValidate() != null) {
-          rnrFormItem.setValidate(DateUtil.convertDate(rnrFormItem.getValidate(), DateUtil.DB_DATE_FORMAT,
-              DateUtil.SIMPLE_DATE_FORMAT));
+          if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            rnrFormItem.setValidate(DateUtil.convertDate(rnrFormItem.getValidate(), DateUtil.DB_DATE_FORMAT,
+                DateUtil.SIMPLE_DATE_FORMAT));
+          } else {
+            rnrFormItem.setValidate(rnrFormItem.getValidate());
+          }
+
         }
       }
       rnrFormRepository.createOrUpdateWithItems(rnRForm);

@@ -23,6 +23,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import com.google.inject.Inject;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
@@ -41,7 +43,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
   @Override
   public void onReceive(Context context, Intent intent) {
     SyncService syncService = RoboGuice.getInjector(context).getInstance(SyncService.class);
-    if (internetCheck != null) {
+    if (internetCheck != null && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
       internetCheck.check(synchronizeListener(syncService));
     }
   }

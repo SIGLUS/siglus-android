@@ -283,7 +283,14 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     return new Subscriber<Void>() {
       @Override
       public void onCompleted() {
-        internetCheck.check(checkInternetListener());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+          syncService.requestSyncImmediatelyByTask();
+          loaded();
+          ToastUtil.show(R.string.msg_complete_successfully);
+          backToPodListActivity();
+        } else {
+          internetCheck.check(checkInternetListener());
+        }
       }
 
       @Override

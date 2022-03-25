@@ -36,6 +36,7 @@ import lombok.Setter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
@@ -80,7 +81,11 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
           return;
         }
         presenter.loadData();
-        internetCheck.check(checkInternetListener());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+          syncService.requestSyncImmediatelyByTask();
+        } else {
+          internetCheck.check(checkInternetListener());
+        }
       });
 
   public static IssueVoucherListFragment newInstance(boolean isIssueVoucher) {

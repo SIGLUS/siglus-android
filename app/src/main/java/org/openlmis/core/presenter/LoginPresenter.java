@@ -145,7 +145,11 @@ public class LoginPresenter extends Presenter {
     }
     view.loading(LMISApp.getInstance().getString(R.string.msg_logging_in));
     user = new User(userName.trim(), password);
-    internetCheck.check(checkNetworkConnected(fromReSync));
+    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      offlineLogin(user);
+    } else {
+      internetCheck.check(checkNetworkConnected(fromReSync));
+    }
   }
 
   protected void onLoginFailed(LoginErrorType loginErrorType) {
@@ -282,7 +286,7 @@ public class LoginPresenter extends Presenter {
 
   protected InternetCheckListener checkNetworkConnected(boolean fromReSync) {
     return internet -> {
-      if (internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      if (internet) {
         Observable.create((OnSubscribe<Boolean>) subscriber -> {
           loginRemote(user, fromReSync, (Subscriber<Boolean>) subscriber);
         }).timeout(TIMEOUT, TimeUnit.MILLISECONDS)

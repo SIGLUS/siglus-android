@@ -328,7 +328,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   }
 
   protected final InternetCheckListener validateConnectionListener = internet -> {
-    if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+    if (!internet) {
       ToastUtil.show(R.string.message_wipe_no_connection);
     } else {
       WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
@@ -436,7 +436,15 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   }
 
   private void alertWipeData() {
-    new InternetCheck().check(validateConnectionListener);
+    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
+          R.string.message_warning_wipe_data,
+          R.string.btn_positive,
+          R.string.btn_negative);
+      getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
+    } else {
+      new InternetCheck().check(validateConnectionListener);
+    }
   }
 
   private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {

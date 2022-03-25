@@ -23,6 +23,7 @@ import android.util.Log;
 import com.google.inject.Inject;
 import java.util.Date;
 import lombok.Getter;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -178,7 +179,11 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
         view.completeSuccess();
         Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.AUTHORISE_RNR, rnRForm.getProgram().getProgramCode());
-        internetCheck.check(checkInternetListener());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+          syncService.requestSyncImmediatelyByTask();
+        } else {
+          internetCheck.check(checkInternetListener());
+        }
       }
     };
   }
