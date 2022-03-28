@@ -205,6 +205,13 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
     updateErrorBannerFlag();
   }
 
+  public boolean isAllLotsExpired() {
+    if (lotViewModels.isEmpty()) {
+      return true;
+    }
+    return lotViewModels.get(lotViewModels.size() - 1).isExpired();
+  }
+
   private void updateWarningBannerRes() {
     if (isAllLotsExpired()) {
       return;
@@ -232,13 +239,6 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
 
   private void updateErrorBannerFlag() {
     showErrorFlag = isEmptyIssue();
-  }
-
-  private boolean isAllLotsExpired() {
-    if (lotViewModels.isEmpty()) {
-      return true;
-    }
-    return lotViewModels.get(lotViewModels.size() - 1).isExpired();
   }
 
   private boolean isEmptyIssue() {
