@@ -31,6 +31,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RapidTestLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
@@ -172,17 +173,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment
 
   private void setUpRowItems() {
     rapidBodyRightAdapter = new RapidTestReportRowAdapter(getQuantityChangeListener());
-    rvReportRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()) {
-      @Override
-      public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler,
-          RecyclerView.State state) {
-        //avoid editText focus changed cause recyclerView scroll
-        if (rvReportRowItemListView.getScrollState() != RecyclerView.SCROLL_STATE_SETTLING) {
-          return super.scrollVerticallyBy(dy, recycler, state);
-        }
-        return 0;
-      }
-    });
+    rvReportRowItemListView.setLayoutManager(new RapidTestLayoutManager(getActivity()));
     rvReportRowItemListView.setAdapter(rapidBodyRightAdapter);
   }
 

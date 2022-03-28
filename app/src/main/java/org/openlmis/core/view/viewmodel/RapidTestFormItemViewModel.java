@@ -41,8 +41,7 @@ public class RapidTestFormItemViewModel {
 
   MovementReasonManager.MovementReason issueReason;
 
-  RapidTestFormGridViewModel gridHIVDetermine = new RapidTestFormGridViewModel(
-      ColumnCode.HIVDETERMINE);
+  RapidTestFormGridViewModel gridHIVDetermine = new RapidTestFormGridViewModel(ColumnCode.HIVDETERMINE);
   RapidTestFormGridViewModel gridHIVUnigold = new RapidTestFormGridViewModel(ColumnCode.HIVUNIGOLD);
   RapidTestFormGridViewModel gridSyphillis = new RapidTestFormGridViewModel(ColumnCode.SYPHILLIS);
   RapidTestFormGridViewModel gridMalaria = new RapidTestFormGridViewModel(ColumnCode.MALARIA);
