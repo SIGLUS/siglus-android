@@ -79,10 +79,6 @@ public class RequisitionPeriodService {
     DateTime periodEndDate;
     periodBeginDate = new DateTime(lastRnR.getPeriodEnd());
 
-    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-      return Period.generateForTraining(periodBeginDate.plusDays(1).toDate());
-    }
-
     if (physicalInventoryDate == null) {
       Calendar date = Calendar.getInstance();
       date.set(periodBeginDate.getYear(), periodBeginDate.getMonthOfYear(), Period.END_DAY,
