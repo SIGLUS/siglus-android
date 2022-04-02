@@ -72,6 +72,8 @@ public class ConfirmGenerateLotNumberDialogFragment extends BaseDialogFragment {
   public Dialog onCreateDialog(Bundle savedInstanceState) {
     Dialog dialog = super.onCreateDialog(savedInstanceState);
     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    Window window = dialog.getWindow();
+    window.setWindowAnimations(R.style.NoAnimationDialog);
     return dialog;
   }
 

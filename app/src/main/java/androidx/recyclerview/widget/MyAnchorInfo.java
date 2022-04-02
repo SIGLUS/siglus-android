@@ -20,15 +20,9 @@ package androidx.recyclerview.widget;
 
 import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager.AnchorInfo;
-import androidx.recyclerview.widget.RecyclerView.Recycler;
-import androidx.recyclerview.widget.RecyclerView.State;
 
 /**
  * To fix https://trello.com/c/ghTtClqv/510-rapid-test-second-report-sometimes-not-aligned.
- *
- * @see LinearLayoutManager#onLayoutChildren(Recycler, State)
- * LinearLayoutManager will adjust anchor view appear on the viewport
- * when the anchor child is the focused view and due to layout shrinking the focused view fell outside the viewport.
  */
 public class MyAnchorInfo extends AnchorInfo {
 

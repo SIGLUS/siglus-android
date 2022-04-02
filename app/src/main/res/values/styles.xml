@@ -236,6 +236,11 @@
     <item name="android:windowMinWidthMinor">@dimen/px_480</item>
     <item name="windowFixedWidthMinor">@dimen/px_480</item>
   </style>
+  
+  <style name="NoAnimationDialog" parent="android:style/Animation.Dialog">
+    <item name="android:windowEnterAnimation">@null</item>
+    <item name="android:windowExitAnimation">@null</item>
+  </style>
 
   <style name="MMIA" />
 

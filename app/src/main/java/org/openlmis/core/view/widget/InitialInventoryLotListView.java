@@ -54,15 +54,16 @@ public class InitialInventoryLotListView extends BaseLotListView {
                   addLotDialogFragment.getExpiryDate(),
                   viewModel.getMovementType()));
               addLotDialogFragment.dismiss();
+              addLotDialogFragment = null;
             }
             break;
           case R.id.btn_cancel:
             addLotDialogFragment.dismiss();
+            addLotDialogFragment = null;
             break;
           default:
             // do nothing
         }
-        addLotDialogFragment = null;
       }
     };
   }

@@ -20,6 +20,7 @@ package androidx.recyclerview.widget;
 
 import android.content.Context;
 import java.lang.reflect.Field;
+import org.openlmis.core.exceptions.LMISException;
 
 public class RapidTestLayoutManager extends LinearLayoutManager {
 
@@ -32,6 +33,7 @@ public class RapidTestLayoutManager extends LinearLayoutManager {
       mAnchorInfo.mOrientationHelper = mOrientationHelper;
     } catch (Exception ignore) {
       // In the worst case, the modification fails, and bugfix doesn't work.
+      new LMISException(ignore, "rapid test align problem").reportToFabric();
     }
   }
 
