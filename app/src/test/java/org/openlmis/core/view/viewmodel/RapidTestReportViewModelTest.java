@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,7 +58,6 @@ public class RapidTestReportViewModelTest {
     assertNull(this.viewModel.getSyncedTime());
     assertEquals(0, this.viewModel.getStatus().getViewType());
     assertTrue(this.viewModel.validateAPES());
-    assertTrue(this.viewModel.validateUnjustified());
     assertFalse(this.viewModel.validateOnlyAPES());
     assertTrue(this.viewModel.isFormEmpty());
     assertEquals(DateUtil.parseString("2016-08-21", DateUtil.DB_DATE_FORMAT),
@@ -171,15 +171,15 @@ public class RapidTestReportViewModelTest {
     RapidTestFormItemViewModel itemViewModel1 = mock(RapidTestFormItemViewModel.class);
     RapidTestFormItemViewModel itemViewModel2 = mock(RapidTestFormItemViewModel.class);
 
-    when(itemViewModel1.validatePositive()).thenReturn(true);
-    when(itemViewModel2.validatePositive()).thenReturn(false);
+    when(itemViewModel1.validatePositive(any())).thenReturn(true);
+    when(itemViewModel2.validatePositive(any())).thenReturn(false);
 
     viewModel.setItemViewModelList(new ArrayList<RapidTestFormItemViewModel>());
     viewModel.getItemViewModelList().add(itemViewModel1);
-    assertTrue(viewModel.validatePositive());
+    assertTrue(viewModel.validate());
 
     viewModel.getItemViewModelList().add(itemViewModel2);
-    assertFalse(viewModel.validatePositive());
+    assertFalse(viewModel.validate());
   }
 
   @Test

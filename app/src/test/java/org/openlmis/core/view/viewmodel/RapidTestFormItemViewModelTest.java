@@ -41,9 +41,9 @@ public class RapidTestFormItemViewModelTest {
 
     itemViewModel.setRapidTestFormGridViewModelList(new ArrayList<RapidTestFormGridViewModel>());
     itemViewModel.getRapidTestFormGridViewModelList().add(formGridViewModel1);
-    assertTrue(itemViewModel.validatePositive());
+    assertTrue(itemViewModel.validatePositive(formGridViewModel1));
 
     itemViewModel.getRapidTestFormGridViewModelList().add(formGridViewModel2);
-    assertFalse(itemViewModel.validatePositive());
+    assertFalse(itemViewModel.validatePositive(formGridViewModel2));
   }
 }

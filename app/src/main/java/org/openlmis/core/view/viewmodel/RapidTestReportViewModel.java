@@ -61,6 +61,7 @@ public class RapidTestReportViewModel {
   private Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
   private List<RnrFormItem> productItems = new ArrayList<>();
   private RnRForm rapidTestForm = new RnRForm();
+  private String errorMessage;
 
   public static final long DEFAULT_FORM_ID = 0;
   private static final String PUB_PHARMACY = "PUB_PHARMACY";
@@ -231,18 +232,11 @@ public class RapidTestReportViewModel {
         || rapidTestForm.getStatus() == RnRForm.Status.SUBMITTED;
   }
 
-  public boolean validatePositive() {
+  public boolean validate() {
+    clearError();
     for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-      if (!itemViewModel.validatePositive()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public boolean validateUnjustified() {
-    for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-      if (!itemViewModel.validateUnjustified()) {
+       errorMessage = itemViewModel.validate();
+      if (!errorMessage.isEmpty()){
         return false;
       }
     }
@@ -361,6 +355,14 @@ public class RapidTestReportViewModel {
         break;
       default:
         // do nothing
+    }
+  }
+
+  private void clearError() {
+    for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
+      for (RapidTestFormGridViewModel gridViewModel : itemViewModel.rapidTestFormGridViewModelList) {
+        gridViewModel.setInvalidColumn(null);
+      }
     }
   }
 

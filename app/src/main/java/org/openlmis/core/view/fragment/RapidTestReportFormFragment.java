@@ -231,16 +231,15 @@ public class RapidTestReportFormFragment extends BaseReportFragment
           errorMessage = getString(R.string.error_empty_rapid_test_product);
         } else if (presenter.getViewModel().isFormEmpty()) {
           errorMessage = getString(R.string.error_empty_rapid_test_list);
-        } else if (!presenter.getViewModel().validatePositive()) {
-          errorMessage = getString(R.string.error_positive_larger_than_consumption);
-        } else if (!presenter.getViewModel().validateUnjustified()) {
-          errorMessage = getString(R.string.error_rapid_test_unjustified);
+        } else if (!presenter.getViewModel().validate()) {
+          errorMessage = presenter.getViewModel().getErrorMessage();
+          rapidBodyRightAdapter.notifyDataSetChanged();
         } else if (!presenter.getViewModel().validateAPES()) {
+          rapidBodyRightAdapter.notifyDataSetChanged();
           errorMessage = getString(R.string.error_rapid_test_ape);
         } else if (presenter.getViewModel().validateOnlyAPES()) {
           errorMessage = getString(R.string.error_rapid_test_only_ape);
         }
-
         return errorMessage;
       }
     };

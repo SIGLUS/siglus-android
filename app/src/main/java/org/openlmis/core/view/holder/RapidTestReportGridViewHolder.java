@@ -20,10 +20,12 @@ package org.openlmis.core.view.holder;
 
 import android.text.Editable;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
@@ -71,6 +73,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     setTextWatcher();
     updateAlert();
     updateGridViewHaveValueAlert();
+    setInvalidInput();
   }
 
   private void updateGridViewHaveValueAlert() {
@@ -82,8 +85,11 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
   public void setEditable(Boolean editable) {
     if (Boolean.TRUE.equals(editable)) {
       etConsume.setFocusable(true);
+      etConsume.setOnFocusChangeListener(getOnFocusChangeListener());
       etPositive.setFocusable(true);
+      etPositive.setOnFocusChangeListener(getOnFocusChangeListener());
       etUnjustified.setFocusable(true);
+      etUnjustified.setOnFocusChangeListener(getOnFocusChangeListener());
     }
   }
 
@@ -117,6 +123,40 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
       (editable ? etUnjustified : etUnjustifiedTotal)
           .setTextColor(context.getResources().getColor(R.color.color_black));
     }
+  }
+
+  private void setInvalidInput() {
+    if (viewModel.getInvalidColumn() != null) {
+      switch (viewModel.getInvalidColumn()) {
+        case CONSUMPTION:
+          etConsume.setError(getString(R.string.hint_error_input));
+          break;
+        case POSITIVE:
+          etPositive.setError(getString(R.string.hint_error_input));
+          break;
+        case UNJUSTIFIED:
+          etUnjustified.setError(getString(R.string.hint_error_input));
+          break;
+      }
+    }
+  }
+
+  private OnFocusChangeListener getOnFocusChangeListener() {
+    return (v, hasFocus) -> {
+      if (hasFocus) {
+        clearError();
+      }
+    };
+  }
+
+  private void clearError() {
+    etConsume.setError(null);
+    etPositive.setError(null);
+    etUnjustified.setError(null);
+  }
+
+  private String getString(int id) {
+    return LMISApp.getContext().getString(id);
   }
 
   class TextWatcher extends SingleTextWatcher {

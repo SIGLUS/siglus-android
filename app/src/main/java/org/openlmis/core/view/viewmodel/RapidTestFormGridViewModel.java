@@ -57,6 +57,7 @@ public class RapidTestFormGridViewModel {
   UsageColumnsMap unjustifiedColumn;
   Boolean isNeedAllAPEValue = false;
   Boolean isAPE = false;
+  RapidTestGridColumnCode invalidColumn;
 
   private static final String COLUMN_CODE_PREFIX_CONSUME = "CONSUME_";
   private static final String COLUMN_CODE_PREFIX_POSITIVE = "POSITIVE_";
@@ -76,12 +77,19 @@ public class RapidTestFormGridViewModel {
     }
   }
 
+  public boolean validateConsumption() {
+    try {
+      return !((StringUtils.isNotEmpty(positiveValue) || StringUtils.isNotEmpty(unjustifiedValue))
+          && StringUtils.isEmpty(consumptionValue));
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
+
   public boolean validatePositive() {
     try {
-      return (StringUtils.isEmpty(consumptionValue)
-          && StringUtils.isEmpty(positiveValue)
-          && StringUtils.isEmpty(unjustifiedValue))
-          || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue));
+      return !((StringUtils.isNotEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue))
+          || positiveGreaterThanConsumption());
     } catch (NumberFormatException e) {
       return false;
     }
@@ -89,9 +97,9 @@ public class RapidTestFormGridViewModel {
 
   public boolean validateUnjustified() {
     try {
-      return isEmpty()
-          || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue)
-          && Long.parseLong(unjustifiedValue) >= 0);
+      return !(StringUtils.isNotEmpty(consumptionValue)
+          && StringUtils.isNotEmpty(positiveValue)
+          && StringUtils.isEmpty(unjustifiedValue));
     } catch (NumberFormatException e) {
       return false;
     }
@@ -153,6 +161,14 @@ public class RapidTestFormGridViewModel {
 
   public boolean isNeedAddGridViewWarning() {
     return isAPE && isNeedAllAPEValue && !isAllNotEmpty();
+  }
+
+  private boolean positiveGreaterThanConsumption() {
+    if (StringUtils.isNotEmpty(consumptionValue) && StringUtils.isNotEmpty(positiveValue)) {
+      return Long.parseLong(consumptionValue) < Long.parseLong(positiveValue);
+    } else {
+      return false;
+    }
   }
 
   private boolean isAllNotEmpty() {

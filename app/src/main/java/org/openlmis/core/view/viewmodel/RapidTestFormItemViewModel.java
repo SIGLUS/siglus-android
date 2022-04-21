@@ -98,22 +98,47 @@ public class RapidTestFormItemViewModel {
     return programDataFormItems;
   }
 
-  public boolean validatePositive() {
+  public String validate() {
     for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
-      if (!gridViewModel.validatePositive()) {
-        return false;
+      if (!validateConsumption(gridViewModel)) {
+        return LMISApp.getInstance().getString(R.string.error_rapid_test_consumption);
+      } else if (!validatePositive(gridViewModel)) {
+        return LMISApp.getInstance().getString(R.string.error_positive_larger_than_consumption);
+      } else if (!validateUnjustified(gridViewModel)) {
+        return LMISApp.getInstance().getString(R.string.error_rapid_test_unjustified);
       }
     }
-    return true;
+    return StringUtils.EMPTY;
   }
 
-  public boolean validateUnjustified() {
-    for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
-      if (!gridViewModel.validateUnjustified()) {
-        return false;
-      }
+  public boolean validateConsumption(RapidTestFormGridViewModel gridViewModel) {
+    if (!gridViewModel.validateConsumption()) {
+      gridViewModel.setInvalidColumn(RapidTestGridColumnCode.CONSUMPTION);
+      return false;
+    } else {
+      gridViewModel.setInvalidColumn(null);
+      return true;
     }
-    return true;
+  }
+
+  public boolean validatePositive(RapidTestFormGridViewModel gridViewModel) {
+      if (!gridViewModel.validatePositive()) {
+        gridViewModel.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
+        return false;
+      } else {
+        gridViewModel.setInvalidColumn(null);
+        return true;
+      }
+  }
+
+  public boolean validateUnjustified(RapidTestFormGridViewModel gridViewModel) {
+      if (!gridViewModel.validateUnjustified()) {
+        gridViewModel.setInvalidColumn(RapidTestGridColumnCode.UNJUSTIFIED);
+        return false;
+      } else {
+        gridViewModel.setInvalidColumn(null);
+        return true;
+      }
   }
 
   public boolean isEmpty() {
