@@ -122,23 +122,23 @@ public class RapidTestFormItemViewModel {
   }
 
   public boolean validatePositive(RapidTestFormGridViewModel gridViewModel) {
-      if (!gridViewModel.validatePositive()) {
-        gridViewModel.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
-        return false;
-      } else {
-        gridViewModel.setInvalidColumn(null);
-        return true;
-      }
+    if (!gridViewModel.validatePositive()) {
+      gridViewModel.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
+      return false;
+    } else {
+      gridViewModel.setInvalidColumn(null);
+      return true;
+    }
   }
 
   public boolean validateUnjustified(RapidTestFormGridViewModel gridViewModel) {
-      if (!gridViewModel.validateUnjustified()) {
-        gridViewModel.setInvalidColumn(RapidTestGridColumnCode.UNJUSTIFIED);
-        return false;
-      } else {
-        gridViewModel.setInvalidColumn(null);
-        return true;
-      }
+    if (!gridViewModel.validateUnjustified()) {
+      gridViewModel.setInvalidColumn(RapidTestGridColumnCode.UNJUSTIFIED);
+      return false;
+    } else {
+      gridViewModel.setInvalidColumn(null);
+      return true;
+    }
   }
 
   public boolean isEmpty() {

@@ -235,8 +235,8 @@ public class RapidTestReportViewModel {
   public boolean validate() {
     clearError();
     for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-       errorMessage = itemViewModel.validate();
-      if (!errorMessage.isEmpty()){
+      errorMessage = itemViewModel.validate();
+      if (!errorMessage.isEmpty()) {
         return false;
       }
     }

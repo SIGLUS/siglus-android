@@ -137,6 +137,8 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         case UNJUSTIFIED:
           etUnjustified.setError(getString(R.string.hint_error_input));
           break;
+        default:
+          break;
       }
     }
   }
@@ -157,6 +159,22 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
   private String getString(int id) {
     return LMISApp.getContext().getString(id);
+  }
+
+  public void updateTotal(RapidTestGridColumnCode gridColumnCode) {
+    if (!isInTotalRow()) {
+      quantityChangeListener.updateTotal(viewModel.getColumnCode(), gridColumnCode);
+    }
+  }
+
+  public boolean isInTotalRow() {
+    return quantityChangeListener == null;
+  }
+
+  public interface QuantityChangeListener {
+
+    void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode,
+        RapidTestGridColumnCode gridColumnCode);
   }
 
   class TextWatcher extends SingleTextWatcher {
@@ -192,21 +210,5 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
       return column;
     }
 
-  }
-
-  public void updateTotal(RapidTestGridColumnCode gridColumnCode) {
-    if (!isInTotalRow()) {
-      quantityChangeListener.updateTotal(viewModel.getColumnCode(), gridColumnCode);
-    }
-  }
-
-  public boolean isInTotalRow() {
-    return quantityChangeListener == null;
-  }
-
-  public interface QuantityChangeListener {
-
-    void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode,
-        RapidTestGridColumnCode gridColumnCode);
   }
 }
