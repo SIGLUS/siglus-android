@@ -86,10 +86,17 @@ public class RapidTestFormGridViewModel {
     }
   }
 
-  public boolean validatePositive() {
+  public boolean validatePositiveIsEmpty() {
     try {
-      return !((StringUtils.isNotEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue))
-          || positiveGreaterThanConsumption());
+      return !(StringUtils.isNotEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue));
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
+
+  public boolean validatePositiveMoreThanCon() {
+    try {
+      return !positiveGreaterThanConsumption();
     } catch (NumberFormatException e) {
       return false;
     }

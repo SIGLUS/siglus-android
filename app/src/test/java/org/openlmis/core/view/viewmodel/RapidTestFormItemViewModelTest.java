@@ -36,14 +36,14 @@ public class RapidTestFormItemViewModelTest {
     itemViewModel = new RapidTestFormItemViewModel(reason1);
     RapidTestFormGridViewModel formGridViewModel1 = mock(RapidTestFormGridViewModel.class);
     RapidTestFormGridViewModel formGridViewModel2 = mock(RapidTestFormGridViewModel.class);
-    when(formGridViewModel1.validatePositive()).thenReturn(true);
-    when(formGridViewModel2.validatePositive()).thenReturn(false);
+    when(formGridViewModel1.validatePositiveIsEmpty()).thenReturn(true);
+    when(formGridViewModel2.validatePositiveIsEmpty()).thenReturn(false);
 
-    itemViewModel.setRapidTestFormGridViewModelList(new ArrayList<RapidTestFormGridViewModel>());
+    itemViewModel.setRapidTestFormGridViewModelList(new ArrayList<>());
     itemViewModel.getRapidTestFormGridViewModelList().add(formGridViewModel1);
-    assertTrue(itemViewModel.validatePositive(formGridViewModel1));
+    assertTrue(itemViewModel.validatePositiveIsEmpty(formGridViewModel1));
 
     itemViewModel.getRapidTestFormGridViewModelList().add(formGridViewModel2);
-    assertFalse(itemViewModel.validatePositive(formGridViewModel2));
+    assertFalse(itemViewModel.validatePositiveIsEmpty(formGridViewModel2));
   }
 }

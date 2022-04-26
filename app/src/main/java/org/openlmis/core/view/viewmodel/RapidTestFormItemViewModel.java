@@ -102,7 +102,9 @@ public class RapidTestFormItemViewModel {
     for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
       if (!validateConsumption(gridViewModel)) {
         return LMISApp.getInstance().getString(R.string.error_rapid_test_consumption);
-      } else if (!validatePositive(gridViewModel)) {
+      } else if (!validatePositiveIsEmpty(gridViewModel)) {
+        return LMISApp.getInstance().getString(R.string.error_rapid_test_positive);
+      } else if (!validatePositiveMoreThanCon(gridViewModel)) {
         return LMISApp.getInstance().getString(R.string.error_positive_larger_than_consumption);
       } else if (!validateUnjustified(gridViewModel)) {
         return LMISApp.getInstance().getString(R.string.error_rapid_test_unjustified);
@@ -121,8 +123,18 @@ public class RapidTestFormItemViewModel {
     }
   }
 
-  public boolean validatePositive(RapidTestFormGridViewModel gridViewModel) {
-    if (!gridViewModel.validatePositive()) {
+  public boolean validatePositiveIsEmpty(RapidTestFormGridViewModel gridViewModel) {
+    if (!gridViewModel.validatePositiveIsEmpty()) {
+      gridViewModel.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
+      return false;
+    } else {
+      gridViewModel.setInvalidColumn(null);
+      return true;
+    }
+  }
+
+  public boolean validatePositiveMoreThanCon(RapidTestFormGridViewModel gridViewModel) {
+    if (!gridViewModel.validatePositiveMoreThanCon()) {
       gridViewModel.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
       return false;
     } else {

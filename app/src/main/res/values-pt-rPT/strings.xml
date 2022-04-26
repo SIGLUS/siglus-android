@@ -685,6 +685,8 @@
   <string name="msg_logging_in">logando...</string>
   <string name="TR_program_name_for_issue_voucher_title">Testes Rápidos</string>
   <string name="alert_issue_all_lot_expired">Por favor remova o produto</string>
+  <string name="error_rapid_test_consumption">O número de consumo não pode estar vazio.</string>
+  <string name="error_rapid_test_positive">O número de positiva não pode estar vazio.</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>
