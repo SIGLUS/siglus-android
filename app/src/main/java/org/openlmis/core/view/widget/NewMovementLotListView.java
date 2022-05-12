@@ -91,6 +91,7 @@ public class NewMovementLotListView extends MovementChangeLotListView {
     existingLotMovementAdapter = new NewMovementLotMovementAdapter(
         viewModel.getExistingLotMovementViewModelList());
     existingLotListView.setAdapter(existingLotMovementAdapter);
+    existingLotListView.setNestedScrollingEnabled(false);
     existingLotMovementAdapter.setMovementChangeListener(movementChangedListener);
   }
 
@@ -101,6 +102,7 @@ public class NewMovementLotListView extends MovementChangeLotListView {
         viewModel.getNewLotMovementViewModelList(),
         viewModel.getProduct().getProductNameWithCodeAndStrength());
     newLotListView.setAdapter(newLotMovementAdapter);
+    newLotListView.setNestedScrollingEnabled(false);
     newLotMovementAdapter.setMovementChangeListener(movementChangedListener);
   }
 
