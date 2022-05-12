@@ -52,7 +52,8 @@ public class IssueVoucherListViewModel implements Comparable<IssueVoucherListVie
   private SyncError syncError;
 
   public String getOrderNumber() {
-    return pod.isRequisitionIsEmergency() ? "EMERGENCY " + pod.getOrderCode() : pod.getOrderCode();
+    return pod.isRequisitionIsEmergency() ? LMISApp.getContext().getString(R.string.emergency) + " "
+        + pod.getOrderCode() : pod.getOrderCode();
   }
 
   public String getOrderSupplyFacilityName() {

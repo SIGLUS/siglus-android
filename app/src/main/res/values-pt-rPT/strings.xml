@@ -687,6 +687,9 @@
   <string name="alert_issue_all_lot_expired">Por favor remova o produto</string>
   <string name="error_rapid_test_consumption">O número de consumo não pode estar vazio.</string>
   <string name="error_rapid_test_positive">O número de positiva não pode estar vazio.</string>
+  <string name="requisition_tab">Requisição</string>
+  <string name="Malaria_tab">Malária</string>
+  <string name="emergency">EMERGÊNCIA</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>

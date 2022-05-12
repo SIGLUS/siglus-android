@@ -692,6 +692,9 @@
   <string name="alert_issue_all_lot_expired">Please remove the product</string>
   <string name="error_rapid_test_consumption">The number of consumption cannot be empty.</string>
   <string name="error_rapid_test_positive">The number of positive cannot be empty.</string>
+  <string name="requisition_tab">Requisition</string>
+  <string name="Malaria_tab">Malaria</string>
+  <string name="emergency">EMERGENCY</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minute</item>
