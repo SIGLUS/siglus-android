@@ -104,7 +104,7 @@
     <activity
       android:label="Title drug"
       android:name=".view.activity.NewStockMovementActivity"
-      android:windowSoftInputMode="adjustPan|stateHidden" />
+      android:windowSoftInputMode="adjustResize|stateHidden" />
     <activity
       android:label="@string/title_stock_movement"
       android:name=".view.activity.RnRFormListActivity"
