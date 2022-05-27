@@ -64,7 +64,7 @@
 
     <TextView
       android:id="@+id/tv_stock_status"
-      android:layout_width="@dimen/px_88"
+      android:layout_width="@dimen/px_100"
       android:layout_height="@dimen/px_16"
       android:textSize="@dimen/px_10"
       android:textColor="@color/color_white"

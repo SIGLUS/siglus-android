@@ -393,8 +393,8 @@
   <string name="via_and_ptv_requisition_alert">Suas Requisições Balancete e seus PTV não foram concluídos</string>
   <string name="ptv_requisition_alert">Seu PTV não foi concluído</string>
   <string name="missed_requisition_time_range">%1$s para %2$s</string>
-  <string name="incomplete_alert_message">"Suas %s não foram concluídos"</string>
-  <string name="incomplete_alert_message_for_single_report">"Seu %s não foi concluído"</string>
+  <string name="incomplete_alert_message">"Seus relatórios: %s não foram concluídos"</string>
+  <string name="incomplete_alert_message_for_single_report">"Seu relatórios: %s não foi concluído"</string>
 
   <!--Add products to requisition form-->
   <string name="label_add_new_drugs_to_via">Adicionar produtos</string>

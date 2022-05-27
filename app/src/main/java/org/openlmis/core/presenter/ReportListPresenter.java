@@ -22,14 +22,12 @@ import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
-import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.TranslationUtil;
 import org.openlmis.core.view.BaseView;
 import rx.Observable;
 import rx.Observable.OnSubscribe;
@@ -71,7 +69,7 @@ public class ReportListPresenter extends Presenter {
 
     @Override
     public void onNext(List<ReportTypeForm> reportTypeForms) {
-      translateReportName(reportTypeForms);
+      TranslationUtil.translateReportName(reportTypeForms);
       sortReportTypes(reportTypeForms);
       view.updateSupportReportTypes(reportTypeForms);
     }
@@ -84,16 +82,6 @@ public class ReportListPresenter extends Presenter {
       });
     }
 
-    private void translateReportName(List<ReportTypeForm> reportTypeForms) {
-      for (ReportTypeForm reportTypeForm : reportTypeForms) {
-        if (Constants.VIA_PROGRAM_CODE.equals(reportTypeForm.getCode())) {
-          reportTypeForm.setName(LMISApp.getContext().getString(R.string.requisition_tab));
-        }
-        if (Constants.AL_PROGRAM_CODE.equals(reportTypeForm.getCode())) {
-          reportTypeForm.setName(LMISApp.getContext().getString(R.string.Malaria_tab));
-        }
-      }
-    }
   };
 
   @Override
