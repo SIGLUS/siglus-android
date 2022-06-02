@@ -82,6 +82,7 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
     product.setActive(getBoolean(jsonProduct, "active", true));
     product.setKit(getBoolean(jsonProduct, "isKit", false));
     product.setBasic(getBoolean(jsonProduct, "isBasic", false));
+    product.setHiv(getBoolean(jsonProduct, "isHiv", false));
     product.setKitProductList(generateKitProduct(product.getCode(), jsonProduct));
     if (!jsonProduct.get("pricePerPack").isJsonNull()) {
       product.setPrice(jsonProduct.get("pricePerPack").getAsBigDecimal().toString());
