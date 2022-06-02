@@ -250,6 +250,7 @@ public class SyncUpManagerTest {
   public void shouldSyncAppVersion() throws Exception {
     when(mockedSharedPreferenceMgr.hasSyncedVersion()).thenReturn(false);
     User user = new User();
+    user.setFacilityCode("12121210");
     UserInfoMgr.getInstance().setUser(user);
     syncUpManager.syncAppVersion();
     verify(mockedLmisRestApi).updateAppVersion(any(AppInfoRequest.class));

@@ -337,7 +337,7 @@ public class SyncUpManager {
 
   public void syncAppVersion() {
     try {
-      if (!sharedPreferenceMgr.hasSyncedVersion()) {
+      if (!sharedPreferenceMgr.hasSyncedVersion() && UserInfoMgr.getInstance().getFacilityCode() != null) {
         AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(),
             UserInfoMgr.getInstance().getUser().getUsername(),
             UserInfoMgr.getInstance().getVersion());
