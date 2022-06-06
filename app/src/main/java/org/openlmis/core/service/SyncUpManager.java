@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -337,7 +338,8 @@ public class SyncUpManager {
 
   public void syncAppVersion() {
     try {
-      if (!sharedPreferenceMgr.hasSyncedVersion() && UserInfoMgr.getInstance().getFacilityCode() != null) {
+      if (!sharedPreferenceMgr.hasSyncedVersion()
+          && StringUtils.isNotBlank(UserInfoMgr.getInstance().getFacilityCode())) {
         AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(),
             UserInfoMgr.getInstance().getUser().getUsername(),
             UserInfoMgr.getInstance().getVersion());
