@@ -689,7 +689,7 @@
   <string name="error_rapid_test_positive">O número de positiva não pode estar vazio.</string>
   <string name="requisition_tab">Requisição</string>
   <string name="Malaria_tab">Malária</string>
-  <string name="emergency">EMERGÊNCIA</string>
+  <string name="emergency">-EMERGÊNCIA-</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>
