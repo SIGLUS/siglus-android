@@ -52,7 +52,8 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         List<Product> inventoryProducts = productRepository.listProductsArchivedOrNotInStockCard();
 
         inventoryViewModelList.addAll(from(inventoryProducts)
-            .transform(this::convertProductToStockCardViewModel).toList());
+            .transform(this::convertProductToStockCardViewModel).filter(inventoryViewModel ->
+                !(inventoryViewModel.getProduct().isArchived() && inventoryViewModel.getStockCard() == null)).toList());
         subscriber.onNext(inventoryViewModelList);
         subscriber.onCompleted();
       } catch (LMISException e) {
@@ -89,7 +90,12 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     try {
       InventoryViewModel viewModel;
       if (product.isArchived()) {
-        viewModel = new InventoryViewModel(stockRepository.queryStockCardByProductId(product.getId()));
+        StockCard stockCard = stockRepository.queryStockCardByProductId(product.getId());
+        if (stockCard != null) {
+          viewModel = new InventoryViewModel(stockCard);
+        } else {
+          viewModel = new InventoryViewModel(product);
+        }
       } else {
         viewModel = new InventoryViewModel(product);
       }
