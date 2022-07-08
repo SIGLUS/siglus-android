@@ -26,6 +26,7 @@ import static org.openlmis.core.utils.Constants.FACILITY_CODE;
 import static org.openlmis.core.utils.Constants.FACILITY_NAME;
 import static org.openlmis.core.utils.Constants.GRANT_TYPE;
 import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_ANDROID;
+import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_SAME_DEVICE;
 import static org.openlmis.core.utils.Constants.UNIQUE_ID;
 import static org.openlmis.core.utils.Constants.USER_NAME;
 import static org.openlmis.core.utils.Constants.VERSION_CODE;
@@ -201,10 +202,10 @@ public class LMISRestManager {
       if (r != null && r.getStatus() == 403) {
         ErrorHandlingResponse errorResponse = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
         if (SIGLUS_API_ERROR_NOT_ANDROID.equals(errorResponse.getMessageKey())) {
-          EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
-          userRepository.deleteLocalUser();
-          SharedPreferenceMgr.getInstance().setLastLoginUser(StringUtils.EMPTY);
-          return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
+          return forbidNotAndroidUser();
+        }
+        if (SIGLUS_API_ERROR_NOT_SAME_DEVICE.equals(errorResponse.getMessageKey())) {
+          return forbidNotSameDevice();
         }
       }
       if (r != null && r.getStatus() == 500) {
@@ -215,6 +216,19 @@ public class LMISRestManager {
       }
       return new LMISException(cause);
     }
+  }
+
+  private LMISException forbidNotAndroidUser() {
+    EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
+    userRepository.deleteLocalUser();
+    SharedPreferenceMgr.getInstance().setLastLoginUser(StringUtils.EMPTY);
+    return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
+  }
+
+  private LMISException forbidNotSameDevice() {
+    EventBus.getDefault().post(SIGLUS_API_ERROR_NOT_SAME_DEVICE);
+    SharedPreferenceMgr.getInstance().setSyncedVersion(false);
+    return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_is_same_device_false));
   }
 
   public void refreshAccessToken(User user, RetrofitError cause) {

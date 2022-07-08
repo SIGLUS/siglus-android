@@ -38,10 +38,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.BulkEntriesPresenter;
@@ -61,6 +61,7 @@ import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
 
+@BindEventBus
 @ContentView(R.layout.activity_bulk_entries)
 public class BulkEntriesActivity extends BaseActivity {
 
@@ -134,7 +135,6 @@ public class BulkEntriesActivity extends BaseActivity {
     subscriptions.add(subscription);
     btnSave.setOnClickListener(getSaveListener());
     btnComplete.setOnClickListener(getCompleteListener());
-    EventBus.getDefault().register(this);
   }
 
   @Override
@@ -142,12 +142,6 @@ public class BulkEntriesActivity extends BaseActivity {
     super.onResume();
     setViewGoneWhenNoProduct(bulkEntriesPresenter.getBulkEntriesViewModels());
     setTotal(adapter.getItemCount());
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    EventBus.getDefault().unregister(this);
   }
 
   private void showConfirmDialog() {

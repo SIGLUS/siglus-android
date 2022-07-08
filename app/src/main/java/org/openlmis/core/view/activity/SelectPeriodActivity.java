@@ -34,12 +34,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.google.inject.Inject;
 import java.util.List;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.googleanalytics.TrackerActions;
@@ -59,7 +59,7 @@ import roboguice.inject.InjectView;
 import rx.Observer;
 import rx.Subscription;
 
-
+@BindEventBus
 @ContentView(R.layout.activity_select_period)
 public class SelectPeriodActivity extends BaseActivity implements
     SelectPeriodPresenter.SelectPeriodView {
@@ -110,7 +110,6 @@ public class SelectPeriodActivity extends BaseActivity implements
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    EventBus.getDefault().register(this);
     this.programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
     isMissedPeriod = getIntent().getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
     period = (Period) getIntent().getSerializableExtra(Constants.PARAM_PERIOD);
@@ -118,12 +117,6 @@ public class SelectPeriodActivity extends BaseActivity implements
     super.onCreate(savedInstanceState);
 
     init();
-  }
-
-  @Override
-  protected void onDestroy() {
-    EventBus.getDefault().unregister(this);
-    super.onDestroy();
   }
 
   @Override

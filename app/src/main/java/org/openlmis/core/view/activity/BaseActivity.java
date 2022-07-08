@@ -19,6 +19,8 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.openlmis.core.utils.Constants.LOGIN_ACTIVITY;
+import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_SAME_DEVICE;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.app.Activity;
@@ -41,9 +43,13 @@ import java.util.Set;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.googleanalytics.AnalyticsTracker;
@@ -91,6 +97,9 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   private long appTimeout;
 
+  private String currentActivity;
+  private boolean isInLoginActivity = false;
+
   private long onCreateStartMili;
   private boolean isPageLoadTimerInProgress;
 
@@ -100,6 +109,16 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   public static synchronized long getLastOperateTime() {
     return lastOperateTime;
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveSyncStatusEvent(String message) {
+    if (SIGLUS_API_ERROR_NOT_SAME_DEVICE.equals(message)
+        && !LOGIN_ACTIVITY.equals(currentActivity)
+        && !isInLoginActivity) {
+      logout();
+      isInLoginActivity = true;
+    }
   }
 
   public void injectPresenter() {
@@ -195,6 +214,16 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
     appTimeout = Long.parseLong(getResources().getString(R.string.app_time_out));
 
+    if (this.getClass().isAnnotationPresent(BindEventBus.class)) {
+      EventBus.getDefault().register(this);
+    }
+
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    currentActivity = getClass().getSimpleName();
   }
 
   @StyleRes
@@ -211,6 +240,9 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
     unSubscribeSubscriptions();
     super.onDestroy();
+    if (this.getClass().isAnnotationPresent(BindEventBus.class)) {
+      EventBus.getDefault().unregister(this);
+    }
   }
 
   private void unSubscribeSubscriptions() {

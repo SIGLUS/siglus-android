@@ -16,20 +16,15 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.fragment;
+package org.openlmis.core.annotation;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.openlmis.core.annotation.BindEventBus;
-import org.openlmis.core.event.SyncRnrFinishEvent;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@BindEventBus
-public abstract class BaseReportListFragment extends BaseFragment {
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface BindEventBus {
 
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveSyncStatusEvent(SyncRnrFinishEvent event) {
-    loadForms();
-  }
-
-  protected abstract void loadForms();
 }

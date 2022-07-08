@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_SAME_DEVICE;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
@@ -41,6 +43,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.enumeration.LoginErrorType;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
@@ -56,6 +59,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @SuppressWarnings({"squid:S1874", "squid:S110"})
+@BindEventBus
 @ContentView(R.layout.activity_login)
 public class LoginActivity extends BaseActivity implements LoginPresenter.LoginView, View.OnClickListener {
 
@@ -145,6 +149,12 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
       lyUserName.setError(" ");
       lyPassword.setError(getResources().getText(R.string.msg_isAndroid_False));
     }
+    if (loginErrorType == LoginErrorType.NON_SAME_DEVICE) {
+      etUsername.setEnabled(true);
+      errorAlert.setVisibility(View.GONE);
+      lyUserName.setError(" ");
+      lyPassword.setError(getResources().getText(R.string.msg_is_same_device_false));
+    }
     etUsername.getBackground()
         .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     etPassword.getBackground()
@@ -197,6 +207,13 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
   }
 
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveSyncStatusEvent(String message) {
+    if (SIGLUS_API_ERROR_NOT_SAME_DEVICE.equals(message)) {
+      showInvalidAlert(LoginErrorType.NON_SAME_DEVICE);
+    }
+  }
+
   public void sendSyncStartBroadcast() {
     EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.START));
   }
@@ -228,18 +245,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     restoreFromResync();
-  }
-
-  @Override
-  protected void onStart() {
-    super.onStart();
-    EventBus.getDefault().register(this);
-  }
-
-  @Override
-  protected void onStop() {
-    EventBus.getDefault().unregister(this);
-    super.onStop();
   }
 
   @Override

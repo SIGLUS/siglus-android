@@ -33,11 +33,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Setter;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.event.SyncPodFinishEvent;
@@ -58,6 +58,7 @@ import org.openlmis.core.view.listener.OrderOperationListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherListViewModel;
 import roboguice.inject.InjectView;
 
+@BindEventBus
 public class IssueVoucherListFragment extends BaseFragment implements IssueVoucherListView, OrderOperationListener {
 
   @Inject
@@ -120,13 +121,6 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
     rvIssueVoucher.setAdapter(adapter);
     presenter.setIssueVoucher(requireArguments().getBoolean(IntentConstants.PARAM_IS_ISSUE_VOUCHER));
     presenter.loadData();
-    EventBus.getDefault().register(this);
-  }
-
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    EventBus.getDefault().unregister(this);
   }
 
   @Override

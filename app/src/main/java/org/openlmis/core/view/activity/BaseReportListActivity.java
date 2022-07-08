@@ -18,12 +18,13 @@
 
 package org.openlmis.core.view.activity;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 
+@BindEventBus
 public abstract class BaseReportListActivity extends BaseActivity {
 
   @Subscribe(threadMode = ThreadMode.MAIN)
@@ -32,18 +33,6 @@ public abstract class BaseReportListActivity extends BaseActivity {
       return;
     }
     loadForms();
-  }
-
-  @Override
-  protected void onStart() {
-    super.onStart();
-    EventBus.getDefault().register(this);
-  }
-
-  @Override
-  protected void onStop() {
-    EventBus.getDefault().unregister(this);
-    super.onStop();
   }
 
   protected abstract void loadForms();

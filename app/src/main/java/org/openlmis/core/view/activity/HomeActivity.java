@@ -42,11 +42,11 @@ import androidx.core.content.ContextCompat;
 import com.google.inject.Inject;
 import java.io.File;
 import org.apache.commons.collections.CollectionUtils;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.event.InitialDirtyDataCheckEvent;
@@ -77,7 +77,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
-
+@BindEventBus
 @ContentView(R.layout.activity_home_page)
 public class HomeActivity extends BaseActivity implements HomePresenter.HomeView {
 
@@ -275,7 +275,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    EventBus.getDefault().register(this);
     if (UserInfoMgr.getInstance().getUser() == null) {
       // In case some users use some unknown way entered here!!!
       logout();
@@ -319,12 +318,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     dirtyDataManager.dirtyDataMonthlyCheck();
     isHaveDirtyData();
     refreshDashboard();
-  }
-
-  @Override
-  protected void onDestroy() {
-    EventBus.getDefault().unregister(this);
-    super.onDestroy();
   }
 
   protected final InternetCheckListener validateConnectionListener = internet -> {

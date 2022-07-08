@@ -37,11 +37,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -58,6 +58,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
 import roboguice.inject.InjectView;
 
+@BindEventBus
 public class StockCardListFragment extends BaseFragment implements
     StockCardPresenter.StockCardListView, AdapterView.OnItemSelectedListener {
 
@@ -103,13 +104,6 @@ public class StockCardListFragment extends BaseFragment implements
     initRecycleView();
     initSortSpinner();
     loadStockCards();
-    EventBus.getDefault().register(this);
-  }
-
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    EventBus.getDefault().unregister(this);
   }
 
   @Override

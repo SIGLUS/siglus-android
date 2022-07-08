@@ -21,5 +21,6 @@ package org.openlmis.core.enumeration;
 public enum LoginErrorType {
   NO_INTERNET,
   NON_MOBILE_USER,
+  NON_SAME_DEVICE,
   WRONG_PASSWORD
 }

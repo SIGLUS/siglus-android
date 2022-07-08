@@ -25,10 +25,10 @@ import android.os.Bundle;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.DebugPhysicalInventoryEvent;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -43,6 +43,7 @@ import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import rx.Subscription;
 
+@BindEventBus
 @ContentView(R.layout.activity_physical_inventory)
 public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInventoryPresenter> {
 
@@ -66,7 +67,6 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    EventBus.getDefault().register(this);
   }
 
   @Override
@@ -90,12 +90,6 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
       return;
     }
     super.onBackPressed();
-  }
-
-  @Override
-  protected void onDestroy() {
-    EventBus.getDefault().unregister(this);
-    super.onDestroy();
   }
 
   @VisibleForTesting
