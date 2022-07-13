@@ -19,7 +19,6 @@
 package org.openlmis.core.network;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -39,7 +38,6 @@ public class InternetCheckTest {
     mockListener = Mockito.mock(InternetCheckListener.class);
   }
 
-  @Ignore
   @Test
   public void shouldCorrectTestInternet() {
     // given
