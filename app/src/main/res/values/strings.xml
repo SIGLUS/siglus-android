@@ -695,7 +695,7 @@
   <string name="requisition_tab">Requisition</string>
   <string name="Malaria_tab">Malaria</string>
   <string name="emergency">-EMERGENCY-</string>
-  <string name="msg_is_same_device_false">Login failed, the facility is already logged into another device, please contact the administrator.</string>
+  <string name="msg_is_same_device_false">Login failed, the facility already logged into another device, please contact the administrator.</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minute</item>

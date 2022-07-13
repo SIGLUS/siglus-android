@@ -690,6 +690,7 @@
   <string name="requisition_tab">Requisição</string>
   <string name="Malaria_tab">Malária</string>
   <string name="emergency">-EMERGÊNCIA-</string>
+  <string name="msg_is_same_device_false">Falha no login, a US já está cadastrada em outro dispositivo, entre em contato com o administrador.</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>
