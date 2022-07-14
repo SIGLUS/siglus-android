@@ -20,7 +20,7 @@
 package org.openlmis.core.view.activity;
 
 import static org.openlmis.core.utils.Constants.LOGIN_ACTIVITY;
-import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_SAME_DEVICE;
+import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.app.Activity;
@@ -113,7 +113,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveSyncStatusEvent(String message) {
-    if (SIGLUS_API_ERROR_NOT_SAME_DEVICE.equals(message)
+    if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(message)
         && !LOGIN_ACTIVITY.equals(currentActivity)
         && !isInLoginActivity) {
       logout();

@@ -225,7 +225,7 @@ public final class Constants {
 
   public static final String SIGLUS_API_ERROR_NOT_ANDROID = "siglusapi.error.notAndroidUser";
 
-  public static final String SIGLUS_API_ERROR_NOT_SAME_DEVICE = "siglusapi.error.notSameDevice";
+  public static final String SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE = "siglusapi.error.notRegisteredDevice";
 
   public static final String LOGIN_ACTIVITY = "LoginActivity";
 

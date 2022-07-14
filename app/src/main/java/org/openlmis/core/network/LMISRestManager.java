@@ -26,7 +26,7 @@ import static org.openlmis.core.utils.Constants.FACILITY_CODE;
 import static org.openlmis.core.utils.Constants.FACILITY_NAME;
 import static org.openlmis.core.utils.Constants.GRANT_TYPE;
 import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_ANDROID;
-import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_SAME_DEVICE;
+import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE;
 import static org.openlmis.core.utils.Constants.UNIQUE_ID;
 import static org.openlmis.core.utils.Constants.USER_NAME;
 import static org.openlmis.core.utils.Constants.VERSION_CODE;
@@ -204,7 +204,7 @@ public class LMISRestManager {
         if (SIGLUS_API_ERROR_NOT_ANDROID.equals(errorResponse.getMessageKey())) {
           return forbidNotAndroidUser();
         }
-        if (SIGLUS_API_ERROR_NOT_SAME_DEVICE.equals(errorResponse.getMessageKey())) {
+        if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(errorResponse.getMessageKey())) {
           return forbidNotSameDevice();
         }
       }
@@ -226,7 +226,7 @@ public class LMISRestManager {
   }
 
   private LMISException forbidNotSameDevice() {
-    EventBus.getDefault().post(SIGLUS_API_ERROR_NOT_SAME_DEVICE);
+    EventBus.getDefault().post(SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE);
     SharedPreferenceMgr.getInstance().setSyncedVersion(false);
     return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_is_same_device_false));
   }
