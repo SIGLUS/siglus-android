@@ -59,6 +59,9 @@ android {
         qa {
             applicationId 'org.openlmis.core.qa'
         }
+        mgt {
+            applicationId 'org.openlmis.core.mgt'
+        }
         integ {
             applicationId 'org.openlmis.core.integ'
         }

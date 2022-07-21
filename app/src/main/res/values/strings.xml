@@ -392,6 +392,7 @@
   <string name="app_name_in_dev">SIGLUS DEV</string>
   <string name="app_name_in_prd">SIGLUS</string>
   <string name="app_name_in_qa">SIGLUS QA</string>
+  <string name="app_name_in_mgt">SIGLUS MGT</string>
   <string name="app_name_in_training">SIGLUS TREINO II</string>
 
   <!--Incomplete Requisition Banner-->

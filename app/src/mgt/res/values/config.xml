@@ -1,0 +1,11 @@
+<resources>
+  <string name="server_base_url">https://mgt.siglus.us</string>
+  <string name="server_base_url_host">mgt.siglus.us</string>
+  <integer name="server_base_url_port">443</integer>
+  <string name="sync_account_type">org.clintonhealthaccess.lmismoz.mgt</string>
+  <integer name="sync_interval">3600</integer>
+  <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.mgt</string>
+  <string name="app_name">@string/app_name_in_mgt</string>
+  <string name="app_time_out">3600000</string>
+  <string name="appcenter_app_key" translatable="false">f64de716-463f-46bb-8472-230788373457</string>
+</resources>
