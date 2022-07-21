@@ -28,7 +28,7 @@
     app:layout_constraintLeft_toLeftOf="parent"/>
 
   <TextView
-    android:id="@+id/tv_lot_number_and_date"
+    android:id="@+id/tv_lot_number"
     android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:gravity="left|center_vertical"

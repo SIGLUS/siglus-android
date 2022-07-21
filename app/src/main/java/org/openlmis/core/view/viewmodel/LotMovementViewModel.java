@@ -84,8 +84,7 @@ public class LotMovementViewModel {
     Lot lot = new Lot();
     lot.setProduct(product);
     lot.setLotNumber(lotNumber);
-    lot.setExpirationDate(DateUtil.getActualMaximumDate(
-        DateUtil.parseString(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
+    lot.setExpirationDate(DateUtil.parseString(expiryDate, DateUtil.DB_DATE_FORMAT));
     LotMovementItem lotMovementItem = new LotMovementItem();
     lotMovementItem.setLot(lot);
     lotMovementItem.setDocumentNumber(documentNumber);
@@ -169,8 +168,7 @@ public class LotMovementViewModel {
     }
     Calendar nowCalender = DateUtil.getCurrentCalendar();
 
-    Date expireDate = DateUtil
-        .parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+    Date expireDate = DateUtil.parseString(getExpiryDate(), DateUtil.DB_DATE_FORMAT);
     if (expireDate != null) {
       Calendar expireCalender = Calendar.getInstance();
       expireCalender.setTime(expireDate);
@@ -185,12 +183,12 @@ public class LotMovementViewModel {
     return StringUtils.isBlank(lotSoh);
   }
 
-  public static String generateLotNumberForProductWithoutLot(String productCode,
-      String expiryDate) {
+  public static String generateLotNumberForProductWithoutLot(String productCode, String expiryDate) {
     try {
-      return "SEM-LOTE-" + productCode.toUpperCase() + "-" + DateUtil
-          .convertDate(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR,
-              DateUtil.DATE_DIGIT_FORMAT_ONLY_MONTH_AND_YEAR);
+      return "SEM-LOTE-" + productCode.toUpperCase() + "-" + DateUtil.convertDate(expiryDate, DateUtil.DB_DATE_FORMAT,
+          DateUtil.DATE_DIGIT_FORMAT_ONLY_MONTH_AND_YEAR) + "-" + DateUtil.convertDate(expiryDate,
+          DateUtil.DB_DATE_FORMAT, DateUtil.SIMPLE_DATE_FORMAT);
+
     } catch (Exception e) {
       new LMISException(e, "LotMovementViewModel.generateLotNumberForProductWithoutLot").reportToFabric();
     }

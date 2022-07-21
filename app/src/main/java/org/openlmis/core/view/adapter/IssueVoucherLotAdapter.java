@@ -77,7 +77,7 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
       this.viewModel = viewModel;
       if (viewModel.isDone()) {
         if (!viewModel.isVirtualLot()) {
-          setText(R.id.tv_lot_number_and_date, viewModel.getLotNumber());
+          setText(R.id.tv_lot_number, viewModel.getLotNumber());
         }
 
         setText(R.id.tv_quantity_shipped,  LMISApp.getContext().getResources()
@@ -86,8 +86,7 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
             .getString(R.string.quantity_received)  + ": " + viewModel.getAcceptedQuantity());
       } else {
         if (!viewModel.isVirtualLot()) {
-          setText(R.id.tv_lot_number_and_date, MessageFormat.format("{0} - {1}",
-              viewModel.getLotNumber(), viewModel.getExpiryDate()));
+          setText(R.id.tv_lot_number, viewModel.getLotNumber());
           ImageView ivDel = getView(R.id.iv_del);
           ivDel.setOnClickListener(getOnClickListenerForDeleteIcon());
           if (viewModel.isNewAdd()) {

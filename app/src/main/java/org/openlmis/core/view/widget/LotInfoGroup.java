@@ -25,12 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
-import java.util.Date;
 import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.LotOnHand;
-import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import roboguice.RoboGuice;
@@ -62,12 +60,7 @@ public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout {
 
   private void addLotInfoView(LotOnHand lotOnHand) {
     String lotOnHandQuantity = "" + lotOnHand.getQuantityOnHand();
-    final Date expirationDate = lotOnHand.getLot().getExpirationDate();
-    String lotInfo = lotOnHand.getLot().getLotNumber() + " - "
-        + DateUtil.formatDate(expirationDate,
-        DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)
-        + " - "
-        + lotOnHandQuantity;
+    String lotInfo = lotOnHand.getLot().getLotNumber() + " - " + lotOnHandQuantity;
     final ViewGroup lotInfoView = (ViewGroup) inflater.inflate(R.layout.item_lot_info_for_stockcard, null);
     TextView txLotInfo = lotInfoView.findViewById(R.id.tx_lot_info);
     View llLotInfoBg = lotInfoView.findViewById(R.id.ll_lot_info_bg);

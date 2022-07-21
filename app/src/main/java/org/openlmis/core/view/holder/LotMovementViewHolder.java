@@ -109,7 +109,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
   }
 
   private void populateLotInfo() {
-    etLotInfo.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
+    etLotInfo.setText(viewModel.getLotNumber());
     etLotInfo.setKeyListener(null);
     etLotInfo.setOnKeyListener(null);
     etLotInfo.setBackground(null);

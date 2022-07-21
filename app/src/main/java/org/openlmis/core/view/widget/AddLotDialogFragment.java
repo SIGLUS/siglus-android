@@ -91,7 +91,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    hideDay();
+//    hideDay();
     if (getArguments() != null) {
       String drugNameFromArgs = getArguments().getString(Constants.PARAM_STOCK_NAME);
       if (drugNameFromArgs != null) {
@@ -138,16 +138,17 @@ public class AddLotDialogFragment extends BaseDialogFragment {
 
   public boolean validate() {
     clearErrorMessage();
-    Date enteredDate = DateUtil.getActualMaximumDate(
-        new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), 1).getTime());
-    expiryDate = DateUtil.formatDate(enteredDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+    Date enteredDate = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(),
+        datePicker.getDayOfMonth()).getTime();
+    expiryDate = DateUtil.formatDate(enteredDate, DateUtil.DB_DATE_FORMAT);
 
     if (StringUtils.isBlank(etLotNumber.getText().toString())) {
       showConfirmNoLotNumberDialog();
       return false;
     }
 
-    lotNumber = etLotNumber.getText().toString().trim().toUpperCase();
+    lotNumber = etLotNumber.getText().toString().trim().toUpperCase() + "-" +
+        DateUtil.convertDate(expiryDate,DateUtil.DB_DATE_FORMAT, DateUtil.SIMPLE_DATE_FORMAT);
     return true;
   }
 
@@ -208,7 +209,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
   }
 
   public boolean hasIdenticalLot(List<String> existingLots) {
-    if (existingLots.contains(etLotNumber.getText().toString().toUpperCase())) {
+    if (existingLots.contains(lotNumber)) {
       lyLotNumber.setError(getString1(R.string.error_lot_already_exists));
       etLotNumber.getBackground()
           .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);

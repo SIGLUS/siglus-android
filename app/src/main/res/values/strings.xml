@@ -438,7 +438,7 @@
   <string name="wrong_expire_date_warning">The expiry date that you have entered is in the past. Please double check the date before adding the lot.</string>
   <string name="btn_add_new_lot">Add New Lot</string>
   <string name="title_add_new_lot">Add new lot to</string>
-  <string name="hint_lot_info"><![CDATA[Lot number & expiry date]]></string>
+  <string name="hint_lot_info"><![CDATA[Lot number]]></string>
   <string name="hint_lot_amount">Amount</string>
   <string name="label_existing_soh_of_lot">Existing stock on hand of lot </string>
   <string name="label_new_added_lot">Lot was just added and has no stock on hand</string>

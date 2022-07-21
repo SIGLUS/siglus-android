@@ -330,7 +330,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     DateTime dateTime = new DateTime();
     for (int i = 0; i < lotAmountPerProduct; i++) {
       dateTime = dateTime.plusYears(1);
-      String expiryDate = dateTime.toString(DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+      String expiryDate = dateTime.toString(DateUtil.DB_DATE_FORMAT);
       String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(
           inventoryViewModel.getProduct().getCode(),
           expiryDate);

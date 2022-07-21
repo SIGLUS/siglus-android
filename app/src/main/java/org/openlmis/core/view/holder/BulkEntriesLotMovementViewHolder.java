@@ -30,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputLayout;
-import java.text.MessageFormat;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -93,7 +92,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   public void populate(final LotMovementViewModel viewModel,
       BulkEntriesLotMovementAdapter bulkEntriesLotMovementAdapter) {
     this.lotMovementViewModel = viewModel;
-    lotNumber.setText(MessageFormat.format("{0} - {1}", viewModel.getLotNumber(), viewModel.getExpiryDate()));
+    lotNumber.setText(viewModel.getLotNumber());
     etLotAmount.setText(viewModel.getQuantity());
     lotStockOnHand.setText(viewModel.getLotSoh());
     movementReason.setText(getReasonDescriptionByReasonCode(viewModel));
