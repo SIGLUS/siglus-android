@@ -13,6 +13,9 @@ appcenter {
         qaRelease {
             appName = "SIGLUS-V3-QA"
         }
+        mgtRelease {
+            appName = "SIGLUS-V3-MGT"
+        }
         integRelease {
             appName = "SIGLUS-V3-INTEG"
         }
