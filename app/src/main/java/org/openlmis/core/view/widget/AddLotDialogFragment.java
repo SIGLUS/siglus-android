@@ -20,7 +20,6 @@ package org.openlmis.core.view.widget;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,7 +39,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
@@ -91,7 +89,6 @@ public class AddLotDialogFragment extends BaseDialogFragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-//    hideDay();
     if (getArguments() != null) {
       String drugNameFromArgs = getArguments().getString(Constants.PARAM_STOCK_NAME);
       if (drugNameFromArgs != null) {
@@ -111,31 +108,6 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     return dialog;
   }
 
-  private void hideDay() {
-    if (datePicker == null) {
-      return;
-    }
-    ViewGroup datePickerLayout = (ViewGroup) datePicker.getChildAt(0);
-    if (datePickerLayout == null) {
-      return;
-    }
-
-    try {
-      int dayIdentifier = Resources.getSystem().getIdentifier("day", "id", "android");
-      ViewGroup pickers = (ViewGroup) datePickerLayout.getChildAt(0);
-      for (int i = 0; i < pickers.getChildCount(); i++) {
-        View childView = pickers.getChildAt(i);
-        if (childView.getId() == dayIdentifier) {
-          childView.setVisibility(View.GONE);
-          return;
-        }
-
-      }
-    } catch (NullPointerException e) {
-      new LMISException(e, "AddLotDialogFragment,hideDay").reportToFabric();
-    }
-  }
-
   public boolean validate() {
     clearErrorMessage();
     Date enteredDate = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(),
@@ -147,8 +119,8 @@ public class AddLotDialogFragment extends BaseDialogFragment {
       return false;
     }
 
-    lotNumber = etLotNumber.getText().toString().trim().toUpperCase() + "-" +
-        DateUtil.convertDate(expiryDate,DateUtil.DB_DATE_FORMAT, DateUtil.SIMPLE_DATE_FORMAT);
+    lotNumber = etLotNumber.getText().toString().trim().toUpperCase() + "-"
+        + DateUtil.convertDate(expiryDate, DateUtil.DB_DATE_FORMAT, DateUtil.SIMPLE_DATE_FORMAT);
     return true;
   }
 

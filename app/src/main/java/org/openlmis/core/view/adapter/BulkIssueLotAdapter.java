@@ -33,7 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.adapter.BulkIssueLotAdapter.BulkIssueLotViewHolder;
 import org.openlmis.core.view.listener.AmountChangeListener;

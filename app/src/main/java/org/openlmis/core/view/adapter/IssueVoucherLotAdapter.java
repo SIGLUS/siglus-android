@@ -27,7 +27,6 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import java.text.MessageFormat;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;

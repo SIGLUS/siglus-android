@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.utils.DateUtil;
 
 @SuppressWarnings("PMD")
 public class LotMovementViewModelTest {
@@ -67,7 +68,7 @@ public class LotMovementViewModelTest {
   public void shouldConvertLotMovementItemWithRightExpiryDate() {
     viewModel.setQuantity("10");
     viewModel.setLotNumber("lot1");
-    viewModel.setExpiryDate("Feb 2015");
+    viewModel.setExpiryDate("2015-02-28");
 
     LotMovementItem lotMovementItem = viewModel.convertViewToModel(new Product());
     assertEquals(new GregorianCalendar(2015, 1, 28).getTime(),
@@ -88,10 +89,10 @@ public class LotMovementViewModelTest {
   @Test
   public void shouldGenerateLotNumberForProductWithoutLot() {
     String productCode = "02F49";
-    String expiryDate = "Nov 2017";
+    String expiryDate = "2017-11-12";
 
     assertThat(LotMovementViewModel.generateLotNumberForProductWithoutLot(productCode, expiryDate),
-        is("SEM-LOTE-02F49-112017"));
+        is("SEM-LOTE-02F49-112017-12/11/2017"));
   }
 
   @Test
@@ -111,7 +112,7 @@ public class LotMovementViewModelTest {
   public void shouldExpiredLot() {
     Calendar expireLot = Calendar.getInstance();
     expireLot.add(Calendar.MONTH, -2);
-    DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+    DateFormat dateFormat = new SimpleDateFormat(DateUtil.DB_DATE_FORMAT);
     viewModel.setExpiryDate(dateFormat.format(expireLot.getTime()));
     assertTrue(viewModel.isExpiredLot());
   }
