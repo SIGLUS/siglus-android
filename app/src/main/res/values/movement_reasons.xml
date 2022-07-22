@@ -4,6 +4,7 @@
     <item>RECEIVE|DISTRICT_DDM|District( DDM)</item>
     <item>RECEIVE|PROVINCE_DPM|Province ( DPM)</item>
     <item>RECEIVE|INTERMEDIATE_WAREHOUSE|Intermediate Warehouse ( AI)</item>
+    <item>RECEIVE|UNPACK_FROM_KIT|Unpack from Kit</item>
 
     <item>ISSUE|PUB_PHARMACY|Public pharmacy</item>
     <item>ISSUE|MATERNITY|Maternity</item>
@@ -15,7 +16,7 @@
     <item>ISSUE|PNCTL|PNCTL</item>
     <item>ISSUE|PAV|PAV</item>
     <item>ISSUE|DENTAL_WARD|Dental ward</item>
-    <item>ISSUE|UNPACK_KIT|Unpack kit</item>
+    <item>ISSUE|UNPACK_KIT|Unpack Kit</item>
     <item>ISSUE|APE|APE</item>
 
     <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Drugs in quarantine have expired, returned to Supplier</item>

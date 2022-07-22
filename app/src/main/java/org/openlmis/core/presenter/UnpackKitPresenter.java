@@ -26,7 +26,9 @@ import java.util.Date;
 import java.util.List;
 import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -156,14 +158,17 @@ public class UnpackKitPresenter extends Presenter {
 
   @NonNull
   private StockMovementItem createUnpackMovementItemAndLotMovement(StockCard stockCard,
-      String documentNumber, String signature, List<LotMovementViewModel> lotMovementViewModelList) {
+      String documentNumber, String signature, List<LotMovementViewModel> lotMovementViewModelList)
+      throws MovementReasonNotFoundException {
     StockMovementItem unpackMovementItem = new StockMovementItem(stockCard);
-    unpackMovementItem.setReason(MovementReasonManager.DDM);
+    unpackMovementItem.setReason(MovementReasonManager.getInstance().queryByCode(
+        MovementType.RECEIVE, MovementReasonManager.UNPACK_FROM_KIT).getCode());
     unpackMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
     unpackMovementItem.setDocumentNumber(documentNumber);
     unpackMovementItem.setSignature(signature);
     for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
-      lotMovementViewModel.setMovementReason(MovementReasonManager.DDM);
+      lotMovementViewModel.setMovementReason(MovementReasonManager.getInstance().queryByCode(
+          MovementType.RECEIVE, MovementReasonManager.UNPACK_FROM_KIT).getCode());
       lotMovementViewModel.setDocumentNumber(documentNumber);
     }
     unpackMovementItem.populateLotQuantitiesAndCalculateNewSOH(lotMovementViewModelList);
