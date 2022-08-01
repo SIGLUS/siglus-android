@@ -253,11 +253,8 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     assertThat(baseInfoItems.get(7).getName(), is(mmiaRepository.attrTablePatients5To9Key));
     assertThat(baseInfoItems.get(8).getName(), is(mmiaRepository.attrTablePatients10To14Key));
     assertThat(baseInfoItems.get(9).getName(), is(mmiaRepository.attrTableProphylaxisPpeKey));
-    assertThat(baseInfoItems.get(10).getName(), is(mmiaRepository.attrTableProphylaxisPrepKey));
     assertThat(baseInfoItems.get(11).getName(),
         is(mmiaRepository.attrTableProphylaxisChildKey));
-    assertThat(baseInfoItems.get(12).getName(),
-        is(mmiaRepository.attrTableProphylaxisTotalKey));
   }
 
   @Test

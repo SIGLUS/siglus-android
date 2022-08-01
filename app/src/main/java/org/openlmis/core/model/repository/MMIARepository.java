@@ -93,17 +93,11 @@ public class MMIARepository extends RnrFormRepository {
   @InjectResource(R.string.table_prophylaxis_ppe_key)
   public String attrTableProphylaxisPpeKey;
 
-  @InjectResource(R.string.table_prophylaxis_prep_key)
-  public String attrTableProphylaxisPrepKey;
-
   @InjectResource(R.string.table_prophylaxis_child_key)
   public String attrTableProphylaxisChildKey;
 
   @InjectResource(R.string.table_prophylaxis_total)
   public String attrTableProphylaxisTotal;
-
-  @InjectResource(R.string.table_prophylaxis_total_key)
-  public String attrTableProphylaxisTotalKey;
 
   @InjectResource(R.string.table_dispensed_key)
   public String attrTableDispensedKey;
@@ -164,9 +158,7 @@ public class MMIARepository extends RnrFormRepository {
     displayOrderHashMap.put(attrTablePatients10To14Key, 15);
     displayOrderHashMap.put(attrTableProphylaxisKey, 16);
     displayOrderHashMap.put(attrTableProphylaxisPpeKey, 17);
-    displayOrderHashMap.put(attrTableProphylaxisPrepKey, 18);
     displayOrderHashMap.put(attrTableProphylaxisChildKey, 19);
-    displayOrderHashMap.put(attrTableProphylaxisTotalKey, 20);
     displayOrderHashMap.put(attrTableDispensedKey, 21);
     displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS5, 22);
     displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS4, 23);
@@ -251,9 +243,7 @@ public class MMIARepository extends RnrFormRepository {
     mAttrs.put(attrTablePatients5To9Key, attrTablePatientsKey);
     mAttrs.put(attrTablePatients10To14Key, attrTablePatientsKey);
     mAttrs.put(attrTableProphylaxisPpeKey, attrTableProphylaxisKey);
-    mAttrs.put(attrTableProphylaxisPrepKey, attrTableProphylaxisKey);
     mAttrs.put(attrTableProphylaxisChildKey, attrTableProphylaxisKey);
-    mAttrs.put(attrTableProphylaxisTotalKey, attrTableProphylaxisKey);
     mAttrs.put(ATTR_TABLE_DISPENSED_DS5, attrTableDispensedKey);
     mAttrs.put(ATTR_TABLE_DISPENSED_DS4, attrTableDispensedKey);
     mAttrs.put(ATTR_TABLE_DISPENSED_DS3, attrTableDispensedKey);

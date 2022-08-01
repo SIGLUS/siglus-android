@@ -245,7 +245,6 @@
   <string name="table_patients_10to14">Pediatric from 10 to 14 years old</string>
   <string name="table_prophylaxis">Prophylaxy</string>
   <string name="table_prophylaxis_ppe">PPE</string>
-  <string name="table_prophylaxis_prep">PrEP</string>
   <string name="table_prophylaxis_child">Exposed Child</string>
   <string name="table_prophylaxis_total">Total patients in ARVT on the HF</string>
   <string name="hint_has_not_new_data">You are at the end of the list</string>

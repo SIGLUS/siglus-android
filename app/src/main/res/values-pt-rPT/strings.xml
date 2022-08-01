@@ -241,7 +241,6 @@
   <string name="table_patients_10to14">Pediátricos 10 aos 14 anos</string>
   <string name="table_prophylaxis">Profilaxia</string>
   <string name="table_prophylaxis_ppe">PPE</string>
-  <string name="table_prophylaxis_prep">PrEP</string>
   <string name="table_prophylaxis_child">Criança Exposta</string>
   <string name="table_prophylaxis_total">Total de pacientes em TARV na US</string>
   <string name="hint_has_not_new_data">Estás no fim da lista</string>

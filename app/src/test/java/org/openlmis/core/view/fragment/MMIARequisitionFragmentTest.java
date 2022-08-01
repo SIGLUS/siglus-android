@@ -235,7 +235,6 @@ public class MMIARequisitionFragmentTest {
 
   @Test
   public void shouldDeHighLightWhenTotalMatches() {
-    when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
 
     mmiaRequisitionFragment.regimeWrap = regimeListWrap;
     mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
@@ -274,7 +273,6 @@ public class MMIARequisitionFragmentTest {
 
   @Test
   public void shouldDeHighlightWhenTotalNotMatchesAndLessThanFiveWithEmptyField() {
-    when(mmiaPatientInfoListView.getTotal()).thenReturn(40L);
     when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(true);
 
     form.setComments("ab");
@@ -289,7 +287,6 @@ public class MMIARequisitionFragmentTest {
 
   @Test
   public void shouldDeHighlightWhenTotalNotMatchesAndMoreThanFive() {
-    when(mmiaPatientInfoListView.getTotal()).thenReturn(40L);
     when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
     form.setComments("abdasdsa");
@@ -304,7 +301,6 @@ public class MMIARequisitionFragmentTest {
 
   @Test
   public void shouldDeHighlightWhenTotalMatchesAndCommentLengthLessThanFiveAndWithoutEmptyField() {
-    when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
     when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
     mmiaRequisitionFragment.etComment.setText("ab");
@@ -319,7 +315,6 @@ public class MMIARequisitionFragmentTest {
 
   @Test
   public void shouldDeHighlightWhenTotalMatchesWithoutEmptyField() {
-    when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
     when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
     mmiaRequisitionFragment.etComment.setText("abcde");

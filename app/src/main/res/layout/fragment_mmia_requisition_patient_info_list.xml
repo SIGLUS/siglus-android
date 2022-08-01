@@ -16,6 +16,56 @@
     android:layout_height="wrap_content"
     tools:layout_height="@dimen/px_120" />
 
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/px_30"
+    android:background="@drawable/mmia_total_bg"
+    android:padding="@dimen/px_1"
+    android:showDividers="middle"
+    android:divider="@drawable/divider_horizontal_black"
+    android:orientation="vertical">
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      style="@style/ItemMMIA.Container">
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:background="@color/color_total_patient"
+        android:textColor="@color/color_white"
+        tools:text="hello world"/>
+      <EditText
+        android:layout_width="@dimen/px_0"
+        android:layout_height="wrap_content"
+        style="@style/ItemMMIA.EditText"
+        android:layout_weight="2"
+        android:gravity="center"/>
+    </LinearLayout>
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      style="@style/ItemMMIA.Container">
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:background="@color/color_total_month"
+        android:textColor="@color/color_white"
+        tools:text="hello world"/>
+      <EditText
+        android:layout_width="@dimen/px_0"
+        android:layout_height="wrap_content"
+        style="@style/ItemMMIA.EditText"
+        android:layout_weight="2"
+        android:gravity="center"/>
+    </LinearLayout>
+
+  </LinearLayout>
+
   <com.google.android.material.textfield.TextInputLayout
     style="@style/MMIA.CommentLayout"
     android:layout_width="match_parent"

@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 
 public class MMIAPatientInfoList extends LinearLayout {
@@ -67,12 +66,8 @@ public class MMIAPatientInfoList extends LinearLayout {
   private String attrTableProphylaxisKey;
   private String attrTableProphylaxisPpe;
   private String attrTableProphylaxisPpeKey;
-  private String attrTableProphylaxisPrep;
-  private String attrTableProphylaxisPrepKey;
   private String attrTableProphylaxisChild;
   private String attrTableProphylaxisChildKey;
-  private String attrTableProphylaxisTotal;
-  private String attrTableProphylaxisTotalKey;
   private String attrTableOrigin;
 
   private Context context;
@@ -135,12 +130,8 @@ public class MMIAPatientInfoList extends LinearLayout {
     attrTablePatients10To14Key = getString(R.string.table_patients_10to14_key);
     attrTableProphylaxisPpe = getString(R.string.table_prophylaxis_ppe);
     attrTableProphylaxisPpeKey = getString(R.string.table_prophylaxis_ppe_key);
-    attrTableProphylaxisPrep = getString(R.string.table_prophylaxis_prep);
-    attrTableProphylaxisPrepKey = getString(R.string.table_prophylaxis_prep_key);
     attrTableProphylaxisChild = getString(R.string.table_prophylaxis_child);
     attrTableProphylaxisChildKey = getString(R.string.table_prophylaxis_child_key);
-    attrTableProphylaxisTotal = getString(R.string.table_prophylaxis_total);
-    attrTableProphylaxisTotalKey = getString(R.string.table_prophylaxis_total_key);
 
   }
 
@@ -222,9 +213,7 @@ public class MMIAPatientInfoList extends LinearLayout {
     nameMap.put(attrTablePatients5To9Key, attrTablePatients5To9);
     nameMap.put(attrTablePatients10To14Key, attrTablePatients10To14);
     nameMap.put(attrTableProphylaxisPpeKey, attrTableProphylaxisPpe);
-    nameMap.put(attrTableProphylaxisPrepKey, attrTableProphylaxisPrep);
     nameMap.put(attrTableProphylaxisChildKey, attrTableProphylaxisChild);
-    nameMap.put(attrTableProphylaxisTotalKey, attrTableProphylaxisTotal);
     return nameMap;
   }
 
@@ -238,7 +227,6 @@ public class MMIAPatientInfoList extends LinearLayout {
     editTexts.add(editText);
     editText.setText(item.getValue());
     editText.addTextChangedListener(new EditTextWatcher(item));
-    setTotalViewBackground(item, editText);
     addView(view);
     editText.setOnEditorActionListener(getOnEditorActionListener(position));
   }
@@ -257,11 +245,6 @@ public class MMIAPatientInfoList extends LinearLayout {
     };
   }
 
-  private void setTotalViewBackground(BaseInfoItem item, EditText etValue) {
-    if (isTotalInfoView(item)) {
-      etValue.setBackgroundResource(R.color.color_mmia_speed_list_header);
-    }
-  }
 
   public List<BaseInfoItem> getDataList() {
     return dataList;
@@ -297,30 +280,6 @@ public class MMIAPatientInfoList extends LinearLayout {
     @Override
     public void afterTextChanged(Editable editable) {
       item.setValue(editable.toString());
-    }
-  }
-
-  public long getTotal() {
-    long totalRegimenNumber = 0;
-    for (BaseInfoItem item : dataList) {
-      if (isTotalInfoView(item) || TextUtils.isEmpty(item.getValue())) {
-        continue;
-      }
-      try {
-        totalRegimenNumber += Long.parseLong(item.getValue());
-      } catch (NumberFormatException e) {
-        new LMISException(e, "MMIAInfoList.getTotal").reportToFabric();
-      }
-    }
-    return totalRegimenNumber;
-  }
-
-  private boolean isTotalInfoView(BaseInfoItem item) {
-    if (dataWithOldFormat) {
-      return getString(R.string.label_total_month_dispense).equals(item.getName());
-    } else {
-      return (getString(R.string.table_prophylaxis_total_key).equals(item.getName())
-          || getString(R.string.table_patients_key).equals(item.getName()));
     }
   }
 
