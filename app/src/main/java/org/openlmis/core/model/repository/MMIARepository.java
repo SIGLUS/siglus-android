@@ -96,8 +96,14 @@ public class MMIARepository extends RnrFormRepository {
   @InjectResource(R.string.table_prophylaxis_child_key)
   public String attrTableProphylaxisChildKey;
 
-  @InjectResource(R.string.table_prophylaxis_total)
-  public String attrTableProphylaxisTotal;
+  @InjectResource(R.string.table_total_key)
+  public String attrTableTotalKey;
+
+  @InjectResource(R.string.table_total_patient_key)
+  public String attrTableTotalPatientKey;
+
+  @InjectResource(R.string.table_total_month_key)
+  public String attrTableTotalMonthKey;
 
   @InjectResource(R.string.table_dispensed_key)
   public String attrTableDispensedKey;
@@ -158,7 +164,9 @@ public class MMIARepository extends RnrFormRepository {
     displayOrderHashMap.put(attrTablePatients10To14Key, 15);
     displayOrderHashMap.put(attrTableProphylaxisKey, 16);
     displayOrderHashMap.put(attrTableProphylaxisPpeKey, 17);
-    displayOrderHashMap.put(attrTableProphylaxisChildKey, 19);
+    displayOrderHashMap.put(attrTableProphylaxisChildKey, 18);
+    displayOrderHashMap.put(attrTableTotalPatientKey, 19);
+    displayOrderHashMap.put(attrTableTotalMonthKey, 20);
     displayOrderHashMap.put(attrTableDispensedKey, 21);
     displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS5, 22);
     displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS4, 23);
@@ -244,6 +252,8 @@ public class MMIARepository extends RnrFormRepository {
     mAttrs.put(attrTablePatients10To14Key, attrTablePatientsKey);
     mAttrs.put(attrTableProphylaxisPpeKey, attrTableProphylaxisKey);
     mAttrs.put(attrTableProphylaxisChildKey, attrTableProphylaxisKey);
+    mAttrs.put(attrTableTotalPatientKey, attrTableTotalKey);
+    mAttrs.put(attrTableTotalMonthKey, attrTableTotalKey);
     mAttrs.put(ATTR_TABLE_DISPENSED_DS5, attrTableDispensedKey);
     mAttrs.put(ATTR_TABLE_DISPENSED_DS4, attrTableDispensedKey);
     mAttrs.put(ATTR_TABLE_DISPENSED_DS3, attrTableDispensedKey);
@@ -264,14 +274,6 @@ public class MMIARepository extends RnrFormRepository {
     return displayOrderMap.get(attrName);
   }
 
-  public long getTotalPatients(RnRForm form) {
-    for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
-      if (attrTableProphylaxisTotal.equals(item.getName())) {
-        return Long.parseLong(item.getValue());
-      }
-    }
-    return 0L;
-  }
 
   @Override
   public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards)

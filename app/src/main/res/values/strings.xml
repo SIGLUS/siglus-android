@@ -246,7 +246,8 @@
   <string name="table_prophylaxis">Prophylaxy</string>
   <string name="table_prophylaxis_ppe">PPE</string>
   <string name="table_prophylaxis_child">Exposed Child</string>
-  <string name="table_prophylaxis_total">Total patients in ARVT on the HF</string>
+  <string name="table_total_patient">Total patients in ARVT on the HF</string>
+  <string name="table_total_month">Total Months of Therapy</string>
   <string name="hint_has_not_new_data">You are at the end of the list</string>
   <string name="label_mmia_regime_adult"><![CDATA[Adults & Adolescents]]></string>
   <string name="label_mmia_regime_children">Pediatrics</string>

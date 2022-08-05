@@ -284,6 +284,15 @@ public class RnRForm extends BaseModel {
     }
   }
 
+  public String getTotalValueItemByName(String name) {
+    for (BaseInfoItem baseInfoItem : baseInfoItemListWrapper) {
+      if (name.equals(baseInfoItem.getName())) {
+        return baseInfoItem.getValue();
+      }
+    }
+    return null;
+  }
+
   public boolean isOldMMIALayout() {
     return baseInfoItemList.size() == 7;
   }

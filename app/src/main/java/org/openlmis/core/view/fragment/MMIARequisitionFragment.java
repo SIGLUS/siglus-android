@@ -28,12 +28,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.openlmis.core.R;
@@ -99,6 +99,12 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
   protected TextView mmiaRegimeThreeLinePharmacy;
   @InjectView(R.id.type_dispensed_total_within)
   protected TextView mmiaTotalDispensedWithMonth;
+
+  @InjectView(R.id.et_total_patient)
+  protected EditText etTotalPatient;
+
+  @InjectView(R.id.et_total_month)
+  protected EditText etTotalMonth;
 
   @InjectView(R.id.et_comment)
   protected TextView etComment;
@@ -235,6 +241,8 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
         getString(R.string.label_mmia_title, DateUtil.formatDateWithoutYear(form.getPeriodBegin()),
             DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
     etComment.setText(form.getComments());
+    etTotalPatient.setText(form.getTotalValueItemByName(getString(R.string.table_total_patient_key)));
+    etTotalMonth.setText(form.getTotalValueItemByName(getString(R.string.table_total_month_key)));
     highlightTotalDifference();
     bindListeners();
   }
@@ -270,7 +278,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
         loading();
         Subscription subscription = presenter
             .getSaveFormObservable(rnrFormList.getItemFormList(), regimeWrap.getDataList(),
-                combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(), mmiaDispensedInfoList.getDataList()),
+                setTotalItemValues(mmiaPatientInfoListView.getDataList()),
                 mmiaRegimeThreeLineListView.getDataList(), etComment.getText().toString())
             .subscribe(getOnSavedSubscriber());
         subscriptions.add(subscription);
@@ -311,7 +319,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
             && mmiaRegimeThreeLineListView.isCompleted()
             && mmiaDispensedInfoList.isCompleted()) {
           presenter.setViewModels(rnrFormList.getItemFormList(), regimeWrap.getDataList(),
-              combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(), mmiaDispensedInfoList.getDataList()),
+              setTotalItemValues(mmiaPatientInfoListView.getDataList()),
               mmiaRegimeThreeLineListView.getDataList(), etComment.getText().toString());
           if (presenter.viewModelHasNull()) {
             ToastUtil.show(R.string.msg_requisition_field_exist_null);
@@ -328,11 +336,16 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     };
   }
 
-  private List<BaseInfoItem> combinePatientAndDispensed(List<BaseInfoItem> patients,
-      List<BaseInfoItem> dispensed) {
-    List<BaseInfoItem> newList = new ArrayList<>(patients);
-    newList.addAll(dispensed);
-    return newList;
+  private List<BaseInfoItem> setTotalItemValues(List<BaseInfoItem> patients) {
+    for (BaseInfoItem baseInfoItem : patients) {
+      if (getString(R.string.table_total_patient_key).equals(baseInfoItem.getName())) {
+        baseInfoItem.setValue(etTotalPatient.getText().toString());
+      }
+      if (getString(R.string.table_total_month_key).equals(baseInfoItem.getName())) {
+        baseInfoItem.setValue(etTotalMonth.getText().toString());
+      }
+    }
+    return patients;
   }
 
   private boolean shouldCommentMandatory() {

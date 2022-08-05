@@ -83,7 +83,6 @@ public class MMIARequisitionPresenterTest {
     rnRForm.setStatus(Status.DRAFT);
 
     when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
-    when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
 
     presenter.loadDataOnNextAction.call(rnRForm);
   }

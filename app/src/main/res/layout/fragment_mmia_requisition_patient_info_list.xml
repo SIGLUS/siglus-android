@@ -30,38 +30,42 @@
       android:layout_height="wrap_content"
       style="@style/ItemMMIA.Container">
       <TextView
+        android:id="@+id/tv_total_patient"
         android:layout_width="@dimen/px_0"
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:gravity="center"
         android:background="@color/color_total_patient"
         android:textColor="@color/color_white"
-        tools:text="hello world"/>
+        android:text="@string/table_total_patient" />
       <EditText
+        android:id="@+id/et_total_patient"
         android:layout_width="@dimen/px_0"
         android:layout_height="wrap_content"
         style="@style/ItemMMIA.EditText"
         android:layout_weight="2"
-        android:gravity="center"/>
+        android:gravity="start"/>
     </LinearLayout>
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       style="@style/ItemMMIA.Container">
       <TextView
+        android:id="@+id/tv_total_month"
         android:layout_width="@dimen/px_0"
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:gravity="center"
         android:background="@color/color_total_month"
         android:textColor="@color/color_white"
-        tools:text="hello world"/>
+        android:text="@string/table_total_month"/>
       <EditText
+        android:id="@+id/et_total_month"
         android:layout_width="@dimen/px_0"
         android:layout_height="wrap_content"
         style="@style/ItemMMIA.EditText"
         android:layout_weight="2"
-        android:gravity="center"/>
+        android:gravity="start"/>
     </LinearLayout>
 
   </LinearLayout>

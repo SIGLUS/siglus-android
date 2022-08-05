@@ -242,7 +242,8 @@
   <string name="table_prophylaxis">Profilaxia</string>
   <string name="table_prophylaxis_ppe">PPE</string>
   <string name="table_prophylaxis_child">Criança Exposta</string>
-  <string name="table_prophylaxis_total">Total de pacientes em TARV na US</string>
+  <string name="table_total_patient">Total de pacientes em TARV na US</string>
+  <string name="table_total_month">Total de Meses de Terapêutica</string>
   <string name="hint_has_not_new_data">Estás no fim da lista</string>
   <string name="label_mmia_regime_adult"><![CDATA[Adultos & Adolescentes]]></string>
   <string name="label_mmia_regime_children">Pediátricos</string>
