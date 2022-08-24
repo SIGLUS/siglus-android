@@ -69,7 +69,7 @@ public class DraftIssueVoucherProductLotItem  extends BaseModel {
         .shippedQuantity(shippedQuantity)
         .acceptedQuantity(acceptedQuantity)
         .lotNumber(lotNumber)
-        .expiryDate(DateUtil.formatDate(expirationDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR))
+        .expiryDate(DateUtil.formatDate(expirationDate, DateUtil.DB_DATE_FORMAT))
         .productLotItem(this)
         .lot(Lot.builder()
             .lotNumber(lotNumber)

@@ -106,8 +106,7 @@ public class LotMovementViewModel {
     Lot lot = new Lot();
     lot.setProduct(product);
     lot.setLotNumber(lotNumber);
-    lot.setExpirationDate(
-        DateUtil.getActualMaximumDate(DateUtil.parseString(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
+    lot.setExpirationDate(DateUtil.parseString(expiryDate, DateUtil.DB_DATE_FORMAT));
     LotMovementItem lotMovementItem = new LotMovementItem();
     lotMovementItem.setLot(lot);
     long currentStockOnHand = Long.parseLong(getQuantity());
@@ -122,8 +121,7 @@ public class LotMovementViewModel {
     Lot lot = new Lot();
     lot.setProduct(product);
     lot.setLotNumber(lotNumber);
-    lot.setExpirationDate(
-        DateUtil.getActualMaximumDate(DateUtil.parseString(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
+    lot.setExpirationDate(DateUtil.parseString(expiryDate, DateUtil.DB_DATE_FORMAT));
     LotMovementItem lotMovementItem = new LotMovementItem();
     lotMovementItem.setLot(lot);
     lotMovementItem.setStockOnHand(Long.parseLong(getLotSoh()));

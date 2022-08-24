@@ -304,7 +304,7 @@ public class MMIARnrFormProductList extends LinearLayout {
       try {
         if (!(TextUtils.isEmpty(item.getValidate()) || isArchived)) {
           tvValidate.setText(DateUtil.convertDate(item.getValidate(), DateUtil.SIMPLE_DATE_FORMAT,
-              DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+              DateUtil.DB_DATE_FORMAT));
         }
       } catch (Exception e) {
         new LMISException(e, "MMIARnrForm.addRightView").reportToFabric();

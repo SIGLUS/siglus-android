@@ -112,7 +112,7 @@ public class InventoryRepositoryTest {
     draftInventory.setStockCard(stockCard);
     LotMovementViewModel draftLotItem = new LotMovementViewModel();
     draftLotItem.setLotNumber("A111");
-    draftLotItem.setExpiryDate("Feb 2015");
+    draftLotItem.setExpiryDate("2015-02-28");
     draftLotItem.setQuantity("20");
     draftInventory.setExistingLotMovementViewModelList(Arrays.asList(draftLotItem));
 

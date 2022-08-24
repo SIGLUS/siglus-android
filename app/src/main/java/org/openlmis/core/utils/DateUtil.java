@@ -275,7 +275,7 @@ public final class DateUtil {
   }
 
   public static String getVirtualLotExpireDate() {
-    return new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR, Locale.getDefault()).format(DateUtil.getCurrentDate());
+    return new SimpleDateFormat(DB_DATE_FORMAT, Locale.getDefault()).format(DateUtil.getCurrentDate());
   }
 
   private static boolean isTraining() {

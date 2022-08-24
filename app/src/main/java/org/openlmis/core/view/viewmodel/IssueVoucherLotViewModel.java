@@ -88,7 +88,7 @@ public class IssueVoucherLotViewModel implements MultiItemEntity, Comparable<Iss
     return new IssueVoucherLotViewModelBuilder()
         .lotNumber(lotOnHand.getLot().getLotNumber())
         .expiryDate(DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(),
-            DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR))
+            DateUtil.DB_DATE_FORMAT))
         .product(lotOnHand.getStockCard().getProduct())
         .lot(lotOnHand.getLot())
         .valid(true)
@@ -151,8 +151,7 @@ public class IssueVoucherLotViewModel implements MultiItemEntity, Comparable<Iss
         .shippedQuantity(shippedQuantity)
         .acceptedQuantity(acceptedQuantity)
         .done(done)
-        .expirationDate(DateUtil.getActualMaximumDate(DateUtil
-            .parseString(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)))
+        .expirationDate((DateUtil.parseString(expiryDate, DateUtil.DB_DATE_FORMAT)))
         .lotNumber(lotNumber)
         .newAdded(isNewAdd)
         .build();

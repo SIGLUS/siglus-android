@@ -224,9 +224,9 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     draftInventory.setStockCard(stockCardWithIdNine);
     draftInventory.setQuantity(20L);
     LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModelBuilder()
-        .setLotNumber("test").setExpiryDate("Sep 2016").setQuantity("10").build();
+        .setLotNumber("test").setExpiryDate("2016-09-30").setQuantity("10").build();
     LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModelBuilder()
-        .setLotNumber("testNew").setExpiryDate("Sep 2016").setQuantity("10").build();
+        .setLotNumber("testNew").setExpiryDate("2016-09-30").setQuantity("10").build();
     inventoryViewModels.get(0)
         .setExistingLotMovementViewModelList(newArrayList(lotMovementViewModel1));
     DraftLotItem draftLotItem1 = new DraftLotItem(lotMovementViewModel1,

@@ -128,7 +128,7 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
       existLotMovementViewModel.setQuantity(formatQuantity(draftLotItem.getQuantity()));
       existLotMovementViewModel.setLotNumber(draftLotItem.getLotNumber());
       existLotMovementViewModel.setExpiryDate(DateUtil
-          .formatDate(draftLotItem.getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+          .formatDate(draftLotItem.getExpirationDate(), DateUtil.DB_DATE_FORMAT));
       getExistingLotMovementViewModelList().add(existLotMovementViewModel);
     }
   }
