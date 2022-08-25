@@ -131,7 +131,7 @@ public class RequisitionPeriodService {
 
     DateTime periodBeginDate = DateUtil.cutTimeStamp(new DateTime(currentBeginDate));
 
-    if (initializeDayOfMonth < Period.INVENTORY_BEGIN_DAY) {
+    if (initializeDayOfMonth < Period.BEGIN_DAY) {
       periodBeginDate = periodBeginDate.minusMonths(1);
     }
 
