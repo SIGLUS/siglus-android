@@ -4,7 +4,7 @@
     <item>RECEIVE|DISTRICT_DDM|District( DDM)</item>
     <item>RECEIVE|PROVINCE_DPM|Province ( DPM)</item>
     <item>RECEIVE|INTERMEDIATE_WAREHOUSE|Intermediate Warehouse ( AI)</item>
-    <item>RECEIVE|UNPACK_FROM_KIT|Unpack from Kit</item>
+    <item>RECEIVE|UNPACK_FROM_KIT|Unpacked from Kit</item>
 
     <item>ISSUE|PUB_PHARMACY|Public pharmacy</item>
     <item>ISSUE|MATERNITY|Maternity</item>
