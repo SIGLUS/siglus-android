@@ -101,8 +101,8 @@ public class RequisitionPeriodServiceTest {
         .thenReturn(reportTypeForm);
     when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
     Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
-    assertThat(period.getBegin(), is(new DateTime("2016-01-21")));
-    assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(2));
+    assertThat(period.getBegin(), is(new DateTime("2016-02-21")));
+    assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
   }
 
   @Test
@@ -145,10 +145,10 @@ public class RequisitionPeriodServiceTest {
     } else {
       assertThat(period.getBegin(),
           is(new DateTime(
-              DateUtil.parseString(String.format("%s-%s-21 12:00:00", year, (monthOfYear - 2)), DateUtil.DB_DATE_FORMAT))));
+              DateUtil.parseString(String.format("%s-%s-21 12:00:00", year, (monthOfYear - 1)), DateUtil.DB_DATE_FORMAT))));
       assertThat(period.getEnd(),
           is(new DateTime(
-              DateUtil.parseString(String.format("%s-%s-20 12:00:00", year, (monthOfYear - 1)), DateUtil.DB_DATE_FORMAT))));
+              DateUtil.parseString(String.format("%s-%s-20 12:00:00", year, (monthOfYear)), DateUtil.DB_DATE_FORMAT))));
     }
 
   }
@@ -168,8 +168,8 @@ public class RequisitionPeriodServiceTest {
     Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
 
     assertThat(period.getBegin(),
-        is(new DateTime(DateUtil.parseString("2016-02-21 00:00:00", DateUtil.DATE_TIME_FORMAT))));
-    assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
+        is(new DateTime(DateUtil.parseString("2016-03-21 00:00:00", DateUtil.DATE_TIME_FORMAT))));
+    assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(4));
   }
 
   @Test
@@ -185,7 +185,7 @@ public class RequisitionPeriodServiceTest {
     Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
     doReturn(nextPeriodInSchedule).when(requisitionPeriodService).generateNextPeriod("P1", null);
 
-    assertThat(requisitionPeriodService.getMissedPeriodOffsetMonth("P1"), is(4));
+    assertThat(requisitionPeriodService.getMissedPeriodOffsetMonth("P1"), is(3));
   }
 
   @Test

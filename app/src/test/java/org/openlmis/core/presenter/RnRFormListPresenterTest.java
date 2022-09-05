@@ -175,7 +175,7 @@ public class RnRFormListPresenterTest {
 
     assertThat(rnRFormViewModels.size()).isEqualTo(3);
     assertThat(rnRFormViewModels.get(0).getType())
-        .isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
+        .isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(periodAplToMay.getEnd());
     assertThat(rnRFormViewModels.get(1).getType())
         .isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
@@ -294,7 +294,7 @@ public class RnRFormListPresenterTest {
 
     assertThat(rnRFormViewModels.size()).isEqualTo(1);
     assertThat(rnRFormViewModels.get(0).getType())
-        .isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
+        .isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(periodAplToMay.getEnd());
   }
 
@@ -380,8 +380,8 @@ public class RnRFormListPresenterTest {
     when(requisitionPeriodService.hasMissedPeriod(program.getProgramCode())).thenReturn(true);
     when(requisitionPeriodService.getMissedPeriodOffsetMonth(program.getProgramCode()))
         .thenReturn(1);
-    when(requisitionPeriodService.getCurrentMonthInventoryBeginDate())
-        .thenReturn(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)));
+    when(requisitionPeriodService.getCurrentMonthBeginDate())
+        .thenReturn(new DateTime(DateUtil.parseString("2016-04-21", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
         .thenReturn(new ArrayList<Inventory>());
 
@@ -415,8 +415,8 @@ public class RnRFormListPresenterTest {
         .thenReturn(true);
     when(requisitionPeriodService.getMissedPeriodOffsetMonth(program.getProgramCode(), typeForm))
         .thenReturn(1);
-    when(requisitionPeriodService.getCurrentMonthInventoryBeginDate())
-        .thenReturn(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)));
+    when(requisitionPeriodService.getCurrentMonthBeginDate())
+        .thenReturn(new DateTime(DateUtil.parseString("2016-04-21", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
         .thenReturn(newArrayList(new Inventory()));
 
@@ -424,7 +424,7 @@ public class RnRFormListPresenterTest {
 
     assertThat(rnRFormViewModels.size()).isEqualTo(3);
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth())
-        .isEqualTo(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)));
+        .isEqualTo(new DateTime(DateUtil.parseString("2016-05-21", DateUtil.DB_DATE_FORMAT)));
     assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     assertThat(rnRFormViewModels.get(1).getPeriodEndMonth())
         .isEqualTo(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)));
@@ -452,8 +452,8 @@ public class RnRFormListPresenterTest {
         .thenReturn(true);
     when(requisitionPeriodService.getMissedPeriodOffsetMonth(program.getProgramCode(), typeForm))
         .thenReturn(2);
-    when(requisitionPeriodService.getCurrentMonthInventoryBeginDate())
-        .thenReturn(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)));
+    when(requisitionPeriodService.getCurrentMonthBeginDate())
+        .thenReturn(new DateTime(DateUtil.parseString("2016-04-21", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
         .thenReturn(new ArrayList<Inventory>());
 
@@ -461,10 +461,10 @@ public class RnRFormListPresenterTest {
 
     assertThat(rnRFormViewModels.size()).isEqualTo(4);
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth())
-        .isEqualTo(new DateTime(DateUtil.parseString("2016-06-18", DateUtil.DB_DATE_FORMAT)));
+        .isEqualTo(new DateTime(DateUtil.parseString("2016-05-21", DateUtil.DB_DATE_FORMAT)));
     assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     assertThat(rnRFormViewModels.get(1).getPeriodEndMonth())
-        .isEqualTo(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)));
+        .isEqualTo(new DateTime(DateUtil.parseString("2016-04-21", DateUtil.DB_DATE_FORMAT)));
     assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     assertThat(rnRFormViewModels.get(2).getPeriodEndMonth())
         .isEqualTo(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)));
@@ -484,8 +484,8 @@ public class RnRFormListPresenterTest {
     LMISTestApp.getInstance().setCurrentTimeMillis(
         new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
     Period periodMayToJun = new Period(
-        new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)),
-        new DateTime(DateUtil.parseString("2016-06-18", DateUtil.DB_DATE_FORMAT)));
+        new DateTime(DateUtil.parseString("2016-05-21", DateUtil.DB_DATE_FORMAT)),
+        new DateTime(DateUtil.parseString("2016-06-21", DateUtil.DB_DATE_FORMAT)));
     ReportTypeForm typeForm = getTypeForm(presenter);
 
     when(rnrFormRepository
@@ -497,8 +497,8 @@ public class RnRFormListPresenterTest {
         .thenReturn(true);
     when(requisitionPeriodService.getMissedPeriodOffsetMonth(program.getProgramCode(), typeForm))
         .thenReturn(1);
-    when(requisitionPeriodService.getCurrentMonthInventoryBeginDate())
-        .thenReturn(new DateTime(DateUtil.parseString("2016-06-18", DateUtil.DB_DATE_FORMAT)));
+    when(requisitionPeriodService.getCurrentMonthBeginDate())
+        .thenReturn(new DateTime(DateUtil.parseString("2016-05-21", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
         .thenReturn(new ArrayList<Inventory>());
 
@@ -506,10 +506,10 @@ public class RnRFormListPresenterTest {
 
     assertThat(rnRFormViewModels.size()).isEqualTo(4);
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth())
-        .isEqualTo(new DateTime(DateUtil.parseString("2016-07-18", DateUtil.DB_DATE_FORMAT)));
+        .isEqualTo(new DateTime(DateUtil.parseString("2016-06-21", DateUtil.DB_DATE_FORMAT)));
     assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     assertThat(rnRFormViewModels.get(1).getPeriodEndMonth())
-        .isEqualTo(new DateTime(DateUtil.parseString("2016-06-18", DateUtil.DB_DATE_FORMAT)));
+        .isEqualTo(new DateTime(DateUtil.parseString("2016-05-21", DateUtil.DB_DATE_FORMAT)));
     assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     assertThat(rnRFormViewModels.get(2).getPeriodEndMonth())
         .isEqualTo(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)));
@@ -537,7 +537,7 @@ public class RnRFormListPresenterTest {
         .thenReturn(true);
     when(requisitionPeriodService.getMissedPeriodOffsetMonth(program.getProgramCode(), typeForm))
         .thenReturn(2);
-    when(requisitionPeriodService.getCurrentMonthInventoryBeginDate())
+    when(requisitionPeriodService.getCurrentMonthBeginDate())
         .thenReturn(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
         .thenReturn(new ArrayList<Inventory>());
@@ -574,7 +574,7 @@ public class RnRFormListPresenterTest {
         .thenReturn(true);
     when(requisitionPeriodService.getMissedPeriodOffsetMonth(program.getProgramCode(), typeForm))
         .thenReturn(2);
-    when(requisitionPeriodService.getCurrentMonthInventoryBeginDate())
+    when(requisitionPeriodService.getCurrentMonthBeginDate())
         .thenReturn(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
         .thenReturn(newArrayList(new Inventory()));
@@ -610,7 +610,7 @@ public class RnRFormListPresenterTest {
         .thenReturn(true);
     when(requisitionPeriodService.getMissedPeriodOffsetMonth(program.getProgramCode(), typeForm))
         .thenReturn(3);
-    when(requisitionPeriodService.getCurrentMonthInventoryBeginDate())
+    when(requisitionPeriodService.getCurrentMonthBeginDate())
         .thenReturn(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
         .thenReturn(new ArrayList<Inventory>());

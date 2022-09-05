@@ -155,7 +155,7 @@ public class RnRFormListPresenter extends Presenter {
 
   private boolean isCanNotCreateRnr(Period currentPeriod) {
     DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
-    return dateTime.isBefore(currentPeriod.getInventoryBegin());
+    return dateTime.isBefore(currentPeriod.getBegin());
   }
 
   private void populateSyncErrorsOnViewModels(final List<RnRFormViewModel> rnrViewModels) {
@@ -183,7 +183,7 @@ public class RnRFormListPresenter extends Presenter {
   protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels,
       ReportTypeForm typeForm) throws LMISException {
     int offsetMonth = requisitionPeriodService.getMissedPeriodOffsetMonth(this.programCode, typeForm);
-    DateTime inventoryBeginDate = requisitionPeriodService.getCurrentMonthInventoryBeginDate();
+    DateTime inventoryBeginDate = requisitionPeriodService.getCurrentMonthBeginDate();
 
     for (int i = 0; i < offsetMonth; i++) {
       viewModels.add(RnRFormViewModel.buildMissedPeriod(inventoryBeginDate.toDate(),
