@@ -36,14 +36,13 @@ public class ReportListPageAdapter extends FragmentStateAdapter {
 
   public void setData(List<ReportTypeForm> data) {
     this.data = data;
-    notifyDataSetChanged();
+    notifyItemRangeChanged(0, data.size() - 1);
   }
 
   @NonNull
   @Override
   public Fragment createFragment(int position) {
-    final ReportTypeForm reportTypeForm = data.get(position);
-    return ReportListFragment.newInstance(reportTypeForm.getCode());
+    return ReportListFragment.newInstance(data.get(position).getCode());
   }
 
   @Override

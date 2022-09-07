@@ -22,6 +22,7 @@ import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
@@ -37,13 +38,16 @@ import rx.schedulers.Schedulers;
 
 public class ReportListPresenter extends Presenter {
 
-  private static final HashMap<String, Integer> PROGRAM_CODE_ORDER = new HashMap<>();
+  private static final Map<String, Integer> PROGRAM_CODE_ORDER;
 
   static {
-    PROGRAM_CODE_ORDER.put(Program.VIA_CODE, 1);
-    PROGRAM_CODE_ORDER.put(Program.MALARIA_CODE, 2);
-    PROGRAM_CODE_ORDER.put(Program.TARV_CODE, 3);
-    PROGRAM_CODE_ORDER.put(Program.RAPID_TEST_CODE, 4);
+    Map<String, Integer> map = new HashMap<>();
+    map.put(Program.VIA_CODE, 1);
+    map.put(Program.MALARIA_CODE, 2);
+    map.put(Program.TARV_CODE, 3);
+    map.put(Program.RAPID_TEST_CODE, 4);
+    map.put(Program.MMTB_CODE, 5);
+    PROGRAM_CODE_ORDER = Collections.unmodifiableMap(map);
   }
 
   private ReportListView view;
@@ -76,8 +80,8 @@ public class ReportListPresenter extends Presenter {
 
     private void sortReportTypes(List<ReportTypeForm> programs) {
       Collections.sort(programs, (o1, o2) -> {
-        final Integer o1Order = PROGRAM_CODE_ORDER.get(o1.getCode());
-        final Integer o2Order = PROGRAM_CODE_ORDER.get(o2.getCode());
+        Integer o1Order = PROGRAM_CODE_ORDER.get(o1.getCode());
+        Integer o2Order = PROGRAM_CODE_ORDER.get(o2.getCode());
         return Integer.compare(o1Order == null ? 0 : o1Order, o2Order == null ? 0 : o2Order);
       });
     }
@@ -91,13 +95,14 @@ public class ReportListPresenter extends Presenter {
 
   public void getSupportReportTypes() {
     Observable.create((OnSubscribe<List<ReportTypeForm>>) subscriber -> {
-      final List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAllWithActive();
+      List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAllWithActive();
       setHasVCReportType(reportTypeForms);
       subscriber.onNext(reportTypeForms);
       subscriber.onCompleted();
-    }).subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(getSupportReportTypesSubscriber);
+    })
+      .subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(getSupportReportTypesSubscriber);
   }
 
   public boolean isHasVCReportType() {
