@@ -59,6 +59,7 @@ import rx.Subscription;
 
 @ContentView(R.layout.activity_rnr_list)
 @SuppressWarnings("squid:S110")
+// TODO Check if it's useless and delete if so
 public class RnRFormListActivity extends BaseReportListActivity {
 
   public static final int DEFAULT_FORM_ID_OF_NOT_AUTHORIZED = 0;
