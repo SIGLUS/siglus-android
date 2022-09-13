@@ -155,7 +155,7 @@ public class RnRFormListPresenter extends Presenter {
 
   private boolean isCanNotCreateRnr(Period currentPeriod) {
     DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
-    return dateTime.isBefore(currentPeriod.getBegin());
+    return dateTime.isBefore(currentPeriod.getInventoryBegin());
   }
 
   private void populateSyncErrorsOnViewModels(final List<RnRFormViewModel> rnrViewModels) {
