@@ -84,6 +84,8 @@ public class StockRepository {
   StockMovementRepository stockMovementRepository;
   @Inject
   CmmRepository cmmRepository;
+  @Inject
+  InventoryRepository inventoryRepository;
 
   GenericDao<StockCard> genericDao;
 
@@ -381,6 +383,7 @@ public class StockRepository {
 
   public void batchCreateSyncDownStockCardsAndMovements(final List<StockCard> stockCards) throws SQLException {
     TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+      inventoryRepository.recoverInventoryFormStockCard(stockCards);
       for (StockCard stockCard : stockCards) {
         if (stockCard.getId() <= 0) {
           saveStockCardAndBatchUpdateMovements(stockCard);
@@ -394,6 +397,7 @@ public class StockRepository {
   }
 
   public void batchSaveLastYearMovements(List<StockCard> stockCards) throws LMISException {
+    inventoryRepository.recoverInventoryFormStockCard(stockCards);
     stockMovementRepository.batchSaveStockMovements(stockCards);
   }
 

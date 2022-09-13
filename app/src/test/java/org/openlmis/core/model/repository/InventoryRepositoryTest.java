@@ -4,12 +4,16 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.RECEIVE;
 import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import androidx.annotation.NonNull;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +23,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftInitialInventory;
@@ -39,6 +46,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
+import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
@@ -50,15 +58,22 @@ import roboguice.RoboGuice;
 public class InventoryRepositoryTest {
 
   private InventoryRepository repository;
+  private InventoryRepository repositoryWithMockDao;
   private StockRepository stockRepository;
   private ProgramRepository programRepository;
   private ProductRepository productRepository;
   private ProductProgramRepository productProgramRepository;
+  @Mock
+  GenericDao<Inventory> inventoryDaoMock;
 
   @Before
   public void setup() throws LMISException {
+    MockitoAnnotations.initMocks(this);
     repository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(InventoryRepository.class);
+    repositoryWithMockDao = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(InventoryRepository.class);
+    repositoryWithMockDao.genericDao = inventoryDaoMock;
     stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(StockRepository.class);
     programRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
@@ -121,14 +136,78 @@ public class InventoryRepositoryTest {
 
     assertEquals("A111", draftInventoryQueried.getDraftLotItemListWrapper().get(0).getLotNumber());
     assertEquals(product, draftInventoryQueried.getDraftLotItemListWrapper().get(0).getProduct());
-    assertEquals("2015-02-28", DateUtil.formatDate(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(),
-        DB_DATE_FORMAT));
+    assertEquals("2015-02-28",
+        DateUtil.formatDate(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(),
+            DB_DATE_FORMAT));
     assertEquals(product, draftInventoryQueried.getStockCard().getProduct());
     assertFalse(draftInventoryQueried.getDraftLotItemListWrapper().get(0).isNewAdded());
 
     assertEquals(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getQuantity(), Long.valueOf(20));
   }
 
+  @Test
+  public void shouldDoNothingIfStockCardIsNullOrEmpty() throws LMISException {
+    // when
+    repository.recoverInventoryFormStockCard(null);
+    repository.recoverInventoryFormStockCard(new ArrayList<>());
+
+    // then
+    verify(inventoryDaoMock, Mockito.never()).queryForAll();
+  }
+
+  @Test
+  public void shouldNotRecoverInventoryForSameDate() throws LMISException {
+    // given
+    ArrayList<Inventory> existInventoryList = new ArrayList<>();
+    Inventory existInventory = new Inventory();
+    String movementDate = "2022-02-02";
+    existInventory.setCreatedAt(DateUtil.parseString(movementDate, DB_DATE_FORMAT));
+    existInventory.setUpdatedAt(DateUtil.parseString(movementDate, DB_DATE_FORMAT));
+    existInventoryList.add(existInventory);
+    when(inventoryDaoMock.queryForAll()).thenReturn(existInventoryList);
+    Product product = ProductBuilder.create().setProductId(1L).setCode("p1").setIsActive(true)
+        .setIsKit(false).build();
+    StockCard stockCard = createNewStockCard("code", null, product, false);
+    StockMovementItem stockMovementItem = new StockMovementItemBuilder()
+        .withMovementDate(movementDate).withMovementType(PHYSICAL_INVENTORY).build();
+    stockCard.getStockMovementItemsWrapper().add(stockMovementItem);
+    ArrayList<StockCard> stockCards = new ArrayList<>();
+    stockCards.add(stockCard);
+
+    // when
+    repositoryWithMockDao.recoverInventoryFormStockCard(stockCards);
+
+    // then
+    Mockito.verify(inventoryDaoMock, Mockito.times(1)).queryForAll();
+    Mockito.verify(inventoryDaoMock, Mockito.times(1)).create(new ArrayList<>());
+  }
+
+  @Test
+  public void shouldRecoverInventoryForDifferentDate() throws LMISException {
+    // given
+    Product product = ProductBuilder.create().setProductId(1L).setCode("p1").setIsActive(true)
+        .setIsKit(false).build();
+    StockCard stockCard = createNewStockCard("code", null, product, false);
+    String movementDate = "2022-02-02";
+    StockMovementItem stockMovementItem = new StockMovementItemBuilder()
+        .withMovementDate(movementDate).withMovementType(PHYSICAL_INVENTORY).build();
+    stockCard.getStockMovementItemsWrapper().add(stockMovementItem);
+    ArrayList<StockCard> stockCards = new ArrayList<>();
+    stockCards.add(stockCard);
+
+    Inventory recoverInventory = new Inventory();
+    recoverInventory.setCreatedAt(DateUtil.parseString(movementDate, DB_DATE_FORMAT));
+    recoverInventory.setUpdatedAt(DateUtil.parseString(movementDate, DB_DATE_FORMAT));
+    ArrayList<Inventory> recoverInventoryList = new ArrayList<>();
+    recoverInventoryList.add(recoverInventory);
+
+    // when
+    repositoryWithMockDao.recoverInventoryFormStockCard(stockCards);
+
+    // then
+    Mockito.verify(inventoryDaoMock, Mockito.times(1)).queryForAll();
+    Mockito.verify(inventoryDaoMock, Mockito.times(1)).create(recoverInventoryList);
+  }
 
   @Test
   public void shouldSaveInitialDraftInventoryAndDraftLotItem()

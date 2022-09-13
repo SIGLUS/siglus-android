@@ -21,21 +21,30 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.table.TableUtils;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.DraftInitialInventory;
 import org.openlmis.core.model.DraftInitialInventoryLotItem;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 public class InventoryRepository {
 
@@ -66,6 +75,42 @@ public class InventoryRepository {
       genericDao.create(inventory);
     } catch (LMISException e) {
       new LMISException(e, "InventoryRepository.save").reportToFabric();
+    }
+  }
+
+  public void recoverInventoryFormStockCard(List<StockCard> stockCardList) {
+    if (stockCardList == null || stockCardList.isEmpty()) {
+      return;
+    }
+    try {
+      Set<String> existInventoryDateSet = new HashSet<>();
+      Set<String> movementDateSet = new HashSet<>();
+      // get exist inventory
+      for (Inventory inventory : genericDao.queryForAll()) {
+        existInventoryDateSet.add(DateUtil.formatDate(inventory.getUpdatedAt(), DateUtil.DB_DATE_FORMAT));
+      }
+      // get inventory movement from stock movement
+      for (StockCard stockCard : stockCardList) {
+        for (StockMovementItem stockMovementItem : stockCard.getStockMovementItemsWrapper()) {
+          if (stockMovementItem.getMovementType() != MovementType.PHYSICAL_INVENTORY) {
+            continue;
+          }
+          movementDateSet.add(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
+        }
+      }
+      // calculate missed inventory date and save to db
+      ImmutableList<Inventory> needRecoverInventory = FluentIterable.from(movementDateSet)
+          .filter(date -> !existInventoryDateSet.contains(date))
+          .transform(date -> {
+            Inventory inventory = new Inventory();
+            Date movementDate = DateUtil.parseString(date, DateUtil.DB_DATE_FORMAT);
+            inventory.setCreatedAt(movementDate);
+            inventory.setUpdatedAt(movementDate);
+            return inventory;
+          }).toList();
+      genericDao.create(needRecoverInventory);
+    } catch (LMISException e) {
+      new LMISException(e, "InventoryRepository.recover").reportToFabric();
     }
   }
 
