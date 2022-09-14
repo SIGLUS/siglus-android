@@ -168,8 +168,8 @@ public class RequisitionPeriodServiceTest {
     Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
 
     assertThat(period.getBegin(),
-        is(new DateTime(DateUtil.parseString("2016-03-21 00:00:00", DateUtil.DATE_TIME_FORMAT))));
-    assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(4));
+        is(new DateTime(DateUtil.parseString("2016-02-21 00:00:00", DateUtil.DATE_TIME_FORMAT))));
+    assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
   }
 
   @Test

@@ -116,7 +116,7 @@ public class RequisitionPeriodService {
     initializeDateTime = initializeDateTime == null ? new DateTime(stockMovementRepository
         .queryEarliestStockMovementDateByProgram(programCode)) : initializeDateTime;
 
-    DateTime reportStartTime = reportTypePeriod(programCode);
+    DateTime reportStartTime = new DateTime(reportTypeFormRepository.getReportType(programCode).getStartTime());
 
     DateTime resultDate = initializeDateTime.isAfter(reportStartTime) ? initializeDateTime : reportStartTime;
 
@@ -133,18 +133,6 @@ public class RequisitionPeriodService {
     return DateUtil.cutTimeStamp(new DateTime(currentBeginDate));
   }
 
-  private DateTime reportTypePeriod(String programCode) throws LMISException {
-    DateTime startTime = new DateTime(
-        reportTypeFormRepository.getReportType(programCode).getStartTime());
-    Calendar currentBeginDate = Calendar.getInstance();
-    int initializeDayOfMonth = startTime.getDayOfMonth();
-    if (initializeDayOfMonth < Period.BEGIN_DAY) {
-      currentBeginDate.set(startTime.getYear(), startTime.getMonthOfYear() - 1, Period.BEGIN_DAY);
-    } else {
-      currentBeginDate.set(startTime.getYear(), startTime.getMonthOfYear(), Period.BEGIN_DAY);
-    }
-    return DateUtil.cutTimeStamp(new DateTime(currentBeginDate));
-  }
 
   private DateTime defaultEndDateTo20th(DateTime periodBeginDate) {
     Calendar date = Calendar.getInstance();
