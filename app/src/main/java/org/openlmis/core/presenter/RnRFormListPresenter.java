@@ -183,14 +183,14 @@ public class RnRFormListPresenter extends Presenter {
   protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels,
       ReportTypeForm typeForm) throws LMISException {
     int offsetMonth = requisitionPeriodService.getMissedPeriodOffsetMonth(this.programCode, typeForm);
-    DateTime inventoryBeginDate = requisitionPeriodService.getCurrentMonthBeginDate();
+    DateTime periodBeginDate = requisitionPeriodService.getCurrentPeriodBeginDate();
 
     for (int i = 0; i < offsetMonth; i++) {
-      viewModels.add(RnRFormViewModel.buildMissedPeriod(inventoryBeginDate.toDate(),
-          inventoryBeginDate.plusMonths(1).toDate()));
-      inventoryBeginDate = inventoryBeginDate.minusMonths(1);
+      viewModels.add(RnRFormViewModel.buildMissedPeriod(periodBeginDate.toDate(),
+          periodBeginDate.plusMonths(1).toDate()));
+      periodBeginDate = periodBeginDate.minusMonths(1);
     }
-    generateFirstMissedRnrFormViewModel(viewModels, inventoryBeginDate, typeForm);
+    generateFirstMissedRnrFormViewModel(viewModels, periodBeginDate, typeForm);
   }
 
   private void generateFirstMissedRnrFormViewModel(List<RnRFormViewModel> viewModels,

@@ -182,7 +182,7 @@ public class RequisitionPeriodService {
     DateTime nextPeriodInScheduleBegin = generateNextPeriod(programCode, null).getBegin();
 
     DateTime currentMonthInventoryBeginDate;
-    currentMonthInventoryBeginDate = getCurrentMonthBeginDate();
+    currentMonthInventoryBeginDate = getCurrentPeriodBeginDate();
     return DateUtil.calculateDateMonthOffset(nextPeriodInScheduleBegin.toDate(),
         currentMonthInventoryBeginDate.toDate());
   }
@@ -191,7 +191,7 @@ public class RequisitionPeriodService {
       throws LMISException {
     DateTime nextPeriodInScheduleBegin = generateNextPeriod(programCode, null, typeForm).getBegin();
     DateTime currentMonthInventoryBeginDate;
-    currentMonthInventoryBeginDate = getCurrentMonthBeginDate();
+    currentMonthInventoryBeginDate = getCurrentPeriodBeginDate();
     return DateUtil.calculateDateMonthOffset(nextPeriodInScheduleBegin.toDate(),
         currentMonthInventoryBeginDate.toDate());
   }
@@ -214,7 +214,7 @@ public class RequisitionPeriodService {
     return incompleteReports;
   }
 
-  public DateTime getCurrentMonthBeginDate() {
+  public DateTime getCurrentPeriodBeginDate() {
     DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
     DateTime currentMonthBeginDate;
     if (currentDate.getDayOfMonth() >= Period.BEGIN_DAY) {
