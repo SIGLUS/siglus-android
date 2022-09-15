@@ -40,7 +40,6 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
 import roboguice.RoboGuice;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -71,9 +70,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
   public void loadData(final long formId, Date periodEndDate) {
     this.periodEndDate = periodEndDate;
     view.loading();
-    Subscription subscription = getRnrFormObservable(formId)
-        .subscribe(loadDataOnNextAction, loadDataOnErrorAction);
-    subscriptions.add(subscription);
+    subscriptions.add(getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction));
   }
 
   @Override

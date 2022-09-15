@@ -101,7 +101,6 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
   }
 
   public RnRForm getRnrForm(long formId) throws LMISException {
-    Log.d("info", "get rnr start");
     if (formId != 0) {
       isHistoryForm = true;
     }
@@ -116,9 +115,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     if (draftRequisition != null) {
       return draftRequisition;
     }
-    RnRForm form = rnrFormRepository.initNormalRnrForm(periodEndDate);
-    Log.d("info", "get rnr end");
-    return form;
+    return rnrFormRepository.initNormalRnrForm(periodEndDate);
   }
 
   public void submitRequisition() {

@@ -33,7 +33,8 @@ public final class Constants {
     MMIA_PROGRAM(MMIA_PROGRAM_CODE, R.string.mmia_list, MMIA_REPORT),
     VIA_PROGRAM(VIA_PROGRAM_CODE, R.string.requisition_list, VIA_REPORT),
     AL_PROGRAM(AL_PROGRAM_CODE, R.string.label_al_name, AL_REPORT),
-    RAPID_TEST_PROGRAM(RAPID_TEST_PROGRAM_CODE, R.string.title_rapid_test_reports, RAPID_REPORT);
+    RAPID_TEST_PROGRAM(RAPID_TEST_PROGRAM_CODE, R.string.title_rapid_test_reports, RAPID_REPORT),
+    MMTB_PROGRAM(MMTB_PROGRAM_CODE, R.string.title_mmtb_reports, MMTB_REPORT);
 
 
     private final String code;
@@ -64,10 +65,12 @@ public final class Constants {
   public static final String VIA_PROGRAM_CODE = "VC";
   public static final String AL_PROGRAM_CODE = "ML";
   public static final String RAPID_TEST_PROGRAM_CODE = "TR";
+  public static final String MMTB_PROGRAM_CODE = "TB";
   public static final List<Constants.Program> PROGRAMS = Collections
       .unmodifiableList(Arrays.asList(Constants.Program.VIA_PROGRAM,
           Constants.Program.MMIA_PROGRAM,
           Constants.Program.AL_PROGRAM,
+          Constants.Program.RAPID_TEST_PROGRAM,
           Constants.Program.RAPID_TEST_PROGRAM));
 
   //Don't change these reportTypes codes!!!
@@ -75,10 +78,7 @@ public final class Constants {
   public static final String VIA_REPORT = "VIA";
   public static final String RAPID_REPORT = "TEST_KIT";
   public static final String AL_REPORT = "MALARIA";
-  public static final String PTV_REPORT = "PTV";
-
-  public static final String PTV_REGIME_CHILD = "PTV Crianças";
-  public static final String PTV_REGIME_ADULT = "PTV Mulheres";
+  public static final String MMTB_REPORT = "MMTB";
 
   public static final String EXISTENT_STOCK = "existentStock";
   public static final String TREATMENTS_ATTENDED = "treatmentsAttended";

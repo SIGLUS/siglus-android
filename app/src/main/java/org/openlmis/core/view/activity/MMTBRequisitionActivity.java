@@ -24,6 +24,7 @@ import java.util.Date;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.fragment.MMTBRequisitionFragment;
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_mmtb_requisition)
@@ -37,6 +38,12 @@ public class MMTBRequisitionActivity extends BaseActivity {
   @Override
   protected int getThemeRes() {
     return R.style.AppTheme_PURPLE;
+  }
+
+  @Override
+  public void onBackPressed() {
+    ((MMTBRequisitionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_requisition))
+        .onBackPressed();
   }
 
   public static Intent getIntentToMe(Context context, Date periodEndDate) {

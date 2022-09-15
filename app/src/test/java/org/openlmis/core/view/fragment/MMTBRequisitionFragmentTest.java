@@ -18,17 +18,28 @@
 
 package org.openlmis.core.view.fragment;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import androidx.fragment.app.DialogFragment;
 import com.google.inject.AbstractModule;
+import java.sql.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.R;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMTBRequisitionPresenter;
+import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.MMTBRequisitionActivity;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -37,6 +48,8 @@ import roboguice.RoboGuice;
 @RunWith(LMISTestRunner.class)
 public class MMTBRequisitionFragmentTest {
 
+  private Program program;
+  private RnRForm form;
   private MMTBRequisitionPresenter mmtbFormPresenter;
   private MMTBRequisitionFragment mmtbRequisitionFragment;
 
@@ -51,6 +64,14 @@ public class MMTBRequisitionFragmentTest {
     });
     SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
     mmtbRequisitionFragment = getFragment();
+
+    program = new Program();
+    program.setProgramCode("MMTB");
+    program.setProgramName("MMTB");
+    form = RnRForm.init(program, DateUtil.today());
+    form.setId(1L);
+    form.setComments("");
+    when(mmtbFormPresenter.getRnrForm(anyInt())).thenReturn(form);
   }
 
   private MMTBRequisitionFragment getFragment() {
@@ -67,6 +88,45 @@ public class MMTBRequisitionFragmentTest {
 
   @Test
   public void shouldShowRequisitionPeriodOnTitle() {
-    assertEquals("MMIA - %1$s to %2$s", mmtbRequisitionFragment.requireActivity().getTitle());
+    form.setPeriodBegin(Date.valueOf("2015-04-21"));
+    form.setPeriodEnd(Date.valueOf("2015-05-20"));
+    mmtbRequisitionFragment.refreshRequisitionForm(form);
+    assertThat(mmtbRequisitionFragment.requireActivity().getTitle()).isEqualTo("MMTB - 21 Apr to 20 May");
+  }
+
+  @Test
+  public void shouldNotRemoveRnrFormWhenGoBack() {
+    mmtbRequisitionFragment.onBackPressed();
+    verify(mmtbFormPresenter, never()).deleteDraft();
+  }
+
+  @Test
+  public void shouldShowConfirmDialogWhenIsDraft() {
+    // given
+    when(mmtbFormPresenter.isDraft()).thenReturn(true);
+
+    // when
+    mmtbRequisitionFragment.onBackPressed();
+
+    // then
+    RobolectricUtils.waitLooperIdle();
+    DialogFragment fragment = (DialogFragment) mmtbRequisitionFragment
+        .getParentFragmentManager()
+        .findFragmentByTag("back_confirm_dialog");
+
+    assertThat(fragment).isNotNull();
+    assertThat(fragment.getDialog()).isNotNull();
+  }
+
+  @Test
+  public void shouldFinishWhenIsNotDraft() {
+    // given
+    when(mmtbFormPresenter.isDraft()).thenReturn(false);
+
+    // when
+    mmtbRequisitionFragment.onBackPressed();
+
+    // then
+    assertTrue(mmtbRequisitionFragment.requireActivity().isFinishing());
   }
 }

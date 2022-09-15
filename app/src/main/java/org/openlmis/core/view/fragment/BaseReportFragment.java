@@ -49,7 +49,7 @@ public abstract class BaseReportFragment extends BaseFragment {
   }
 
   protected void finish() {
-    getActivity().finish();
+    requireActivity().finish();
   }
 
   public void onBackPressed() {
@@ -87,7 +87,6 @@ public abstract class BaseReportFragment extends BaseFragment {
     String signatureDialogTitle = getSignatureDialogTitle();
     signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
     signatureDialog.setDelegate(signatureDialogDelegate);
-
     signatureDialog.show(this.getParentFragmentManager());
   }
 

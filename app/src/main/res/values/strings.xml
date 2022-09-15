@@ -101,6 +101,7 @@
   <string name="btn_positive">Yes</string>
   <string name="btn_negative">No</string>
   <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved,\nand will submit automatically when you have a data connection.</string>
+  <string name="msg_mmtb_submit_tip">Your MMTB form has been successfully saved,\nand will submit automatically when you have a data connection.</string>
   <string name="msg_reason_for_total_not_match"><![CDATA[Add reason for mismatch between regime & patient totals]]></string>
   <string name="msg_regime_total_and_patient_total_not_match">The regime and patient totals do not match. Please correct your figures or add a comment that explains why the totals differ</string>
   <string name="btn_ok">OK</string>
@@ -142,11 +143,14 @@
   <string name="msg_via_submit_signature">Enter your initials and then approve the requisition amounts</string>
   <string name="msg_rapid_test_submit_signature">Enter your initials and then approve the MMIT amounts</string>
   <string name="msg_mmia_submit_signature">Enter your initials to approve MMIA information</string>
+  <string name="msg_mmtb_submit_signature">Enter your initials to approve MMTB information</string>
   <string name="msg_approve_signature_rapid_test">Enter your initials and then approve the MMIT</string>
   <string name="msg_approve_signature_via">Enter your initials and then approve the Requisition Balancete</string>
   <string name="msg_approve_signature_mmia">Enter your initials and then approve the MMIA</string>
+  <string name="msg_approve_signature_mmtb">Enter your initials and then approve the MMTB</string>
   <string name="msg_requisition_signature_message_notify_via">Please hand the device to the person responsible for approval and submission of the Requisition Balancete</string>
   <string name="msg_requisition_signature_message_notify_mmia">Please hand the device to the person responsible for approval and submission of MMIA</string>
+  <string name="msg_requisition_signature_message_notify_mmtb">Please hand the device to the person responsible for approval and submission of MMTB</string>
   <string name="msg_requisition_signature_message_notify_rapid_test">Please hand the device to the person responsible for approval and submission of Rapid Test</string>
   <string name="btn_continue">Continue</string>
   <string name="label_adjustment_dialog_header"><![CDATA[The quantity to request has been adjusted based on: <br/>]]></string>
@@ -264,6 +268,7 @@
   <string name="hint_save_mmia_failed">Unable to save MMIA form, Please contact your administrator.</string>
   <string name="hint_save_requisition_failed">Unable to save Requisition Balencete, Please contact your administrator.</string>
   <string name="hint_mmia_complete_failed">Unable to complete MMIA form, Please contact your administrator.</string>
+  <string name="hint_mmtb_complete_failed">Unable to complete MMTB form, Please contact your administrator.</string>
   <string name="hint_requisition_complete_failed">Unable to complete Requisition Balencete, Please contact your administrator.</string>
   <string name="hint_update_banner_tips">%1$s has been deactivated and removed to the <![CDATA[<b>archived drug</b>]]> list</string>
   <string name="msg_expiring_date">Expiring %1$s</string>
@@ -464,6 +469,7 @@
   <string name="title_generate_lot_number">Auto generate lot number for new lot?</string>
   <string name="btn_confirm_generate_lot_number">AUTO GENERATE LOT NUMBER</string>
   <string name="title_rapid_test_reports">Rapid Test</string>
+  <string name="title_mmtb_reports">MMTB</string>
   <string name="btn_create_rapid_test_period">CREATE MMIT REPORT</string>
   <string name="title_rapid_test_form">MMIT Report</string>
   <string name="msg_sync_rapid_tests_failed">Sync Rapid Tests failed.</string>

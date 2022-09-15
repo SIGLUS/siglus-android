@@ -139,13 +139,14 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
-    periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
+    formId = requireActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
+    periodEndDate = ((Date) requireActivity().getIntent()
+        .getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
   }
 
   @Override
   protected BaseReportPresenter injectPresenter() {
-    presenter = RoboGuice.getInjector(getActivity()).getInstance(MMIARequisitionPresenter.class);
+    presenter = RoboGuice.getInjector(requireActivity()).getInstance(MMIARequisitionPresenter.class);
     return presenter;
   }
 

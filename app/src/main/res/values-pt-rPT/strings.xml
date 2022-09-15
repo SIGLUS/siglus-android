@@ -101,6 +101,7 @@
   <string name="btn_positive">Sim</string>
   <string name="btn_negative">Não</string>
   <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,\e será submetido automaticamente quando tiver conexão a internet.</string>
+  <string name="msg_mmtb_submit_tip">O seu MMTB foi gravado com sucesso,\e será submetido automaticamente quando tiver conexão a internet.</string>
   <string name="msg_reason_for_total_not_match"><![CDATA[Adicionar razão para a diferença entre totais de regimes e total de pacientes]]></string>
   <string name="btn_ok">OK</string>
   <string name="label_add_adult_regime">+ Regimes de adultos</string>
@@ -140,11 +141,14 @@
   <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
   <string name="msg_rapid_test_submit_signature">Digite suas iniciais e em seguida, aprove as quantidades de MMIT.</string>
   <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMIA</string>
+  <string name="msg_mmtb_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMTB</string>
   <string name="msg_approve_signature_rapid_test">Digite suas iniciais e em seguida, aprove o teste rápido</string>
   <string name="msg_approve_signature_via">Insira as iniciais do seu nome e aprove a Requisição Balancete</string>
   <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
+  <string name="msg_approve_signature_mmtb">Insira as iniciais do seu nome e aprove o MMTB</string>
   <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
   <string name="msg_requisition_signature_message_notify_mmia">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMIA</string>
+  <string name="msg_requisition_signature_message_notify_mmtb">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMTB</string>
   <string name="msg_requisition_signature_message_notify_rapid_test">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de testes rápidos.</string>
   <string name="btn_continue">Continuar</string>
   <string name="label_adjustment_dialog_header"><![CDATA[A quantidade a requisitar foi ajustada com base em: <br/>]]></string>
@@ -260,6 +264,7 @@
   <string name="hint_save_mmia_failed">Não foi possível gravar o MMIA, por favor contacte o administrador.</string>
   <string name="hint_save_requisition_failed">Não foi possível gravar Requisição Balancete, por favor contacte o administrador.</string>
   <string name="hint_mmia_complete_failed">Não foi possível completar o MMIA, por favor contacte o administrador.</string>
+  <string name="hint_mmtb_complete_failed">Não foi possível completar o MMTB, por favor contacte o administrador.</string>
   <string name="hint_requisition_complete_failed">Não foi possível completar Requisição Balancete, por favor contacte o administrador.</string>
   <string name="hint_update_banner_tips">%1$s Foi desactivado e removido para a lista de <![CDATA[<b>produtos arquivados</b>]]> lista</string>
   <string name="msg_expiring_date">A Expirar %1$s</string>
@@ -455,6 +460,7 @@
   <string name="title_generate_lot_number">Gerar automaticamente o número de lote para o lote novo?</string>
   <string name="btn_confirm_generate_lot_number">GERAR AUTOMATICAMENTE UM NÚMERO DE LOTE</string>
   <string name="title_rapid_test_reports">MMIT</string>
+  <string name="title_mmtb_reports">MMTB</string>
   <string name="btn_create_rapid_test_period">CRIAR RELATÓRIO DE MMIT</string>
   <string name="title_rapid_test_form">Relatório de MMIT</string>
   <string name="msg_sync_rapid_tests_failed">Falha na sincronização de MMIT.</string>
