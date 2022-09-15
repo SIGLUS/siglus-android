@@ -99,6 +99,9 @@ public class RnRFormViewModel {
       case Program.RAPID_TEST_CODE:
         this.name = LMISApp.getContext().getString(R.string.tr_program_name);
         break;
+      case Program.MMTB_CODE:
+        this.name = LMISApp.getContext().getString(R.string.tb_program_name);
+        break;
       default:
         this.name = StringUtils.EMPTY;
         break;

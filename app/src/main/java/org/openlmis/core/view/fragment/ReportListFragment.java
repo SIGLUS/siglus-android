@@ -50,6 +50,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.activity.ALRequisitionActivity;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
+import org.openlmis.core.view.activity.MMTBRequisitionActivity;
 import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.activity.RapidTestReportFormActivity;
 import org.openlmis.core.view.activity.SelectPeriodActivity;
@@ -179,6 +180,9 @@ public class ReportListFragment extends BaseReportListFragment {
       case Program.RAPID_TEST_CODE:
         intent = RapidTestReportFormActivity.getIntentToMe(requireContext(), rnrFormId);
         break;
+      case Program.MMTB_CODE:
+        intent = MMTBRequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
+        break;
       default:
         // do nothing
     }
@@ -199,6 +203,9 @@ public class ReportListFragment extends BaseReportListFragment {
         break;
       case Program.RAPID_TEST_CODE:
         intent = RapidTestReportFormActivity.getIntentToMe(requireContext(), periodEndDate);
+        break;
+      case Program.MMTB_CODE:
+        intent = MMTBRequisitionActivity.getIntentToMe(requireContext(), periodEndDate);
         break;
       default:
         // do nothing
@@ -286,9 +293,9 @@ public class ReportListFragment extends BaseReportListFragment {
           break;
         case RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD:
           startActivityForResult(SelectPeriodActivity.getIntentToMe(requireContext(),
-              model.getProgramCode(),
-              true,
-              model.getPeriodEndMonth()),
+                  model.getProgramCode(),
+                  true,
+                  model.getPeriodEndMonth()),
               Constants.REQUEST_SELECT_PERIOD_END);
           break;
         default:

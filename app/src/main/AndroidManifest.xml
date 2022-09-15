@@ -84,6 +84,12 @@
       android:windowSoftInputMode="stateHidden" />
     <activity
       android:configChanges="orientation|screenSize"
+      android:label="@string/label_mmtb_title"
+      android:name=".view.activity.MMTBRequisitionActivity"
+      android:windowSoftInputMode="stateHidden"
+      />
+    <activity
+      android:configChanges="orientation|screenSize"
       android:label="@string/label_AL_title"
       android:name=".view.activity.ALRequisitionActivity"
       android:windowSoftInputMode="stateHidden" />

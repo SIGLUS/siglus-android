@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".view.fragment.MMTBRequisitionFragment">
+
+  <ScrollView
+    android:id="@+id/scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_page_gray"
+    android:fillViewport="true">
+
+    <LinearLayout
+      style="@style/MMIA.FormContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <org.openlmis.core.view.widget.ActionPanelView
+        android:id="@+id/action_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+  </ScrollView>
+
+</FrameLayout>

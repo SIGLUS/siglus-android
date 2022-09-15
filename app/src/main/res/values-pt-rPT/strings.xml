@@ -63,6 +63,7 @@
 
   <!--MMIA-->
   <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
+  <string name="label_mmtb_title">MMTB - %1$s to %2$s</string>
   <string name="label_AL_title">Malaria - %1$s à %2$s</string>
   <string name="label_rnrfrom_left_header">PRODUCT</string>
   <string name="label_rnrfrom_left_header_old">MEDICAMENTO</string>
@@ -562,6 +563,7 @@
   <string name="ml_program_name">um Relatório de AL</string>
   <string name="tarv_program_name">um MMIA</string>
   <string name="tr_program_name">um MMIT</string>
+  <string name="tb_program_name">um MMTB</string>
   <string name="msg_cannot_create_emergency_requisition">Não é possível criar requisição de emergência</string>
   <string name="label_stockcard_lot_code">Código de lote</string>
   <string name="label_stockcard_lot_expire_date">Data de validade</string>
