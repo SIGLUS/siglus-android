@@ -17,6 +17,13 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
+      <org.openlmis.core.view.widget.MMTBRnrFormProductList
+        android:id="@+id/rnr_form_list"
+        style="@style/MMIA.RnrTable.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_height="@dimen/px_220" />
+
       <org.openlmis.core.view.widget.ActionPanelView
         android:id="@+id/action_panel"
         android:layout_width="match_parent"
@@ -24,4 +31,26 @@
     </LinearLayout>
   </ScrollView>
 
+  <LinearLayout
+    android:id="@+id/mmtb_rnr_items_header_freeze"
+    style="@style/MMIA.RnrTable.Header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+      android:id="@+id/mmtb_rnr_items_header_freeze_left"
+      android:layout_width="@dimen/px_0"
+      android:layout_height="wrap_content"
+      android:layout_weight="2"
+      android:orientation="vertical"
+      android:showDividers="middle" />
+
+    <HorizontalScrollView
+      android:id="@+id/mmtb_rnr_items_header_freeze_right"
+      android:layout_width="@dimen/px_0"
+      android:layout_height="wrap_content"
+      android:layout_weight="3"
+      android:scrollbars="none"
+      tools:layout_height="@dimen/px_40" />
+  </LinearLayout>
 </FrameLayout>

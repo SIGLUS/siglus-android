@@ -56,4 +56,10 @@ public class MMTBRepository extends RnrFormRepository {
     // TODO generate base info
     return super.generateBaseInfoItems(form, type);
   }
+
+  @Override
+  protected void updateInitialAmount(RnrFormItem rnrFormItem, Long lastInventory) {
+    rnrFormItem.setIsCustomAmount(lastInventory == null);
+    rnrFormItem.setInitialAmount(lastInventory);
+  }
 }
