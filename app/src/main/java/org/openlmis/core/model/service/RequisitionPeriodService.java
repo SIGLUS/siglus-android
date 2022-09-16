@@ -125,10 +125,9 @@ public class RequisitionPeriodService {
     Calendar currentBeginDate = Calendar.getInstance();
 
     if (initializeDayOfMonth >= Period.BEGIN_DAY) {
-      currentBeginDate.set(initializeDateTime.getYear(), initializeDateTime.getMonthOfYear(), Period.BEGIN_DAY);
+      currentBeginDate.set(resultDate.getYear(), resultDate.getMonthOfYear(), Period.BEGIN_DAY);
     } else {
-      currentBeginDate.set(initializeDateTime.getYear(), initializeDateTime.getMonthOfYear() - 1,
-          Period.BEGIN_DAY);
+      currentBeginDate.set(resultDate.getYear(), resultDate.getMonthOfYear() - 1, Period.BEGIN_DAY);
     }
     return DateUtil.cutTimeStamp(new DateTime(currentBeginDate));
   }
