@@ -112,11 +112,6 @@
       android:name=".view.activity.NewStockMovementActivity"
       android:windowSoftInputMode="adjustResize|stateHidden" />
     <activity
-      android:label="@string/title_stock_movement"
-      android:name=".view.activity.RnRFormListActivity"
-      android:screenOrientation="portrait"
-      android:windowSoftInputMode="adjustPan|stateHidden" />
-    <activity
       android:label="@string/title_select_period"
       android:name=".view.activity.SelectPeriodActivity"
       android:screenOrientation="portrait" />
