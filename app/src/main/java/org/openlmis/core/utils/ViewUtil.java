@@ -42,10 +42,8 @@ public final class ViewUtil {
       ViewGroup.LayoutParams layoutParams = leftView.getLayoutParams();
       layoutParams.height = rightHeight;
       leftView.setLayoutParams(layoutParams);
-
       if (rightView.getLayoutParams() instanceof FrameLayout.LayoutParams) {
-        rightView
-            .setLayoutParams(new FrameLayout.LayoutParams(layoutParams.width, layoutParams.height));
+        rightView.setLayoutParams(new FrameLayout.LayoutParams(layoutParams.width, layoutParams.height));
       } else {
         rightView.setLayoutParams(layoutParams);
       }
