@@ -112,6 +112,15 @@
   <string name="mmia_2ndline">2ª Linha</string>
   <string name="mmia_3rdline">3ª Linha</string>
 
+  <!-- MMTB -->
+  <string name="mmtb_age_group_form_title">Quantificação de usuários por faixas etárias</string>
+  <string name="mmtb_three_line_1_title">Faixas Etarias</string>
+  <string name="mmtb_three_line_1">Adultos</string>
+  <string name="mmtb_three_line_2_title">Tratamento</string>
+  <string name="mmtb_three_line_2">Criança &lt; 25 Kg</string>
+  <string name="mmtb_three_line_3_title">Profilaxia</string>
+  <string name="mmtb_three_line_3">Criança &gt; 25 Kg</string>
+
   <!--VIA Form-->
   <string name="label_via_kit_received">No. de Kits recebidos</string>
   <string name="label_via_kit_opened">No. de Kits abertos</string>

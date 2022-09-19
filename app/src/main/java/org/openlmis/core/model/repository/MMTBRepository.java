@@ -20,7 +20,9 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
+import org.openlmis.core.constant.ReportConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
@@ -29,6 +31,7 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.MMIARepository.ReportType;
 import org.openlmis.core.utils.Constants;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public class MMTBRepository extends RnrFormRepository {
 
@@ -46,9 +49,18 @@ public class MMTBRepository extends RnrFormRepository {
   }
 
   @Override
-  protected List<RegimenItemThreeLines> generateRegimeThreeLineItems(RnRForm form) throws LMISException {
-    // TODO generate three line items
-    return super.generateRegimeThreeLineItems(form);
+  protected List<RegimenItemThreeLines> generateRegimeThreeLineItems(RnRForm form) {
+    List<String> regimeThreeLines = new ArrayList<>();
+    regimeThreeLines.add(ReportConstants.KEY_MMTB_THREE_LINE_1);
+    regimeThreeLines.add(ReportConstants.KEY_MMTB_THREE_LINE_2);
+    regimeThreeLines.add(ReportConstants.KEY_MMTB_THREE_LINE_3);
+
+    return FluentIterable.from(regimeThreeLines)
+        .transform(type -> {
+          RegimenItemThreeLines itemThreeLines = new RegimenItemThreeLines(type);
+          itemThreeLines.setForm(form);
+          return itemThreeLines;
+        }).toList();
   }
 
   @Override

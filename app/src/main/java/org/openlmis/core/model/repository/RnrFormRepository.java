@@ -29,6 +29,7 @@ import static org.openlmis.core.constant.FieldConstants.SUBMITTED_TIME;
 import static org.openlmis.core.constant.FieldConstants.SYNCED;
 import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.MMTB_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
@@ -625,7 +626,8 @@ public class RnrFormRepository {
   }
 
   private void saveRegimenThreeLine(RnRForm form) throws LMISException {
-    if (MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+    if (MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
+        || MMTB_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
       baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
       regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
     }
@@ -633,7 +635,8 @@ public class RnrFormRepository {
 
   private void saveBaseInfo(RnRForm form) throws LMISException {
     if (VIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
-        || MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+        || MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
+        || MMTB_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
       baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
       regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
     }

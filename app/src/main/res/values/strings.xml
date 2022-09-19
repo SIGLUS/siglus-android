@@ -113,6 +113,15 @@
   <string name="mmia_2ndline">2nd Line</string>
   <string name="mmia_3rdline">3rd Line</string>
 
+  <!-- MMTB -->
+  <string name="mmtb_age_group_form_title">Quantification of Users by Age Groups</string>
+  <string name="mmtb_three_line_1_title">Age Groups</string>
+  <string name="mmtb_three_line_1">Adults</string>
+  <string name="mmtb_three_line_2_title">Treatment</string>
+  <string name="mmtb_three_line_2">Child &lt; 25 Kg</string>
+  <string name="mmtb_three_line_3_title">Prophylaxis</string>
+  <string name="mmtb_three_line_3">Child &gt; 25 Kg</string>
+
   <!-- VIA Form -->
   <string name="label_via_kit_received">No. of Kits Received</string>
   <string name="label_via_kit_opened">No. of Kits Opened</string>

@@ -2,6 +2,7 @@
   <!-- Default screen margins, per the Android Design guidelines. -->
 
   <dimen name="mmia_spread_item_common_width">@dimen/px_80</dimen>
+  <dimen name="mmtb_spread_item_common_width">@dimen/px_90</dimen>
   <dimen name="mmia_ragime_title_minHeight">@dimen/px_55</dimen>
   <dimen name="divider">@dimen/px_1</dimen>
   <dimen name="stock_movement_item_common_width">@dimen/px_100</dimen>

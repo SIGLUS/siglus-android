@@ -36,6 +36,8 @@
   <color name="color_mmtb_product_item">#ccd7a5</color>
 
   <color name="color_mmia_speed_list_header">#EFEFEF</color>
+  <color name="color_mmtb_green">#C9D5A0</color>
+  <color name="color_mmtb_light_green">#A1C664</color>
   <color name="color_item_bg">#30B6B6B6</color>
   <color name="color_accent_light">#80536DFE</color>
   <color name="color_mmia_info_name">#D0D0D0</color>
@@ -114,5 +116,6 @@
   <color name="color_d4d4d4">#d4d4d4</color>
   <color name="color_ffa000">#ffa000</color>
   <color name="color_fbdd6d">#fbdd6d</color>
+  <color name="color_a5a8a7">#a5a8a7</color>
 
 </resources>
