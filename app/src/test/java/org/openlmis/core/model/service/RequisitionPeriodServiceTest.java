@@ -130,8 +130,7 @@ public class RequisitionPeriodServiceTest {
     if (dayOfMonth >= Period.INVENTORY_BEGIN_DAY && dayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
       assertThat(period.getBegin(),
           is(new DateTime(DateUtil
-              .parseString(String.format("%s-%s-%s 12:00:00", year, (monthOfYear - 1), dayOfMonth),
-                  DateUtil.DB_DATE_FORMAT))));
+              .parseString(String.format("%s-%s-21 12:00:00", year, (monthOfYear - 1)), DateUtil.DB_DATE_FORMAT))));
       assertThat(period.getEnd(),
           is(new DateTime(
               DateUtil.parseString(String.format("%s-%s-20 12:00:00", year, monthOfYear), DateUtil.DB_DATE_FORMAT))));
