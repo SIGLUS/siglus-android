@@ -30,6 +30,11 @@ import lombok.Setter;
 @DatabaseTable(tableName = "regime_three_lines")
 public class RegimenItemThreeLines extends BaseModel {
 
+  public enum CountType {
+    PATIENTS_AMOUNT,
+    PHARMACY_AMOUNT,
+  }
+
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private RnRForm form;
 

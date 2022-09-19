@@ -41,7 +41,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.openlmis.core.view.widget.MMIARegimeList;
-import org.openlmis.core.view.widget.MMIARegimeThreeLineList.CountType;
 
 @Getter
 @Setter
@@ -169,15 +168,15 @@ public class RnRForm extends BaseModel {
   }
 
   public static long calculateTotalRegimenAmount(Collection<RegimenItem> list,
-      MMIARegimeList.COUNTTYPE counttype) {
+      MMIARegimeList.COUNTTYPE countType) {
     long totalRegimenNumber = 0;
-    if (MMIARegimeList.COUNTTYPE.PHARMACY == counttype) {
+    if (MMIARegimeList.COUNTTYPE.PHARMACY == countType) {
       for (RegimenItem item : list) {
         if (item.getPharmacy() != null) {
           totalRegimenNumber += item.getPharmacy();
         }
       }
-    } else if (MMIARegimeList.COUNTTYPE.AMOUNT == counttype) {
+    } else if (MMIARegimeList.COUNTTYPE.AMOUNT == countType) {
       for (RegimenItem item : list) {
         if (item.getAmount() != null) {
           totalRegimenNumber += item.getAmount();
@@ -187,16 +186,16 @@ public class RnRForm extends BaseModel {
     return totalRegimenNumber;
   }
 
-  public static long caculateTotalRegimenTypeAmount(Collection<RegimenItemThreeLines> list,
-      CountType counttype) {
+  public static long calculateTotalRegimenTypeAmount(Collection<RegimenItemThreeLines> list,
+      RegimenItemThreeLines.CountType countType) {
     long totalNumber = 0;
-    if (CountType.PATIENTSAMOUNT == counttype) {
+    if (RegimenItemThreeLines.CountType.PATIENTS_AMOUNT == countType) {
       for (RegimenItemThreeLines item : list) {
         if (item.getPatientsAmount() != null) {
           totalNumber += item.getPatientsAmount();
         }
       }
-    } else if (CountType.PHARMACYAMOUNT == counttype) {
+    } else if (RegimenItemThreeLines.CountType.PHARMACY_AMOUNT == countType) {
       for (RegimenItemThreeLines item : list) {
         if (item.getPharmacyAmount() != null) {
           totalNumber += item.getPharmacyAmount();
