@@ -57,7 +57,6 @@ public class IssueVoucherReportAdapterTest {
     adapter.convert(holder, model);
 
     // then
-    assertEquals(View.VISIBLE, holder.getView(R.id.tv_product_dosage).getVisibility());
     assertEquals(View.VISIBLE, holder.getView(R.id.tv_partial_fulfilled).getVisibility());
   }
 
