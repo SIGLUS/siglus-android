@@ -6,12 +6,6 @@
   android:showDividers="middle"
   android:orientation="horizontal"
   android:divider="@drawable/divider_vertical">
-  <TextView
-    android:id="@+id/tv_product_dosage"
-    style="@style/Pod.list.lot" />
-  <TextView
-    android:id="@+id/tv_disiganation"
-    style="@style/Pod.list.lot" />
   <LinearLayout
     style="@style/Pod.list.lot"
     android:layout_width="@dimen/px_230">
