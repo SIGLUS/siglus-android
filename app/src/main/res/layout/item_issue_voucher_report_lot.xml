@@ -33,7 +33,8 @@
     android:id="@+id/tv_partial_fulfilled"
     android:layout_width="@dimen/px_80"
     style="@style/Pod.list.lot" />
-  <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot"
+  <androidx.constraintlayout.widget.ConstraintLayout
+    style="@style/Pod.list.lot"
     android:layout_width="@dimen/px_80">
     <EditText
       android:id="@+id/et_quantity_shipped"
@@ -53,7 +54,8 @@
   <TextView android:id="@+id/tv_value"
     android:layout_width="@dimen/px_80"
     style="@style/Pod.list.lot" />
-  <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot"
+  <androidx.constraintlayout.widget.ConstraintLayout
+    style="@style/Pod.list.lot"
     android:layout_width="@dimen/px_80">
     <EditText
       android:id="@+id/et_quantity_accepted"
