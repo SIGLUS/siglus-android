@@ -128,6 +128,18 @@
   <string name="mmtb_prophylaxis_phases_field">Fases Profilaxia</string>
   <string name="mmtb_dispensation_type_field">Periodicidade de Dispensa</string>
 
+  <string name="mmtb_new_adult_sensitive">Novo Adulto Sensível</string>
+  <string name="mmtb_new_adult_mr">Novo Adulto MR</string>
+  <string name="mmtb_new_adult_xr">Novo Adulto XR</string>
+  <string name="mmtb_new_child_sensitive">Novo criança Sensível</string>
+  <string name="mmtb_new_child_mr">Novo criança MR</string>
+  <string name="mmtb_new_child_xr">Novo criança XR</string>
+  <string name="mmtb_start_phase">início</string>
+  <string name="mmtb_continue_phase">Continua/Manutenção</string>
+  <string name="mmtb_final_phase">Final/última Dispensa</string>
+  <string name="mmtb_frequency_monthly">Mensal</string>
+  <string name="mmtb_frequency_quarterly">Trimestral</string>
+
   <!--VIA Form-->
   <string name="label_via_kit_received">No. de Kits recebidos</string>
   <string name="label_via_kit_opened">No. de Kits abertos</string>

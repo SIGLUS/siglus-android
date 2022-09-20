@@ -20,9 +20,11 @@ package org.openlmis.core.view.fragment;
 
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,6 +43,7 @@ import org.openlmis.core.presenter.MMTBRequisitionPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.MMTBRequisitionActivity;
+import org.openlmis.core.view.widget.MMTBPatientInfoList;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
@@ -88,9 +91,17 @@ public class MMTBRequisitionFragmentTest {
 
   @Test
   public void shouldShowRequisitionPeriodOnTitle() {
+    // given
+    MMTBPatientInfoList mockPatientInfoList = mock(MMTBPatientInfoList.class);
+    mmtbRequisitionFragment.patientInfoList = mockPatientInfoList;
     form.setPeriodBegin(Date.valueOf("2015-04-21"));
     form.setPeriodEnd(Date.valueOf("2015-05-20"));
+
+    // when
     mmtbRequisitionFragment.refreshRequisitionForm(form);
+
+    // then
+    verify(mockPatientInfoList, times(1)).setData(any());
     assertThat(mmtbRequisitionFragment.requireActivity().getTitle()).isEqualTo("MMTB - 21 Apr to 20 May");
   }
 

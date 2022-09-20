@@ -53,7 +53,6 @@
 
         <!-- right part -->
         <LinearLayout
-          android:id="@+id/ll_mmtb_requisition_patient_info"
           android:layout_width="@dimen/px_0"
           android:layout_height="match_parent"
           android:layout_marginStart="@dimen/margin_small"

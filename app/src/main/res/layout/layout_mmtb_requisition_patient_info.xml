@@ -31,7 +31,7 @@
         android:text="@string/mmtb_patient_type_field"
         android:textAlignment="center" />
       <TextView
-        android:layout_width="@dimen/mmtb_spread_item_common_width"
+        android:layout_width="@dimen/px_50"
         android:layout_height="wrap_content"
         android:text="@string/total"
         android:textAlignment="center" />
@@ -40,9 +40,21 @@
       android:id="@+id/ll_new_patient_container"
       style="@style/MMTB.Table.Container"
       tools:layout_height="@dimen/px_120" />
-    <TextView
-      android:id="@+id/tv_patient_total"
-      style="@style/MMTB.Table.Text.Summary" />
+    <LinearLayout
+      style="@style/MMTB.Table.Container.Item"
+      android:gravity="center">
+      <TextView
+        style="@style/MMTB.Table.Text.Label"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="@string/total"
+        android:textAlignment="textEnd"
+        />
+      <TextView
+        android:id="@+id/tv_patient_total"
+        android:layout_width="@dimen/px_50"
+        style="@style/MMTB.Table.Text.Summary" />
+    </LinearLayout>
   </LinearLayout>
 
   <!-- prophylaxis phases form -->
@@ -67,7 +79,7 @@
         android:textAlignment="center" />
       <TextView
         android:text="@string/total"
-        android:layout_width="@dimen/mmtb_spread_item_common_width"
+        android:layout_width="@dimen/px_50"
         android:layout_height="wrap_content"
         android:textAlignment="center" />
     </LinearLayout>
@@ -75,9 +87,21 @@
       android:id="@+id/ll_prophylaxis_phases_container"
       style="@style/MMTB.Table.Container"
       tools:layout_height="@dimen/px_120" />
-    <TextView
-      android:id="@+id/tv_prophylaxis_phases_total"
-      style="@style/MMTB.Table.Text.Summary" />
+    <LinearLayout
+      style="@style/MMTB.Table.Container.Item"
+      android:gravity="center">
+      <TextView
+        style="@style/MMTB.Table.Text.Summary"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="@string/total"
+        android:textAlignment="textEnd"
+        />
+      <TextView
+        android:id="@+id/tv_prophylaxis_phases_total"
+        android:layout_width="@dimen/px_50"
+        style="@style/MMTB.Table.Text.Summary" />
+    </LinearLayout>
   </LinearLayout>
 
   <!-- dispensation type form -->
@@ -100,7 +124,7 @@
         android:text="@string/mmtb_dispensation_type_field"
         android:textAlignment="center" />
       <TextView
-        android:layout_width="@dimen/mmtb_spread_item_common_width"
+        android:layout_width="@dimen/px_50"
         android:layout_height="wrap_content"
         android:text="@string/total"
         android:textAlignment="center" />
@@ -109,9 +133,21 @@
       android:id="@+id/ll_dispensation_type_container"
       style="@style/MMTB.Table.Container"
       tools:layout_height="@dimen/px_120" />
-    <TextView
-      android:id="@+id/tv_dispensation_type_total"
-      android:layout_width="@dimen/mmtb_spread_item_common_width"
-      style="@style/MMTB.Table.Text.Summary" />
+    <LinearLayout
+      style="@style/MMTB.Table.Container.Item"
+      android:gravity="center">
+      <TextView
+        style="@style/MMTB.Table.Text.Summary"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="@string/total"
+        android:textAlignment="textEnd"
+        />
+      <TextView
+        android:id="@+id/tv_dispensation_type_total"
+        android:layout_width="@dimen/px_50"
+        style="@style/MMTB.Table.Text.Summary" />
+    </LinearLayout>
+
   </LinearLayout>
 </LinearLayout>

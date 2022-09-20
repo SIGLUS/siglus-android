@@ -38,6 +38,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.utils.keyboard.KeyboardUtil;
+import org.openlmis.core.view.widget.MMTBPatientInfoList;
 import org.openlmis.core.view.widget.MMTBPatientThreeLineList;
 import org.openlmis.core.view.widget.MMTBRnrFormProductList;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -52,6 +53,9 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
 
   @InjectView(R.id.three_line_form)
   protected MMTBPatientThreeLineList threeLineForm;
+
+  @InjectView(R.id.mmtb_patient_info)
+  protected MMTBPatientInfoList patientInfoList;
 
   @InjectView(R.id.scrollview)
   protected ScrollView scrollView;
@@ -148,6 +152,7 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
     // 2. refresh three line items
     threeLineForm.setData(form.getRegimenThreeLineListWrapper());
     // 3. refresh base info
+    patientInfoList.setData(form.getBaseInfoItemListWrapper());
     // 4. consider how to save treatment phase form and consumption form info.
 
     bindListener();
