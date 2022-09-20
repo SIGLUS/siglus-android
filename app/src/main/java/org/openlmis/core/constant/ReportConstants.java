@@ -20,10 +20,41 @@ package org.openlmis.core.constant;
 
 public class ReportConstants {
 
-  // for mmtb
+  // mmtb three lines table
   public static final String KEY_MMTB_THREE_LINE_1 = "key_mmtb_three_line_1";
 
   public static final String KEY_MMTB_THREE_LINE_2 = "key_mmtb_three_line_2";
 
   public static final String KEY_MMTB_THREE_LINE_3 = "key_mmtb_three_line_3";
+
+  // mmtb new patient table
+  public static final String KEY_MMTB_NEW_PATIENT_TABLE = "key_mmtb_new_patient_table";
+
+  public static final String KEY_MMTB_NEW_ADULT_SENSITIVE = "key_mmtb_new_adult_sensitive";
+
+  public static final String KEY_MMTB_NEW_ADULT_MR = "key_mmtb_new_adult_mr";
+
+  public static final String KEY_MMTB_NEW_ADULT_XR = "key_mmtb_new_adult_xr";
+
+  public static final String KEY_MMTB_NEW_CHILD_SENSITIVE = "key_mmtb_new_child_sensitive";
+
+  public static final String KEY_MMTB_NEW_CHILD_MR = "key_mmtb_new_child_mr";
+
+  public static final String KEY_MMTB_NEW_CHILD_XR = "key_mmtb_new_child_xr";
+
+  // mmtb follow-up prophylaxis table
+  public static final String KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE = "key_mmtb_follow_up_prophylaxis_table";
+
+  public static final String KEY_MMTB_START_PHASE = "key_mmtb_start_phase";
+
+  public static final String KEY_MMTB_CONTINUE_PHASE = "key_mmtb_continue_phase";
+
+  public static final String KEY_MMTB_FINAL_PHASE = "key_mmtb_final_phase";
+
+  // mmtb type of dispensation of prophylactics table
+  public static final String KEY_MMTB_TYPE_OF_DISPENSATION_TABLE = "key_mmtb_type_of_dispensation_table";
+
+  public static final String KEY_MMTB_FREQUENCY_MONTHLY = "key_mmtb_frequency_monthly";
+
+  public static final String KEY_MMTB_FREQUENCY_QUARTERLY = "key_mmtb_frequency_quarterly";
 }

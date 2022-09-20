@@ -21,7 +21,11 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.openlmis.core.constant.ReportConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
@@ -34,6 +38,21 @@ import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public class MMTBRepository extends RnrFormRepository {
+
+  private static final List<KeyEntry> KEY_ENTRIES = Collections.unmodifiableList(Arrays.asList(
+      new KeyEntry(ReportConstants.KEY_MMTB_NEW_ADULT_SENSITIVE, ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE, 0),
+      new KeyEntry(ReportConstants.KEY_MMTB_NEW_ADULT_MR, ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE, 1),
+      new KeyEntry(ReportConstants.KEY_MMTB_NEW_ADULT_XR, ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE, 2),
+      new KeyEntry(ReportConstants.KEY_MMTB_NEW_CHILD_SENSITIVE, ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE, 3),
+      new KeyEntry(ReportConstants.KEY_MMTB_NEW_CHILD_MR, ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE, 4),
+      new KeyEntry(ReportConstants.KEY_MMTB_NEW_CHILD_XR, ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE, 5),
+      new KeyEntry(ReportConstants.KEY_MMTB_START_PHASE, ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE, 6),
+      new KeyEntry(ReportConstants.KEY_MMTB_CONTINUE_PHASE, ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE, 7),
+      new KeyEntry(ReportConstants.KEY_MMTB_FINAL_PHASE, ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE, 8),
+      new KeyEntry(ReportConstants.KEY_MMTB_FREQUENCY_MONTHLY, ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE, 9),
+      new KeyEntry(ReportConstants.KEY_MMTB_FREQUENCY_QUARTERLY, ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE,
+          10)
+  ));
 
   @Inject
   public MMTBRepository(Context context) {
@@ -65,13 +84,24 @@ public class MMTBRepository extends RnrFormRepository {
 
   @Override
   protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form, ReportType type) {
-    // TODO generate base info
-    return super.generateBaseInfoItems(form, type);
+    return FluentIterable.from(KEY_ENTRIES)
+        .transform(keyEntry -> new BaseInfoItem(keyEntry.attrKey, BaseInfoItem.TYPE.INT, form, keyEntry.tableName,
+            keyEntry.displayOrder))
+        .toSortedList((o1, o2) -> o1.getDisplayOrder() - o2.getDisplayOrder());
   }
 
   @Override
   protected void updateInitialAmount(RnrFormItem rnrFormItem, Long lastInventory) {
     rnrFormItem.setIsCustomAmount(lastInventory == null);
     rnrFormItem.setInitialAmount(lastInventory);
+  }
+
+  @AllArgsConstructor
+  @Data
+  private static class KeyEntry {
+
+    private String attrKey;
+    private String tableName;
+    private int displayOrder;
   }
 }

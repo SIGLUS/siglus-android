@@ -38,7 +38,7 @@ import org.openlmis.core.constant.ReportConstants;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.utils.SimpleTextWatcher;
 
-public class MMTBPatientThreeLineForm extends LinearLayout {
+public class MMTBPatientThreeLineList extends LinearLayout {
 
   private final Map<String, String> keyToFieldMap;
   private final List<EditText> patientsPharmacyEdits = new ArrayList<>();
@@ -47,15 +47,15 @@ public class MMTBPatientThreeLineForm extends LinearLayout {
   private LinearLayout llAgeRange;
   private LayoutInflater layoutInflater;
 
-  public MMTBPatientThreeLineForm(Context context) {
+  public MMTBPatientThreeLineList(Context context) {
     this(context, null);
   }
 
-  public MMTBPatientThreeLineForm(Context context, @Nullable AttributeSet attrs) {
+  public MMTBPatientThreeLineList(Context context, @Nullable AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public MMTBPatientThreeLineForm(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+  public MMTBPatientThreeLineList(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     Map<String, String> map = new HashMap<>();
     map.put(ReportConstants.KEY_MMTB_THREE_LINE_1, context.getString(R.string.mmtb_three_line_1));

@@ -38,7 +38,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.utils.keyboard.KeyboardUtil;
-import org.openlmis.core.view.widget.MMTBPatientThreeLineForm;
+import org.openlmis.core.view.widget.MMTBPatientThreeLineList;
 import org.openlmis.core.view.widget.MMTBRnrFormProductList;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.RoboGuice;
@@ -51,7 +51,7 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
   protected MMTBRnrFormProductList rnrFormList;
 
   @InjectView(R.id.three_line_form)
-  protected MMTBPatientThreeLineForm threeLineForm;
+  protected MMTBPatientThreeLineList threeLineForm;
 
   @InjectView(R.id.scrollview)
   protected ScrollView scrollView;

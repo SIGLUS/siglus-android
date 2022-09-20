@@ -236,7 +236,7 @@
     <item name="android:windowMinWidthMinor">@dimen/px_480</item>
     <item name="windowFixedWidthMinor">@dimen/px_480</item>
   </style>
-  
+
   <style name="NoAnimationDialog" parent="android:style/Animation.Dialog">
     <item name="android:windowEnterAnimation">@null</item>
     <item name="android:windowExitAnimation">@null</item>
@@ -992,24 +992,29 @@
     <item name="android:paddingRight">@dimen/padding_small</item>
     <item name="android:enabled">false</item>
   </style>
+
   <style name="error_appearance" parent="@android:style/TextAppearance">
     <item name="android:textColor">@color/color_fc2b2a</item>
   </style>
 
   <style name="Pod" />
+
   <style name="Pod.header" />
+
   <style name="Pod.header.line" parent="Divider.Vertical">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">@dimen/px_0</item>
     <item name="android:orientation">horizontal</item>
   </style>
+
   <style name="Pod.header.item" parent="Divider.Vertical">
     <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:divider">@drawable/divider_vertical</item>
     <item name="android:layout_weight">4</item>
   </style>
-  <style name="Pod.header.title" >
+
+  <style name="Pod.header.title">
     <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:paddingLeft">@dimen/px_4</item>
@@ -1018,11 +1023,14 @@
     <item name="android:textColor">@color/color_black</item>
     <item name="android:textSize">@dimen/px_10</item>
   </style>
-  <style name="Pod.header.title.value" >
+
+  <style name="Pod.header.title.value">
     <item name="android:textColor">@color/color_black_light</item>
   </style>
-  <style name="Pod.list"/>
-  <style name="Pod.list.header" >
+
+  <style name="Pod.list" />
+
+  <style name="Pod.list.header">
     <item name="android:layout_width">@dimen/px_100</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:textColor">@color/color_black</item>
@@ -1031,7 +1039,8 @@
     <item name="android:gravity">center</item>
     <item name="android:background">@color/color_9c9c9c</item>
   </style>
-  <style name="Pod.list.header.product" >
+
+  <style name="Pod.list.header.product">
     <item name="android:layout_width">@dimen/px_160</item>
     <item name="android:layout_height">@dimen/px_92</item>
     <item name="android:textColor">@color/color_black</item>
@@ -1039,6 +1048,7 @@
     <item name="android:gravity">center</item>
     <item name="android:background">@color/color_d4d4d4</item>
   </style>
+
   <style name="Pod.list.product">
     <item name="android:layout_width">@dimen/px_100</item>
     <item name="android:layout_height">@dimen/px_94</item>
@@ -1047,6 +1057,7 @@
     <item name="android:gravity">center</item>
     <item name="android:background">@color/color_eeeeee</item>
   </style>
+
   <style name="Pod.list.lot">
     <item name="android:layout_width">@dimen/px_100</item>
     <item name="android:layout_height">@dimen/px_49</item>
@@ -1055,6 +1066,7 @@
     <item name="android:gravity">center</item>
     <item name="android:background">@color/color_white</item>
   </style>
+
   <style name="Pod.list.summary">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">match_parent</item>
@@ -1062,6 +1074,7 @@
     <item name="android:textSize">@dimen/px_14</item>
     <item name="android:gravity">left|center</item>
   </style>
+
   <style name="Pod.list.lot.editView">
     <item name="android:layout_width">@dimen/px_90</item>
     <item name="android:layout_height">@dimen/px_39</item>
@@ -1071,5 +1084,45 @@
     <item name="android:layout_margin">@dimen/px_5</item>
     <item name="android:paddingLeft">@dimen/px_1</item>
     <item name="android:background">@drawable/border_bg_corner</item>
+  </style>
+
+  <style name="MMTB" />
+
+  <style name="MMTB.Table" />
+
+  <style name="MMTB.Table.Container">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:divider">@drawable/divider_horizontal</item>
+    <item name="android:showDividers">middle</item>
+    <item name="android:orientation">vertical</item>
+  </style>
+
+  <style name="MMTB.Table.Container.Outer">
+    <item name="android:padding">@dimen/px_1</item>
+    <item name="android:background">@drawable/border_bg_light_gray</item>
+  </style>
+
+  <style name="MMTB.Table.Container.Item">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:divider">@drawable/divider_vertical</item>
+    <item name="android:showDividers">middle</item>
+    <item name="android:orientation">horizontal</item>
+  </style>
+
+  <style name="MMTB.Table.Text">
+    <item name="android:padding">@dimen/px_4</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textAlignment">center</item>
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+  </style>
+
+  <style name="MMTB.Table.Text.Summary">
+    <item name="android:layout_width">@dimen/mmtb_spread_item_common_width</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_gravity">end</item>
+    <item name="android:background">@drawable/border_bg_divider_left_right</item>
   </style>
 </resources>

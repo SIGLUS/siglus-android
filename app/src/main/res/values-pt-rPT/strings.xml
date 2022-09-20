@@ -120,6 +120,13 @@
   <string name="mmtb_three_line_2">Criança &lt; 25 Kg</string>
   <string name="mmtb_three_line_3_title">Profilaxia</string>
   <string name="mmtb_three_line_3">Criança &gt; 25 Kg</string>
+  <string name="mmtb_patient_info_form_title">Quantificação dos doentes</string>
+  <string name="mmtb_new_patient_form_title">Pacientes Novos no Sector da TB</string>
+  <string name="mmtb_follow_up_prophylaxis_form_title">Seguimento Profilaxias\n(PUs e Farmácia Pública)</string>
+  <string name="mmtb_dispensation_type_form_title">Tipo de Dispensa dos Profilaticos</string>
+  <string name="mmtb_patient_type_field">Pacinte/Tipo</string>
+  <string name="mmtb_prophylaxis_phases_field">Fases Profilaxia</string>
+  <string name="mmtb_dispensation_type_field">Periodicidade de Dispensa</string>
 
   <!--VIA Form-->
   <string name="label_via_kit_received">No. de Kits recebidos</string>
