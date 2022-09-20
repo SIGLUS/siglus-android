@@ -71,7 +71,6 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
 
   protected class IssueVoucherReportViewHolder extends BaseViewHolder implements OnUpdatePodListener {
 
-    private TextView tvProductUnit;
     private TextView tvQuantityOrdered;
     private TextView tvPartialFulfilled;
     private TextView tvPreparedBy;
@@ -88,7 +87,6 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
       if (viewModel.getItemType() == IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TYPE.getValue()) {
         IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel) viewModel;
         initView(productViewModel);
-        tvProductUnit.setText(productViewModel.getProductUnitName());
         tvQuantityOrdered.setText(productViewModel.getOrderedQuantity());
         tvPartialFulfilled.setText(productViewModel.getPartialFulfilledQuantity());
       } else {
@@ -117,7 +115,6 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
       lotAdapter = new IssueVoucherReportLotAdapter(itemView.getContext(), lotViewModels);
       lotAdapter.setOnUpdatePodListener(this);
       lvLotList.setAdapter(lotAdapter);
-      tvProductUnit = itemView.findViewById(R.id.tv_product_dosage);
       tvQuantityOrdered = itemView.findViewById(R.id.tv_quantity_ordered);
       tvPartialFulfilled = itemView.findViewById(R.id.tv_partial_fulfilled);
     }
