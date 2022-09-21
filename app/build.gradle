@@ -194,7 +194,7 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
 
-    implementation 'com.facebook.flipper:flipper:0.121.1'
+    implementation 'com.facebook.flipper:flipper:0.127.0'
     implementation 'com.facebook.soloader:soloader:0.10.1'
 
 }
