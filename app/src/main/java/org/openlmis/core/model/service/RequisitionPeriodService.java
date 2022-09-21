@@ -109,9 +109,12 @@ public class RequisitionPeriodService {
     DateTime initializeDateTime = null;
     ReportTypeForm reportTypeForm = reportTypeFormRepository.queryByCode(programCode);
     DateTime lastReportEndTime = reportTypeForm.getLastReportEndTimeForDateTime();
-    if (lastReportEndTime != null && Months.monthsBetween(lastReportEndTime, new DateTime()).getMonths() > 12) {
-      initializeDateTime = new DateTime().minusMonths(sharedPreferenceMgr.getMonthOffsetThatDefinedOldData())
-          .toDateTime();
+    if (lastReportEndTime != null) {
+      DateTime currentDateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+      if (Months.monthsBetween(lastReportEndTime, currentDateTime).getMonths() > 12) {
+        initializeDateTime = currentDateTime.minusMonths(sharedPreferenceMgr.getMonthOffsetThatDefinedOldData())
+            .toDateTime();
+      }
     }
     initializeDateTime = initializeDateTime == null ? new DateTime(stockMovementRepository
         .queryEarliestStockMovementDateByProgram(programCode)) : initializeDateTime;
