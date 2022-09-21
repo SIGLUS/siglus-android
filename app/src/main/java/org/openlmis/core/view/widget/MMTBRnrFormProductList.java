@@ -171,7 +171,7 @@ public class MMTBRnrFormProductList extends LinearLayout {
       tvIssuedUnit.setText(item.getProduct().getStrength());
       boolean isArchived = item.getProduct().isArchived();
       tvReceived.setText(getValue(isArchived, item.getReceived()));
-      editTexts.add(configEditText(item, etInitialAmount, getValue(isArchived, item.getIssued())));
+      editTexts.add(configEditText(item, etInitialAmount, getValue(isArchived, item.getInitialAmount())));
       etInitialAmount.setEnabled(Boolean.TRUE.equals(item.getIsCustomAmount()
           && (item.getForm().getStatus() == null || item.getForm().isDraft())));
       editTexts.add(configEditText(item, etIssued, getValue(isArchived, item.getIssued())));
