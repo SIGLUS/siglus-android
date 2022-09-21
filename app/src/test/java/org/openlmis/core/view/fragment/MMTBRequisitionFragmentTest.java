@@ -22,6 +22,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -47,6 +48,7 @@ import org.openlmis.core.view.widget.MMTBPatientInfoList;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
+import rx.Observable;
 
 @RunWith(LMISTestRunner.class)
 public class MMTBRequisitionFragmentTest {
@@ -107,7 +109,10 @@ public class MMTBRequisitionFragmentTest {
 
   @Test
   public void shouldNotRemoveRnrFormWhenGoBack() {
+    // when
     mmtbRequisitionFragment.onBackPressed();
+
+    // then
     verify(mmtbFormPresenter, never()).deleteDraft();
   }
 
@@ -139,5 +144,20 @@ public class MMTBRequisitionFragmentTest {
 
     // then
     assertTrue(mmtbRequisitionFragment.requireActivity().isFinishing());
+  }
+
+  @Test
+  public void shouldPerformSaveWhenClickSaveBtn() {
+    // given
+    RobolectricUtils.resetNextClickTime();
+    mmtbRequisitionFragment.refreshRequisitionForm(form);
+    when(mmtbFormPresenter.getSaveFormObservable(anyString())).thenReturn(Observable.create(subscriber -> {
+    }));
+
+    // when
+    mmtbRequisitionFragment.actionPanelView.findViewById(R.id.btn_save).performClick();
+
+    // then
+    verify(mmtbFormPresenter, times(1)).getSaveFormObservable(anyString());
   }
 }

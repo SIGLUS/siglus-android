@@ -77,6 +77,19 @@ public class MMTBRequisitionPresenter extends BaseRequisitionPresenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
+  public Observable<Void> getSaveFormObservable(String comment) {
+    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+      try {
+        rnRForm.setComments(comment);
+        rnrFormRepository.createOrUpdateWithItems(rnRForm);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "MMTBRequisitionPresenter.getSaveFormObservable").reportToFabric();
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
   @Override
   public void updateFormUI() {
     if (rnRForm != null) {

@@ -290,6 +290,7 @@
   <string name="search_hint">Procurar…</string>
   <string name="action_navigate_archive">Produtos Arquivados</string>
   <string name="hint_save_mmia_failed">Não foi possível gravar o MMIA, por favor contacte o administrador.</string>
+  <string name="hint_save_mmtb_failed">Não foi possível gravar o MMTB, por favor contacte o administrador.</string>
   <string name="hint_save_requisition_failed">Não foi possível gravar Requisição Balancete, por favor contacte o administrador.</string>
   <string name="hint_mmia_complete_failed">Não foi possível completar o MMIA, por favor contacte o administrador.</string>
   <string name="hint_mmtb_complete_failed">Não foi possível completar o MMTB, por favor contacte o administrador.</string>

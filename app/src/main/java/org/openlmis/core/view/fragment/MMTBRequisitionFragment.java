@@ -44,6 +44,7 @@ import org.openlmis.core.view.widget.MMTBRnrFormProductList;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
+import rx.Subscriber;
 import rx.functions.Action1;
 
 public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBRequisitionView {
@@ -144,8 +145,7 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
   public void refreshRequisitionForm(RnRForm form) {
     requireActivity().setTitle(getString(R.string.label_mmtb_title,
         DateUtil.formatDateWithoutYear(form.getPeriodBegin()),
-        DateUtil.formatDateWithoutYear(form.getPeriodEnd()))
-    );
+        DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
     scrollView.setVisibility(View.VISIBLE);
     // 1. refresh rnr form items
     initProductList(form);
@@ -186,7 +186,31 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        // TODO on save click
+        loading();
+        // TODO use correct comment
+        presenter.getSaveFormObservable("").subscribe(getOnSavedSubscriber());
+      }
+    };
+  }
+
+  @NonNull
+  public Subscriber<Void> getOnSavedSubscriber() {
+    return new Subscriber<Void>() {
+      @Override
+      public void onCompleted() {
+        loaded();
+        finish();
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        loaded();
+        ToastUtil.show(getString(R.string.hint_save_mmtb_failed));
+      }
+
+      @Override
+      public void onNext(Void aVoid) {
+        // do nothing
       }
     };
   }

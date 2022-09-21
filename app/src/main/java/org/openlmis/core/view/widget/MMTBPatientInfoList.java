@@ -73,10 +73,18 @@ public class MMTBPatientInfoList extends LinearLayout {
       tableList.add(item);
       tableMap.put(item.getTableName(), tableList);
     }
-    addTableView(tableMap.get(ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE), llNewPatientContainer);
-    addTableView(tableMap.get(ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE), llProphylaxisPhasesContainer);
-    addTableView(tableMap.get(ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE), llDispensationTypeContainer);
-    editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
+    if (tableMap.containsKey(ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE)) {
+      addTableView(tableMap.get(ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE), llNewPatientContainer);
+    }
+    if (tableMap.containsKey(ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE)) {
+      addTableView(tableMap.get(ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE), llProphylaxisPhasesContainer);
+    }
+    if (tableMap.containsKey(ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE)) {
+      addTableView(tableMap.get(ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE), llDispensationTypeContainer);
+    }
+    if (editTexts.size() > 0) {
+      editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
+    }
   }
 
   public boolean isCompleted() {

@@ -294,6 +294,7 @@
   <string name="search_hint">Search…</string>
   <string name="action_navigate_archive">Archived drugs</string>
   <string name="hint_save_mmia_failed">Unable to save MMIA form, Please contact your administrator.</string>
+  <string name="hint_save_mmtb_failed">Unable to save MMTB form, Please contact your administrator.</string>
   <string name="hint_save_requisition_failed">Unable to save Requisition Balencete, Please contact your administrator.</string>
   <string name="hint_mmia_complete_failed">Unable to complete MMIA form, Please contact your administrator.</string>
   <string name="hint_mmtb_complete_failed">Unable to complete MMTB form, Please contact your administrator.</string>
