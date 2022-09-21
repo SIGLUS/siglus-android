@@ -701,9 +701,6 @@
 
   <string name="supplied_quantity">Supplied Quantity</string>
   <string name="quantity_received">Quantity Received</string>
-  <string name="label_destination_product">Destination of Product</string>
-  <string name="label_dosage">Dosage</string>
-  <string name="label_designation">Designation</string>
   <string name="label_header_lot_number">Lot Number</string>
   <string name="label_expiring_date">Expiring Date</string>
   <string name="label_qf">QF</string>

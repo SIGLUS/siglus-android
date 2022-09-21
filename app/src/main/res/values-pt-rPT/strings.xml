@@ -688,9 +688,6 @@
 
   <string name="supplied_quantity">Quantidade Fornecida</string>
   <string name="quantity_received">Quantidade Recebida</string>
-  <string name="label_destination_product">Designação</string>
-  <string name="label_dosage">Dosagem</string>
-  <string name="label_designation">Forma Farmacêutica</string>
   <string name="label_header_lot_number">N° de Lote</string>
   <string name="label_expiring_date">Prazo de Validade</string>
   <string name="label_qf">QF</string>
