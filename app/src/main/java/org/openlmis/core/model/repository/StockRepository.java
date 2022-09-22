@@ -28,6 +28,7 @@ import static org.openlmis.core.constant.FieldConstants.STOCK_CARD_ID;
 import static org.openlmis.core.constant.FieldConstants.STOCK_ON_HAND;
 import static org.openlmis.core.model.Product.MEDICINE_TYPE_DEFAULT;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.MMTB_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
@@ -345,7 +346,8 @@ public class StockRepository {
       cursor.close();
     }
 
-    if (MMIA_PROGRAM_CODE.equals(programCode) || RAPID_TEST_PROGRAM_CODE.equals(programCode)) {
+    if (MMIA_PROGRAM_CODE.equals(programCode) || RAPID_TEST_PROGRAM_CODE.equals(programCode)
+        || MMTB_PROGRAM_CODE.equals(programCode)) {
       Map<String, List<LotOnHand>> idToLots = getStockIdToLotOnHands();
       for (StockCard stockCard : stockCardList) {
         if (idToLots.containsKey(String.valueOf(stockCard.getId()))) {
@@ -369,7 +371,7 @@ public class StockRepository {
   private Map<String, List<LotOnHand>> getStockIdToLotOnHands() {
     Map<String, List<LotOnHand>> lotInfoMap = new HashMap<>();
     String rawSql = "select loh.stockCard_id, loh.quantityOnHand, lots.lotNumber, lots.expirationDate "
-            + "from lots_on_hand loh join lots on loh.lot_id = lots.id order by loh.stockCard_id ";
+        + "from lots_on_hand loh join lots on loh.lot_id = lots.id order by loh.stockCard_id ";
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
         .getWritableDatabase().rawQuery(rawSql, null);
     if (cursor.moveToFirst()) {

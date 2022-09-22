@@ -290,8 +290,7 @@ public class MMIARepository extends RnrFormRepository {
     rnrFormItem.setProduct(stockCard.getProduct());
     Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
     if (earliestLotExpiryDate != null) {
-      rnrFormItem
-          .setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
+      rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
     }
 
     return rnrFormItem;

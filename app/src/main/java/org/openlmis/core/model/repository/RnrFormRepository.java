@@ -376,8 +376,7 @@ public class RnrFormRepository {
     if (formProgramCode.equals(MMIA_PROGRAM_CODE)) {
       productIds = productProgramRepository.queryActiveProductIdsForMMIA(formProgramCode);
     } else {
-      productIds = productProgramRepository.queryActiveProductIdsByProgramWithKits(
-          formProgramCode, false);
+      productIds = productProgramRepository.queryActiveProductIdsByProgramWithKits(formProgramCode, false);
     }
     List<Product> products = productRepository.queryProductsByProductIds(productIds);
     ArrayList<RnrFormItem> result = new ArrayList<>();

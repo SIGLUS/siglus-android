@@ -23,18 +23,22 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.openlmis.core.constant.ReportConstants;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.MMIARepository.ReportType;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public class MMTBRepository extends RnrFormRepository {
@@ -61,10 +65,34 @@ public class MMTBRepository extends RnrFormRepository {
   }
 
   @Override
-  public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards)
-      throws LMISException {
-    List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
-    return fillAllProducts(form, rnrFormItems);
+  public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards) throws LMISException {
+    return fillAllProducts(form, super.generateRnrFormItems(form, stockCards));
+  }
+
+  @Override
+  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, List<StockMovementItem> stockMovementItems) {
+    RnrFormItem rnrFormItem = new RnrFormItem();
+    if (stockMovementItems.isEmpty()) {
+      rnrFormItem.setReceived(0);
+    } else {
+      this.assignMMTBTotalValues(rnrFormItem, stockMovementItems);
+    }
+    rnrFormItem.setProduct(stockCard.getProduct());
+    Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
+    if (earliestLotExpiryDate != null) {
+      rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
+    }
+    return rnrFormItem;
+  }
+
+  private void assignMMTBTotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {
+    long totalReceived = 0;
+    for (StockMovementItem item : stockMovementItems) {
+      if (MovementReasonManager.MovementType.RECEIVE == item.getMovementType()) {
+        totalReceived += item.getMovementQuantity();
+      }
+    }
+    rnrFormItem.setReceived(totalReceived);
   }
 
   @Override
