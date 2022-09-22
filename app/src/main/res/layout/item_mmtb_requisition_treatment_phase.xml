@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  style="@style/MMTB.Table.Container.Item">
+
+  <TextView
+    android:id="@+id/tv_title"
+    android:gravity="start"
+    android:paddingEnd="@dimen/px_6"
+    android:layout_width="0dp"
+    android:layout_weight="1"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:text="@string/mmtb_title_treatment_phase" />
+
+  <EditText
+    android:layout_width="@dimen/mmtb_spread_item_common_width"
+    android:id="@+id/et_treatment_phase_amount"
+    style="@style/MMIA.Regime.Total.Edit"
+    android:background="@drawable/bg_light_gray_no_border" />
+
+</LinearLayout>

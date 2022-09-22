@@ -41,6 +41,11 @@
           tools:layout_width="match_parent">
 
           <!-- TODO treatment and consumption form -->
+          <org.openlmis.core.view.widget.MMTBTreatmentPhaseInfoList
+            android:id="@+id/treatment_phase_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout_height="@dimen/px_100" />
 
           <!-- patients age form -->
           <org.openlmis.core.view.widget.MMTBPatientThreeLineList

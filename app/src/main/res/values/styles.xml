@@ -380,8 +380,7 @@
   <style name="MMIA.RegimeLeftHeader">
     <item name="android:layout_width">@dimen/button_height_medium</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:gravity">bottom|center_horizontal</item>
-    <item name="android:layout_gravity">center</item>
+    <item name="android:gravity">center</item>
   </style>
 
   <style name="MMIA.RegimeTotalLabel">

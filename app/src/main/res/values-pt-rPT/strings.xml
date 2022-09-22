@@ -128,6 +128,17 @@
   <string name="mmtb_prophylaxis_phases_field">Fases Profilaxia</string>
   <string name="mmtb_dispensation_type_field">Periodicidade de Dispensa</string>
 
+  <string name="mmtb_treatment_phase_form_title">número de dias dispensados nas  diferentes fases do tratamento</string>
+  <string name="mmtb_title_treatment_phase">Fases de tratamento</string>
+  <string name="mmtb_title_number_of_day_off">N° Dias Dispensados</string>
+  <string name="mmtb_title_adult">Adulto</string>
+  <string name="mmtb_title_pediatric">Pediátrico</string>
+
+  <string name="mmtb_drug_consumption_form_title">Consumos dos Medicamentos Profilácticos</string>
+  <string name="mmtb_title_product">Produto</string>
+  <string name="mmtb_title_number_of_pills">N° Compromidos</string>
+  <string name="mmtb_title_pharmacy_outpatient">PUs e farmácia ambulatório</string>
+
   <string name="mmtb_new_adult_sensitive">Novo Adulto Sensível</string>
   <string name="mmtb_new_adult_mr">Novo Adulto MR</string>
   <string name="mmtb_new_adult_xr">Novo Adulto XR</string>

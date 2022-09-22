@@ -20,33 +20,20 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import androidx.appcompat.widget.AppCompatTextView;
 
 public class RotateTextView extends AppCompatTextView {
 
-  private boolean topDown;
+  private final Rect bounds = new Rect();
 
   public RotateTextView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    init();
-  }
-
-  private void init() {
-    final int gravity = getGravity();
-    if (Gravity.isVertical(gravity)
-        && (gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.BOTTOM) {
-      setGravity((gravity & Gravity.HORIZONTAL_GRAVITY_MASK) | Gravity.TOP);
-      topDown = false;
-    } else {
-      topDown = true;
-    }
   }
 
   public RotateTextView(Context context) {
     super(context);
-    init();
   }
 
   @Override
@@ -59,18 +46,12 @@ public class RotateTextView extends AppCompatTextView {
   protected void onDraw(Canvas canvas) {
     getPaint().setColor(getCurrentTextColor());
     getPaint().drawableState = getDrawableState();
-
+    String text = getText().toString();
+    getPaint().getTextBounds(text, 0, text.length(), bounds);
     canvas.save();
-
-    if (topDown) {
-      canvas.translate(getWidth(), getHeight() / 4f);
-      canvas.rotate(90);
-    } else {
-      canvas.translate(getWidth() / 4f, getHeight());
-      canvas.rotate(-90);
-    }
-    canvas.translate(getCompoundPaddingLeft(), getExtendedPaddingTop());
-
+    canvas.translate(getWidth() / 2f - bounds.height() - getTotalPaddingStart(), getHeight());
+    canvas.rotate(-90);
+    canvas.translate(getTotalPaddingLeft(), getExtendedPaddingTop());
     getLayout().draw(canvas);
     canvas.restore();
   }
