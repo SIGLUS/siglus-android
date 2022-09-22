@@ -249,7 +249,20 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        // TODO on complete click
+        if (!rnrFormList.isCompleted() || !threeLineList.isCompleted() || !treatmentPhaseInfoList.isCompleted()
+            || !drugConsumptionInfoList.isCompleted() || !patientInfoList.isCompleted()
+        ) {
+          return;
+        }
+        if (presenter.formItemHasNull()) {
+          ToastUtil.show(R.string.msg_requisition_field_exist_null);
+          return;
+        }
+        if (!presenter.validateFormPeriod()) {
+          ToastUtil.show(R.string.msg_requisition_not_unique);
+          return;
+        }
+        showSignDialog();
       }
     };
   }

@@ -87,6 +87,30 @@ public class MMTBRnrFormProductList extends LinearLayout {
     generateItemView(list);
   }
 
+  public boolean isCompleted() {
+    for (Pair<EditText, EditTextWatcher> editText : editTexts) {
+      if (TextUtils.isEmpty(editText.first.getText().toString()) || !isValidate(editText.first)) {
+        editText.first.setError(getContext().getString(R.string.hint_error_input));
+        editText.first.requestFocus();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private boolean isValidate(EditText editText) {
+    if (editText.getId() != R.id.et_adjustment) {
+      return true;
+    }
+    Long text;
+    try {
+      text = Long.valueOf(editText.getText().toString());
+    } catch (NumberFormatException e) {
+      text = null;
+    }
+    return text != null;
+  }
+
   private void generateHeaderView() {
     leftHeaderView = generateLeftView(null, true);
     rightHeaderView = generateRightView(null, true);

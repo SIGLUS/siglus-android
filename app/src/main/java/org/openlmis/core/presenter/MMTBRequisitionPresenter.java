@@ -24,6 +24,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.MMTBRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.view.BaseView;
@@ -103,6 +104,16 @@ public class MMTBRequisitionPresenter extends BaseRequisitionPresenter {
   @Override
   protected int getCompleteErrorMessage() {
     return R.string.hint_mmtb_complete_failed;
+  }
+
+  public boolean formItemHasNull() {
+    for (RnrFormItem rnrFormItem : rnRForm.getRnrFormItemListWrapper()) {
+      if (rnrFormItem.getIssued() == null || rnrFormItem.getAdjustment() == null
+          || rnrFormItem.getInventory() == null) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public void setComments(String comments) {
