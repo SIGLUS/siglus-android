@@ -57,4 +57,6 @@ public class ReportConstants {
   public static final String KEY_MMTB_FREQUENCY_MONTHLY = "key_mmtb_frequency_monthly";
 
   public static final String KEY_MMTB_FREQUENCY_QUARTERLY = "key_mmtb_frequency_quarterly";
+
+  public static final String KEY_MMTB_FREQUENCY_SIX_MONTHLY = "key_mmtb_frequency_six_monthly";
 }

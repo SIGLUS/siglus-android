@@ -55,7 +55,9 @@ public class MMTBRepository extends RnrFormRepository {
       new KeyEntry(ReportConstants.KEY_MMTB_FINAL_PHASE, ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE, 8),
       new KeyEntry(ReportConstants.KEY_MMTB_FREQUENCY_MONTHLY, ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE, 9),
       new KeyEntry(ReportConstants.KEY_MMTB_FREQUENCY_QUARTERLY, ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE,
-          10)
+          10),
+      new KeyEntry(ReportConstants.KEY_MMTB_FREQUENCY_SIX_MONTHLY, ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE,
+          11)
   ));
 
   @Inject

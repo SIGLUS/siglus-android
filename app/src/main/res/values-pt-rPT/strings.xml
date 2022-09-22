@@ -150,6 +150,7 @@
   <string name="mmtb_final_phase">Final/última Dispensa</string>
   <string name="mmtb_frequency_monthly">Mensal</string>
   <string name="mmtb_frequency_quarterly">Trimestral</string>
+  <string name="mmtb_frequency_six_monthly">6-Monthly</string>
 
   <!--VIA Form-->
   <string name="label_via_kit_received">No. de Kits recebidos</string>

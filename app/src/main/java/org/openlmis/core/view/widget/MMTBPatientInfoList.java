@@ -155,6 +155,8 @@ public class MMTBPatientInfoList extends LinearLayout {
         getContext().getString(R.string.mmtb_frequency_monthly));
     keyToFieldNameMap.put(ReportConstants.KEY_MMTB_FREQUENCY_QUARTERLY,
         getContext().getString(R.string.mmtb_frequency_quarterly));
+    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_FREQUENCY_SIX_MONTHLY,
+        getContext().getString(R.string.mmtb_frequency_six_monthly));
   }
 
   private static class EditTextWatcher implements android.text.TextWatcher {
