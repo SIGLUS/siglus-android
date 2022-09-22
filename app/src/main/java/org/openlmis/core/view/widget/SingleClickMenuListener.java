@@ -47,17 +47,21 @@ public abstract class SingleClickMenuListener implements MenuItem.OnMenuItemClic
 
     lastClickTime = currentClickTime;
 
+    //disable click when user click twice in 500ms
     if (elapsedTime <= minClickInterval) {
       return true;
     }
-    if (!isViewClicked) {
-      setIsViewClicked(true);
-      startTimer();
-    } else {
+
+    if (item != null && item.isEnabled()) {
+      if (!isViewClicked) {
+        setIsViewClicked(true);
+        startTimer(); //reset isViewClicked after 500ms
+        onSingleClick(item);
+      }
       return true;
+    } else {
+      return false;
     }
-    onSingleClick(item);
-    return true;
   }
 
   private void startTimer() {
