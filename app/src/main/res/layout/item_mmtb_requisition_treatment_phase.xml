@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  style="@style/MMTB.Table.Container.Item">
+  style="@style/MMTB.Table.Container.Item"
+  android:background="@color/color_white">
 
   <TextView
     android:id="@+id/tv_title"
@@ -17,6 +18,6 @@
     android:layout_width="@dimen/mmtb_spread_item_common_width"
     android:id="@+id/et_treatment_phase_amount"
     style="@style/MMIA.Regime.Total.Edit"
-    android:background="@drawable/bg_light_gray_no_border" />
+    android:background="@drawable/bg_white_no_border" />
 
 </LinearLayout>
