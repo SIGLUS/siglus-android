@@ -58,10 +58,6 @@
       android:screenOrientation="portrait"
       android:windowSoftInputMode="adjustNothing|stateHidden" />
     <activity
-      android:label="@string/label_ptv_name"
-      android:name=".view.activity.PTVRequisitionActivity"
-      android:screenOrientation="portrait" />
-    <activity
       android:label="@string/title_unpack_kit"
       android:name=".view.activity.UnpackKitActivity"
       android:screenOrientation="portrait" />
@@ -176,6 +172,8 @@
       android:label="@string/edit_order_number" />
     <activity
       android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
+      android:readPermission="org.openlmis.core.dev.READ_PERMISSION"
+      android:writePermission="org.openlmis.core.dev.WRITE_PERMISSION"
       android:exported="true"/>
 
     <provider
