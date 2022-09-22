@@ -82,7 +82,6 @@ public class MMTBTreatmentPhaseInfoList extends LinearLayout {
     llPediatricContainer = findViewById(R.id.ll_pediatric_container);
     rtvAdult = findViewById(R.id.rtv_adult);
     rtvPediatric = findViewById(R.id.rtv_pediatric);
-    setData();
   }
 
   public boolean isCompleted() {
@@ -96,8 +95,10 @@ public class MMTBTreatmentPhaseInfoList extends LinearLayout {
     return true;
   }
 
-  // TODO set data from form
-  private void setData() {
+  public void setData() {
+    llAdultContainer.removeAllViews();
+    llPediatricContainer.removeAllViews();
+    editTexts.clear();
     for (TreatmentPhaseItem phaseItem : mockData) {
       View itemView = layoutInflater.inflate(R.layout.item_mmtb_requisition_treatment_phase, this, false);
       TextView tvTitle = itemView.findViewById(R.id.tv_title);

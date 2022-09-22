@@ -97,6 +97,8 @@ public class MMTBPatientThreeLineList extends LinearLayout {
       keyToDataMap.put(item.getRegimeTypes(), item);
     }
     llAgeRange.removeAllViews();
+    patientsPharmacyEdits.clear();
+    patientsTotalEdits.clear();
     addViewItem(keyToDataMap.get(ReportConstants.KEY_MMTB_THREE_LINE_1));
     addViewItem(keyToDataMap.get(ReportConstants.KEY_MMTB_THREE_LINE_2));
     addViewItem(keyToDataMap.get(ReportConstants.KEY_MMTB_THREE_LINE_3));

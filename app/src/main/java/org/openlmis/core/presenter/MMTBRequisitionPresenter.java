@@ -77,10 +77,9 @@ public class MMTBRequisitionPresenter extends BaseRequisitionPresenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
-  public Observable<Void> getSaveFormObservable(String comment) {
+  public Observable<Void> getSaveFormObservable() {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {
-        rnRForm.setComments(comment);
         rnrFormRepository.createOrUpdateWithItems(rnRForm);
         subscriber.onCompleted();
       } catch (LMISException e) {
@@ -104,6 +103,10 @@ public class MMTBRequisitionPresenter extends BaseRequisitionPresenter {
   @Override
   protected int getCompleteErrorMessage() {
     return R.string.hint_mmtb_complete_failed;
+  }
+
+  public void setComments(String comments) {
+    rnRForm.setComments(comments);
   }
 
   public interface MMTBRequisitionView extends BaseRequisitionView {

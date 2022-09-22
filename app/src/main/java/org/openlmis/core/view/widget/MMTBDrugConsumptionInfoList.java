@@ -70,7 +70,6 @@ public class MMTBDrugConsumptionInfoList extends LinearLayout {
     llConsumptionContainer = findViewById(R.id.ll_consumption_container);
     llTitleContainer = findViewById(R.id.ll_title_container);
     rtvPharmacyOutpatient = findViewById(R.id.rtv_pharmacy_outpatient);
-    setData();
   }
 
   public boolean isCompleted() {
@@ -84,8 +83,9 @@ public class MMTBDrugConsumptionInfoList extends LinearLayout {
     return true;
   }
 
-  // TODO set data from form
-  private void setData() {
+  public void setData() {
+    llConsumptionContainer.removeAllViews();
+    editTexts.clear();
     for (TreatmentPhaseItem phaseItem : mockData) {
       View itemView = layoutInflater.inflate(R.layout.item_mmtb_requisition_treatment_phase, this, false);
       TextView tvTitle = itemView.findViewById(R.id.tv_title);

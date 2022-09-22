@@ -73,6 +73,7 @@ public class MMTBPatientInfoList extends LinearLayout {
       tableList.add(item);
       tableMap.put(item.getTableName(), tableList);
     }
+    editTexts.clear();
     if (tableMap.containsKey(ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE)) {
       addTableView(tableMap.get(ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE), llNewPatientContainer);
     }
@@ -82,7 +83,7 @@ public class MMTBPatientInfoList extends LinearLayout {
     if (tableMap.containsKey(ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE)) {
       addTableView(tableMap.get(ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE), llDispensationTypeContainer);
     }
-    if (editTexts.size() > 0) {
+    if (!editTexts.isEmpty()) {
       editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
   }

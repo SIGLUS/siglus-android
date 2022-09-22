@@ -20,11 +20,14 @@ package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import java.util.Date;
 import org.openlmis.core.R;
@@ -35,12 +38,15 @@ import org.openlmis.core.presenter.MMTBRequisitionPresenter;
 import org.openlmis.core.presenter.MMTBRequisitionPresenter.MMTBRequisitionView;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.utils.keyboard.KeyboardUtil;
+import org.openlmis.core.view.widget.MMTBDrugConsumptionInfoList;
 import org.openlmis.core.view.widget.MMTBPatientInfoList;
 import org.openlmis.core.view.widget.MMTBPatientThreeLineList;
 import org.openlmis.core.view.widget.MMTBRnrFormProductList;
+import org.openlmis.core.view.widget.MMTBTreatmentPhaseInfoList;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -53,10 +59,22 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
   protected MMTBRnrFormProductList rnrFormList;
 
   @InjectView(R.id.three_line_form)
-  protected MMTBPatientThreeLineList threeLineForm;
+  protected MMTBPatientThreeLineList threeLineList;
+
+  @InjectView(R.id.treatment_phase_info)
+  protected MMTBTreatmentPhaseInfoList treatmentPhaseInfoList;
+
+  @InjectView(R.id.drug_consumption_info)
+  protected MMTBDrugConsumptionInfoList drugConsumptionInfoList;
 
   @InjectView(R.id.mmtb_patient_info)
   protected MMTBPatientInfoList patientInfoList;
+
+  @InjectView(R.id.et_comment)
+  protected TextView etComment;
+
+  @InjectView(R.id.tv_total_mismatch)
+  protected TextView tvMismatch;
 
   @InjectView(R.id.scrollview)
   protected ScrollView scrollView;
@@ -77,6 +95,12 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
   private Date periodEndDate;
   private MMTBRequisitionPresenter presenter;
 
+  TextWatcher commentTextWatcher = new SimpleTextWatcher() {
+    @Override
+    public void afterTextChanged(Editable s) {
+      presenter.setComments(s.toString());
+    }
+  };
 
   @Override
   protected BaseReportPresenter injectPresenter() {
@@ -119,9 +143,11 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
     if (isHistoryForm()) {
       scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
       actionPanelView.setVisibility(View.GONE);
+      etComment.setEnabled(false);
     } else {
       scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
       actionPanelView.setVisibility(View.VISIBLE);
+      etComment.setEnabled(true);
     }
     rnrItemsHeaderFreezeRight.setOnTouchListener((v, event) -> true);
     containerView.post(() -> {
@@ -150,11 +176,14 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
     // 1. refresh rnr form items
     initProductList(form);
     // 2. refresh three line items
-    threeLineForm.setData(form.getRegimenThreeLineListWrapper());
+    threeLineList.setData(form.getRegimenThreeLineListWrapper());
     // 3. refresh base info
     patientInfoList.setData(form.getBaseInfoItemListWrapper());
-    // 4. consider how to save treatment phase form and consumption form info.
-
+    // TODO 4. consider how to save treatment phase form and consumption form info.
+    treatmentPhaseInfoList.setData();
+    drugConsumptionInfoList.setData();
+    // 5. set comment
+    etComment.setText(form.getComments());
     bindListener();
   }
 
@@ -168,6 +197,7 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
   }
 
   private void bindListener() {
+    etComment.addTextChangedListener(commentTextWatcher);
     actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
     scrollView.setOnTouchListener((v, event) -> {
       scrollView.requestFocus();
@@ -187,8 +217,7 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
       @Override
       public void onSingleClick(View v) {
         loading();
-        // TODO use correct comment
-        presenter.getSaveFormObservable("").subscribe(getOnSavedSubscriber());
+        presenter.getSaveFormObservable().subscribe(getOnSavedSubscriber());
       }
     };
   }

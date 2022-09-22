@@ -74,6 +74,29 @@
             android:id="@+id/mmtb_patient_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+          <com.google.android.material.textfield.TextInputLayout
+            style="@style/MMIA.CommentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small">
+
+            <EditText
+              android:id="@+id/et_comment"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/hint_mmia_comment"
+              android:inputType="textMultiLine"
+              tools:text="This is a Long text for test the EditText MultiLine char, anybody can edit anything in this line, ^_^, Good Luck!!" />
+
+            <TextView
+              android:id="@+id/tv_total_mismatch"
+              style="@style/MMIA.MismatchText"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/msg_reason_for_total_not_match"
+              android:visibility="invisible" />
+          </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
       </LinearLayout>
 
