@@ -107,11 +107,11 @@ public class MMTBTreatmentPhaseInfoList extends LinearLayout {
       etAmount.addTextChangedListener(new EditTextWatcher(phaseItem));
       editTexts.add(etAmount);
       if (MOCK_ADULT_CATEGORY.equals(phaseItem.category)) {
-        itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_cad9ee));
+        itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_e5f2ff));
         etAmount.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_blue_no_border));
         llAdultContainer.addView(itemView);
       } else {
-        itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_96b5dd));
+        itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_cce5ff));
         etAmount.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_light_blue_no_border));
         llPediatricContainer.addView(itemView);
       }

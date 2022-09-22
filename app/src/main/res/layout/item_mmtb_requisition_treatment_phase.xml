@@ -10,6 +10,7 @@
     android:layout_weight="1"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:padding="@dimen/px_4"
     android:text="@string/mmtb_title_treatment_phase" />
 
   <EditText

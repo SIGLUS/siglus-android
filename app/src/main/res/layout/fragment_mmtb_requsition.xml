@@ -52,7 +52,8 @@
             android:id="@+id/three_line_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:layout_height="@dimen/px_100" />
+            tools:layout_height="@dimen/px_100"
+            android:layout_marginTop="@dimen/margin_small" />
         </LinearLayout>
 
 
@@ -67,7 +68,7 @@
           <org.openlmis.core.view.widget.MMTBPatientInfoList
             android:id="@+id/mmtb_patient_info"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
         </LinearLayout>
       </LinearLayout>
 
