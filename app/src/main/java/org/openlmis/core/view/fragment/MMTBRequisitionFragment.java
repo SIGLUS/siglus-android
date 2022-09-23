@@ -29,10 +29,18 @@ import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import java.util.Date;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
+import org.openlmis.core.event.DebugMMTBRequisitionEvent;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.MMTBRequisitionPresenter;
 import org.openlmis.core.presenter.MMTBRequisitionPresenter.MMTBRequisitionView;
@@ -53,6 +61,7 @@ import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.functions.Action1;
 
+@BindEventBus
 public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBRequisitionView {
 
   @InjectView(R.id.rnr_form_list)
@@ -185,6 +194,30 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
     // 5. set comment
     etComment.setText(form.getComments());
     bindListener();
+  }
+
+  @VisibleForTesting
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveMMTBRequisitionEvent(DebugMMTBRequisitionEvent event) {
+    RnRForm rnRForm = presenter.getRnRForm();
+    for (RnrFormItem rnrFormItem : rnRForm.getRnrFormItemListWrapper()) {
+      if (rnrFormItem.getIsCustomAmount()) {
+        rnrFormItem.setInitialAmount(0L);
+      }
+      rnrFormItem.setIssued(0L);
+      rnrFormItem.setAdjustment(0L);
+      rnrFormItem.setInventory(0L);
+    }
+    for (BaseInfoItem baseInfoItem : rnRForm.getBaseInfoItemListWrapper()) {
+      baseInfoItem.setValue("0");
+    }
+    for (RegimenItemThreeLines lines : rnRForm.getRegimenThreeLineListWrapper()) {
+      lines.setPatientsAmount(0L);
+      lines.setPharmacyAmount(0L);
+    }
+    rnrFormList.setData(rnRForm.getRnrFormItemListWrapper());
+    threeLineList.setData(rnRForm.getRegimenThreeLineListWrapper());
+    patientInfoList.setData(rnRForm.getBaseInfoItemListWrapper());
   }
 
   private void initProductList(RnRForm form) {

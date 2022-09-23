@@ -75,13 +75,14 @@ public class MMTBPatientInfoList extends LinearLayout {
 
   public void setData(List<BaseInfoItem> data) {
     this.data = data;
+    editTexts.clear();
+    tableMap.clear();
     for (BaseInfoItem item : data) {
       List<BaseInfoItem> baseInfoItems = tableMap.get(item.getTableName());
       List<BaseInfoItem> tableList = baseInfoItems == null ? new ArrayList<>() : baseInfoItems;
       tableList.add(item);
       tableMap.put(item.getTableName(), tableList);
     }
-    editTexts.clear();
     if (tableMap.containsKey(ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE)) {
       addTableView(tableMap.get(ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE), llNewPatientContainer);
     }
