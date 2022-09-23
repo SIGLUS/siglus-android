@@ -249,8 +249,8 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        if (!rnrFormList.isCompleted() || !threeLineList.isCompleted() || !treatmentPhaseInfoList.isCompleted()
-            || !drugConsumptionInfoList.isCompleted() || !patientInfoList.isCompleted()
+        if (!rnrFormList.isCompleted() || !treatmentPhaseInfoList.isCompleted()
+            || !drugConsumptionInfoList.isCompleted() || !threeLineList.isCompleted() || !patientInfoList.isCompleted()
         ) {
           return;
         }

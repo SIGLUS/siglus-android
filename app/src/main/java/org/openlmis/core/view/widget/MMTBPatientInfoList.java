@@ -46,7 +46,11 @@ public class MMTBPatientInfoList extends LinearLayout {
   private final LinearLayout llNewPatientContainer;
   private final LinearLayout llProphylaxisPhasesContainer;
   private final LinearLayout llDispensationTypeContainer;
+  private final TextView tvPatientTotal;
+  private final TextView tvProphylaxisPhaseTotal;
+  private final TextView tvDispensationTypeTotal;
   private final LayoutInflater layoutInflater;
+  private List<BaseInfoItem> data;
 
   public MMTBPatientInfoList(Context context) {
     this(context, null);
@@ -63,10 +67,14 @@ public class MMTBPatientInfoList extends LinearLayout {
     llNewPatientContainer = findViewById(R.id.ll_new_patient_container);
     llProphylaxisPhasesContainer = findViewById(R.id.ll_prophylaxis_phases_container);
     llDispensationTypeContainer = findViewById(R.id.ll_dispensation_type_container);
+    tvPatientTotal = findViewById(R.id.tv_patient_total);
+    tvProphylaxisPhaseTotal = findViewById(R.id.tv_prophylaxis_phases_total);
+    tvDispensationTypeTotal = findViewById(R.id.tv_dispensation_type_total);
     initKeyToFieldNameMap();
   }
 
   public void setData(List<BaseInfoItem> data) {
+    this.data = data;
     for (BaseInfoItem item : data) {
       List<BaseInfoItem> baseInfoItems = tableMap.get(item.getTableName());
       List<BaseInfoItem> tableList = baseInfoItems == null ? new ArrayList<>() : baseInfoItems;
@@ -86,6 +94,7 @@ public class MMTBPatientInfoList extends LinearLayout {
     if (!editTexts.isEmpty()) {
       editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
+    calculateTotal();
   }
 
   public boolean isCompleted() {
@@ -159,7 +168,7 @@ public class MMTBPatientInfoList extends LinearLayout {
         getContext().getString(R.string.mmtb_frequency_six_monthly));
   }
 
-  private static class EditTextWatcher implements android.text.TextWatcher {
+  private class EditTextWatcher implements android.text.TextWatcher {
 
     private final BaseInfoItem item;
 
@@ -180,6 +189,46 @@ public class MMTBPatientInfoList extends LinearLayout {
     @Override
     public void afterTextChanged(Editable editable) {
       item.setValue(editable.toString());
+      calculateTotal();
+    }
+  }
+
+  private void calculateTotal() {
+    long patientTotal = 0;
+    long prophylaxisPhaseTotal = 0;
+    long dispensationTypeTotal = 0;
+    for (BaseInfoItem infoItem : data) {
+      Long itemValue = valueOfString(infoItem.getValue());
+      switch (infoItem.getTableName()) {
+        case ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE:
+          if (itemValue != null) {
+            patientTotal += itemValue;
+          }
+          break;
+        case ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE:
+          if (itemValue != null) {
+            prophylaxisPhaseTotal += itemValue;
+          }
+          break;
+        case ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE:
+          if (itemValue != null) {
+            dispensationTypeTotal += itemValue;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    tvPatientTotal.setText(String.valueOf(patientTotal));
+    tvProphylaxisPhaseTotal.setText(String.valueOf(prophylaxisPhaseTotal));
+    tvDispensationTypeTotal.setText(String.valueOf(dispensationTypeTotal));
+  }
+
+  private Long valueOfString(String value) {
+    try {
+      return Long.valueOf(value);
+    } catch (Exception e) {
+      return null;
     }
   }
 }
