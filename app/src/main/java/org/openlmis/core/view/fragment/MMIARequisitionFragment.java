@@ -326,6 +326,12 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
             ToastUtil.show(R.string.msg_requisition_field_exist_null);
           } else if (!presenter.validateFormPeriod()) {
             ToastUtil.show(R.string.msg_requisition_not_unique);
+          } else if (editTextContentIsEmpty(etTotalPatient)) {
+            etTotalPatient.setError(getString(R.string.hint_error_input));
+            etTotalPatient.requestFocus();
+          } else if (editTextContentIsEmpty(etTotalMonth)) {
+            etTotalMonth.setError(getString(R.string.hint_error_input));
+            etTotalMonth.requestFocus();
           } else if (shouldCommentMandatory()) {
             etComment.setError(getString(R.string.mmia_comment_should_not_empty));
             etComment.requestFocus();
@@ -335,6 +341,10 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
         }
       }
     };
+  }
+
+  private boolean editTextContentIsEmpty(EditText editText) {
+    return TextUtils.isEmpty(editText.getText().toString());
   }
 
   private List<BaseInfoItem> setTotalItemValues(List<BaseInfoItem> patients) {
