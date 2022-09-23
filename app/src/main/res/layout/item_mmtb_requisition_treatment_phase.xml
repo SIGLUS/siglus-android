@@ -17,6 +17,8 @@
   <EditText
     android:layout_width="@dimen/mmtb_spread_item_common_width"
     android:id="@+id/et_treatment_phase_amount"
+    android:layout_gravity="center"
+    android:gravity="center"
     style="@style/MMIA.Regime.Total.Edit"
     android:background="@drawable/bg_white_no_border" />
 
