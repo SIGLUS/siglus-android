@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
@@ -70,6 +71,28 @@ public class MMTBProductListTest {
     ViewGroup rightViewGroup = mmtbProductListTest.findViewById(R.id.rnr_from_list);
     View initialAmount = ((LinearLayout) rightViewGroup.getChildAt(0)).findViewById(R.id.et_initial_amount);
     assertThat(initialAmount.isEnabled(), is(true));
+  }
+
+  @Test
+  public void shouldNotCompleteWhenInputNothing() {
+    // when
+    mmtbProductListTest.setData(dataList);
+
+    // then
+    assertThat(mmtbProductListTest.isCompleted(), is(false));
+  }
+
+  @Test
+  public void shouldCompleteWhenFillAllEditText() {
+    // when
+    mmtbProductListTest.setData(dataList);
+    ((EditText) mmtbProductListTest.findViewById(R.id.et_initial_amount)).setText("1");
+    ((EditText) mmtbProductListTest.findViewById(R.id.et_issued)).setText("1");
+    ((EditText) mmtbProductListTest.findViewById(R.id.et_adjustment)).setText("1");
+    ((EditText) mmtbProductListTest.findViewById(R.id.et_inventory)).setText("1");
+
+    // then
+    assertThat(mmtbProductListTest.isCompleted(), is(true));
   }
 }
 
