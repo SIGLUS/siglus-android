@@ -85,6 +85,9 @@ public class MMIADispensedInfoList extends LinearLayout {
   }
 
   public void initView(List<BaseInfoItem> list, MMIARequisitionPresenter presenter) {
+    if (this.dataList != null) {
+      dataList.clear();
+    }
     this.dataList = list;
     this.presenter = presenter;
     for (BaseInfoItem item : list) {
@@ -346,6 +349,14 @@ public class MMIADispensedInfoList extends LinearLayout {
 
   private void sortedByDisplayOrder(List<BaseInfoItem> list) {
     Collections.sort(list, (o1, o2) -> o1.getDisplayOrder() - o2.getDisplayOrder());
+  }
+
+  public void removeOriginalTable() {
+    this.editTexts.clear();
+    this.dsLists.clear();
+    this.dtLists.clear();
+    this.dmLists.clear();
+    this.withinLists.clear();
   }
 
 }

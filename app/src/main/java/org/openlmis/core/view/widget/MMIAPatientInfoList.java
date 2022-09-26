@@ -22,7 +22,6 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -300,7 +299,7 @@ public class MMIAPatientInfoList extends LinearLayout {
 
   public void removeOriginalTable() {
     removeAllViews();
-//    dataList.clear();
+    dataList.clear();
     editTexts.clear();
   }
 

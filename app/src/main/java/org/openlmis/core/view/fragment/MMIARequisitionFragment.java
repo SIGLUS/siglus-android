@@ -271,10 +271,9 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     rnrItemsHeaderFreezeRight.addView(rightHeaderView);
 
     rnrFormList.post(() -> {
-        ViewUtil.syncViewHeight(leftHeaderView, rightHeaderView);
-        rnrFormList.setMarginForFreezeHeader();
-      }
-    );
+      ViewUtil.syncViewHeight(leftHeaderView, rightHeaderView);
+      rnrFormList.setMarginForFreezeHeader();
+    });
   }
 
 
@@ -526,14 +525,18 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     mmiaRegimeThreeLineListView.removeAllViews();
 
     mmiaPatientInfoListView.removeOriginalTable();
-    for(BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
+    for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
       item.setValue(String.valueOf(DEFAULT_AMOUNT));
       Log.d("DebugReceiver", "(onReceiveDebugFullfillMMIAReq) itemVal: " + item.getValue());
     }
 
+    mmiaDispensedInfoList.removeOriginalTable();
+
     refreshRequisitionForm(form);
+
     etTotalPatient.setText(String.valueOf(DEFAULT_AMOUNT));
     etTotalMonth.setText(String.valueOf(DEFAULT_AMOUNT));
+
     Log.d("DebugReceiver", "refresh req form");
   }
 }

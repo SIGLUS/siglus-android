@@ -85,8 +85,6 @@ public class MMIARegimeListWrap extends LinearLayout {
   }
 
   public void removeOriginalTable() {
-//    removeView(regimeLeftHeader);
-//    regimeLeftHeader.removeAllViews();
     regimeList.removeAllViews();
   }
 
@@ -113,7 +111,7 @@ public class MMIARegimeListWrap extends LinearLayout {
   @Override
   public void addView(View child) {
     if (child.getParent() != null) {
-      ((ViewGroup)child.getParent()).removeView(child);
+      ((ViewGroup) child.getParent()).removeView(child);
     }
     super.addView(child);
   }
