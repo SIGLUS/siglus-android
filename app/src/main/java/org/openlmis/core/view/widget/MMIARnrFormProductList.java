@@ -25,6 +25,7 @@ import android.content.res.Configuration;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -102,10 +103,10 @@ public class MMIARnrFormProductList extends LinearLayout {
     rightHeaderView = addRightHeaderView();
     setItemSize(leftHeaderView, rightHeaderView);
 
-    setMarginForFreezeHeader();
+//    setMarginForFreezeHeader();
   }
 
-  private void setMarginForFreezeHeader() {
+  public void setMarginForFreezeHeader() {
     post(() -> {
       MarginLayoutParams marginLayoutParams = (MarginLayoutParams) getLayoutParams();
       marginLayoutParams.topMargin = rightHeaderView.getLayoutParams().height;
@@ -418,6 +419,14 @@ public class MMIARnrFormProductList extends LinearLayout {
       }
       return editTextValue;
     }
+  }
+
+  public void clearViewGroups() {
+    rightViewGroup.removeAllViews();
+    leftViewGroup.removeAllViews();
+    editTexts.clear();
+    leftHeaderView = null;
+    rightHeaderView = null;
   }
 
 }

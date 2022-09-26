@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,16 +33,25 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.DialogFragment;
 import java.util.Date;
 import java.util.List;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
+import org.openlmis.core.event.DebugFullfillMMIAReqEvent;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Regimen;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
@@ -63,6 +73,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 
+@BindEventBus
 public class MMIARequisitionFragment extends BaseReportFragment implements
     MMIARequisitionPresenter.MMIARequisitionView {
 
@@ -255,7 +266,11 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
     rnrItemsHeaderFreezeRight.addView(rightHeaderView);
 
-    rnrFormList.post(() -> ViewUtil.syncViewHeight(leftHeaderView, rightHeaderView));
+    rnrFormList.post(() -> {
+        ViewUtil.syncViewHeight(leftHeaderView, rightHeaderView);
+        rnrFormList.setMarginForFreezeHeader();
+      }
+    );
   }
 
 
@@ -479,5 +494,29 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_FOR_CUSTOM_REGIME) {
       regimeWrap.addCustomRegimenItem((Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN));
     }
+  }
+
+  @VisibleForTesting
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveDebugFullfillMMIAReq(DebugFullfillMMIAReqEvent event) {
+    final long DEFAULT_AMOUNT = 3;
+    RnRForm form = presenter.getRnRForm();
+//    rnrFormList.autoFillItem();
+
+    for (RnrFormItem formItem: form.getRnrFormItemListWrapper()) {
+      formItem.setIssued(DEFAULT_AMOUNT);
+      formItem.setAdjustment(DEFAULT_AMOUNT);
+      formItem.setInventory(DEFAULT_AMOUNT);
+    }
+
+    for (RegimenItem regimenItem: form.getRegimenItemListWrapper()) {
+      regimenItem.setAmount(DEFAULT_AMOUNT);
+      regimenItem.setPharmacy(DEFAULT_AMOUNT);
+    }
+
+    rnrFormList.clearViewGroups();
+    refreshRequisitionForm(form);
+
+    Log.d("DebugReceiver", "refresh req form");
   }
 }
