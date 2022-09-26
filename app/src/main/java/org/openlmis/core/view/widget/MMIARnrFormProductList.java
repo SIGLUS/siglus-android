@@ -421,7 +421,7 @@ public class MMIARnrFormProductList extends LinearLayout {
     }
   }
 
-  public void clearViewGroups() {
+  public void removeOriginalTable() {
     rightViewGroup.removeAllViews();
     leftViewGroup.removeAllViews();
     editTexts.clear();

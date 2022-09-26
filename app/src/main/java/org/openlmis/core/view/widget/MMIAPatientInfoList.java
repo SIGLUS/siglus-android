@@ -22,6 +22,7 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -140,6 +141,9 @@ public class MMIAPatientInfoList extends LinearLayout {
   }
 
   public void initView(List<BaseInfoItem> list) {
+    if (dataList != null) {
+      dataList.clear();
+    }
     this.dataList = list;
     for (BaseInfoItem item : list) {
       List<BaseInfoItem> tableList = tableMap.get(item.getTableName()) == null ? new ArrayList<>()
@@ -292,6 +296,12 @@ public class MMIAPatientInfoList extends LinearLayout {
       }
     }
     return true;
+  }
+
+  public void removeOriginalTable() {
+    removeAllViews();
+//    dataList.clear();
+    editTexts.clear();
   }
 
 }

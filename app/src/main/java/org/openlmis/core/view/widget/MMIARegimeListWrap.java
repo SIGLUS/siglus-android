@@ -21,6 +21,8 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
@@ -62,8 +64,8 @@ public class MMIARegimeListWrap extends LinearLayout {
   public void initView(TextView totalView, TextView totalPharmacy, TextView tvTotalPharmacyTitle,
       MMIARequisitionPresenter presenter) {
     regimeList.initView(totalView, totalPharmacy, tvTotalPharmacyTitle, presenter);
-    addView(regimeLeftHeader);
-    addView(regimeList);
+    this.addView(regimeLeftHeader);
+    this.addView(regimeList);
     leftHeaderAdult.setBackgroundResource(R.color.color_green_light);
     leftHeaderChildren.setBackgroundResource(R.color.color_regime_baby);
 
@@ -80,6 +82,12 @@ public class MMIARegimeListWrap extends LinearLayout {
     LayoutParams childrenParams = (LayoutParams) leftHeaderChildren.getLayoutParams();
     childrenParams.height = regimeList.childrenHeight;
     leftHeaderChildren.setLayoutParams(childrenParams);
+  }
+
+  public void removeOriginalTable() {
+//    removeView(regimeLeftHeader);
+//    regimeLeftHeader.removeAllViews();
+    regimeList.removeAllViews();
   }
 
   public List<RegimenItem> getDataList() {
@@ -100,5 +108,13 @@ public class MMIARegimeListWrap extends LinearLayout {
 
   public void setRegimeListener(MMIARegimeList.MMIARegimeListener regimeListener) {
     regimeList.setRegimeListener(regimeListener);
+  }
+
+  @Override
+  public void addView(View child) {
+    if (child.getParent() != null) {
+      ((ViewGroup)child.getParent()).removeView(child);
+    }
+    super.addView(child);
   }
 }

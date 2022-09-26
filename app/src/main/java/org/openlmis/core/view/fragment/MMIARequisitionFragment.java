@@ -33,13 +33,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.DialogFragment;
 import java.util.Date;
 import java.util.List;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
@@ -261,9 +259,15 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
   private void inflateFreezeHeaderView() {
     final View leftHeaderView = rnrFormList.getLeftHeaderView();
+    if (rnrItemsHeaderFreezeLeft != null) {
+      rnrItemsHeaderFreezeLeft.removeAllViews();
+    }
     rnrItemsHeaderFreezeLeft.addView(leftHeaderView);
 
     final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
+    if (rnrItemsHeaderFreezeRight != null) {
+      rnrItemsHeaderFreezeRight.removeAllViews();
+    }
     rnrItemsHeaderFreezeRight.addView(rightHeaderView);
 
     rnrFormList.post(() -> {
@@ -499,24 +503,37 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
   @VisibleForTesting
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveDebugFullfillMMIAReq(DebugFullfillMMIAReqEvent event) {
-    final long DEFAULT_AMOUNT = 3;
+    final long DEFAULT_AMOUNT = 2;
     RnRForm form = presenter.getRnRForm();
-//    rnrFormList.autoFillItem();
 
     for (RnrFormItem formItem: form.getRnrFormItemListWrapper()) {
       formItem.setIssued(DEFAULT_AMOUNT);
       formItem.setAdjustment(DEFAULT_AMOUNT);
       formItem.setInventory(DEFAULT_AMOUNT);
     }
+    rnrFormList.removeOriginalTable();
 
     for (RegimenItem regimenItem: form.getRegimenItemListWrapper()) {
       regimenItem.setAmount(DEFAULT_AMOUNT);
       regimenItem.setPharmacy(DEFAULT_AMOUNT);
     }
+    regimeWrap.removeOriginalTable();
 
-    rnrFormList.clearViewGroups();
+    for (RegimenItemThreeLines regimenItemThreeLines : form.getRegimenThreeLineListWrapper()) {
+      regimenItemThreeLines.setPatientsAmount(DEFAULT_AMOUNT);
+      regimenItemThreeLines.setPharmacyAmount(DEFAULT_AMOUNT);
+    }
+    mmiaRegimeThreeLineListView.removeAllViews();
+
+    mmiaPatientInfoListView.removeOriginalTable();
+    for(BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
+      item.setValue(String.valueOf(DEFAULT_AMOUNT));
+      Log.d("DebugReceiver", "(onReceiveDebugFullfillMMIAReq) itemVal: " + item.getValue());
+    }
+
     refreshRequisitionForm(form);
-
+    etTotalPatient.setText(String.valueOf(DEFAULT_AMOUNT));
+    etTotalMonth.setText(String.valueOf(DEFAULT_AMOUNT));
     Log.d("DebugReceiver", "refresh req form");
   }
 }
