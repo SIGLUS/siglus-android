@@ -22,6 +22,7 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -291,15 +292,16 @@ public class MMIAPatientInfoList extends LinearLayout {
       if (TextUtils.isEmpty(editText.getText().toString())) {
         editText.setError(context.getString(R.string.hint_error_input));
         editText.requestFocus();
+        Log.d("DebugReceiver", "mmiaPatientInfoListView.isCompleted fail");
         return false;
       }
     }
+    Log.d("DebugReceiver", "mmiaPatientInfoListView.isCompleted success");
     return true;
   }
 
   public void removeOriginalTable() {
     removeAllViews();
-    dataList.clear();
     editTexts.clear();
   }
 

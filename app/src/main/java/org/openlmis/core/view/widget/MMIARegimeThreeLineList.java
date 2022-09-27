@@ -23,8 +23,10 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -156,12 +158,14 @@ public class MMIARegimeThreeLineList extends LinearLayout {
       if (TextUtils.isEmpty(patientTotalText.getText().toString())) {
         patientTotalText.setError(getContext().getString(R.string.hint_error_input));
         patientTotalText.requestFocus();
+        Log.d("DebugReceiver", "mmiaRegimeThreeLineListView.isCompleted fail (patient): " + patientTotalText.getText().toString());
         return false;
       }
       if (patientsPharmacyEdits.size() > 0) {
         EditText editPharmacyText = patientsPharmacyEdits.get(i);
         if (TextUtils.isEmpty(editPharmacyText.getText().toString())) {
           editPharmacyText.setError(getContext().getString(R.string.hint_error_input));
+          Log.d("DebugReceiver", "mmiaRegimeThreeLineListView.isCompleted fail (pharmacy)");
           editPharmacyText.requestFocus();
           return false;
         }

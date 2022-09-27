@@ -25,6 +25,7 @@ import android.content.res.Configuration;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -146,9 +147,11 @@ public class MMIARnrFormProductList extends LinearLayout {
       if (TextUtils.isEmpty(editText.first.getText().toString()) || !isValidate(editText.first)) {
         editText.first.setError(context.getString(R.string.hint_error_input));
         editText.first.requestFocus();
+        Log.d("DebugReceiver", "rnrFormList.isCompleted fail");
         return false;
       }
     }
+    Log.d("DebugReceiver", "rnrFormList.isCompleted success");
     return true;
   }
 

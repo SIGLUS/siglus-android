@@ -22,6 +22,7 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
@@ -425,6 +426,7 @@ public class MMIARegimeList extends LinearLayout {
       if (TextUtils.isEmpty(editTotalText.getText().toString())) {
         editTotalText.setError(context.getString(R.string.hint_error_input));
         editTotalText.requestFocus();
+        Log.d("DebugReceiver", "regimeWrap.isCompleted fail (total)");
         return false;
       }
       if (editPharmacyTexts.size() > 0) {
@@ -432,10 +434,12 @@ public class MMIARegimeList extends LinearLayout {
         if (TextUtils.isEmpty(editPharmacyText.getText().toString())) {
           editPharmacyText.setError(context.getString(R.string.hint_error_input));
           editPharmacyText.requestFocus();
+          Log.d("DebugReceiver", "regimeWrap.isCompleted fail (pharmacy)");
           return false;
         }
       }
     }
+    Log.d("DebugReceiver", "regimeWrap.isCompleted success");
     return true;
   }
 

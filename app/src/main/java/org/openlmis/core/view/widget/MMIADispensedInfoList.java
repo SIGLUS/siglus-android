@@ -34,6 +34,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -85,9 +86,6 @@ public class MMIADispensedInfoList extends LinearLayout {
   }
 
   public void initView(List<BaseInfoItem> list, MMIARequisitionPresenter presenter) {
-    if (this.dataList != null) {
-      dataList.clear();
-    }
     this.dataList = list;
     this.presenter = presenter;
     for (BaseInfoItem item : list) {
@@ -158,9 +156,11 @@ public class MMIADispensedInfoList extends LinearLayout {
       if (TextUtils.isEmpty(editText.getText().toString())) {
         editText.setError(getString(R.string.hint_error_input));
         editText.requestFocus();
+        Log.d("DebugReceiver", "mmiaDispensedInfoList.isCompleted fail");
         return false;
       }
     }
+    Log.d("DebugReceiver", "mmiaDispensedInfoList.isCompleted success");
     return true;
   }
 
