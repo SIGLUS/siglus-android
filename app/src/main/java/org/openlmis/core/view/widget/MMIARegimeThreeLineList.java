@@ -158,7 +158,8 @@ public class MMIARegimeThreeLineList extends LinearLayout {
       if (TextUtils.isEmpty(patientTotalText.getText().toString())) {
         patientTotalText.setError(getContext().getString(R.string.hint_error_input));
         patientTotalText.requestFocus();
-        Log.d("DebugReceiver", "mmiaRegimeThreeLineListView.isCompleted fail (patient): " + patientTotalText.getText().toString());
+        Log.d("DebugReceiver", "mmiaRegimeThreeLineListView.isCompleted fail (patient): "
+            + patientTotalText.getText().toString());
         return false;
       }
       if (patientsPharmacyEdits.size() > 0) {
