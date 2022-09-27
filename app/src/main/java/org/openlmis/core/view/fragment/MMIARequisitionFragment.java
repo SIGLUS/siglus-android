@@ -526,12 +526,10 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
 
     mmiaPatientInfoListView.removeOriginalTable();
+    mmiaDispensedInfoList.removeOriginalTable();
     for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
       item.setValue(String.valueOf(DEFAULT_AMOUNT));
-      Log.d("DebugReceiver", "(onReceiveDebugFullfillMMIAReq) itemVal: " + item.getValue());
     }
-
-    mmiaDispensedInfoList.removeOriginalTable();
 
     refreshRequisitionForm(form);
 

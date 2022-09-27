@@ -25,6 +25,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -141,9 +142,6 @@ public class MMIAPatientInfoList extends LinearLayout {
   }
 
   public void initView(List<BaseInfoItem> list) {
-    if (dataList != null) {
-      dataList.clear();
-    }
     this.dataList = list;
     for (BaseInfoItem item : list) {
       List<BaseInfoItem> tableList = tableMap.get(item.getTableName()) == null ? new ArrayList<>()
@@ -151,7 +149,6 @@ public class MMIAPatientInfoList extends LinearLayout {
       tableList.add(item);
       tableMap.put(item.getTableName(), tableList);
     }
-
     addItemView();
     editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
   }
@@ -301,8 +298,13 @@ public class MMIAPatientInfoList extends LinearLayout {
   }
 
   public void removeOriginalTable() {
-    removeAllViews();
+    Log.d("DebugReceiver", "getChildCount: " + getChildCount());
+    if (getChildCount() > 0) {
+      Log.d("DebugReceiver", "removeAllViews");
+      removeAllViews();
+    }
     editTexts.clear();
+    tableMap.clear();
   }
 
 }

@@ -231,5 +231,6 @@ public class MMIARegimeThreeLineList extends LinearLayout {
   public void removeOriginalTable() {
     patientsTotalEdits.clear();
     patientsPharmacyEdits.clear();
+    dataMap.clear();
   }
 }
