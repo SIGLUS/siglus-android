@@ -512,13 +512,11 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
       formItem.setInventory(DEFAULT_AMOUNT);
     }
 
-
     regimeWrap.removeOriginalTable();
     for (RegimenItem regimenItem: form.getRegimenItemListWrapper()) {
       regimenItem.setAmount(DEFAULT_AMOUNT);
       regimenItem.setPharmacy(DEFAULT_AMOUNT);
     }
-
 
     mmiaRegimeThreeLineListView.removeOriginalTable();
     for (RegimenItemThreeLines regimenItemThreeLines : form.getRegimenThreeLineListWrapper()) {

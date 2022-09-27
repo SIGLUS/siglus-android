@@ -220,4 +220,17 @@ public class MMIARegimeThreeLineList extends LinearLayout {
   public long getTotal(RegimenItemThreeLines.CountType countType) {
     return RnRForm.calculateTotalRegimenTypeAmount(dataList, countType);
   }
+
+  public void removeOriginalTable() {
+    patientsTotalEdits.clear();
+    patientsPharmacyEdits.clear();
+  }
+
+  @Override
+  public void addView(View child) {
+    if (child.getParent() != null) {
+      ((ViewGroup) child.getParent()).removeView(child);
+    }
+    super.addView(child);
+  }
 }

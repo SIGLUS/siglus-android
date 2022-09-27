@@ -32,8 +32,9 @@ import org.openlmis.core.event.DebugMMTBRequisitionEvent;
 import org.openlmis.core.event.DebugPhysicalInventoryEvent;
 
 /**
- * 1. quickly complete initial inventory: eg: adb shell am broadcast -a org.openlmis.core.debug.initial_inventory --ei
- * basicProduct 10 --ei nonBasicProduct 10 --ei lotPerProduct 10
+ * 1. quickly complete initial inventory:
+ * eg: adb shell am broadcast -a org.openlmis.core.debug.initial_inventory
+ * --ei basicProduct 10 --ei nonBasicProduct 10 --ei lotPerProduct 10
  *
  * <p>basicProduct: the basic product amount which need add lot.
  * nonBasicProduct: the non basic product amount which need add lot. lotPerProduct: lot amount per product
