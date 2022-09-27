@@ -156,11 +156,9 @@ public class MMIADispensedInfoList extends LinearLayout {
       if (TextUtils.isEmpty(editText.getText().toString())) {
         editText.setError(getString(R.string.hint_error_input));
         editText.requestFocus();
-        Log.d("DebugReceiver", "mmiaDispensedInfoList.isCompleted fail");
         return false;
       }
     }
-    Log.d("DebugReceiver", "mmiaDispensedInfoList.isCompleted success");
     return true;
   }
 

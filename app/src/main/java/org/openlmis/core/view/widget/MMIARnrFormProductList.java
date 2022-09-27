@@ -147,11 +147,9 @@ public class MMIARnrFormProductList extends LinearLayout {
       if (TextUtils.isEmpty(editText.first.getText().toString()) || !isValidate(editText.first)) {
         editText.first.setError(context.getString(R.string.hint_error_input));
         editText.first.requestFocus();
-        Log.d("DebugReceiver", "rnrFormList.isCompleted fail");
         return false;
       }
     }
-    Log.d("DebugReceiver", "rnrFormList.isCompleted success");
     return true;
   }
 

@@ -535,7 +535,5 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
     etTotalPatient.setText(String.valueOf(DEFAULT_AMOUNT));
     etTotalMonth.setText(String.valueOf(DEFAULT_AMOUNT));
-
-    Log.d("DebugReceiver", "refresh req form");
   }
 }

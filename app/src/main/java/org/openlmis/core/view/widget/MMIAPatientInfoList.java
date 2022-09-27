@@ -289,18 +289,14 @@ public class MMIAPatientInfoList extends LinearLayout {
       if (TextUtils.isEmpty(editText.getText().toString())) {
         editText.setError(context.getString(R.string.hint_error_input));
         editText.requestFocus();
-        Log.d("DebugReceiver", "mmiaPatientInfoListView.isCompleted fail");
         return false;
       }
     }
-    Log.d("DebugReceiver", "mmiaPatientInfoListView.isCompleted success");
     return true;
   }
 
   public void removeOriginalTable() {
-    Log.d("DebugReceiver", "getChildCount: " + getChildCount());
     if (getChildCount() > 0) {
-      Log.d("DebugReceiver", "removeAllViews");
       removeAllViews();
     }
     editTexts.clear();
