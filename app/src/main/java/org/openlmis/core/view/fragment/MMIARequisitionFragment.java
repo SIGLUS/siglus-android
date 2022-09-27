@@ -505,24 +505,27 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     final long DEFAULT_AMOUNT = 2;
     RnRForm form = presenter.getRnRForm();
 
+    rnrFormList.removeOriginalTable();
     for (RnrFormItem formItem: form.getRnrFormItemListWrapper()) {
       formItem.setIssued(DEFAULT_AMOUNT);
       formItem.setAdjustment(DEFAULT_AMOUNT);
       formItem.setInventory(DEFAULT_AMOUNT);
     }
-    rnrFormList.removeOriginalTable();
 
+
+    regimeWrap.removeOriginalTable();
     for (RegimenItem regimenItem: form.getRegimenItemListWrapper()) {
       regimenItem.setAmount(DEFAULT_AMOUNT);
       regimenItem.setPharmacy(DEFAULT_AMOUNT);
     }
-    regimeWrap.removeOriginalTable();
 
+
+    mmiaRegimeThreeLineListView.removeOriginalTable();
     for (RegimenItemThreeLines regimenItemThreeLines : form.getRegimenThreeLineListWrapper()) {
       regimenItemThreeLines.setPatientsAmount(DEFAULT_AMOUNT);
       regimenItemThreeLines.setPharmacyAmount(DEFAULT_AMOUNT);
     }
-    mmiaRegimeThreeLineListView.removeAllViews();
+
 
     mmiaPatientInfoListView.removeOriginalTable();
     for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
