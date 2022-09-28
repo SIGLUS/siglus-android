@@ -26,8 +26,8 @@ import android.util.Log;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.event.DebugFullfillMMIAReqEvent;
 import org.openlmis.core.event.DebugInitialInventoryEvent;
+import org.openlmis.core.event.DebugMMIARequisitionEvent;
 import org.openlmis.core.event.DebugMMTBRequisitionEvent;
 import org.openlmis.core.event.DebugPhysicalInventoryEvent;
 
@@ -49,7 +49,7 @@ public class DebugReceiver extends BroadcastReceiver {
   private static final String ACTION_INITIAL_INVENTORY = "org.openlmis.core.debug.initial_inventory";
   private static final String ACTION_PHYSICAL_INVENTORY = "org.openlmis.core.debug.physical_inventory";
   private static final String ACTION_REQUISITION_MMTB = "org.openlmis.core.debug.mmtb_requisition";
-  private static final String ACTION_FULLFILL_MMIA_REQUISITION = "org.openlmis.core.debug.fullfill_mmia_requisition";
+  private static final String ACTION_FULLFILL_MMIA_REQUISITION = "org.openlmis.core.debug.mmia_requisition";
   private static final String PARAM_BASIC_PRODUCT_AVAILABLE = "basicProduct";
   private static final String PARAM_NON_BASIC_PRODUCT_AVAILABLE = "nonBasicProduct";
   private static final String PARAM_LOT_AMOUNT_PER_PRODUCT = "lotPerProduct";
@@ -88,7 +88,7 @@ public class DebugReceiver extends BroadcastReceiver {
         break;
       case ACTION_FULLFILL_MMIA_REQUISITION:
         Log.d(TAG, ACTION_FULLFILL_MMIA_REQUISITION);
-        EventBus.getDefault().post(new DebugFullfillMMIAReqEvent());
+        EventBus.getDefault().post(new DebugMMIARequisitionEvent());
         break;
       default:
         // do nothing

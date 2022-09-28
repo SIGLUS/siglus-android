@@ -41,7 +41,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
 import org.openlmis.core.annotation.BindEventBus;
-import org.openlmis.core.event.DebugFullfillMMIAReqEvent;
+import org.openlmis.core.event.DebugMMIARequisitionEvent;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Regimen;
@@ -500,7 +500,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
   @VisibleForTesting
   @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveDebugFullfillMMIAReq(DebugFullfillMMIAReqEvent event) {
+  public void onReceiveDebugFullfillMMIAReq(DebugMMIARequisitionEvent event) {
     final long DEFAULT_AMOUNT = 2;
     RnRForm form = presenter.getRnRForm();
 

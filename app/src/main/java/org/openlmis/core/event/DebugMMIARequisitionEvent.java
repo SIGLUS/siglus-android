@@ -18,6 +18,7 @@
 
 package org.openlmis.core.event;
 
-public class DebugFullfillMMIAReqEvent {
+@SuppressWarnings("squid:S2094")
+public class DebugMMIARequisitionEvent {
 
 }
