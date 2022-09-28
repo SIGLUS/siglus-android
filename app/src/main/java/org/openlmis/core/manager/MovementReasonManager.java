@@ -40,6 +40,7 @@ import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+@SuppressWarnings("squid:S1874")
 @Singleton
 public final class MovementReasonManager {
 

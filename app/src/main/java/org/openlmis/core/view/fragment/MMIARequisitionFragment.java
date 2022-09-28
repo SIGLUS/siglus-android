@@ -257,16 +257,12 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
   }
 
   private void inflateFreezeHeaderView() {
-    final View leftHeaderView = rnrFormList.getLeftHeaderView();
-    if (rnrItemsHeaderFreezeLeft != null) {
-      rnrItemsHeaderFreezeLeft.removeAllViews();
-    }
+    View leftHeaderView = rnrFormList.getLeftHeaderView();
+    rnrItemsHeaderFreezeLeft.removeAllViews();
     rnrItemsHeaderFreezeLeft.addView(leftHeaderView);
 
-    final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
-    if (rnrItemsHeaderFreezeRight != null) {
-      rnrItemsHeaderFreezeRight.removeAllViews();
-    }
+    ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
+    rnrItemsHeaderFreezeRight.removeAllViews();
     rnrItemsHeaderFreezeRight.addView(rightHeaderView);
 
     rnrFormList.post(() -> {
@@ -505,14 +501,14 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     RnRForm form = presenter.getRnRForm();
 
     rnrFormList.removeOriginalTable();
-    for (RnrFormItem formItem: form.getRnrFormItemListWrapper()) {
+    for (RnrFormItem formItem : form.getRnrFormItemListWrapper()) {
       formItem.setIssued(DEFAULT_AMOUNT);
       formItem.setAdjustment(DEFAULT_AMOUNT);
       formItem.setInventory(DEFAULT_AMOUNT);
     }
 
     regimeWrap.removeOriginalTable();
-    for (RegimenItem regimenItem: form.getRegimenItemListWrapper()) {
+    for (RegimenItem regimenItem : form.getRegimenItemListWrapper()) {
       regimenItem.setAmount(DEFAULT_AMOUNT);
       regimenItem.setPharmacy(DEFAULT_AMOUNT);
     }
@@ -522,7 +518,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
       regimenItemThreeLines.setPatientsAmount(DEFAULT_AMOUNT);
       regimenItemThreeLines.setPharmacyAmount(DEFAULT_AMOUNT);
     }
-
 
     mmiaPatientInfoListView.removeOriginalTable();
     mmiaDispensedInfoList.removeOriginalTable();

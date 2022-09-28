@@ -20,7 +20,6 @@ package org.openlmis.core.model.helper;
 
 import com.google.inject.Inject;
 import java.util.List;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockMovementItem;
@@ -30,8 +29,7 @@ public class RnrFormHelper {
   @Inject
   FormHelper formHelper;
 
-  public void initRnrFormItemWithoutMovement(RnrFormItem rnrFormItem, long lastRnrInventory)
-      throws LMISException {
+  public void initRnrFormItemWithoutMovement(RnrFormItem rnrFormItem, long lastRnrInventory) {
     rnrFormItem.setReceived(0);
     rnrFormItem.setIssued((long) 0);
     rnrFormItem.setAdjustment((long) 0);

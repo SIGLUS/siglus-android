@@ -20,6 +20,9 @@ package org.openlmis.core.constant;
 
 public class ReportConstants {
 
+  private ReportConstants() {
+  }
+
   // mmtb three lines table
   public static final String KEY_MMTB_THREE_LINE_1 = "key_mmtb_three_line_1";
 

@@ -22,6 +22,7 @@ import android.content.Context;
 import java.lang.reflect.Field;
 import org.openlmis.core.exceptions.LMISException;
 
+@SuppressWarnings("squid:S3011")
 public class RapidTestLayoutManager extends LinearLayoutManager {
 
   public RapidTestLayoutManager(Context context) {
@@ -31,9 +32,9 @@ public class RapidTestLayoutManager extends LinearLayoutManager {
       anchorInfoField.setAccessible(true);
       anchorInfoField.set(this, new MyAnchorInfo());
       mAnchorInfo.mOrientationHelper = mOrientationHelper;
-    } catch (Exception ignore) {
+    } catch (Exception e) {
       // In the worst case, the modification fails, and bugfix doesn't work.
-      new LMISException(ignore, "rapid test align problem").reportToFabric();
+      new LMISException(e, "rapid test align problem").reportToFabric();
     }
   }
 
