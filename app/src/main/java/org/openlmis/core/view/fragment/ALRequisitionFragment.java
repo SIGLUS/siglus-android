@@ -255,7 +255,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements
         getString(R.string.label_AL_title, DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()),
             DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
     monthTitle.setText(DateUtil.formatDateWithLongMonthAndYear(rnRForm.getPeriodEnd()));
-    adapter.refresh(presenter.alReportViewModel);
+    adapter.refresh(presenter.getAlReportViewModel());
   }
 
   @Override
@@ -274,7 +274,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements
 
   private ALReportViewHolder.QuantityChangeListener getQuantityChangeListener() {
     return (columnCode, gridColumnCode) -> {
-      presenter.alReportViewModel.updateTotal(columnCode, gridColumnCode);
+      presenter.getAlReportViewModel().updateTotal(columnCode, gridColumnCode);
       adapter.updateTotal();
     };
   }

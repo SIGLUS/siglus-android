@@ -216,19 +216,19 @@ public class LMISRestManager {
       }
       return new LMISException(cause);
     }
-  }
 
-  private LMISException forbidNotAndroidUser() {
-    EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
-    userRepository.deleteLocalUser();
-    SharedPreferenceMgr.getInstance().setLastLoginUser(StringUtils.EMPTY);
-    return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
-  }
+    private LMISException forbidNotAndroidUser() {
+      EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
+      userRepository.deleteLocalUser();
+      SharedPreferenceMgr.getInstance().setLastLoginUser(StringUtils.EMPTY);
+      return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
+    }
 
-  private LMISException forbidNotSameDevice() {
-    EventBus.getDefault().post(SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE);
-    SharedPreferenceMgr.getInstance().setSyncedVersion(false);
-    return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_is_same_device_false));
+    private LMISException forbidNotSameDevice() {
+      EventBus.getDefault().post(SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE);
+      SharedPreferenceMgr.getInstance().setSyncedVersion(false);
+      return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_is_same_device_false));
+    }
   }
 
   public void refreshAccessToken(User user, RetrofitError cause) {

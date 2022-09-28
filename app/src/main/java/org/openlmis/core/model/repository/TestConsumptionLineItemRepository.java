@@ -49,7 +49,7 @@ public class TestConsumptionLineItemRepository {
       throws LMISException {
     deleteFormBasicItems(formId);
     List<UsageColumnsMap> usageColumnsMaps = usageColumnsMapRepository.list();
-    dbUtil.withDaoAsBatch(TestConsumptionItem.class, (DbUtil.Operation<TestConsumptionItem, Void>) dao -> {
+    dbUtil.withDaoAsBatch(TestConsumptionItem.class, dao -> {
       for (TestConsumptionItem item : testConsumptionLineItems) {
         setUsageColumnsMap(item, usageColumnsMaps);
         dao.createOrUpdate(item);
@@ -60,7 +60,7 @@ public class TestConsumptionLineItemRepository {
 
   public void batchDelete(final List<TestConsumptionItem> testConsumptionLineItemListWrapper)
       throws LMISException {
-    dbUtil.withDaoAsBatch(TestConsumptionItem.class, (DbUtil.Operation<TestConsumptionItem, Void>) dao -> {
+    dbUtil.withDaoAsBatch(TestConsumptionItem.class, dao -> {
       for (TestConsumptionItem item : testConsumptionLineItemListWrapper) {
         dao.delete(item);
       }
@@ -69,7 +69,7 @@ public class TestConsumptionLineItemRepository {
   }
 
   private void deleteFormBasicItems(final long formId) throws LMISException {
-    dbUtil.withDao(TestConsumptionItem.class, (DbUtil.Operation<TestConsumptionItem, Void>) dao -> {
+    dbUtil.withDao(TestConsumptionItem.class, dao -> {
       DeleteBuilder<TestConsumptionItem, String> deleteBuilder = dao.deleteBuilder();
       deleteBuilder.where().eq("form_id", formId);
       deleteBuilder.delete();
@@ -82,8 +82,8 @@ public class TestConsumptionLineItemRepository {
   }
 
   private void setUsageColumnsMap(TestConsumptionItem lineItem, List<UsageColumnsMap> usageColumnsMaps) {
-    List<UsageColumnsMap> usageColumnsMapList = from(usageColumnsMaps).filter(usageColumnsMap ->
-        usageColumnsMap.getCode().equals(lineItem.getUsageColumnsMap().getCode()))
+    List<UsageColumnsMap> usageColumnsMapList = from(usageColumnsMaps)
+        .filter(usageColumnsMap -> usageColumnsMap.getCode().equals(lineItem.getUsageColumnsMap().getCode()))
         .toList();
     if (!usageColumnsMapList.isEmpty()) {
       lineItem.setUsageColumnsMap(usageColumnsMapList.get(0));

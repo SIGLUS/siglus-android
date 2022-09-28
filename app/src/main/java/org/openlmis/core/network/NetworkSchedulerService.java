@@ -28,6 +28,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
@@ -41,7 +42,6 @@ public class NetworkSchedulerService extends JobService {
   private ConnectivityManager mConnectivityManager;
   private ConnectivityNetworkCallback mNetworkCallback;
   private SyncService syncService;
-  private NetworkCapabilities mNetworkCapabilities = null;
 
   @Override
   public boolean onStartJob(JobParameters params) {
@@ -52,7 +52,6 @@ public class NetworkSchedulerService extends JobService {
   @Override
   public void onCreate() {
     super.onCreate();
-    Log.i(TAG, "onCreate");
     mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     syncService = RoboGuice.getInjector(getApplicationContext()).getInstance(SyncService.class);
     mNetworkCallback = new ConnectivityNetworkCallback();
@@ -61,7 +60,6 @@ public class NetworkSchedulerService extends JobService {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Log.i(TAG, "onStartCommand");
     return START_NOT_STICKY;
   }
 
@@ -73,25 +71,11 @@ public class NetworkSchedulerService extends JobService {
     return true;
   }
 
-  private void syncImmediately() {
-    AnalyticsTracker.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_CONNECTED);
-    syncService.requestSyncImmediatelyByTask();
-    syncService.kickOff();
-  }
-
-  private void shutDownImmediately() {
-    Log.d(TAG, "there is no internet connection in network receiver");
-    Log.d(TAG, "network disconnect, stop sync service...");
-    AnalyticsTracker.getInstance()
-        .trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_DISCONNECTED);
-    syncService.shutDown();
-  }
-
   private class ConnectivityNetworkCallback extends ConnectivityManager.NetworkCallback {
 
     @Override
-    public void onAvailable(Network network) {
-      mNetworkCapabilities = mConnectivityManager.getNetworkCapabilities(network);
+    public void onAvailable(@NonNull Network network) {
+      NetworkCapabilities mNetworkCapabilities = mConnectivityManager.getNetworkCapabilities(network);
       if (mNetworkCapabilities != null
           && mNetworkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
           && mNetworkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {
@@ -102,13 +86,27 @@ public class NetworkSchedulerService extends JobService {
     }
 
     @Override
-    public void onLosing(Network network, int maxMsToLive) {
+    public void onLosing(@NonNull Network network, int maxMsToLive) {
       shutDownImmediately();
     }
 
     @Override
-    public void onLost(Network network) {
+    public void onLost(@NonNull Network network) {
       shutDownImmediately();
+    }
+
+    private void syncImmediately() {
+      AnalyticsTracker.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_CONNECTED);
+      syncService.requestSyncImmediatelyByTask();
+      syncService.kickOff();
+    }
+
+    private void shutDownImmediately() {
+      Log.d(TAG, "there is no internet connection in network receiver");
+      Log.d(TAG, "network disconnect, stop sync service...");
+      AnalyticsTracker.getInstance()
+          .trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_DISCONNECTED);
+      syncService.shutDown();
     }
   }
 }

@@ -39,10 +39,9 @@ public class ReportTypeAdapter implements JsonDeserializer<ReportTypeForm> {
   }
 
   @Override
-  public ReportTypeForm deserialize(JsonElement json, Type typeOfT,
-      JsonDeserializationContext context) throws JsonParseException {
-    ReportTypeForm reportTypeForm = gson.fromJson(json.toString(), ReportTypeForm.class);
-    return reportTypeForm;
+  public ReportTypeForm deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+      throws JsonParseException {
+    return gson.fromJson(json.toString(), ReportTypeForm.class);
   }
 
 }

@@ -38,10 +38,8 @@ public class RnrFormHelper {
     rnrFormItem.setInventory(lastRnrInventory);
   }
 
-  public void assignTotalValues(RnrFormItem rnrFormItem,
-      List<StockMovementItem> stockMovementItems) {
-    FormHelper.StockMovementModifiedItem modifiedItem = formHelper
-        .assignTotalValues(stockMovementItems);
+  public void assignTotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {
+    FormHelper.StockMovementModifiedItem modifiedItem = formHelper.assignTotalValues(stockMovementItems);
     rnrFormItem.setReceived(modifiedItem.totalReceived);
     rnrFormItem.setIssued(modifiedItem.totalIssued);
     rnrFormItem.setAdjustment(modifiedItem.totalAdjustment);
@@ -49,8 +47,7 @@ public class RnrFormHelper {
     Long inventory = stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand();
     rnrFormItem.setInventory(inventory);
 
-    rnrFormItem
-        .setCalculatedOrderQuantity(calculatedOrderQuantity(modifiedItem.totalIssued, inventory));
+    rnrFormItem.setCalculatedOrderQuantity(calculatedOrderQuantity(modifiedItem.totalIssued, inventory));
   }
 
   public RnrFormItem getStockCardRnr(Product product, List<RnrFormItem> rnrStockFormItems) {

@@ -63,9 +63,9 @@ public class ALRequisitionPresenterTest {
   public void shouldALViewArchFullDisplayed() {
     alRequisitionPresenter.rnRForm = createRnrForm(RnRForm.Emergency.NO);
     alRequisitionPresenter.updateFormUI();
-    ALReportItemViewModel itemHF = alRequisitionPresenter.alReportViewModel.getItemHF();
-    ALReportItemViewModel itemCHW = alRequisitionPresenter.alReportViewModel.getItemCHW();
-    ALReportItemViewModel itemTotal = alRequisitionPresenter.alReportViewModel.getItemTotal();
+    ALReportItemViewModel itemHF = alRequisitionPresenter.getAlReportViewModel().getItemHF();
+    ALReportItemViewModel itemCHW = alRequisitionPresenter.getAlReportViewModel().getItemCHW();
+    ALReportItemViewModel itemTotal = alRequisitionPresenter.getAlReportViewModel().getItemTotal();
 
     assertThat(itemHF.getGridOne().getColumnCode(), is(ALGridViewModel.ALColumnCode.ONE_COLUMN));
     assertThat(itemHF.getGridTwo().getColumnCode(), is(ALGridViewModel.ALColumnCode.TWO_COLUMN));
@@ -90,7 +90,7 @@ public class ALRequisitionPresenterTest {
   public void shouldALViewArchEmptyDisplayed() {
     alRequisitionPresenter.rnRForm = null;
     alRequisitionPresenter.updateFormUI();
-    assertNull(alRequisitionPresenter.alReportViewModel);
+    assertNull(alRequisitionPresenter.getAlReportViewModel());
   }
 
   @Test
