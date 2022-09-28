@@ -21,7 +21,6 @@ package org.openlmis.core.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,17 +64,11 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
   }
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-  }
-
-  @Override
   protected void onStart() {
     super.onStart();
     if (SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()) {
       ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
       finish();
-      return;
     }
   }
 

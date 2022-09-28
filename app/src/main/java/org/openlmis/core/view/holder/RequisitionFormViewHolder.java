@@ -111,7 +111,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
 
   private void populateAdjustmentTheoreticalIcon(final RequisitionFormItemViewModel itemViewModel) {
     if (itemViewModel.getAdjustmentViewModels() == null
-        || itemViewModel.getAdjustmentViewModels().size() == 0) {
+        || itemViewModel.getAdjustmentViewModels().isEmpty()) {
       adjustTheoreticalIcon.setVisibility(View.GONE);
     } else {
       adjustTheoreticalIcon.setVisibility(View.VISIBLE);
@@ -179,7 +179,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
   }
 
   private void showDisabledAmount(View view) {
-    view.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+    view.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
     view.setEnabled(false);
   }
 

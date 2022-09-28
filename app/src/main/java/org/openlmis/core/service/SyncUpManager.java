@@ -419,7 +419,7 @@ public class SyncUpManager {
         try {
           lmisRestApi.syncUpDeletedData(sub);
           List<DirtyDataItemInfo> itemInfoList = itemInfos.subList(start, end);
-          dbUtil.withDaoAsBatch(DirtyDataItemInfo.class, (DbUtil.Operation<DirtyDataItemInfo, Void>) dao -> {
+          dbUtil.withDaoAsBatch(DirtyDataItemInfo.class, dao -> {
             for (DirtyDataItemInfo item : itemInfoList) {
               item.setSynced(true);
               dao.createOrUpdate(item);

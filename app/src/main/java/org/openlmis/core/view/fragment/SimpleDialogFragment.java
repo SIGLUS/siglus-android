@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import lombok.Getter;
 import org.openlmis.core.LMISApp;
@@ -145,13 +146,13 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
       LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(WRAP_CONTENT,
           (int) getResources().getDimension(R.dimen.button_height_default));
       positiveButton.setLayoutParams(layoutParams);
-      positiveButton.setTextColor(getResources().getColor(R.color.color_accent));
+      positiveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_accent));
 
       if (hasNegativeButton()) {
         final Button negativeButton = ((AlertDialog) dialog)
             .getButton(DialogInterface.BUTTON_NEGATIVE);
         negativeButton.setTypeface(null, Typeface.BOLD);
-        negativeButton.setTextColor(getResources().getColor(R.color.color_accent));
+        negativeButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_accent));
       }
 
       TextView textView = ((AlertDialog) dialog).findViewById(android.R.id.message);

@@ -33,6 +33,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Regimen;
@@ -60,11 +61,13 @@ public class MMIARegimeList extends LinearLayout {
   private ArrayList<RegimenItem> paediatrics;
   protected MMIARequisitionPresenter presenter;
 
-  public int adultHeight = 0;
-  public int childrenHeight = 0;
+  @Getter
+  private int adultHeight = 0;
+  @Getter
+  private int childrenHeight = 0;
   private MMIARegimeListener regimeListener;
-
-  public boolean isPharmacyEmpty = false;
+  @Getter
+  private boolean isPharmacyEmpty = false;
 
   public enum COUNTTYPE {
     AMOUNT,
@@ -427,7 +430,7 @@ public class MMIARegimeList extends LinearLayout {
         editTotalText.requestFocus();
         return false;
       }
-      if (editPharmacyTexts.size() > 0) {
+      if (!editPharmacyTexts.isEmpty()) {
         EditText editPharmacyText = editPharmacyTexts.get(i);
         if (TextUtils.isEmpty(editPharmacyText.getText().toString())) {
           editPharmacyText.setError(context.getString(R.string.hint_error_input));

@@ -156,7 +156,7 @@ public class SelectPeriodActivity extends BaseActivity implements
       invalidateNextBtn();
     });
 
-    nextBtn.setOnClickListener((v) -> {
+    nextBtn.setOnClickListener(v -> {
       if (selectedInventory == null) {
         tvSelectPeriodWarning.setVisibility(View.VISIBLE);
         return;

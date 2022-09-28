@@ -89,7 +89,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
     Subscription subscription = presenter.loadRegimeProducts(regimeType).subscribe(subscriber);
     subscriptions.add(subscription);
 
-    btnNext.setOnClickListener((v) -> validateAndSaveRegime(regimeType));
+    btnNext.setOnClickListener(v -> validateAndSaveRegime(regimeType));
   }
 
   private void validateAndSaveRegime(Regimen.RegimeType regimeType) {
@@ -112,7 +112,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
 
 
   private List<RegimeProductViewModel> getCheckedProducts() {
-    return from(viewModels).filter(viewModel -> viewModel.isChecked()).toList();
+    return from(viewModels).filter(RegimeProductViewModel::isChecked).toList();
   }
 
   Subscriber<List<RegimeProductViewModel>> subscriber =

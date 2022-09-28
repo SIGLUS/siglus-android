@@ -86,8 +86,6 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
 
   private List<String> productsInReport = new ArrayList<>();
 
-  private List<String> selectedProductCodes;
-
   IssueVoucherDraftProductAdapter issueVoucherDraftProductAdapter = new IssueVoucherDraftProductAdapter();
 
   private final SingleClickButtonListener actionPanelClickListener = new SingleClickButtonListener() {
@@ -265,6 +263,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
     Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
     intent.putExtra(IS_FROM_BULK_ISSUE, false);
     intent.putExtra(IntentConstants.PARAM_CHOSEN_PROGRAM_CODE, programCode);
+    List<String> selectedProductCodes;
     if (ScreenName.ISSUE_VOUCHER_REPORT_SCREEN == fromPage) {
       productsInReport.addAll(issueVoucherDraftPresenter.getAddedProductCodeList());
       selectedProductCodes = new ArrayList<>(productsInReport);

@@ -60,8 +60,6 @@ public class IssueVoucherProductAdapter extends BaseMultiItemQuickAdapter<MultiI
 
   protected class IssueVoucherProductViewHolder extends BaseViewHolder {
 
-    private TextView productCode;
-    private TextView productName;
     private LinearLayout productList;
     private LinearLayout lotList;
     private ImageView btnProductClear;
@@ -72,8 +70,8 @@ public class IssueVoucherProductAdapter extends BaseMultiItemQuickAdapter<MultiI
 
     public void populate(MultiItemEntity viewModel) {
       if (viewModel.getItemType() == IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TYPE.getValue()) {
-        productCode = itemView.findViewById(R.id.products_code);
-        productName = itemView.findViewById(R.id.products_name);
+        TextView productCode = itemView.findViewById(R.id.products_code);
+        TextView productName = itemView.findViewById(R.id.products_name);
         productList = itemView.findViewById(R.id.products_list_item);
         lotList = itemView.findViewById(R.id.ll_lot_list);
         btnProductClear = itemView.findViewById(R.id.iv_clear);

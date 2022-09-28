@@ -112,16 +112,16 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
   private void updateAlert() {
     if (editable && !viewModel.validate()) {
-      etPositive.setTextColor(context.getResources().getColor(R.color.color_red));
-      etConsume.setTextColor(context.getResources().getColor(R.color.color_red));
-      etUnjustified.setTextColor(context.getResources().getColor(R.color.color_red));
+      etPositive.setTextColor(ContextCompat.getColor(context, R.color.color_red));
+      etConsume.setTextColor(ContextCompat.getColor(context, R.color.color_red));
+      etUnjustified.setTextColor(ContextCompat.getColor(context, R.color.color_red));
     } else {
       (editable ? etPositive : etPositiveTotal)
-          .setTextColor(context.getResources().getColor(R.color.color_black));
+          .setTextColor(ContextCompat.getColor(context, R.color.color_black));
       (editable ? etConsume : etConsumeTotal)
-          .setTextColor(context.getResources().getColor(R.color.color_black));
+          .setTextColor(ContextCompat.getColor(context, R.color.color_black));
       (editable ? etUnjustified : etUnjustifiedTotal)
-          .setTextColor(context.getResources().getColor(R.color.color_black));
+          .setTextColor(ContextCompat.getColor(context, R.color.color_black));
     }
   }
 
@@ -189,7 +189,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     public void afterTextChanged(Editable s) {
       RapidTestGridColumnCode gridColumnCode = switchEditIdToGridColumn(editText);
       viewModel.setValue(gridColumnCode, s.toString());
-      if (!viewModel.getIsAPE()) {
+      if (Boolean.FALSE.equals(viewModel.getIsAPE())) {
         updateTotal(gridColumnCode);
       }
       updateAlert();

@@ -208,6 +208,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
+  @Override
   public void onReceiveSyncStatusEvent(String message) {
     if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(message)) {
       showInvalidAlert(LoginErrorType.NON_SAME_DEVICE);

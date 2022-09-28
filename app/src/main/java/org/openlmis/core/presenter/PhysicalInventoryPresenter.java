@@ -113,7 +113,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
   }
 
   protected List<StockCard> getValidStockCardsForPhysicalInventory() {
-    //TODO the result of filter will apply to inventory list
     return from(stockRepository.list())
         .filter(stockCard -> !stockCard.getProduct().isKit()
             && stockCard.getProduct().isActive()

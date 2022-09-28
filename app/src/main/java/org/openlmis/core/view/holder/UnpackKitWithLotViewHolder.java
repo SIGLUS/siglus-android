@@ -22,6 +22,7 @@ import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -91,8 +92,8 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
 
       tvQuantityMessage.setText(
           LMISApp.getContext().getResources().getString(R.string.message_no_stock_amount_change));
-      tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_black));
-      tvKitExpectedQuantity.setTextColor(this.context.getResources().getColor(R.color.color_red));
+      tvQuantityMessage.setTextColor(ContextCompat.getColor(context, R.color.color_black));
+      tvKitExpectedQuantity.setTextColor(ContextCompat.getColor(context, R.color.color_red));
     }
 
     if (((UnpackKitInventoryViewModel) inventoryViewModel).isConfirmedNoStockReceived()) {
@@ -104,9 +105,8 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
 
       tvQuantityMessage.setText(
           LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
-      tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_black));
-      tvKitExpectedQuantity
-          .setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
+      tvQuantityMessage.setTextColor(ContextCompat.getColor(context, R.color.color_black));
+      tvKitExpectedQuantity.setTextColor(ContextCompat.getColor(context, R.color.color_black));
       lotListView.setVisibility(View.GONE);
     }
   }
@@ -123,10 +123,8 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
         vgSohPop.setBackgroundResource(R.drawable.inventory_pop_warning);
         tvConfirmHasStock.setVisibility(View.GONE);
         tvConfirmNoStock.setVisibility(View.GONE);
-        tvKitExpectedQuantity
-            .setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
-        tvQuantityMessage.setTextColor(
-            context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
+        tvKitExpectedQuantity.setTextColor(ContextCompat.getColor(context, R.color.color_black));
+        tvQuantityMessage.setTextColor(ContextCompat.getColor(context, R.color.color_warning_text_unpack_kit_pop));
         if (totalQuantity > kitExpectQuantity) {
           tvQuantityMessage.setText(Html.fromHtml(
               context.getString(R.string.label_unpack_kit_quantity_more_than_expected)));
@@ -144,8 +142,7 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
   private void initViewHolderStyle(InventoryViewModel inventoryViewModel) {
     lotListView.setVisibility(View.VISIBLE);
     vgSohPop.setVisibility(View.GONE);
-    tvKitExpectedQuantity
-        .setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
+    tvKitExpectedQuantity.setTextColor(ContextCompat.getColor(context, R.color.color_black));
     tvProductName.setText(TextStyleUtil
         .getHighlightQueryKeyWord(StringUtils.EMPTY, inventoryViewModel.getStyledName()));
     tvProductUnit.setText(TextStyleUtil
@@ -162,8 +159,7 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
       tvConfirmHasStock.setVisibility(View.VISIBLE);
       tvQuantityMessage.setText(
           LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
-      tvKitExpectedQuantity
-          .setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
+      tvKitExpectedQuantity.setTextColor(ContextCompat.getColor(context, R.color.color_black));
       lotListView.setVisibility(View.GONE);
       setConfirmNoStockReceivedAction.call(inventoryViewModel);
     });
@@ -172,8 +168,7 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
       tvConfirmNoStock.setVisibility(View.VISIBLE);
       tvQuantityMessage.setText(
           LMISApp.getContext().getResources().getString(R.string.message_no_stock_amount_change));
-      tvKitExpectedQuantity
-          .setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_red));
+      tvKitExpectedQuantity.setTextColor(ContextCompat.getColor(context, R.color.color_red));
       lotListView.setVisibility(View.VISIBLE);
       inventoryViewModel.setConfirmedNoStockReceived(false);
       inventoryViewModel.setShouldShowEmptyLotWarning(true);

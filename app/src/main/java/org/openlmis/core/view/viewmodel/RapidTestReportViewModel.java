@@ -86,7 +86,7 @@ public class RapidTestReportViewModel {
   private void setupCategories() {
     movementReasonManager = MovementReasonManager.getInstance();
     List<MovementReasonManager.MovementReason> issueReasons = FluentIterable.from(
-        movementReasonManager.buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE))
+            movementReasonManager.buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE))
         .filter(movementReason -> !PUB_PHARMACY.equals(movementReason.getCode())
             && !APE.equals(movementReason.getCode())).toList();
 
@@ -156,7 +156,7 @@ public class RapidTestReportViewModel {
 
   private void addCompatibleWithNotSubmitAPE() {
     for (ColumnCode columnName : ColumnCode.values()) {
-      if (isNeedAPE(columnName)) {
+      if (Boolean.TRUE.equals(isNeedAPE(columnName))) {
         RapidTestFormGridViewModel viewModel = itemAPEs.rapidTestFormGridViewModelMap
             .get(columnName);
         itemAPEs.updateNoValueGridRowToZero(viewModel);
@@ -257,7 +257,7 @@ public class RapidTestReportViewModel {
   }
 
   public void addSignature(String signature) {
-    if (rapidTestForm.getSignaturesWrapper().size() == 0) {
+    if (rapidTestForm.getSignaturesWrapper().isEmpty()) {
       rapidTestForm.getSignaturesWrapper()
           .add(new RnRFormSignature(rapidTestForm, signature, Signature.TYPE.SUBMITTER));
       rapidTestForm.setStatus(RnRForm.Status.SUBMITTED);

@@ -73,13 +73,13 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
     super.onCreate(savedInstanceState);
 
     productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
-    mAdapter = new SelectEmergencyProductAdapter(new ArrayList<InventoryViewModel>());
+    mAdapter = new SelectEmergencyProductAdapter(new ArrayList<>());
     productListRecycleView.setAdapter(mAdapter);
     loading();
     Subscription subscription = presenter.loadEmergencyProducts().subscribe(subscriber);
     subscriptions.add(subscription);
 
-    btnNext.setOnClickListener((v) -> validateAndGotoRnrPage());
+    btnNext.setOnClickListener(v -> validateAndGotoRnrPage());
   }
 
   private void validateAndGotoRnrPage() {
@@ -91,7 +91,7 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
     btnNext.setEnabled(false);
 
     ImmutableList<StockCard> immutableList = from(checkedViewModels)
-        .transform(inventoryViewModel -> inventoryViewModel.getStockCard()).toList();
+        .transform(InventoryViewModel::getStockCard).toList();
     ArrayList<StockCard> stockCards = new ArrayList<>();
     for (StockCard stockCard : immutableList) {
       stockCards.add(stockCard);
@@ -120,8 +120,7 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
   };
 
   public static Intent getIntentToMe(Context context) {
-    Intent intent = new Intent(context, SelectEmergencyProductsActivity.class);
-    return intent;
+    return new Intent(context, SelectEmergencyProductsActivity.class);;
   }
 
   @Override

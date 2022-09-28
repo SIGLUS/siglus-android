@@ -69,7 +69,7 @@ public class MMIARegimeListWrap extends LinearLayout {
     leftHeaderAdult.setBackgroundResource(R.color.color_green_light);
     leftHeaderChildren.setBackgroundResource(R.color.color_regime_baby);
 
-    if (regimeList.isPharmacyEmpty) {
+    if (regimeList.isPharmacyEmpty()) {
       regimeLeftHeader.setVisibility(GONE);
     }
     regimeList.post(this::updateLeftHeader);
@@ -77,10 +77,10 @@ public class MMIARegimeListWrap extends LinearLayout {
 
   public void updateLeftHeader() {
     LayoutParams adultParams = (LayoutParams) leftHeaderAdult.getLayoutParams();
-    adultParams.height = regimeList.adultHeight;
+    adultParams.height = regimeList.getAdultHeight();
     leftHeaderAdult.setLayoutParams(adultParams);
     LayoutParams childrenParams = (LayoutParams) leftHeaderChildren.getLayoutParams();
-    childrenParams.height = regimeList.childrenHeight;
+    childrenParams.height = regimeList.getChildrenHeight();
     leftHeaderChildren.setLayoutParams(childrenParams);
   }
 

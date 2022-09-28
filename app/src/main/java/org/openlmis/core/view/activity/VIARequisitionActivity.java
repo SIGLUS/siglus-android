@@ -72,7 +72,6 @@ public class VIARequisitionActivity extends BaseActivity {
   }
 
   public static Intent getIntentToMe(Context context) {
-    Intent intent = new Intent(context, VIARequisitionActivity.class);
-    return intent;
+    return new Intent(context, VIARequisitionActivity.class);;
   }
 }

@@ -26,6 +26,7 @@ import android.text.Spanned;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
@@ -187,9 +188,9 @@ public class RnRFormViewHolder extends BaseViewHolder {
   }
 
   private void setupButtonColor() {
-    btnView.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
+    btnView.setBackground(ContextCompat.getDrawable(context, R.drawable.blue_button));
     btnView.setPadding(60, 5, 60, 0);
-    btnView.setTextColor(context.getResources().getColor(color_white));
+    btnView.setTextColor(ContextCompat.getColor(context, color_white));
   }
 
   private void setupButton(RnRFormViewModel model, String buttonText) {
@@ -203,7 +204,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
     tvPeriod.setText(period);
     tvPeriod.setCompoundDrawablesWithIntrinsicBounds(icDescription, 0, 0, 0);
     tvPeriod.setBackgroundResource(colorDraftTitle);
-    tvPeriod.setTextColor(context.getResources().getColor(textColor));
+    tvPeriod.setTextColor(ContextCompat.getColor(context, textColor));
     tvMessage.setText(text);
 
     if (ivDelete != null) {

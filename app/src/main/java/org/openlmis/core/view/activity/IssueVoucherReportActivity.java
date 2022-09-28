@@ -87,7 +87,6 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   private ActionPanelView actionPanelView;
   private Menu addProductMenu;
   private boolean isVisible = false;
-  private Long podId;
   private Pod pod;
   private final ActivityResultLauncher<Intent> addProductPageLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
@@ -105,7 +104,6 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    podId = getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 0);
     String toPage = getIntent().getStringExtra(Constants.PARAM_ISSUE_VOUCHER_OR_POD);
     pageName = toPage == null ? Constants.PARAM_ISSUE_VOUCHER : toPage;
     if (getIntent().getExtras() != null) {
@@ -124,7 +122,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     } else if (pod != null) {
       presenter.loadViewModelByPod(pod, isBackToCurrentPage);
     } else {
-      presenter.loadData(podId);
+      presenter.loadData(getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 0));
     }
   }
 

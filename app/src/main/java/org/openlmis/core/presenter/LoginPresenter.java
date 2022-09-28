@@ -287,9 +287,9 @@ public class LoginPresenter extends Presenter {
   protected InternetCheckListener checkNetworkConnected(boolean fromReSync) {
     return internet -> {
       if (internet) {
-        Observable.create((OnSubscribe<Boolean>) subscriber -> {
-          loginRemote(user, fromReSync, (Subscriber<Boolean>) subscriber);
-        }).timeout(TIMEOUT, TimeUnit.MILLISECONDS)
+        Observable.create(
+                (OnSubscribe<Boolean>) subscriber -> loginRemote(user, fromReSync, (Subscriber<Boolean>) subscriber))
+            .timeout(TIMEOUT, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(resultObserver);
@@ -392,12 +392,12 @@ public class LoginPresenter extends Presenter {
 
     if (fromReSync) {
       Observable.create(subscriber -> {
-        try {
-          LMISApp.getInstance().getRestApi().recordReSyncAction();
-        } catch (LMISException e) {
-          Log.w(TAG, e);
-        }
-      }).subscribeOn(Schedulers.io())
+            try {
+              LMISApp.getInstance().getRestApi().recordReSyncAction();
+            } catch (LMISException e) {
+              Log.w(TAG, e);
+            }
+          }).subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
           .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
     }
@@ -409,21 +409,21 @@ public class LoginPresenter extends Presenter {
       return;
     }
     Observable.create((OnSubscribe<Void>) subscriber -> {
-      if (stockRepository.hasOldDate()) {
-        stockRepository.deleteOldData();
-        SharedPreferenceMgr.getInstance().setHasDeletedOldStockMovement(true);
-      }
-      if (rnrFormRepository.hasOldDate()) {
-        rnrFormRepository.deleteOldData();
-        SharedPreferenceMgr.getInstance().setHasDeletedOldRnr(true);
-      }
-      if (dirtyDataRepository.hasOldDate()) {
-        dirtyDataRepository.deleteOldData();
-      }
-      if (podRepository.hasOldData()) {
-        podRepository.deleteOldData();
-      }
-    }).subscribeOn(Schedulers.io())
+          if (stockRepository.hasOldDate()) {
+            stockRepository.deleteOldData();
+            SharedPreferenceMgr.getInstance().setHasDeletedOldStockMovement(true);
+          }
+          if (rnrFormRepository.hasOldDate()) {
+            rnrFormRepository.deleteOldData();
+            SharedPreferenceMgr.getInstance().setHasDeletedOldRnr(true);
+          }
+          if (dirtyDataRepository.hasOldDate()) {
+            dirtyDataRepository.deleteOldData();
+          }
+          if (podRepository.hasOldData()) {
+            podRepository.deleteOldData();
+          }
+        }).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
 

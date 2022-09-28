@@ -76,7 +76,7 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
         }
       }
     }
-    return newLotMovementViewModelList.size() != 0;
+    return !newLotMovementViewModelList.isEmpty();
   }
 
   private boolean hasLotInInventoryModelChanged() {
@@ -85,7 +85,7 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
         return true;
       }
     }
-    if (newLotMovementViewModelList.size() > 0) {
+    if (!newLotMovementViewModelList.isEmpty()) {
       return true;
     }
     for (LotMovementViewModel viewModel : getNewLotMovementViewModelList()) {

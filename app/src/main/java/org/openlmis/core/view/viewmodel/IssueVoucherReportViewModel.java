@@ -107,7 +107,7 @@ public class IssueVoucherReportViewModel {
       viewModels = new ArrayList<>();
     }
     IssueVoucherReportSummaryViewModel summaryViewModel;
-    if (viewModels.size() > 0) {
+    if (!viewModels.isEmpty()) {
       summaryViewModel = (IssueVoucherReportSummaryViewModel) viewModels.get(viewModels.size() - 1);
       summaryViewModel.setTotal(calculateTotalValue(productViewModels));
     } else {

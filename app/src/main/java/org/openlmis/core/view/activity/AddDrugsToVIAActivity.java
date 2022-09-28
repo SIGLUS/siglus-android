@@ -81,7 +81,7 @@ public class AddDrugsToVIAActivity extends SearchBarActivity {
         .loadActiveProductsNotInVIAForm(existingAdditionalProductList).subscribe(subscriber);
     subscriptions.add(subscription);
 
-    btnComplete.setOnClickListener((v) -> getRnrFormItemsAndPassToViaForm());
+    btnComplete.setOnClickListener(v -> getRnrFormItemsAndPassToViaForm());
   }
 
   private void initRecyclerView() {

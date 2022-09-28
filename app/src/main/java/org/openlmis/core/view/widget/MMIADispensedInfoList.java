@@ -93,8 +93,7 @@ public class MMIADispensedInfoList extends LinearLayout {
       tableList.add(item);
       tableMap.put(item.getTableName(), tableList);
     }
-    if (tableMap.get(attrTableDispensedKey) == null
-        || tableMap.get(attrTableDispensedKey).size() == 0) {
+    if (tableMap.get(attrTableDispensedKey) == null || tableMap.get(attrTableDispensedKey).isEmpty()) {
       return;
     }
     init();
@@ -138,7 +137,7 @@ public class MMIADispensedInfoList extends LinearLayout {
     }
     List<BaseInfoItem> items = getDispensedBaseInfoItems(
         new ArrayList<>(presenter.getLastRnrForm().getBaseInfoItemList()));
-    if (items == null || items.size() == 0) {
+    if (items == null || items.isEmpty()) {
       return;
     }
     for (BaseInfoItem item : items) {

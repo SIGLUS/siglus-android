@@ -159,36 +159,6 @@ public class ReportListFragment extends BaseReportListFragment {
     }
   }
 
-  @NonNull
-  private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(
-      final RnRForm form) {
-    return () -> deleteRnRForm(form);
-  }
-
-  private void goToRequisitionPage(long rnrFormId) {
-    Intent intent = null;
-    switch (programCode) {
-      case Program.VIA_CODE:
-        intent = VIARequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
-        break;
-      case Program.MALARIA_CODE:
-        intent = ALRequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
-        break;
-      case Program.TARV_CODE:
-        intent = MMIARequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
-        break;
-      case Program.RAPID_TEST_CODE:
-        intent = RapidTestReportFormActivity.getIntentToMe(requireContext(), rnrFormId);
-        break;
-      case Program.MMTB_CODE:
-        intent = MMTBRequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
-        break;
-      default:
-        // do nothing
-    }
-    startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
-  }
-
   private void createRequisition(Date periodEndDate, boolean isMissedPeriod) {
     Intent intent = null;
     switch (programCode) {
@@ -304,6 +274,36 @@ public class ReportListFragment extends BaseReportListFragment {
           break;
       }
       view.setEnabled(true);
+    }
+
+    @NonNull
+    private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(
+        final RnRForm form) {
+      return () -> deleteRnRForm(form);
+    }
+
+    private void goToRequisitionPage(long rnrFormId) {
+      Intent intent = null;
+      switch (programCode) {
+        case Program.VIA_CODE:
+          intent = VIARequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
+          break;
+        case Program.MALARIA_CODE:
+          intent = ALRequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
+          break;
+        case Program.TARV_CODE:
+          intent = MMIARequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
+          break;
+        case Program.RAPID_TEST_CODE:
+          intent = RapidTestReportFormActivity.getIntentToMe(requireContext(), rnrFormId);
+          break;
+        case Program.MMTB_CODE:
+          intent = MMTBRequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
+          break;
+        default:
+          // do nothing
+      }
+      startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
     }
   };
 }

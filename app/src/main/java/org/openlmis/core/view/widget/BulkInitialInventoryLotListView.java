@@ -105,7 +105,7 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     this.statusChangeListener = statusChangeListener;
     super.initLotListView(viewModel);
     if (BulkInitialInventoryAdapter.ITEM_BASIC == viewModel.getViewType()) {
-      btnVerify.setVisibility(getLotNumbers().size() == 0 ? View.GONE : View.VISIBLE);
+      btnVerify.setVisibility(getLotNumbers().isEmpty() ? View.GONE : View.VISIBLE);
       btnVerify.setOnClickListener(new SingleClickButtonListener() {
         @Override
         public void onSingleClick(View v) {
@@ -115,10 +115,10 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
         }
       });
       btnRemoveProduct.setVisibility(View.GONE);
-      btnNoStockDone.setVisibility(getLotNumbers().size() == 0 ? View.VISIBLE : View.GONE);
+      btnNoStockDone.setVisibility(getLotNumbers().isEmpty() ? View.VISIBLE : View.GONE);
     } else if (BulkInitialInventoryAdapter.ITEM_NO_BASIC == viewModel.getViewType()) {
       btnRemoveProduct.setOnClickListener(removeProductListener);
-      btnVerify.setVisibility(getLotNumbers().size() == 0 ? View.GONE : View.VISIBLE);
+      btnVerify.setVisibility(getLotNumbers().isEmpty() ? View.GONE : View.VISIBLE);
       btnVerify.setOnClickListener(new SingleClickButtonListener() {
         @Override
         public void onSingleClick(View v) {
@@ -127,7 +127,7 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
           }
         }
       });
-      btnRemoveProduct.setVisibility(getLotNumbers().size() == 0 ? View.VISIBLE : View.GONE);
+      btnRemoveProduct.setVisibility(getLotNumbers().isEmpty()? View.VISIBLE : View.GONE);
       btnNoStockDone.setVisibility(View.GONE);
     }
     markDone(viewModel.isDone());

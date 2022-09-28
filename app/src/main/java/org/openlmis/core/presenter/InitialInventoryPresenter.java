@@ -121,19 +121,18 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     defaultViewModelList.addAll(inventoryViewModelList);
     long createdTime = LMISApp.getInstance().getCurrentTimeMillis();
     for (InventoryViewModel inventoryViewModel : defaultViewModelList) {
-      if (!inventoryViewModel.isChecked()) {
-        continue;
-      }
-      try {
-        if (inventoryViewModel.getProduct().isArchived()) {
-          StockCard stockCard = inventoryViewModel.getStockCard();
-          stockCard.getProduct().setArchived(false);
-          stockRepository.updateStockCardWithProduct(stockCard);
-          continue;
+      if (inventoryViewModel.isChecked()) {
+        try {
+          if (inventoryViewModel.getProduct().isArchived()) {
+            StockCard stockCard = inventoryViewModel.getStockCard();
+            stockCard.getProduct().setArchived(false);
+            stockRepository.updateStockCardWithProduct(stockCard);
+            continue;
+          }
+          createStockCardAndInventoryMovementWithLot(inventoryViewModel, createdTime);
+        } catch (LMISException e) {
+          new LMISException(e, "InitialInventoryPresenter.initOrArchiveBackStockCard").reportToFabric();
         }
-        createStockCardAndInventoryMovementWithLot(inventoryViewModel, createdTime);
-      } catch (LMISException e) {
-        new LMISException(e, "InitialInventoryPresenter.initOrArchiveBackStockCard").reportToFabric();
       }
     }
   }
