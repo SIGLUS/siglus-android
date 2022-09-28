@@ -71,14 +71,14 @@ public class IssueVoucherProductAdapter extends BaseMultiItemQuickAdapter<MultiI
     public void populate(MultiItemEntity viewModel) {
       if (viewModel.getItemType() == IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TYPE.getValue()) {
         TextView productCode = itemView.findViewById(R.id.products_code);
+        productCode.setText(productViewModel.getPodProductItem().getProduct().getCode());
         TextView productName = itemView.findViewById(R.id.products_name);
+        productName.setText(productViewModel.getPodProductItem().getProduct().getPrimaryName());
         productList = itemView.findViewById(R.id.products_list_item);
         lotList = itemView.findViewById(R.id.ll_lot_list);
         btnProductClear = itemView.findViewById(R.id.iv_clear);
         IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel) viewModel;
         updateClearButtonStatus(productViewModel);
-        productCode.setText(productViewModel.getPodProductItem().getProduct().getCode());
-        productName.setText(productViewModel.getPodProductItem().getProduct().getPrimaryName());
         lotList.removeAllViews();
         btnProductClear.setOnClickListener(getRemoveClickListener());
         List<IssueVoucherReportLotViewModel> lotViewModels = productViewModel.getLotViewModelList();

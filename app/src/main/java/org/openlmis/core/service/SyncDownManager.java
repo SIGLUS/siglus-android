@@ -366,20 +366,20 @@ public class SyncDownManager {
     }
     EventBus.getDefault().post(new CmmCalculateEvent(true));
     return Observable.create(subscriber -> {
-          try {
-            TransactionManager
-                .callInTransaction(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), () -> {
-                  stockRepository.batchSaveLastYearMovements(stockCards);
-                  stockCards.clear();
-                  stockService.immediatelyUpdateAvgMonthlyConsumption();
-                  return null;
-                });
-            subscriber.onCompleted();
-          } catch (Exception e) {
-            subscriber.onError(e);
-          }
-        }).observeOn(SchedulerBuilder.createScheduler())
-        .doOnTerminate(() -> EventBus.getDefault().post(new CmmCalculateEvent(false)));
+      try {
+        TransactionManager
+            .callInTransaction(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), () -> {
+              stockRepository.batchSaveLastYearMovements(stockCards);
+              stockCards.clear();
+              stockService.immediatelyUpdateAvgMonthlyConsumption();
+              return null;
+            });
+        subscriber.onCompleted();
+      } catch (Exception e) {
+        subscriber.onError(e);
+      }
+    }).observeOn(SchedulerBuilder.createScheduler())
+    .doOnTerminate(() -> EventBus.getDefault().post(new CmmCalculateEvent(false)));
   }
 
 

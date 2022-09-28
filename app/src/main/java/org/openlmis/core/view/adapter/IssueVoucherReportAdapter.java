@@ -57,7 +57,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     int dataSize = getData().size();
     for (int i = 0; i < dataSize - 1; i++) {
       IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel) getData().get(i);
-      if (!productViewModel.validate()){
+      if (!productViewModel.validate()) {
         position = i;
         break;
       }

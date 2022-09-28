@@ -127,7 +127,7 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
           }
         }
       });
-      btnRemoveProduct.setVisibility(getLotNumbers().isEmpty()? View.VISIBLE : View.GONE);
+      btnRemoveProduct.setVisibility(getLotNumbers().isEmpty() ? View.VISIBLE : View.GONE);
       btnNoStockDone.setVisibility(View.GONE);
     }
     markDone(viewModel.isDone());
