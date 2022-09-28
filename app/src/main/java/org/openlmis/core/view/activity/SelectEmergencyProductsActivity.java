@@ -120,7 +120,7 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
   };
 
   public static Intent getIntentToMe(Context context) {
-    return new Intent(context, SelectEmergencyProductsActivity.class);;
+    return new Intent(context, SelectEmergencyProductsActivity.class);
   }
 
   @Override
