@@ -43,7 +43,7 @@ import org.openlmis.core.event.DebugPhysicalInventoryEvent;
  * eg: adb shell am broadcast -a org.openlmis.core.debug.physical_inventory
  *
  * <p>3. quickly complete mmia requisition:
- * eg: adb shell am broadcast -a org.openlmis.core.debug.fullfill_mmia_requisition
+ * eg: adb shell am broadcast -a org.openlmis.core.debug.mmia_requisition
  */
 public class DebugReceiver extends BroadcastReceiver {
   private static final String ACTION_INITIAL_INVENTORY = "org.openlmis.core.debug.initial_inventory";
