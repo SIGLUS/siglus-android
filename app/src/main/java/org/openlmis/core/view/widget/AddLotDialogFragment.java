@@ -20,7 +20,6 @@ package org.openlmis.core.view.widget;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,6 +30,9 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 import com.google.android.material.textfield.TextInputLayout;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -138,7 +140,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         AddLotDialogFragment.this.dismiss();
       }
     });
-    confirmDialog.show(getFragmentManager(), "confirm generate lot number");
+    confirmDialog.show(getParentFragmentManager(), "confirm generate lot number");
   }
 
   private String getString1(int resId) {
@@ -183,8 +185,8 @@ public class AddLotDialogFragment extends BaseDialogFragment {
   public boolean hasIdenticalLot(List<String> existingLots) {
     if (existingLots.contains(lotNumber)) {
       lyLotNumber.setError(getString1(R.string.error_lot_already_exists));
-      etLotNumber.getBackground()
-          .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+      etLotNumber.getBackground().setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+          ContextCompat.getColor(requireContext(), R.color.color_red), BlendModeCompat.SRC_ATOP));
       return true;
     }
     return false;
