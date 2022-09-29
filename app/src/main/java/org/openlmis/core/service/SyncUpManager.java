@@ -60,7 +60,6 @@ import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
@@ -96,8 +95,6 @@ public class SyncUpManager {
   ProductRepository productRepository;
   @Inject
   CmmRepository cmmRepository;
-  @Inject
-  ProgramDataFormRepository programDataFormRepository;
   @Inject
   DbUtil dbUtil;
   @Inject

@@ -40,7 +40,6 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.PodRepository;
-import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -79,9 +78,6 @@ public class LoginPresenter extends Presenter {
 
   @Inject
   LotRepository lotRepository;
-
-  @Inject
-  ProgramDataFormRepository programDataFormRepository;
 
   @Inject
   StockRepository stockRepository;

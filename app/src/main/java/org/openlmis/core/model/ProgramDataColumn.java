@@ -43,8 +43,4 @@ public class ProgramDataColumn extends BaseModel {
 
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   Program program;
-
-  public ProgramDataColumn(String code) {
-    this.code = code;
-  }
 }

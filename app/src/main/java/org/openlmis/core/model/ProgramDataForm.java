@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.List;
 import lombok.Data;
 import lombok.Getter;
-import org.openlmis.core.utils.ListUtil;
 
 /**
  * @deprecated stay for old data
@@ -78,22 +77,6 @@ public class ProgramDataForm extends BaseModel {
   @Expose
   @SerializedName("programDataFormSignatures")
   private transient List<ProgramDataFormSignature> signaturesWrapper;
-
-  public List<ProgramDataFormSignature> getSignaturesWrapper() {
-    signaturesWrapper = ListUtil.wrapOrEmpty(signatures, signaturesWrapper);
-    return signaturesWrapper;
-  }
-
-  public List<ProgramDataFormItem> getProgramDataFormItemListWrapper() {
-    programDataFormItemListWrapper = ListUtil
-        .wrapOrEmpty(programDataFormItemList, programDataFormItemListWrapper);
-    return programDataFormItemListWrapper;
-  }
-
-  public List<ProgramDataFormBasicItem> getFormBasicItemListWrapper() {
-    formBasicItemListWrapper = ListUtil.wrapOrEmpty(formBasicItemList, formBasicItemListWrapper);
-    return formBasicItemListWrapper;
-  }
 
   public enum Status {
     DRAFT,

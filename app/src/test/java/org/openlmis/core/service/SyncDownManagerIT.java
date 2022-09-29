@@ -34,7 +34,6 @@ import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
@@ -67,7 +66,6 @@ public class SyncDownManagerIT {
   private PodRepository podRepository;
   private User defaultUser1;
   private SharedPreferenceMgr sharedPreferenceMgr;
-  private ProgramDataFormRepository programDataFormRepository;
   private StockMovementRepository stockMovementRepository;
   private RnrFormRepository rnrFormRepository;
   private LMISTestApp appInject;
@@ -94,8 +92,6 @@ public class SyncDownManagerIT {
         .getInstance(RegimenRepository.class);
     podRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(PodRepository.class);
-    programDataFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(ProgramDataFormRepository.class);
     stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(StockMovementRepository.class);
     rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
