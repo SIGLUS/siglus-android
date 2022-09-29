@@ -145,7 +145,7 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     newLotListView.setAdapter(newLotMovementAdapter);
   }
 
-  private SingleClickButtonListener getVerifyClick(){
+  private SingleClickButtonListener getVerifyClick() {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
