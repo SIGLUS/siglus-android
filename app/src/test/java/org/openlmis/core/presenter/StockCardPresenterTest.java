@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
@@ -163,11 +162,11 @@ public class StockCardPresenterTest {
 
     verify(stockRepository).updateStockCardWithProduct(stockCard);
     verify(stockRepository, never()).updateProductOfStockCard(stockCard.getProduct());
-    assertThat(stockCard.getExpireDates()).isEqualTo("");
+    assertThat(stockCard.getExpireDates()).isEmpty();
     assertFalse(stockCard.getProduct().isArchived());
   }
 
-  private void testLoadStockCard(StockCardPresenter.ArchiveStatus status) throws LMISException {
+  private void testLoadStockCard(StockCardPresenter.ArchiveStatus status) {
     //given
     when(stockRepository.list()).thenReturn(
         newArrayList(stockCard(true, true, false, 0), stockCard(false, true, false, 0)));

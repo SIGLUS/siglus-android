@@ -44,6 +44,6 @@ public class KitStockCardListActivityTest {
     RobolectricUtils.waitLooperIdle();
     Menu optionsMenu = shadowOf(kitStockCardListActivity).getOptionsMenu();
 
-    assertThat(optionsMenu.size()).isEqualTo(0);
+    assertThat(optionsMenu.size()).isZero();
   }
 }

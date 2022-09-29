@@ -51,7 +51,6 @@ import org.openlmis.core.view.adapter.BulkIssueAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.widget.BulkEntriesSignatureDialog;
-import org.openlmis.core.view.widget.SignatureDialog.DialogDelegate;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.SingleClickMenuListener;
 import roboguice.inject.ContentView;
@@ -118,12 +117,7 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView, On
           BulkEntriesSignatureDialog signatureDialog = new BulkEntriesSignatureDialog();
           signatureDialog.setArguments(BulkEntriesSignatureDialog.getBundleToMe(
               DateUtil.formatDate(DateUtil.getCurrentDate())));
-          signatureDialog.setDelegate(new DialogDelegate() {
-            @Override
-            public void onSign(String sign) {
-              bulkIssuePresenter.doIssue(sign);
-            }
-          });
+          signatureDialog.setDelegate(sign -> bulkIssuePresenter.doIssue(sign));
           signatureDialog.show(getSupportFragmentManager(), "bulk_issue_signature");
         }
       }

@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 
@@ -114,7 +115,7 @@ public class MovementTypeDialog {
       movementReasons.addAll(reasonManager.buildReasonListForMovementType(type));
 
       contentList.addAll(FluentIterable.from(reasonManager.buildReasonListForMovementType(type))
-          .transform(reason -> reason.getDescription()).toList());
+          .transform(MovementReason::getDescription).toList());
     }
 
     adapter.notifyDataSetChanged();

@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -161,7 +162,7 @@ public class MMIARegimeThreeLineList extends LinearLayout {
         patientTotalText.requestFocus();
         return false;
       }
-      if (patientsPharmacyEdits.size() > 0) {
+      if (!patientsPharmacyEdits.isEmpty()) {
         EditText editPharmacyText = patientsPharmacyEdits.get(i);
         if (TextUtils.isEmpty(editPharmacyText.getText().toString())) {
           editPharmacyText.setError(getContext().getString(R.string.hint_error_input));
@@ -174,8 +175,8 @@ public class MMIARegimeThreeLineList extends LinearLayout {
   }
 
   public void deHighLightTotal() {
-    mmiaThreeLinePatientsTotal.setBackground(getResources().getDrawable(R.color.color_page_gray));
-    mmiaThreeLinePharmacyTotal.setBackground(getResources().getDrawable(R.color.color_page_gray));
+    mmiaThreeLinePatientsTotal.setBackground(ContextCompat.getDrawable(getContext(), R.color.color_page_gray));
+    mmiaThreeLinePharmacyTotal.setBackground(ContextCompat.getDrawable(getContext(), R.color.color_page_gray));
   }
 
   public List<RegimenItemThreeLines> getDataList() {

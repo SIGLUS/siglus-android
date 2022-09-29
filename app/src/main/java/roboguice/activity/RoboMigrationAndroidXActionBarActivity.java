@@ -54,7 +54,7 @@ import roboguice.util.RoboContext;
 public class RoboMigrationAndroidXActionBarActivity extends AppCompatActivity implements RoboContext {
 
   protected EventManager eventManager;
-  protected HashMap<Key<?>, Object> scopedObjects = new HashMap<Key<?>, Object>();
+  protected HashMap<Key<?>, Object> scopedObjects = new HashMap<>();
 
   @Inject
   ContentViewListener ignored;

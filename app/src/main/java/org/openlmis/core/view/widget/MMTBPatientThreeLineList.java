@@ -73,7 +73,7 @@ public class MMTBPatientThreeLineList extends LinearLayout {
         patientTotalText.requestFocus();
         return false;
       }
-      if (patientsPharmacyEdits.size() > 0) {
+      if (!patientsPharmacyEdits.isEmpty()) {
         EditText editPharmacyText = patientsPharmacyEdits.get(i);
         if (TextUtils.isEmpty(editPharmacyText.getText().toString())) {
           editPharmacyText.setError(getContext().getString(R.string.hint_error_input));

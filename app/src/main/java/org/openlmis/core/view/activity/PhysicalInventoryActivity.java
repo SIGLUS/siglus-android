@@ -50,13 +50,11 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
 
   public static final String KEY_FROM_PHYSICAL_VERIFY = "Physical-Verify";
 
-  final SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-    public void onSign(String sign) {
-      loading();
-      Subscription subscription = presenter.doInventory(sign).subscribe(onNextMainPageAction, errorAction);
-      subscriptions.add(subscription);
-      trackInventoryEvent(TrackerActions.APPROVE_INVENTORY);
-    }
+  final SignatureDialog.DialogDelegate signatureDialogDelegate = sign -> {
+    loading();
+    Subscription subscription = presenter.doInventory(sign).subscribe(onNextMainPageAction, errorAction);
+    subscriptions.add(subscription);
+    trackInventoryEvent(TrackerActions.APPROVE_INVENTORY);
   };
 
   public static Intent getIntentToMe(Context context) {

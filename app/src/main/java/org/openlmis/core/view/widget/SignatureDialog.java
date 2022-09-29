@@ -44,7 +44,6 @@ public class SignatureDialog extends BaseDialogFragment {
   @Getter
   @Setter
   DialogDelegate delegate;
-  private View contentView;
 
   @InjectView(R.id.btn_cancel)
   public TextView btnCancel;
@@ -72,8 +71,7 @@ public class SignatureDialog extends BaseDialogFragment {
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    contentView = inflater.inflate(R.layout.dialog_inventory_signature, container, false);
-    return contentView;
+    return inflater.inflate(R.layout.dialog_inventory_signature, container, false);
   }
 
   @Override
@@ -168,12 +166,12 @@ public class SignatureDialog extends BaseDialogFragment {
     return delegate != null;
   }
 
-  public abstract static class DialogDelegate {
+  public interface DialogDelegate {
 
-    public void onCancel() {
+    default void onCancel() {
     }
 
-    public abstract void onSign(String sign);
+    void onSign(String sign);
   }
 
   public static Bundle getBundleToMe(String title) {

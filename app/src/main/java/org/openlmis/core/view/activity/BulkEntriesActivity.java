@@ -320,15 +320,11 @@ public class BulkEntriesActivity extends BaseActivity {
   }
 
   private SignatureDialog.DialogDelegate getSignatureDialogDelegate() {
-    return new SignatureDialog.DialogDelegate() {
-
-      @Override
-      public void onSign(String signature) {
-        loading();
-        Subscription subscription = bulkEntriesPresenter.saveBulkEntriesProducts(signature)
-            .subscribe(getSaveBulkEntriesProductsSubscriber());
-        subscriptions.add(subscription);
-      }
+    return signature -> {
+      loading();
+      Subscription subscription = bulkEntriesPresenter.saveBulkEntriesProducts(signature)
+          .subscribe(getSaveBulkEntriesProductsSubscriber());
+      subscriptions.add(subscription);
     };
   }
 

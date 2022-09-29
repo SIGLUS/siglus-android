@@ -51,6 +51,6 @@ public class StockMovementHistoryActivityTest {
         .isEqualTo(StockMovementHistoryActivity.class.getName());
     assertThat(intent.getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0)).isEqualTo(100L);
     assertThat(intent.getStringExtra(Constants.PARAM_STOCK_NAME)).isEqualTo("StockName");
-    assertThat(intent.getBooleanExtra(Constants.PARAM_IS_KIT, false)).isEqualTo(true);
+    assertThat(intent.getBooleanExtra(Constants.PARAM_IS_KIT, false)).isTrue();
   }
 }

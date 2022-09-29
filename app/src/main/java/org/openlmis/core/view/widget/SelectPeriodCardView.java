@@ -25,6 +25,7 @@ import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
@@ -92,23 +93,23 @@ public class SelectPeriodCardView extends CardView implements Checkable {
   }
 
   private void setDeSelected() {
-    inventoryContainer.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-    inventoryDateWeek.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-    inventoryDateTime.setTextColor(getResources().getColor(R.color.color_text_primary));
-    inventoryDateDay.setTextColor(getResources().getColor(R.color.color_text_primary));
-    inventoryDateMonth.setTextColor(getResources().getColor(R.color.color_text_primary));
-    inventoryDateWeek.setTextColor(getResources().getColor(R.color.color_text_primary));
+    inventoryContainer.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+    inventoryDateWeek.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+    inventoryDateTime.setTextColor(ContextCompat.getColor(getContext(), R.color.color_text_primary));
+    inventoryDateDay.setTextColor(ContextCompat.getColor(getContext(), R.color.color_text_primary));
+    inventoryDateMonth.setTextColor(ContextCompat.getColor(getContext(), R.color.color_text_primary));
+    inventoryDateWeek.setTextColor(ContextCompat.getColor(getContext(), R.color.color_text_primary));
     horizontalLine.setVisibility(View.VISIBLE);
     checkmarkIcon.setVisibility(View.GONE);
   }
 
   private void setSelected() {
-    inventoryContainer.setBackgroundColor(getResources().getColor(R.color.color_teal));
-    inventoryDateWeek.setBackgroundColor(getResources().getColor(R.color.color_teal_dark));
-    inventoryDateTime.setTextColor(getResources().getColor(R.color.color_white));
-    inventoryDateDay.setTextColor(getResources().getColor(R.color.color_white));
-    inventoryDateMonth.setTextColor(getResources().getColor(R.color.color_white));
-    inventoryDateWeek.setTextColor(getResources().getColor(R.color.color_white));
+    inventoryContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_teal));
+    inventoryDateWeek.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_teal_dark));
+    inventoryDateTime.setTextColor(ContextCompat.getColor(getContext(), R.color.color_white));
+    inventoryDateDay.setTextColor(ContextCompat.getColor(getContext(), R.color.color_white));
+    inventoryDateMonth.setTextColor(ContextCompat.getColor(getContext(), R.color.color_white));
+    inventoryDateWeek.setTextColor(ContextCompat.getColor(getContext(), R.color.color_white));
     horizontalLine.setVisibility(View.GONE);
     checkmarkIcon.setVisibility(View.VISIBLE);
   }

@@ -80,12 +80,12 @@ public class RequisitionProductViewHolderTest {
     RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
     viewHolder.populate(viewModel, presenter, LMISTestApp.getContext());
 
-    assertThat(viewHolder.productName.getText().toString()).isEqualTo("productName");
-    assertThat(viewHolder.productCode.getText().toString()).isEqualTo("08S42");
+    assertThat(viewHolder.productName.getText().toString()).hasToString("productName");
+    assertThat(viewHolder.productCode.getText().toString()).hasToString("08S42");
   }
 
   @Test
-  public void shouldSetDelIconForNewAddedProduct() throws Exception {
+  public void shouldSetDelIconForNewAddedProduct() {
     formItem.setManualAdd(true);
     RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
     viewHolder.populate(viewModel, presenter, LMISTestApp.getContext());
@@ -94,7 +94,7 @@ public class RequisitionProductViewHolderTest {
   }
 
   @Test
-  public void shouldNotShowDelIconForOldProduct() throws Exception {
+  public void shouldNotShowDelIconForOldProduct() {
     RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
     viewHolder.populate(viewModel, presenter, LMISTestApp.getContext());
 
@@ -102,7 +102,7 @@ public class RequisitionProductViewHolderTest {
   }
 
   @Test
-  public void shouldShowDialogWhenClickDelIcon() throws Exception {
+  public void shouldShowDialogWhenClickDelIcon() {
     VIARequisitionActivity viaRequisitionActivity = Robolectric
         .setupActivity(VIARequisitionActivity.class);
     Product product = new Product();

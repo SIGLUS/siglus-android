@@ -34,7 +34,6 @@ import org.openlmis.core.presenter.MMIARequisitionPresenter;
 
 public class MMIARegimeListWrap extends LinearLayout {
 
-  private LayoutInflater layoutInflater;
   private MMIARegimeList regimeList;
   private LinearLayout regimeLeftHeader;
   private TextView leftHeaderAdult;
@@ -51,7 +50,7 @@ public class MMIARegimeListWrap extends LinearLayout {
   }
 
   private void init(Context context) {
-    layoutInflater = LayoutInflater.from(context);
+    LayoutInflater layoutInflater = LayoutInflater.from(context);
     regimeList = (MMIARegimeList) layoutInflater
         .inflate(R.layout.fragment_mmia_requisition_regime_list_conent, this, false);
     regimeLeftHeader = (LinearLayout) layoutInflater

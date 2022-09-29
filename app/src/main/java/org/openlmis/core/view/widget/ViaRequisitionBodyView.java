@@ -30,6 +30,7 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ListView;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import com.google.inject.Inject;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
@@ -149,18 +150,18 @@ public class ViaRequisitionBodyView extends FrameLayout {
 
   public void highLightApprovedAmount() {
     headerRequestAmount.setBackgroundResource(android.R.color.transparent);
-    headerRequestAmount.setTextColor(getResources().getColor(R.color.color_text_primary));
+    headerRequestAmount.setTextColor(ContextCompat.getColor(getContext(), R.color.color_text_primary));
     headerApproveAmount.setBackgroundResource(R.color.color_accent);
-    headerApproveAmount.setTextColor(getResources().getColor(R.color.color_white));
+    headerApproveAmount.setTextColor(ContextCompat.getColor(getContext(), R.color.color_white));
 
     refreshFormList(Status.SUBMITTED);
   }
 
   public void highLightRequestAmount() {
     headerRequestAmount.setBackgroundResource(R.color.color_accent);
-    headerRequestAmount.setTextColor(getResources().getColor(R.color.color_white));
+    headerRequestAmount.setTextColor(ContextCompat.getColor(getContext(), R.color.color_white));
     headerApproveAmount.setBackgroundResource(android.R.color.transparent);
-    headerApproveAmount.setTextColor(getResources().getColor(R.color.color_text_primary));
+    headerApproveAmount.setTextColor(ContextCompat.getColor(getContext(), R.color.color_text_primary));
 
     refreshFormList(Status.DRAFT);
   }

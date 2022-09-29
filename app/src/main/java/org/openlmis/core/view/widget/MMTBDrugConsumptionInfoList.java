@@ -38,15 +38,15 @@ import org.openlmis.core.R;
 
 public class MMTBDrugConsumptionInfoList extends LinearLayout {
 
-  private static final List<TreatmentPhaseItem> mockData = Collections.unmodifiableList(Arrays.asList(
-      new TreatmentPhaseItem("Consumption of drugs 1", ""),
-      new TreatmentPhaseItem("Consumption of drugs 2", ""),
-      new TreatmentPhaseItem("Consumption of drugs 3", ""),
-      new TreatmentPhaseItem("Consumption of drugs 4", ""),
-      new TreatmentPhaseItem("Consumption of drugs 5 Consumption of drugs 5", ""),
-      new TreatmentPhaseItem("Consumption of drugs 6", ""),
-      new TreatmentPhaseItem("Consumption of drugs 7", ""),
-      new TreatmentPhaseItem("Consumption of drugs 8", "")
+  private static final List<DrugConsumptionItem> mockData = Collections.unmodifiableList(Arrays.asList(
+      new DrugConsumptionItem("Consumption of drugs 1", ""),
+      new DrugConsumptionItem("Consumption of drugs 2", ""),
+      new DrugConsumptionItem("Consumption of drugs 3", ""),
+      new DrugConsumptionItem("Consumption of drugs 4", ""),
+      new DrugConsumptionItem("Consumption of drugs 5 Consumption of drugs 5", ""),
+      new DrugConsumptionItem("Consumption of drugs 6", ""),
+      new DrugConsumptionItem("Consumption of drugs 7", ""),
+      new DrugConsumptionItem("Consumption of drugs 8", "")
   ));
 
   private final TextView rtvPharmacyOutpatient;
@@ -86,7 +86,7 @@ public class MMTBDrugConsumptionInfoList extends LinearLayout {
   public void setData() {
     llConsumptionContainer.removeAllViews();
     editTexts.clear();
-    for (TreatmentPhaseItem phaseItem : mockData) {
+    for (DrugConsumptionItem phaseItem : mockData) {
       View itemView = layoutInflater.inflate(R.layout.item_mmtb_requisition_treatment_phase, this, false);
       TextView tvTitle = itemView.findViewById(R.id.tv_title);
       tvTitle.setText(phaseItem.name);
@@ -107,7 +107,7 @@ public class MMTBDrugConsumptionInfoList extends LinearLayout {
 
   @AllArgsConstructor
   @Data
-  private static class TreatmentPhaseItem {
+  private static class DrugConsumptionItem {
 
     private String name;
     private String value;
@@ -115,9 +115,9 @@ public class MMTBDrugConsumptionInfoList extends LinearLayout {
 
   private static class EditTextWatcher implements android.text.TextWatcher {
 
-    private final TreatmentPhaseItem item;
+    private final DrugConsumptionItem item;
 
-    public EditTextWatcher(TreatmentPhaseItem item) {
+    public EditTextWatcher(DrugConsumptionItem item) {
       this.item = item;
     }
 

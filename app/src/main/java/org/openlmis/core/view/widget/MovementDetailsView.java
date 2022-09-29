@@ -31,7 +31,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.EnumMap;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -172,7 +172,8 @@ public class MovementDetailsView extends LinearLayout {
     presenter.getViewModel().setMovementDate(etMovementDate.getText().toString());
     presenter.getViewModel().setDocumentNo(etDocumentNumber.getText().toString());
     presenter.getViewModel().setRequested(etRequestedQuantity.getText().toString());
-    HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
+    EnumMap<MovementReasonManager.MovementType, String> quantityMap = new EnumMap<>(
+        MovementReasonManager.MovementType.class);
     quantityMap.put(presenter.getMovementType(), etMovementQuantity.getText().toString());
     presenter.getViewModel().setTypeQuantityMap(quantityMap);
     presenter.getViewModel().setSignature(etMovementSignature.getText().toString());
@@ -183,7 +184,6 @@ public class MovementDetailsView extends LinearLayout {
     lyMovementReason.setErrorEnabled(false);
     lyMovementQuantity.setErrorEnabled(false);
     lyMovementSignature.setErrorEnabled(false);
-
   }
 
   public void showMovementDateEmptyError() {

@@ -263,7 +263,7 @@ public class MMIARequisitionFragmentTest {
     assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.getDataList().size())
         .isEqualTo(3);
     assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView
-        .getTotal(RegimenItemThreeLines.CountType.PATIENTS_AMOUNT)).isEqualTo(0);
+        .getTotal(RegimenItemThreeLines.CountType.PATIENTS_AMOUNT)).isZero();
   }
 
   private String getString(int id) {
