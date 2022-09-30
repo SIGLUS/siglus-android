@@ -22,12 +22,14 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @DatabaseTable(tableName = "service_items")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class ServiceItem extends BaseModel {
 
   @DatabaseField(foreign = true, foreignAutoRefresh = true)

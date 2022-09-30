@@ -26,6 +26,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +40,7 @@ import org.joda.time.format.DateTimeFormatter;
 @AllArgsConstructor
 @NoArgsConstructor
 @DatabaseTable(tableName = "reports_type")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class ReportTypeForm extends BaseModel {
 
   @Expose

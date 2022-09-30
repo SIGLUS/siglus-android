@@ -24,6 +24,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -31,6 +32,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @DatabaseTable(tableName = "usage_columns_map")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class UsageColumnsMap extends BaseModel {
 
   @DatabaseField

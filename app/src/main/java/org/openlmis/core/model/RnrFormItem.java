@@ -25,6 +25,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.List;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.utils.ListUtil;
@@ -32,6 +33,7 @@ import org.openlmis.core.utils.ListUtil;
 @Getter
 @Setter
 @DatabaseTable(tableName = "rnr_form_items")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class RnrFormItem extends BaseModel {
 
   @Expose

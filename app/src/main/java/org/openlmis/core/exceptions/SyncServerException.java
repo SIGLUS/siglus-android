@@ -18,11 +18,13 @@
 
 package org.openlmis.core.exceptions;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class SyncServerException extends LMISException {
 
   @Getter

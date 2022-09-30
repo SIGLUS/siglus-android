@@ -19,9 +19,7 @@
 package org.openlmis.core.model;
 
 import com.j256.ormlite.table.DatabaseTable;
-import lombok.Data;
 
-@Data
 @DatabaseTable(tableName = "inventory")
 public class Inventory extends BaseModel {
 

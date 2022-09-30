@@ -24,6 +24,7 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.Date;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,6 +35,7 @@ import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 @Setter
 @DatabaseTable(tableName = "draft_lot_items")
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class DraftLotItem extends BaseModel {
 
   @DatabaseField

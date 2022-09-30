@@ -21,11 +21,13 @@ package org.openlmis.core.model;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @DatabaseTable(tableName = "dirty_data")
+@EqualsAndHashCode(callSuper = false)
 public class DirtyDataItemInfo extends BaseModel {
 
   @DatabaseField

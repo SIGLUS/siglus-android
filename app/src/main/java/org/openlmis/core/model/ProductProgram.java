@@ -21,12 +21,14 @@ package org.openlmis.core.model;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @DatabaseTable(tableName = "product_programs")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class ProductProgram extends BaseModel {
 
   @DatabaseField
