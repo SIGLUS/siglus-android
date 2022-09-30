@@ -108,6 +108,7 @@ import org.openlmis.core.persistence.migrations.CreateTestConsumptionItemsTable;
 import org.openlmis.core.persistence.migrations.CreateUsageColumnsMapTable;
 import org.openlmis.core.persistence.migrations.DeletePrograms;
 import org.openlmis.core.persistence.migrations.DeleteReportTypes;
+import org.openlmis.core.persistence.migrations.DropProgramDataFormTables;
 import org.openlmis.core.persistence.migrations.DropRegimenShortCodeTable;
 import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
 import org.openlmis.core.persistence.migrations.UpdateAvgColumn;
@@ -233,6 +234,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new AddProductPrice());
     MIGRATIONS.add(new AddErrorMessageInPortuguese());
     MIGRATIONS.add(new DropRegimenShortCodeTable());
+    MIGRATIONS.add(new DropProgramDataFormTables());
   }
 
   private LmisSqliteOpenHelper(Context context) {
