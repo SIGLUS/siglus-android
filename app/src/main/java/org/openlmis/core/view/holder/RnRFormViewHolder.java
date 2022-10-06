@@ -21,7 +21,6 @@ package org.openlmis.core.view.holder;
 import static org.openlmis.core.R.color.color_white;
 
 import android.annotation.SuppressLint;
-import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import android.view.ViewStub;
@@ -30,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -66,12 +66,12 @@ public class RnRFormViewHolder extends BaseViewHolder {
     switch (model.getType()) {
       case RnRFormViewModel.TYPE_MISSED_PERIOD:
         configHolder(model.getTitle(),
-            Html.fromHtml(context.getString(R.string.label_previous_period_missing)),
+            CompatUtil.fromHtml(context.getString(R.string.label_previous_period_missing)),
             R.drawable.ic_description, R.color.color_draft_title, color_white);
         break;
       case RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD:
         configHolder(model.getTitle(),
-            Html.fromHtml(context.getString(R.string.label_missed_period)),
+            CompatUtil.fromHtml(context.getString(R.string.label_missed_period)),
             R.drawable.ic_description, R.color.color_select_title, color_white);
         setupButton(model, context.getString(R.string.btn_select_close_period));
         setupButtonColor();
@@ -81,7 +81,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         break;
       case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
         configHolder(model.getTitle(),
-            Html.fromHtml(context
+            CompatUtil.fromHtml(context
                 .getString(R.string.label_uncompleted_physical_inventory_message, model.getName(),
                     model.getName())),
             R.drawable.ic_description, R.color.color_draft_title, color_white);
@@ -112,7 +112,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
   private void configHolderForUnComplete(RnRFormViewModel model, int p, int p2) {
     configHolder(model.getTitle(),
-        Html.fromHtml(context.getString(p, model.getName())),
+        CompatUtil.fromHtml(context.getString(p, model.getName())),
         R.drawable.ic_description, R.color.color_draft_title, color_white);
     setupButton(model, context.getString(p2, model.getName()));
   }
@@ -121,12 +121,12 @@ public class RnRFormViewHolder extends BaseViewHolder {
     boolean isTraining = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
     if (isTraining) {
       configHolder(model.getTitle(),
-          Html.fromHtml(context
+          CompatUtil.fromHtml(context
               .getString(R.string.label_training_can_not_create_report_rnr, model.getName())),
           R.drawable.ic_description, R.color.color_draft_title, color_white);
     } else {
       configHolder(model.getTitle(),
-          Html.fromHtml(context.getString(R.string.label_can_not_create_report_rnr, model.getName(),
+          CompatUtil.fromHtml(context.getString(R.string.label_can_not_create_report_rnr, model.getName(),
               DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))),
           R.drawable.ic_description, R.color.color_draft_title, color_white);
     }
@@ -141,7 +141,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
   private void populateRnrFormInActiveCreatedView() {
     String inActive = context.getString(R.string.inactive_status);
     configHolder(context.getString(R.string.inactive),
-        Html.fromHtml(inActive),
+        CompatUtil.fromHtml(inActive),
         R.drawable.ic_error, R.color.color_red, color_white);
   }
 
@@ -152,14 +152,14 @@ public class RnRFormViewHolder extends BaseViewHolder {
       error = model.getSyncServerErrorMessage();
     }
     configHolder(model.getTitle(),
-        Html.fromHtml(error),
+        CompatUtil.fromHtml(error),
         R.drawable.ic_error, R.color.color_red, color_white);
   }
 
   private void populateSyncedHistorical(RnRFormViewModel model) {
     RnRForm form = model.getForm();
     configHolder(model.getTitle(),
-        Html.fromHtml(context
+        CompatUtil.fromHtml(context
             .getString(R.string.label_submitted_message, model.getName(), model.getSyncedTime())),
         R.drawable.ic_done_green, color_white, R.color.color_text_primary);
     setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
@@ -183,7 +183,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
     } else {
       tvDrugCount = (TextView) vsDrugCount.inflate();
     }
-    tvDrugCount.setText(Html.fromHtml(LMISApp.getContext().getResources()
+    tvDrugCount.setText(CompatUtil.fromHtml(LMISApp.getContext().getResources()
         .getQuantityString(R.plurals.label_drug_count_message, size, size)));
   }
 

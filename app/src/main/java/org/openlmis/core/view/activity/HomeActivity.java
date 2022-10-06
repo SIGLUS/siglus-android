@@ -29,7 +29,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -63,6 +62,7 @@ import org.openlmis.core.persistence.ExportSqliteOpenHelper;
 import org.openlmis.core.presenter.HomePresenter;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.service.SyncService;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.InjectPresenter;
@@ -414,7 +414,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       ExportSqliteOpenHelper.removePrivateUserInfo(this);
       FileUtil.copy(tempBackup, externalBackup);
       FileUtil.copy(currentXMLBackup, xmlExternalBackup);
-      ToastUtil.show(Html.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
+      ToastUtil.show(CompatUtil.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
     } catch (Exception e) {
       new LMISException(e, "HomeActivity.exportDB").reportToFabric();
       ToastUtil.show(e.getMessage());

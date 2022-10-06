@@ -19,7 +19,6 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +27,7 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.utils.CompatUtil;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
@@ -73,10 +73,10 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
     setVisibility(View.VISIBLE);
 
     if (preferenceMgr.getShowUpdateBannerTexts().size() == 1) {
-      tvProductUpdate.setText(Html.fromHtml(getContext().getString(R.string.hint_update_banner_tips,
+      tvProductUpdate.setText(CompatUtil.fromHtml(getContext().getString(R.string.hint_update_banner_tips,
           preferenceMgr.getShowUpdateBannerTexts().toArray()[0])));
     } else {
-      tvProductUpdate.setText(Html.fromHtml(getContext().getString(R.string.hint_update_banner_tips,
+      tvProductUpdate.setText(CompatUtil.fromHtml(getContext().getString(R.string.hint_update_banner_tips,
           preferenceMgr.getShowUpdateBannerTexts().size() + " Products")));
     }
   }

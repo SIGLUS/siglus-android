@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.holder;
 
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -26,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -126,10 +126,10 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
         tvKitExpectedQuantity.setTextColor(ContextCompat.getColor(context, R.color.color_black));
         tvQuantityMessage.setTextColor(ContextCompat.getColor(context, R.color.color_warning_text_unpack_kit_pop));
         if (totalQuantity > kitExpectQuantity) {
-          tvQuantityMessage.setText(Html.fromHtml(
+          tvQuantityMessage.setText(CompatUtil.fromHtml(
               context.getString(R.string.label_unpack_kit_quantity_more_than_expected)));
         } else {
-          tvQuantityMessage.setText(Html.fromHtml(
+          tvQuantityMessage.setText(CompatUtil.fromHtml(
               context.getString(R.string.label_unpack_kit_quantity_less_than_expected)));
         }
       }

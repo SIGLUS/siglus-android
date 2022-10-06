@@ -26,7 +26,6 @@ import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -47,6 +46,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.service.DirtyDataManager;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ProgramUtil;
@@ -129,10 +129,10 @@ public class SelectPeriodActivity extends BaseActivity implements
 
     DateTime date = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-      tvInstruction.setText(Html.fromHtml(
+      tvInstruction.setText(CompatUtil.fromHtml(
           this.getString(R.string.label_training_select_close_of_period, date.toString("dd MMM"))));
     } else {
-      tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_select_close_of_period,
+      tvInstruction.setText(CompatUtil.fromHtml(this.getString(R.string.label_select_close_of_period,
           getPreviousPeriodEndMonth(periodEndMonth, date),
           date.toString("dd MMM"))));
     }

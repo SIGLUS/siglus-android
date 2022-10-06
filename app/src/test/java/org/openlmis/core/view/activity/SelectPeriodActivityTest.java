@@ -13,7 +13,6 @@ import static org.robolectric.Shadows.shadowOf;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import com.google.inject.AbstractModule;
@@ -35,6 +34,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
@@ -109,7 +109,7 @@ public class SelectPeriodActivityTest {
 
   @Test
   public void shouldShowFormattedInstrumentTextAndLoadDataWhenActivityStarts() throws Exception {
-    Spanned expectedFormattedText = Html.fromHtml(RuntimeEnvironment.application.getString(
+    Spanned expectedFormattedText = CompatUtil.fromHtml(RuntimeEnvironment.application.getString(
         R.string.label_select_close_of_period,
         currentDateTime.monthOfYear().getAsShortText(),
         currentDateTime.toString("dd MMM")));

@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -51,6 +50,7 @@ import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -274,7 +274,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   private void initUI() throws PackageManager.NameNotFoundException {
     String versionNumber = LMISApp.getInstance().getPackageManager()
         .getPackageInfo(LMISApp.getContext().getApplicationContext().getPackageName(), 0).versionName;
-    tvVersion.setText(Html.fromHtml(getResources().getString(R.string.version_number, versionNumber)));
+    tvVersion.setText(CompatUtil.fromHtml(getResources().getString(R.string.version_number, versionNumber)));
 
     ivVisibilityPwd.setOnClickListener(this);
     btnLogin.setOnClickListener(this);
