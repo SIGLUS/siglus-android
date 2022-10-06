@@ -282,6 +282,7 @@ public class MMIARepository extends RnrFormRepository {
     return fillAllProducts(form, rnrFormItems);
   }
 
+  @SuppressWarnings("squid:S1130")
   @Override
   protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
       List<StockMovementItem> notFullStockItemsByCreatedData) throws LMISException {

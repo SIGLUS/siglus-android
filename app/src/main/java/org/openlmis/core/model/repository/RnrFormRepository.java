@@ -413,8 +413,7 @@ public class RnrFormRepository {
     return new ArrayList<>();
   }
 
-  protected List<RegimenItemThreeLines> generateRegimeThreeLineItems(RnRForm form)
-      throws LMISException {
+  protected List<RegimenItemThreeLines> generateRegimeThreeLineItems(RnRForm form) {
     return new ArrayList<>();
   }
 

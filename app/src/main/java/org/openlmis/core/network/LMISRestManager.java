@@ -187,29 +187,35 @@ public class LMISRestManager {
     @Override
     public Throwable handleError(RetrofitError cause) {
       Response r = cause.getResponse();
-      if (r != null && (r.getStatus() == 400 || r.getStatus() == 404)) {
-        ErrorHandlingResponse errorResponse = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
-        if (errorResponse.isAndroid()) {
-          return new SyncServerException(errorResponse.getMessageInEnglish(), errorResponse.getMessageInPortuguese());
-        } else {
-          return new SyncServerException();
+      if (r != null) {
+        switch (r.getStatus()) {
+          case 400:
+          case 404:
+            ErrorHandlingResponse errorResponse1 = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
+            if (errorResponse1.isAndroid()) {
+              return new SyncServerException(errorResponse1.getMessageInEnglish(),
+                  errorResponse1.getMessageInPortuguese());
+            } else {
+              return new SyncServerException();
+            }
+          case 401:
+            UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
+            refreshAccessToken(UserInfoMgr.getInstance().getUser(), cause);
+            break;
+          case 403:
+            ErrorHandlingResponse errorResponse2 = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
+            if (SIGLUS_API_ERROR_NOT_ANDROID.equals(errorResponse2.getMessageKey())) {
+              return forbidNotAndroidUser();
+            }
+            if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(errorResponse2.getMessageKey())) {
+              return forbidNotSameDevice();
+            }
+            break;
+          case 500:
+            return new SyncServerException();
+          default:
+            break;
         }
-      }
-      if (r != null && r.getStatus() == 401) {
-        UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
-        refreshAccessToken(UserInfoMgr.getInstance().getUser(), cause);
-      }
-      if (r != null && r.getStatus() == 403) {
-        ErrorHandlingResponse errorResponse = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
-        if (SIGLUS_API_ERROR_NOT_ANDROID.equals(errorResponse.getMessageKey())) {
-          return forbidNotAndroidUser();
-        }
-        if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(errorResponse.getMessageKey())) {
-          return forbidNotSameDevice();
-        }
-      }
-      if (r != null && r.getStatus() == 500) {
-        return new SyncServerException();
       }
       if (cause.getKind() == RetrofitError.Kind.NETWORK) {
         return new NetWorkException(cause);

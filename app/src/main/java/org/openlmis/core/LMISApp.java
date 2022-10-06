@@ -157,6 +157,7 @@ public class LMISApp extends Application {
     jobScheduler.schedule(myJob);
   }
 
+  @SuppressWarnings("squid:S1874")
   private void registerNetWorkListener() {
     IntentFilter filter = new IntentFilter();
     filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
