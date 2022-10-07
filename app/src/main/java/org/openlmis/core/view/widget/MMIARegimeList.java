@@ -29,6 +29,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import java.util.ArrayList;
@@ -325,12 +326,12 @@ public class MMIARegimeList extends LinearLayout {
   }
 
   public void deHighLightTotal() {
-    totalView.setBackground(getResources().getDrawable(R.color.color_page_gray));
+    totalView.setBackground(ContextCompat.getDrawable(getContext(), R.color.color_page_gray));
     if (isPharmacyEmpty) {
       totalPharmacy.setVisibility(GONE);
       totalPharmacyTitle.setVisibility(GONE);
     } else {
-      totalPharmacy.setBackground(getResources().getDrawable(R.color.color_page_gray));
+      totalPharmacy.setBackground(ContextCompat.getDrawable(getContext(), R.color.color_page_gray));
     }
   }
 

@@ -29,6 +29,7 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -319,21 +320,23 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     etPassword.setSelection(etPassword.getText().length());
   }
 
-  // This code is purely for enable some hacker ways for tester
-  private int clickTimes;
+  private static final int DEVELOPER_TIMES = 7;
 
   private void setDeveloperMode() {
-    clickTimes = 0;
-    final int developerTimes = 7;
-    ivLogo.setOnClickListener(v -> {
-      if (clickTimes == developerTimes) {
-        return;
-      }
-      if (++clickTimes == developerTimes) {
-        SharedPreferenceMgr.getInstance().setEnableQaDebug(true);
-        ToastUtil.show("Woohoo! You are Cong or Wei now, please test me");
-      } else if (clickTimes > 3) {
-        ToastUtil.show("Tap it " + (developerTimes - clickTimes) + " times to be Cong or Wei");
+    ivLogo.setOnClickListener(new OnClickListener() {
+      private int clickTimes = 0;
+
+      @Override
+      public void onClick(View v) {
+        if (clickTimes == DEVELOPER_TIMES) {
+          return;
+        }
+        if (++clickTimes == DEVELOPER_TIMES) {
+          SharedPreferenceMgr.getInstance().setEnableQaDebug(true);
+          ToastUtil.show("Woohoo! You are Cong or Wei now, please test me");
+        } else if (clickTimes > 3) {
+          ToastUtil.show("Tap it " + (DEVELOPER_TIMES - clickTimes) + " times to be Cong or Wei");
+        }
       }
     });
   }

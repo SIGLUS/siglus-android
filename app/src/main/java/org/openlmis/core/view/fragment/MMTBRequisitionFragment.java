@@ -201,7 +201,7 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
   public void onReceiveMMTBRequisitionEvent(DebugMMTBRequisitionEvent event) {
     RnRForm rnRForm = presenter.getRnRForm();
     for (RnrFormItem rnrFormItem : rnRForm.getRnrFormItemListWrapper()) {
-      if (rnrFormItem.getIsCustomAmount()) {
+      if (Boolean.TRUE.equals(rnrFormItem.getIsCustomAmount())) {
         rnrFormItem.setInitialAmount(0L);
       }
       rnrFormItem.setIssued(0L);

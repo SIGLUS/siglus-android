@@ -169,18 +169,7 @@ public class UnpackKitActivity extends BaseActivity {
     }
   };
 
-  protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-    @Override
-    public void onSign(String sign) {
-      loading();
-      Subscription subscription = presenter
-          .saveUnpackProductsObservable(kitNum, etDocumentNumber.getText().toString(), sign)
-          .subscribe(saveKitSubscriber);
-      subscriptions.add(subscription);
-    }
-  };
-
-  Subscriber<Void> saveKitSubscriber = new Subscriber<Void>() {
+  protected Subscriber<Void> saveKitSubscriber = new Subscriber<Void>() {
     @Override
     public void onCompleted() {
       // do nothing
@@ -198,6 +187,14 @@ public class UnpackKitActivity extends BaseActivity {
       setResult(Activity.RESULT_OK);
       finish();
     }
+  };
+
+  protected SignatureDialog.DialogDelegate signatureDialogDelegate = sign -> {
+    loading();
+    Subscription subscription = presenter
+        .saveUnpackProductsObservable(kitNum, etDocumentNumber.getText().toString(), sign)
+        .subscribe(saveKitSubscriber);
+    subscriptions.add(subscription);
   };
 
   public static Intent getIntentToMe(Context context, String code, int num, String kitName) {

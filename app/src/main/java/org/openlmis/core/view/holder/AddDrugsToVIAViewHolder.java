@@ -116,7 +116,6 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
     checkBox.setChecked(!checkBox.isChecked());
   }
 
-  @SuppressWarnings("squid:S2160")
   static class EditTextWatcher extends SingleTextWatcher {
 
     private final AddDrugsToViaInventoryViewModel viewModel;
@@ -128,6 +127,16 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
     @Override
     public void afterTextChanged(Editable editable) {
       viewModel.setQuantity(editable.toString());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+      return super.hashCode();
     }
   }
 }

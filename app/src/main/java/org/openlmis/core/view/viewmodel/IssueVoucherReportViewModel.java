@@ -44,7 +44,7 @@ public class IssueVoucherReportViewModel {
     productViewModels.addAll(viewModels);
     productViewModels.remove(viewModels.size() - 1);
     return FluentIterable.from(productViewModels)
-        .transform(productViewModel -> (IssueVoucherReportProductViewModel) productViewModel).toList();
+        .transform(IssueVoucherReportProductViewModel.class::cast).toList();
   }
 
   public int getListSize() {

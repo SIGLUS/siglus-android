@@ -188,16 +188,7 @@ public class ReportListFragment extends BaseReportListFragment {
     return MMIARequisitionActivity.getIntentToMe(requireContext(), periodEndDate, viewModel);
   }
 
-  private void deleteRnRForm(RnRForm form) {
-    try {
-      presenter.deleteRnRForm(form);
-      Subscription subscription = presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
-      subscriptions.add(subscription);
-    } catch (LMISException e) {
-      ToastUtil.show(getString(R.string.requisition_delete_failed));
-      Log.w("ReportListFragment", e);
-    }
-  }
+
 
   protected Subscriber<List<RnRFormViewModel>> getRnRFormSubscriber() {
     return new Subscriber<List<RnRFormViewModel>>() {
@@ -277,9 +268,19 @@ public class ReportListFragment extends BaseReportListFragment {
     }
 
     @NonNull
-    private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(
-        final RnRForm form) {
+    private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(RnRForm form) {
       return () -> deleteRnRForm(form);
+    }
+
+    private void deleteRnRForm(RnRForm form) {
+      try {
+        presenter.deleteRnRForm(form);
+        Subscription subscription = presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
+        subscriptions.add(subscription);
+      } catch (LMISException e) {
+        ToastUtil.show(getString(R.string.requisition_delete_failed));
+        Log.w("ReportListFragment", e);
+      }
     }
 
     private void goToRequisitionPage(long rnrFormId) {

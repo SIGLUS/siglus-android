@@ -92,11 +92,9 @@ public abstract class BaseReportFragment extends BaseFragment {
 
   protected abstract String getSignatureDialogTitle();
 
-  protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-    public void onSign(String sign) {
-      Subscription subscription = baseReportFragmentPresenter.getOnSignObservable(sign).subscribe(getOnSignedAction());
-      subscriptions.add(subscription);
-    }
+  protected SignatureDialog.DialogDelegate signatureDialogDelegate = sign -> {
+    Subscription subscription = baseReportFragmentPresenter.getOnSignObservable(sign).subscribe(getOnSignedAction());
+    subscriptions.add(subscription);
   };
 
   protected abstract Action1<Void> getOnSignedAction();

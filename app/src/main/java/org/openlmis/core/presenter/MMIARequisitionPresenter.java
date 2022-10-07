@@ -79,25 +79,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
   }
 
   @Override
-  protected Observable<RnRForm> getRnrFormObservable(final long formId) {
-    return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
-      try {
-        rnRForm = getRnrForm(formId);
-        subscriber.onNext(rnRForm);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "MMIARequisitionPresenter.getRnrFormObservable").reportToFabric();
-        subscriber.onError(e);
-      }
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-  }
-
-  @Override
-  protected int getCompleteErrorMessage() {
-    return R.string.hint_mmia_complete_failed;
-  }
-
-  @Override
   public void updateFormUI() {
     if (rnRForm != null) {
       view.refreshRequisitionForm(rnRForm);
@@ -175,18 +156,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     return false;
   }
 
-  private boolean equalRegimen(Regimen regimen, Regimen regimenExist) {
-    return regimen.getName().equals(regimenExist.getName()) && regimen.getType()
-        .equals(regimenExist.getType());
-  }
-
-  private RegimenItem createRegimenItem(Regimen regimen) {
-    RegimenItem regimenItem = new RegimenItem();
-    regimenItem.setRegimen(regimen);
-    regimenItem.setForm(rnRForm);
-    return regimenItem;
-  }
-
   public Observable<Void> deleteRegimeItem(final RegimenItem item) {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {
@@ -215,6 +184,37 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         subscriber.onError(e);
       }
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  protected Observable<RnRForm> getRnrFormObservable(final long formId) {
+    return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
+      try {
+        rnRForm = getRnrForm(formId);
+        subscriber.onNext(rnRForm);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "MMIARequisitionPresenter.getRnrFormObservable").reportToFabric();
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  protected int getCompleteErrorMessage() {
+    return R.string.hint_mmia_complete_failed;
+  }
+
+  private boolean equalRegimen(Regimen regimen, Regimen regimenExist) {
+    return regimen.getName().equals(regimenExist.getName()) && regimen.getType()
+        .equals(regimenExist.getType());
+  }
+
+  private RegimenItem createRegimenItem(Regimen regimen) {
+    RegimenItem regimenItem = new RegimenItem();
+    regimenItem.setRegimen(regimen);
+    regimenItem.setForm(rnRForm);
+    return regimenItem;
   }
 
   public interface MMIARequisitionView extends BaseRequisitionView {

@@ -20,8 +20,8 @@ package org.openlmis.core.view.fragment;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -97,11 +97,11 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
   }
 
   @Override
-  public void onAttach(Activity activity) {
-    if ((activity instanceof MsgDialogCallBack) && mListener == null) {
-      mListener = (MsgDialogCallBack) activity;
+  public void onAttach(@NonNull Context context) {
+    if ((requireActivity() instanceof MsgDialogCallBack) && mListener == null) {
+      mListener = (MsgDialogCallBack) requireActivity();
     }
-    super.onAttach(activity);
+    super.onAttach(context);
   }
 
   @Override

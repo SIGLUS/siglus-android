@@ -22,7 +22,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
@@ -49,7 +49,7 @@ public class RapidTestFormItemViewModel {
   List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = Arrays
       .asList(gridHIVDetermine, gridHIVUnigold, gridSyphillis, gridMalaria);
 
-  Map<ColumnCode, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
+  Map<ColumnCode, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new EnumMap<>(ColumnCode.class);
 
   public RapidTestFormItemViewModel(MovementReasonManager.MovementReason issueReason) {
     this.issueReason = issueReason;

@@ -64,20 +64,6 @@ public class MMTBRequisitionPresenter extends BaseRequisitionPresenter {
     view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
   }
 
-  @Override
-  protected Observable<RnRForm> getRnrFormObservable(final long formId) {
-    return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
-      try {
-        rnRForm = getRnrForm(formId);
-        subscriber.onNext(rnRForm);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "MMTBRequisitionPresenter.getRnrFormObservable").reportToFabric();
-        subscriber.onError(e);
-      }
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-  }
-
   public Observable<Void> getSaveFormObservable() {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {
@@ -101,11 +87,6 @@ public class MMTBRequisitionPresenter extends BaseRequisitionPresenter {
     }
   }
 
-  @Override
-  protected int getCompleteErrorMessage() {
-    return R.string.hint_mmtb_complete_failed;
-  }
-
   public boolean formItemHasNull() {
     for (RnrFormItem rnrFormItem : rnRForm.getRnrFormItemListWrapper()) {
       if (rnrFormItem.getIssued() == null || rnrFormItem.getAdjustment() == null
@@ -123,5 +104,24 @@ public class MMTBRequisitionPresenter extends BaseRequisitionPresenter {
   public interface MMTBRequisitionView extends BaseRequisitionView {
 
     void setProcessButtonName(String buttonName);
+  }
+
+  @Override
+  protected Observable<RnRForm> getRnrFormObservable(final long formId) {
+    return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
+      try {
+        rnRForm = getRnrForm(formId);
+        subscriber.onNext(rnRForm);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "MMTBRequisitionPresenter.getRnrFormObservable").reportToFabric();
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  protected int getCompleteErrorMessage() {
+    return R.string.hint_mmtb_complete_failed;
   }
 }

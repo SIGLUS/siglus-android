@@ -255,6 +255,16 @@ public class LotMovementViewHolder extends BaseViewHolder {
       }
     }
 
+    @Override
+    public boolean equals(Object o) {
+      return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+      return super.hashCode();
+    }
+
     @SuppressWarnings("squid:S3776")
     private void updateVgLotSOHAndError(Context context) {
       if (context instanceof NewStockMovementActivity) {
