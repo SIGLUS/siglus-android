@@ -376,6 +376,7 @@
   <string name="label_total">Total:%1$d</string>
   <string name="requisition_delete_failed">Falha ao apagar</string>
   <string name="delete_rnr_form_failed_warning">Falha ao apagar</string>
+  <string name="label_program_no_movement"><![CDATA[<b>Não há cartão de estoque para nenhum produto neste %1$s, você não pode processar a requisição/relatório.</b>]]></string>
 
   <!--Signature-->
   <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>

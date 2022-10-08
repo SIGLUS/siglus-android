@@ -76,6 +76,9 @@ public class RnRFormViewHolder extends BaseViewHolder {
         setupButton(model, context.getString(R.string.btn_select_close_period));
         setupButtonColor();
         break;
+      case RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS:
+        showCannotDoMonthlyInventoryNoMovement(model);
+        break;
       case RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY:
         showCannotDoMonthlyInventory(model);
         break;
@@ -130,6 +133,12 @@ public class RnRFormViewHolder extends BaseViewHolder {
               DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))),
           R.drawable.ic_description, R.color.color_draft_title, color_white);
     }
+  }
+
+  private void showCannotDoMonthlyInventoryNoMovement(RnRFormViewModel model) {
+    configHolder(model.getTitle(),
+        Html.fromHtml(context.getString(R.string.label_program_no_movement, model.getName())),
+        R.drawable.ic_description, R.color.color_draft_title, color_white);
   }
 
   private void populateRnrFormNotBeCreatedView(RnRFormViewModel model) {
