@@ -175,7 +175,7 @@ public class RnRFormListPresenterTest {
 
     assertThat(rnRFormViewModels.size()).isEqualTo(3);
     assertThat(rnRFormViewModels.get(0).getType())
-        .isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
+        .isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS);
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(periodAplToMay.getEnd());
     assertThat(rnRFormViewModels.get(1).getType())
         .isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
@@ -205,7 +205,7 @@ public class RnRFormListPresenterTest {
 
     assertThat(rnRFormViewModels.size()).isEqualTo(3);
     assertThat(rnRFormViewModels.get(0).getType())
-        .isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+        .isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS);
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(periodAplToMay.getEnd());
     assertThat(rnRFormViewModels.get(1).getType())
         .isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
@@ -235,7 +235,7 @@ public class RnRFormListPresenterTest {
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
     assertThat(rnRFormViewModels.size()).isEqualTo(3);
-    assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_INVENTORY_DONE);
+    assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS);
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(periodAplToMay.getEnd());
     assertThat(rnRFormViewModels.get(1).getType())
         .isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
@@ -294,7 +294,7 @@ public class RnRFormListPresenterTest {
 
     assertThat(rnRFormViewModels.size()).isEqualTo(1);
     assertThat(rnRFormViewModels.get(0).getType())
-        .isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
+        .isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS);
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(periodAplToMay.getEnd());
   }
 
@@ -316,7 +316,7 @@ public class RnRFormListPresenterTest {
 
     assertThat(rnRFormViewModels.size()).isEqualTo(1);
     assertThat(rnRFormViewModels.get(0).getType())
-        .isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+        .isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS);
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(periodAplToMay.getEnd());
   }
 
@@ -337,7 +337,7 @@ public class RnRFormListPresenterTest {
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
     assertThat(rnRFormViewModels.size()).isEqualTo(1);
-    assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_INVENTORY_DONE);
+    assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS);
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(periodAplToMay.getEnd());
   }
 
@@ -391,7 +391,7 @@ public class RnRFormListPresenterTest {
     assertThat(rnRFormViewModels.get(0).getPeriodEndMonth())
         .isEqualTo(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)));
     assertThat(rnRFormViewModels.get(0).getType())
-        .isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+        .isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS);
     assertThat(rnRFormViewModels.get(1).getPeriodEndMonth())
         .isEqualTo(new DateTime(DateUtil.parseString("2016-03-20", DateUtil.DB_DATE_FORMAT)));
     assertThat(rnRFormViewModels.get(1).getType())
