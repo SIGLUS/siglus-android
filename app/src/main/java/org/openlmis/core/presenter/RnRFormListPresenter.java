@@ -135,10 +135,11 @@ public class RnRFormListPresenter extends Presenter {
 
   private RnRFormViewModel generateRnrFormViewModelWithoutRnrForm(Period currentPeriod)
       throws LMISException {
-    if (stockMovementRepository.queryStockMovementDatesByProgram(programCode).isEmpty()) {
+    if (stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode) == null) {
       return new RnRFormViewModel(currentPeriod, programCode,
           RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS);
     }
+
     if (isCanNotCreateRnr(currentPeriod)) {
       return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
     }
