@@ -31,6 +31,7 @@ import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 
 import android.content.Context;
 import android.database.Cursor;
+import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
 import java.util.ArrayList;
@@ -159,6 +160,7 @@ public class StockMovementRepository {
         .queryForFirst());
   }
 
+  @Nullable
   public Date getLatestStockMovementCreatedTime() throws LMISException {
     return dbUtil.withDao(StockMovementItem.class, dao -> {
       try {

@@ -81,11 +81,11 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
   }
 
-  public Observable<Object> doInventory(final String sign) {
+  public Observable<Object> doInventory(String sign) {
     return Observable.create(subscriber -> {
       try {
-        final Date latestStockMovementCreatedTime = movementRepository.getLatestStockMovementCreatedTime();
-        if (DateUtil.getCurrentDate().before(latestStockMovementCreatedTime)) {
+        Date latestMovementCreatedTime = movementRepository.getLatestStockMovementCreatedTime();
+        if (latestMovementCreatedTime != null && DateUtil.getCurrentDate().before(latestMovementCreatedTime)) {
           throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
         }
         long createdTime = LMISApp.getInstance().getCurrentTimeMillis();
