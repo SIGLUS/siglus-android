@@ -18,9 +18,14 @@
 
 package org.openlmis.core.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 import java.util.List;
@@ -34,7 +39,6 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.presenter.ReportListPresenter;
 import org.openlmis.core.presenter.ReportListPresenter.ReportListView;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.ReportListNavigatorAdapter;
@@ -59,6 +63,14 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
   ReportListNavigatorAdapter navigatorAdapter;
 
   ReportListPageAdapter pageAdapter;
+
+  private final ActivityResultLauncher<Intent> toSelectEmergencyProductsLauncher = registerForActivityResult(
+      new StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+        }
+      }
+  );
 
   private final OnPageChangeCallback pageChangeCallback = new OnPageChangeCallback() {
     @Override
@@ -133,9 +145,8 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
           ToastUtil.show(R.string.msg_create_emergency_has_missed);
         } else {
           reportListViewpager.setCurrentItem(0);
-          startActivityForResult(
-              SelectEmergencyProductsActivity.getIntentToMe(ReportListActivity.this),
-              Constants.REQUEST_FROM_RNR_LIST_PAGE);
+          toSelectEmergencyProductsLauncher.launch(
+              SelectEmergencyProductsActivity.getIntentToMe(ReportListActivity.this));
         }
       }
     });

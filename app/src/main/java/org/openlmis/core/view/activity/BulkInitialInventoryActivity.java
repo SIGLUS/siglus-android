@@ -21,6 +21,10 @@ package org.openlmis.core.view.activity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import java.io.Serializable;
@@ -55,6 +59,27 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
   @InjectView(R.id.btn_add_products)
   TextView btnAddProducts;
 
+  public ActivityResultCallback<ActivityResult> addProductsResultCallback =
+      new ActivityResultCallback<ActivityResult>() {
+    @Override
+    public void onActivityResult(ActivityResult result) {
+      int resultCode = result.getResultCode();
+      Intent data = result.getData();
+      if (areThereSelectedProducts(resultCode, data)) {
+        final ArrayList<Product> nonBasicProducts = (ArrayList<Product>) data
+            .getSerializableExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS);
+        presenter.addNonBasicProductsObservable(nonBasicProducts).subscribe(
+            bulkInitialInventoryViewModels -> {
+              mAdapter.refresh();
+              setUpFastScroller(mAdapter.getFilteredList());
+            });
+      }
+    }
+  };
+
+  private final ActivityResultLauncher<Intent> addProductsLauncher = registerForActivityResult(
+      new StartActivityForResult(), addProductsResultCallback);
+
   @Override
   public boolean validateInventory() {
     int position = ((BulkInitialInventoryAdapter) mAdapter).validateAllForCompletedClick();
@@ -74,7 +99,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
         Intent intent = new Intent(getApplicationContext(), AddNonBasicProductsActivity.class);
         intent.putExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS,
             (Serializable) presenter.getAllAddedNonBasicProduct());
-        startActivityForResult(intent, REQUEST_CODE);
+        addProductsLauncher.launch(intent);
       }
     };
   }
@@ -131,20 +156,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     preferencesMgr.setIsNeedsInventory(false);
     startActivity(HomeActivity.getIntentToMe(this));
     this.finish();
-  }
-
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (areThereSelectedProducts(requestCode, resultCode, data)) {
-      final ArrayList<Product> nonBasicProducts = (ArrayList<Product>) data
-          .getSerializableExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS);
-      presenter.addNonBasicProductsObservable(nonBasicProducts).subscribe(
-          bulkInitialInventoryViewModels -> {
-            mAdapter.refresh();
-            setUpFastScroller(mAdapter.getFilteredList());
-          });
-    }
   }
 
   @Override
@@ -225,9 +236,9 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     dialogFragment.show(getSupportFragmentManager(), "back_confirm_dialog");
   }
 
-  private boolean areThereSelectedProducts(int requestCode, int resultCode, Intent data) {
-    return requestCode == REQUEST_CODE
-        && resultCode == AddNonBasicProductsActivity.RESULT_CODE
+  //mark
+  private boolean areThereSelectedProducts(int resultCode, Intent data) {
+    return resultCode == AddNonBasicProductsActivity.RESULT_CODE
         && data.getExtras() != null
         && data.getExtras().containsKey(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS);
   }

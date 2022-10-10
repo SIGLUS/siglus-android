@@ -25,6 +25,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
@@ -33,7 +35,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.ProductPresenter;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.SelectEmergencyProductAdapter;
@@ -82,6 +83,15 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
     btnNext.setOnClickListener(v -> validateAndGotoRnrPage());
   }
 
+  private final ActivityResultLauncher<Intent> toRequisitionLauncher =
+      registerForActivityResult(new StartActivityForResult(), result -> {
+        int resultCode = result.getResultCode();
+        if (resultCode == Activity.RESULT_OK) {
+          setResult(RESULT_OK);
+          finish();
+        }
+      });
+
   private void validateAndGotoRnrPage() {
     List<InventoryViewModel> checkedViewModels = mAdapter.getCheckedProducts();
     if (checkedViewModels.isEmpty()) {
@@ -96,8 +106,7 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
     for (StockCard stockCard : immutableList) {
       stockCards.add(stockCard);
     }
-    startActivityForResult(VIARequisitionActivity.getIntentToMe(this, stockCards),
-        Constants.REQUEST_FROM_RNR_LIST_PAGE);
+    toRequisitionLauncher.launch(VIARequisitionActivity.getIntentToMe(this, stockCards));
   }
 
   Subscriber<List<InventoryViewModel>> subscriber = new Subscriber<List<InventoryViewModel>>() {
@@ -121,14 +130,6 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
 
   public static Intent getIntentToMe(Context context) {
     return new Intent(context, SelectEmergencyProductsActivity.class);
-  }
-
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_FROM_RNR_LIST_PAGE) {
-      setResult(RESULT_OK);
-      finish();
-    }
   }
 
   @Override

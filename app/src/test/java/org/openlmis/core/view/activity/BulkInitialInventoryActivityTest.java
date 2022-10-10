@@ -12,10 +12,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.view.activity.AddNonBasicProductsActivity.RESULT_CODE;
 import static org.openlmis.core.view.activity.AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS;
-import static org.openlmis.core.view.activity.BulkInitialInventoryActivity.REQUEST_CODE;
 import static org.robolectric.Shadows.shadowOf;
 
+
 import android.content.Intent;
+
+import androidx.activity.result.ActivityResult;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -219,8 +221,10 @@ public class BulkInitialInventoryActivityTest {
     intent.putExtra(SELECTED_NON_BASIC_PRODUCTS, (Serializable) newAddedProduct);
     when(mockedPresenter.addNonBasicProductsObservable(any())).thenReturn(Observable.empty());
 
+    ActivityResult mockResult = new ActivityResult(RESULT_CODE, intent);
+
     // when
-    bulkInventoryActivity.onActivityResult(REQUEST_CODE, RESULT_CODE, intent);
+    bulkInventoryActivity.addProductsResultCallback.onActivityResult(mockResult);
 
     // then
     verify(mockedPresenter, times(1)).addNonBasicProductsObservable(newAddedProduct);
