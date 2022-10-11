@@ -114,7 +114,7 @@ public class SelectPeriodActivityTest {
         currentDateTime.monthOfYear().getAsShortText(),
         currentDateTime.toString("dd MMM")));
 
-    verify(mockedPresenter).loadData("MMIA", null);
+    verify(mockedPresenter).loadData("MMIA");
     assertThat(selectPeriodActivity.tvInstruction.getText().toString(),
         is(expectedFormattedText.toString()));
   }

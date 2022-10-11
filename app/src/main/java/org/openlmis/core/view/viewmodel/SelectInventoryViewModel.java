@@ -28,7 +28,6 @@ import org.openlmis.core.model.Inventory;
 public class SelectInventoryViewModel {
 
   private Date inventoryDate;
-  private boolean showTime;
   private boolean isChecked;
 
   public SelectInventoryViewModel(Inventory inventory) {

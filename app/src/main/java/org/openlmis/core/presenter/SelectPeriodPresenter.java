@@ -22,6 +22,7 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import androidx.annotation.NonNull;
 import com.google.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
@@ -74,8 +75,7 @@ public class SelectPeriodPresenter extends Presenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
-  @SuppressWarnings("squid:S1905")
-  public void loadData(final String programCode, Period period) {
+  public void loadData(final String programCode) {
     view.loading();
     Subscription subscription = Observable
         .create((Observable.OnSubscribe<List<SelectInventoryViewModel>>) subscriber -> {
@@ -118,33 +118,28 @@ public class SelectPeriodPresenter extends Presenter {
     }
   }
 
-  @SuppressWarnings("squid:S135")
-  private List<SelectInventoryViewModel> generateSelectInventoryViewModels(
-      final List<Inventory> inventories, final boolean isDefaultInventoryDate) {
-    return from(inventories).transform(inventory -> {
-      SelectInventoryViewModel selectInventoryViewModel = new SelectInventoryViewModel(inventory);
+  private List<SelectInventoryViewModel> generateSelectInventoryViewModels(List<Inventory> inventories,
+      boolean isDefaultInventoryDate) {
+    HashMap<String, Inventory> dateToInventoryMap = new HashMap<>();
 
+    // filter inventories which have the same createdAt date.
+    for (Inventory inventory : inventories) {
+      String formattedDate = DateUtil.formatDate(inventory.getCreatedAt(), DateUtil.DB_DATE_FORMAT);
+      Inventory prevInventory = dateToInventoryMap.get(formattedDate);
+      if (prevInventory == null || prevInventory.getCreatedAt().before(inventory.getCreatedAt())) {
+        dateToInventoryMap.put(formattedDate, inventory);
+      }
+    }
+
+    return from(dateToInventoryMap.values()).transform(inventory -> {
+      SelectInventoryViewModel selectInventoryViewModel = new SelectInventoryViewModel(inventory);
       if (isDefaultInventoryDate
           && new DateTime(selectInventoryViewModel.getInventoryDate()).getDayOfMonth()
           == Period.DEFAULT_INVENTORY_DAY) {
         selectInventoryViewModel.setChecked(true);
       }
-
-      for (Inventory comparedInventory : inventories) {
-        if (inventory == comparedInventory) {
-          continue;
-        }
-        String formattedInventoryDate = DateUtil
-            .formatDate(inventory.getCreatedAt(), DateUtil.DB_DATE_FORMAT);
-        String formattedComparedInventoryDate = DateUtil
-            .formatDate(comparedInventory.getCreatedAt(), DateUtil.DB_DATE_FORMAT);
-        if (formattedInventoryDate.equals(formattedComparedInventoryDate)) {
-          selectInventoryViewModel.setShowTime(true);
-          break;
-        }
-      }
       return selectInventoryViewModel;
-    }).toList();
+    }).toSortedList((o1, o2) -> Long.compare(o1.getInventoryDate().getTime(), o2.getInventoryDate().getTime()));
   }
 
   @NonNull

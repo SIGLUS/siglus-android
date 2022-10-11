@@ -43,7 +43,6 @@ import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.Period;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.CompatUtil;
@@ -87,7 +86,6 @@ public class SelectPeriodActivity extends BaseActivity implements
   private SelectInventoryViewModel selectedInventory;
   private String programCode;
   private boolean isMissedPeriod;
-  private Period period;
   private DateTime periodEndMonth;
 
   @Inject
@@ -112,7 +110,6 @@ public class SelectPeriodActivity extends BaseActivity implements
   protected void onCreate(Bundle savedInstanceState) {
     this.programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
     isMissedPeriod = getIntent().getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
-    period = (Period) getIntent().getSerializableExtra(Constants.PARAM_PERIOD);
     periodEndMonth = (DateTime) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_END_MONTH);
     super.onCreate(savedInstanceState);
 
@@ -137,7 +134,7 @@ public class SelectPeriodActivity extends BaseActivity implements
           date.toString("dd MMM"))));
     }
 
-    presenter.loadData(programCode, period);
+    presenter.loadData(programCode);
     adapter = new SelectPeriodAdapter();
     vgContainer.setAdapter(adapter);
 
@@ -244,12 +241,6 @@ public class SelectPeriodActivity extends BaseActivity implements
 
   public static Intent getIntentToMe(Context context, String programCode) {
     return getIntentToMe(context, programCode, false);
-  }
-
-  public static Intent getIntentToMe(Context context, String programCode, Period period) {
-    Intent intent = getIntentToMe(context, programCode, false);
-    intent.putExtra(Constants.PARAM_PERIOD, period);
-    return intent;
   }
 
   public static Intent getIntentToMe(Context context, String programCode, boolean isMissedPeriod) {

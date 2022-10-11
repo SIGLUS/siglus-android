@@ -1,7 +1,5 @@
 package org.openlmis.core.presenter;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -71,15 +69,13 @@ public class SelectPeriodPresenterTest {
     selectPeriodPresenter = spy(selectPeriodPresenter);
     when(selectPeriodPresenter.getSubscriber()).thenReturn(testSubscriber);
 
-    selectPeriodPresenter.loadData("MMIA", null);
+    selectPeriodPresenter.loadData("MMIA");
     testSubscriber.awaitTerminalEvent();
 
     testSubscriber.assertNoErrors();
     verify(mockRequisitionPeriodService).generateNextPeriod("MMIA", null);
     verify(inventoryRepository).queryPeriodInventory(any(Period.class));
-    assertThat(testSubscriber.getOnNextEvents().get(0).size(), is(3));
-    assertTrue(testSubscriber.getOnNextEvents().get(0).get(0).isShowTime());
-    assertFalse(testSubscriber.getOnNextEvents().get(0).get(2).isShowTime());
+    assertThat(testSubscriber.getOnNextEvents().get(0).size(), is(2));
   }
 
   @Test
@@ -95,8 +91,7 @@ public class SelectPeriodPresenterTest {
   @Test
   public void shouldGenerateDefaultInventoryViewModelsWhenThereIsNoInventoryDone()
       throws Exception {
-    when(inventoryRepository.queryPeriodInventory(any(Period.class)))
-        .thenReturn(new ArrayList<Inventory>());
+    when(inventoryRepository.queryPeriodInventory(any(Period.class))).thenReturn(new ArrayList<>());
     Period period = new Period(new DateTime("2015-06-18"), new DateTime("2015-07-20"));
     when(mockRequisitionPeriodService.generateNextPeriod("MMIA", null)).thenReturn(period);
 
@@ -104,7 +99,7 @@ public class SelectPeriodPresenterTest {
     selectPeriodPresenter = spy(selectPeriodPresenter);
     when(selectPeriodPresenter.getSubscriber()).thenReturn(testSubscriber);
 
-    selectPeriodPresenter.loadData("MMIA", null);
+    selectPeriodPresenter.loadData("MMIA");
     testSubscriber.awaitTerminalEvent();
 
     testSubscriber.assertNoErrors();
