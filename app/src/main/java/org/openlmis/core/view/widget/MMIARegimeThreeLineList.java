@@ -93,9 +93,6 @@ public class MMIARegimeThreeLineList extends LinearLayout {
     dataMap = new HashMap<>();
     this.dataList = dataList;
     initCategoryList();
-    if (getChildCount() > 0) {
-      removeAllViews();
-    }
     addViewItem(dataMap.get(attrFirstLineKey));
     addViewItem(dataMap.get(attrSecondLineKey));
     addViewItem(dataMap.get(attrThirdLineKey));
@@ -226,8 +223,15 @@ public class MMIARegimeThreeLineList extends LinearLayout {
   }
 
   public void removeOriginalTable() {
+    removeAllViewsIfHasAny();
     patientsTotalEdits.clear();
     patientsPharmacyEdits.clear();
     dataMap.clear();
+  }
+
+  private void removeAllViewsIfHasAny() {
+    if (getChildCount() > 0) {
+      removeAllViews();
+    }
   }
 }

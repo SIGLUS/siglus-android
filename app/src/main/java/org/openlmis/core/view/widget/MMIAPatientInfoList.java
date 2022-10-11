@@ -294,11 +294,15 @@ public class MMIAPatientInfoList extends LinearLayout {
   }
 
   public void removeOriginalTable() {
+    removeAllViewsIfHasAny();
+    editTexts.clear();
+    tableMap.clear();
+  }
+
+  private void removeAllViewsIfHasAny() {
     if (getChildCount() > 0) {
       removeAllViews();
     }
-    editTexts.clear();
-    tableMap.clear();
   }
 
 }
