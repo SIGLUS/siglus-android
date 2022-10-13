@@ -59,7 +59,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
   @InjectView(R.id.btn_add_products)
   TextView btnAddProducts;
 
-  public ActivityResultCallback<ActivityResult> addProductsResultCallback =
+  protected ActivityResultCallback<ActivityResult> addProductsResultCallback =
       new ActivityResultCallback<ActivityResult>() {
     @Override
     public void onActivityResult(ActivityResult result) {

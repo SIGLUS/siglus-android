@@ -68,9 +68,10 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
       new StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
+          //do nothing as it would never come back from SelectEmergencyProductsActivity
+          //ReportListActivity -> SelectEmergencyProductsActivity -> VIARequisitionActivity
         }
-      }
-  );
+      });
 
   private final OnPageChangeCallback pageChangeCallback = new OnPageChangeCallback() {
     @Override

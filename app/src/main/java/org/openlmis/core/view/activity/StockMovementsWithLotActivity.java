@@ -101,8 +101,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   private boolean isKit;
 
   private final ActivityResultLauncher<Intent> toSelectUnpackKitNumOrNewStockMovementLauncher =
-      registerForActivityResult(new StartActivityForResult(),
-      new ActivityResultCallback<ActivityResult>() {
+      registerForActivityResult(new StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
           if (result.getResultCode() == Activity.RESULT_OK) {
@@ -110,7 +109,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
             presenter.loadStockMovementViewModels();
           }
         }
-      });
+        });
 
   public static Intent getIntentToMe(Context context, InventoryViewModel inventoryViewModel, boolean isKit) {
     Intent intent = new Intent(context, StockMovementsWithLotActivity.class);
