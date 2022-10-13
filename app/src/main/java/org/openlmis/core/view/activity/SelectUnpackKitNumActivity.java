@@ -26,6 +26,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
@@ -52,6 +56,18 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
   private static final int MAX_UNPACK_QUANTITY = 100;
 
   private static final String PARAM_KIT_SOH = "param_kit_soh";
+
+  private final ActivityResultLauncher<Intent> toUnpackKitLauncher = registerForActivityResult(
+      new StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+          if (result.getResultCode() == Activity.RESULT_OK) {
+            setResult(Activity.RESULT_OK);
+            finish();
+          }
+        }
+      }
+  );
 
   @Override
   protected ScreenName getScreenName() {
@@ -86,19 +102,10 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
               return;
             }
             int unpackNum = gridView.getCheckedItemPosition() + 1;
-            startActivityForResult(UnpackKitActivity
-                    .getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum, kitName),
-                Constants.REQUEST_UNPACK_KIT);
+            toUnpackKitLauncher.launch(UnpackKitActivity
+                .getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum, kitName));
           }
         });
-  }
-
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_UNPACK_KIT) {
-      setResult(Activity.RESULT_OK);
-      finish();
-    }
   }
 
   public static Intent getIntentToMe(Activity activity, String kitName, String productCode,

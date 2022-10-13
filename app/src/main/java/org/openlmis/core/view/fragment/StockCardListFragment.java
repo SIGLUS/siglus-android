@@ -30,6 +30,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -87,6 +91,18 @@ public class StockCardListFragment extends BaseFragment implements
 
   private int currentPosition;
 
+  public ActivityResultCallback<ActivityResult> stockListCallback = new ActivityResultCallback<ActivityResult>() {
+    @Override
+    public void onActivityResult(ActivityResult result) {
+      if (result.getResultCode() == Activity.RESULT_OK) {
+        refreshPresenterIfHasIssuesOrEntries(result.getData());
+      }
+    }
+  };
+
+  private final ActivityResultLauncher<Intent> toStockMovementWithLotLauncher = registerForActivityResult(
+      new StartActivityForResult(), stockListCallback);
+
   @Override
   public Presenter initPresenter() {
     return presenter;
@@ -129,23 +145,6 @@ public class StockCardListFragment extends BaseFragment implements
   @Override
   public void onNothingSelected(AdapterView<?> parent) {
     // do nothing
-  }
-
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (resultCode == Activity.RESULT_OK) {
-      if (requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE) {
-        long[] stockCardIds = data.getLongArrayExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY);
-        if (stockCardIds == null) {
-          return;
-        }
-        presenter.refreshStockCardsObservable(stockCardIds);
-      } else if (requestCode == Constants.REQUEST_UNPACK_KIT) {
-        presenter.loadKits();
-      } else if (requestCode == Constants.REQUEST_ARCHIVED_LIST_PAGE) {
-        loadStockCards();
-      }
-    }
   }
 
   @Override
@@ -192,13 +191,13 @@ public class StockCardListFragment extends BaseFragment implements
     mAdapter = new StockCardListAdapter(new ArrayList<>(), onItemViewClickListener);
   }
 
-  protected void loadStockCards() {
+  public void loadStockCards() {
     presenter.loadStockCards(ACTIVE);
   }
 
   protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = inventoryViewModel -> {
     Intent intent = getStockMovementIntent(inventoryViewModel);
-    startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
+    toStockMovementWithLotLauncher.launch(intent);
   };
 
   protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
@@ -228,5 +227,13 @@ public class StockCardListFragment extends BaseFragment implements
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     sortSpinner.setAdapter(adapter);
     sortSpinner.setOnItemSelectedListener(this);
+  }
+
+  public void refreshPresenterIfHasIssuesOrEntries(Intent data) {
+    long[] stockCardIds = data.getLongArrayExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY);
+    if (stockCardIds == null) {
+      return;
+    }
+    presenter.refreshStockCardsObservable(stockCardIds);
   }
 }

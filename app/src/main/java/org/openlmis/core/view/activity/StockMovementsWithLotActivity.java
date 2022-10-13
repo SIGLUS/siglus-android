@@ -29,6 +29,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
@@ -96,6 +100,17 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   private boolean isActivated;
   private boolean isKit;
 
+  private final ActivityResultLauncher<Intent> toSelectUnpackKitNumOrNewStockMovementLauncher =
+      registerForActivityResult(new StartActivityForResult(),
+      new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+          if (result.getResultCode() == Activity.RESULT_OK) {
+            loadStockCard();
+            presenter.loadStockMovementViewModels();
+          }
+        }
+      });
 
   public static Intent getIntentToMe(Context context, InventoryViewModel inventoryViewModel, boolean isKit) {
     Intent intent = new Intent(context, StockMovementsWithLotActivity.class);
@@ -248,21 +263,10 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
 
   private void unpackKit() {
     Product product = presenter.getStockCard().getProduct();
-    startActivityForResult(SelectUnpackKitNumActivity.getIntentToMe(this,
-        product.getPrimaryName(),
-        product.getCode(),
-        presenter.getStockCard().getStockOnHand()),
-        Constants.REQUEST_UNPACK_KIT);
-  }
-
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == Activity.RESULT_OK && (requestCode == Constants.REQUEST_UNPACK_KIT
-        || requestCode == Constants.REQUEST_NEW_MOVEMENT_PAGE)) {
-      loadStockCard();
-      presenter.loadStockMovementViewModels();
-    }
+    toSelectUnpackKitNumOrNewStockMovementLauncher.launch(SelectUnpackKitNumActivity.getIntentToMe(this,
+            product.getPrimaryName(),
+            product.getCode(),
+            presenter.getStockCard().getStockOnHand()));
   }
 
   public SingleClickButtonListener getSingleClickButtonListener() {
@@ -297,13 +301,12 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
           && presenter.getStockCard().calculateSOHFromLots() == 0) {
         ToastUtil.show(R.string.msg_no_lot_for_issue);
       } else {
-        startActivityForResult(NewStockMovementActivity.getIntentToMe(
-            StockMovementsWithLotActivity.this,
-            stockName,
-            movementTypes.get(position),
-            stockId,
-            isKit),
-            Constants.REQUEST_NEW_MOVEMENT_PAGE);
+        toSelectUnpackKitNumOrNewStockMovementLauncher.launch(NewStockMovementActivity.getIntentToMe(
+                StockMovementsWithLotActivity.this,
+                stockName,
+                movementTypes.get(position),
+                stockId,
+                isKit));
       }
       newMovementDialog.dismiss();
     }
