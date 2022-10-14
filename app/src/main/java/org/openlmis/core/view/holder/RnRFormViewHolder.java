@@ -21,7 +21,6 @@ package org.openlmis.core.view.holder;
 import static org.openlmis.core.R.color.color_white;
 
 import android.annotation.SuppressLint;
-import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import android.view.ViewStub;
