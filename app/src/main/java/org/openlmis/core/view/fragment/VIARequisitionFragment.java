@@ -18,8 +18,6 @@
 
 package org.openlmis.core.view.fragment;
 
-import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +27,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -85,6 +85,22 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
   private ArrayList<StockCard> emergencyStockCards;
 
   private Menu menu;
+
+  private final ActivityResultLauncher<Intent> addDrugsToVIALauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        Intent data = result.getData();
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          Date periodBegin = (Date) data.getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
+          if (data.getExtras() != null) {
+            List<RnrFormItem> drugInVIAs = (ArrayList<RnrFormItem>) data.getExtras()
+                .get(Constants.PARAM_ADDED_DRUGS_TO_VIA);
+            presenter.populateAdditionalDrugsViewModels(drugInVIAs, periodBegin);
+            bodyView.refreshProductNameList();
+          } else {
+            new LMISException("VIARequisitionFragment onActivityResult").reportToFabric();
+          }
+        }
+      });
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -145,9 +161,10 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
               .transform(RequisitionFormItemViewModel::getFmn)
               .toList());
 
-          startActivityForResult(
-              AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), productCodes),
-              REQUEST_ADD_DRUGS_TO_VIA);
+          //mark
+          addDrugsToVIALauncher.launch(
+              AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), productCodes)
+          );
         }
       });
     }
@@ -362,21 +379,5 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
   protected void finish() {
     getActivity().setResult(Activity.RESULT_OK);
     getActivity().finish();
-  }
-
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == Constants.REQUEST_ADD_DRUGS_TO_VIA && resultCode == Activity.RESULT_OK) {
-      Date periodBegin = (Date) data.getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
-      if (data.getExtras() != null) {
-
-        List<RnrFormItem> drugInVIAs = (ArrayList<RnrFormItem>) data.getExtras()
-            .get(Constants.PARAM_ADDED_DRUGS_TO_VIA);
-        presenter.populateAdditionalDrugsViewModels(drugInVIAs, periodBegin);
-        bodyView.refreshProductNameList();
-      } else {
-        new LMISException("VIARequisitionFragment onActivityResult").reportToFabric();
-      }
-    }
   }
 }

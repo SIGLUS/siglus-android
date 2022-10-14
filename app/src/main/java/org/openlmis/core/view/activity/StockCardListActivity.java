@@ -125,14 +125,6 @@ public class StockCardListActivity extends SearchBarActivity {
     }
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (stockCardFragment != null) {
-      stockCardFragment.onActivityResult(requestCode, resultCode, data);
-    }
-  }
-
   protected StockCardListFragment createFragment() {
     return new StockCardListFragment();
   }

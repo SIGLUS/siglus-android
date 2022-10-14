@@ -89,7 +89,6 @@ public class ReportListFragment extends BaseReportListFragment {
 
   private WarningDialogFragment warningDialog;
 
-  //REQUEST_FROM_RNR_LIST_PAGE
   private final ActivityResultLauncher<Intent> createRequisitionLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
@@ -98,7 +97,6 @@ public class ReportListFragment extends BaseReportListFragment {
         }
       });
 
-  //REQUEST_SELECT_PERIOD_END
   private final ActivityResultLauncher<Intent> selectPeriodLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
