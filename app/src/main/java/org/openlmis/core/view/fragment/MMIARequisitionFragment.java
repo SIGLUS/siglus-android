@@ -32,6 +32,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.DialogFragment;
@@ -142,6 +146,16 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
   public static final int REQUEST_FOR_CUSTOM_REGIME = 100;
 
   protected int actionBarHeight;
+
+  private ActivityResultCallback<ActivityResult> addRegimenProductCallback = result -> {
+    if (result.getResultCode() == Activity.RESULT_OK) {
+      Intent data = result.getData();
+      regimeWrap.addCustomRegimenItem((Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN));
+    }
+  };
+
+  public ActivityResultLauncher<Intent> addRegimenProductLauncher = registerForActivityResult(
+      new StartActivityForResult(), addRegimenProductCallback);
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -486,14 +500,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     return getString(R.string.msg_requisition_signature_message_notify_mmia);
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_FOR_CUSTOM_REGIME) {
-      regimeWrap.addCustomRegimenItem((Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN));
-    }
-  }
-
   @VisibleForTesting
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveDebugFullfillMMIAReq(DebugMMIARequisitionEvent event) {
@@ -529,5 +535,9 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
     etTotalPatient.setText(String.valueOf(DEFAULT_AMOUNT));
     etTotalMonth.setText(String.valueOf(DEFAULT_AMOUNT));
+  }
+
+  public ActivityResultCallback<ActivityResult> getAddRegimenProductCallback() {
+    return addRegimenProductCallback;
   }
 }

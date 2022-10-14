@@ -26,8 +26,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -88,6 +89,29 @@ public class ReportListFragment extends BaseReportListFragment {
 
   private WarningDialogFragment warningDialog;
 
+  //REQUEST_FROM_RNR_LIST_PAGE
+  private final ActivityResultLauncher<Intent> createRequisitionLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          deleteCacheFragments();
+          loadForms();
+        }
+      });
+
+  //REQUEST_SELECT_PERIOD_END
+  private final ActivityResultLauncher<Intent> selectPeriodLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          Intent dataIntent = result.getData();
+          if (dataIntent == null) {
+            return;
+          }
+          Date periodEndDate = (Date) dataIntent.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
+          boolean isMissedPeriod = dataIntent.getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
+          createRequisition(periodEndDate, isMissedPeriod);
+        }
+      });
+
   public static ReportListFragment newInstance(String programCode) {
     final ReportListFragment reportListFragment = new ReportListFragment();
     final Bundle params = new Bundle();
@@ -134,31 +158,6 @@ public class ReportListFragment extends BaseReportListFragment {
     subscriptions.add(subscription);
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode != Activity.RESULT_OK) {
-      return;
-    }
-
-    switch (requestCode) {
-      case Constants.REQUEST_FROM_RNR_LIST_PAGE:
-        deleteCacheFragments();
-        loadForms();
-        break;
-      case Constants.REQUEST_SELECT_PERIOD_END:
-        if (data == null) {
-          return;
-        }
-        Date periodEndDate = (Date) data.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
-        boolean isMissedPeriod = data.getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
-        createRequisition(periodEndDate, isMissedPeriod);
-        break;
-      default:
-        // do nothing
-    }
-  }
-
   private void createRequisition(Date periodEndDate, boolean isMissedPeriod) {
     Intent intent = null;
     switch (programCode) {
@@ -180,7 +179,7 @@ public class ReportListFragment extends BaseReportListFragment {
       default:
         // do nothing
     }
-    startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
+    createRequisitionLauncher.launch(intent);
   }
 
   private Intent createMMIARequisitionIntent(Date periodEndDate) {
@@ -235,17 +234,15 @@ public class ReportListFragment extends BaseReportListFragment {
       warningDialog.show(getParentFragmentManager(), "WarningDialogFragment");
     }
 
+    //mark
     @Override
     public void clickBtnView(RnRFormViewModel model, View view) {
       switch (model.getType()) {
         case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
-          startActivityForResult(PhysicalInventoryActivity.getIntentToMe(requireContext()),
-              Constants.REQUEST_FROM_RNR_LIST_PAGE);
+          createRequisitionLauncher.launch(PhysicalInventoryActivity.getIntentToMe(requireContext()));
           break;
         case RnRFormViewModel.TYPE_INVENTORY_DONE:
-          startActivityForResult(
-              SelectPeriodActivity.getIntentToMe(requireContext(), model.getProgramCode()),
-              Constants.REQUEST_SELECT_PERIOD_END);
+          selectPeriodLauncher.launch(SelectPeriodActivity.getIntentToMe(requireContext(), model.getProgramCode()));
           TrackRnREventUtil.trackRnRListEvent(TrackerActions.CREATE_RNR, programCode);
           break;
         case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
@@ -253,11 +250,8 @@ public class ReportListFragment extends BaseReportListFragment {
           goToRequisitionPage(rnrFormId);
           break;
         case RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD:
-          startActivityForResult(SelectPeriodActivity.getIntentToMe(requireContext(),
-                  model.getProgramCode(),
-                  true,
-                  model.getPeriodEndMonth()),
-              Constants.REQUEST_SELECT_PERIOD_END);
+          selectPeriodLauncher.launch(SelectPeriodActivity.getIntentToMe(requireContext(),
+              model.getProgramCode(), true, model.getPeriodEndMonth()));
           break;
         default:
           rnrFormId = DEFAULT_FORM_ID_OF_NOT_AUTHORIZED;
@@ -304,7 +298,7 @@ public class ReportListFragment extends BaseReportListFragment {
         default:
           // do nothing
       }
-      startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
+      createRequisitionLauncher.launch(intent);
     }
   };
 }

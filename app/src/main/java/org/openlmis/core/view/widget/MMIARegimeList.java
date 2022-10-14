@@ -30,7 +30,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import java.util.ArrayList;
 import java.util.List;
@@ -158,9 +157,8 @@ public class MMIARegimeList extends LinearLayout {
     view.setOnClickListener(new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        getFragment().startActivityForResult(
-            SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults),
-            MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
+        getFragment().addRegimenProductLauncher.launch(
+            SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults));
       }
     });
     addView(view);
@@ -174,16 +172,16 @@ public class MMIARegimeList extends LinearLayout {
     view.setOnClickListener(new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        getFragment().startActivityForResult(SelectRegimeProductsActivity
-                .getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics),
-            MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
+        getFragment().addRegimenProductLauncher.launch(SelectRegimeProductsActivity
+            .getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics));
       }
     });
     addView(view);
   }
 
-  private Fragment getFragment() {
-    return ((FragmentActivity) getContext()).getSupportFragmentManager().findFragmentById(R.id.fragment_requisition);
+  private MMIARequisitionFragment getFragment() {
+    return (MMIARequisitionFragment) ((FragmentActivity) getContext())
+        .getSupportFragmentManager().findFragmentById(R.id.fragment_requisition);
   }
 
   private void initCategoryList(List<RegimenItem> regimenItems) {

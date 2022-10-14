@@ -37,6 +37,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.activity.result.ActivityResult;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import com.google.inject.AbstractModule;
@@ -447,9 +448,9 @@ public class MMIARequisitionFragmentTest {
 
     Intent data = new Intent();
     data.putExtra(Constants.PARAM_CUSTOM_REGIMEN, regimen);
-    mmiaRequisitionFragmentSpy
-        .onActivityResult(MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME, Activity.RESULT_OK,
-            data);
+    ActivityResult mockResult = new ActivityResult(Activity.RESULT_OK, data);
+
+    mmiaRequisitionFragmentSpy.getAddRegimenProductCallback().onActivityResult(mockResult);
 
     verify(mmiaRequisitionFragmentSpy.regimeWrap).addCustomRegimenItem(regimen);
   }
