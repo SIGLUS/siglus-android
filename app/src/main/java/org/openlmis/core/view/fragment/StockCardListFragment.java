@@ -91,12 +91,9 @@ public class StockCardListFragment extends BaseFragment implements
 
   private int currentPosition;
 
-  public ActivityResultCallback<ActivityResult> stockListCallback = new ActivityResultCallback<ActivityResult>() {
-    @Override
-    public void onActivityResult(ActivityResult result) {
-      if (result.getResultCode() == Activity.RESULT_OK) {
-        refreshPresenterIfHasIssuesOrEntries(result.getData());
-      }
+  private ActivityResultCallback<ActivityResult> stockListCallback = result -> {
+    if (result.getResultCode() == Activity.RESULT_OK) {
+      refreshPresenterIfHasIssuesOrEntries(result.getData());
     }
   };
 
@@ -235,5 +232,9 @@ public class StockCardListFragment extends BaseFragment implements
       return;
     }
     presenter.refreshStockCardsObservable(stockCardIds);
+  }
+
+  public ActivityResultCallback<ActivityResult> getStockListCallback() {
+    return stockListCallback;
   }
 }

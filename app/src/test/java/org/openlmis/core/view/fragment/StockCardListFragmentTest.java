@@ -124,7 +124,7 @@ public class StockCardListFragmentTest {
     ActivityResult mockResult = new ActivityResult(Activity.RESULT_OK, data);
 
     // when
-    fragment.stockListCallback.onActivityResult(mockResult);
+    fragment.getStockListCallback().onActivityResult(mockResult);
 
     // then
     verify(fragment.presenter).refreshStockCardsObservable(stockcardIds);

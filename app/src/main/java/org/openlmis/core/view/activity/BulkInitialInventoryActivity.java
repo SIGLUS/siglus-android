@@ -59,21 +59,17 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
   @InjectView(R.id.btn_add_products)
   TextView btnAddProducts;
 
-  protected ActivityResultCallback<ActivityResult> addProductsResultCallback =
-      new ActivityResultCallback<ActivityResult>() {
-    @Override
-    public void onActivityResult(ActivityResult result) {
-      int resultCode = result.getResultCode();
-      Intent data = result.getData();
-      if (areThereSelectedProducts(resultCode, data)) {
-        final ArrayList<Product> nonBasicProducts = (ArrayList<Product>) data
-            .getSerializableExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS);
-        presenter.addNonBasicProductsObservable(nonBasicProducts).subscribe(
-            bulkInitialInventoryViewModels -> {
-              mAdapter.refresh();
-              setUpFastScroller(mAdapter.getFilteredList());
-            });
-      }
+  protected ActivityResultCallback<ActivityResult> addProductsResultCallback = result -> {
+    int resultCode = result.getResultCode();
+    Intent data = result.getData();
+    if (areThereSelectedProducts(resultCode, data)) {
+      final ArrayList<Product> nonBasicProducts = (ArrayList<Product>) data
+          .getSerializableExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS);
+      presenter.addNonBasicProductsObservable(nonBasicProducts).subscribe(
+          bulkInitialInventoryViewModels -> {
+            mAdapter.refresh();
+            setUpFastScroller(mAdapter.getFilteredList());
+          });
     }
   };
 

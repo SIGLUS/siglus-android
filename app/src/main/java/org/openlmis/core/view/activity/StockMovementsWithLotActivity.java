@@ -29,8 +29,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -101,15 +99,12 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   private boolean isKit;
 
   private final ActivityResultLauncher<Intent> toSelectUnpackKitNumOrNewStockMovementLauncher =
-      registerForActivityResult(new StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-          if (result.getResultCode() == Activity.RESULT_OK) {
-            loadStockCard();
-            presenter.loadStockMovementViewModels();
-          }
+      registerForActivityResult(new StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          loadStockCard();
+          presenter.loadStockMovementViewModels();
         }
-        });
+      });
 
   public static Intent getIntentToMe(Context context, InventoryViewModel inventoryViewModel, boolean isKit) {
     Intent intent = new Intent(context, StockMovementsWithLotActivity.class);

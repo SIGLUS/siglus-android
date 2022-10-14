@@ -22,8 +22,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import java.util.ArrayList;
@@ -41,16 +39,12 @@ public class KitStockCardListFragment extends StockCardListFragment {
   ProductsUpdateBanner kitProductsUpdateBanner;
 
   private final ActivityResultLauncher<Intent> toStockMovementWithLotLauncher = registerForActivityResult(
-      new StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-          if (result.getResultCode() == Activity.RESULT_OK) {
-            KitStockCardListFragment.super.presenter.loadKits();
-            kitProductsUpdateBanner.setVisibility(View.GONE);
-          }
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          KitStockCardListFragment.super.presenter.loadKits();
+          kitProductsUpdateBanner.setVisibility(View.GONE);
         }
-      }
-  );
+      });
 
   protected StockCardViewHolder.OnItemViewClickListener viewClickListener =
       inventoryViewModel -> {

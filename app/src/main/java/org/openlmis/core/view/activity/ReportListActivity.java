@@ -22,8 +22,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.viewpager2.widget.ViewPager2;
@@ -65,12 +63,9 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
   ReportListPageAdapter pageAdapter;
 
   private final ActivityResultLauncher<Intent> toSelectEmergencyProductsLauncher = registerForActivityResult(
-      new StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-          //do nothing as it would never come back from SelectEmergencyProductsActivity
-          //ReportListActivity -> SelectEmergencyProductsActivity -> VIARequisitionActivity
-        }
+      new StartActivityForResult(), result -> {
+        //do nothing as it would never come back from SelectEmergencyProductsActivity
+        //ReportListActivity -> SelectEmergencyProductsActivity -> VIARequisitionActivity
       });
 
   private final OnPageChangeCallback pageChangeCallback = new OnPageChangeCallback() {
