@@ -232,7 +232,6 @@ public class ReportListFragment extends BaseReportListFragment {
       warningDialog.show(getParentFragmentManager(), "WarningDialogFragment");
     }
 
-    //mark
     @Override
     public void clickBtnView(RnRFormViewModel model, View view) {
       switch (model.getType()) {

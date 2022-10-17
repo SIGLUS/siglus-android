@@ -139,6 +139,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
     configHolder(model.getTitle(),
         CompatUtil.fromHtml(context.getString(R.string.label_program_no_movement, model.getName())),
         R.drawable.ic_description, R.color.color_draft_title, color_white);
+    btnView.setVisibility(View.GONE);
   }
 
   private void populateRnrFormNotBeCreatedView(RnRFormViewModel model) {
