@@ -161,7 +161,6 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
               .transform(RequisitionFormItemViewModel::getFmn)
               .toList());
 
-          //mark
           addDrugsToVIALauncher.launch(
               AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), productCodes)
           );

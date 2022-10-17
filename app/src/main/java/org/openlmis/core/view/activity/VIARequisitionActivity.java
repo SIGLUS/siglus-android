@@ -20,7 +20,7 @@ package org.openlmis.core.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.openlmis.core.R;
@@ -68,7 +68,7 @@ public class VIARequisitionActivity extends BaseActivity {
   //For emergency requisition
   public static Intent getIntentToMe(Context context, List<StockCard> stockCards) {
     Intent intent = new Intent(context, VIARequisitionActivity.class);
-    intent.putExtra(Constants.PARAM_SELECTED_EMERGENCY, (Parcelable) stockCards);
+    intent.putExtra(Constants.PARAM_SELECTED_EMERGENCY, (ArrayList) stockCards);
     return intent;
   }
 
