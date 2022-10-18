@@ -159,11 +159,11 @@ public class IssueVoucherSignatureDialog extends BaseDialogFragment {
     getDialog().getWindow().setAttributes(params);
   }
 
-  public abstract static class DialogDelegate {
+  public interface DialogDelegate {
 
-    public void onCancel() {
+    public default void onCancel() {
     }
 
-    public abstract void onSign(String receivedBy);
+    void onSign(String receivedBy);
   }
 }
