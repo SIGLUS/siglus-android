@@ -147,14 +147,14 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
   protected int actionBarHeight;
 
-  private ActivityResultCallback<ActivityResult> addRegimenProductCallback = result -> {
+  private final ActivityResultCallback<ActivityResult> addRegimenProductCallback = result -> {
     if (result.getResultCode() == Activity.RESULT_OK) {
       Intent data = result.getData();
       regimeWrap.addCustomRegimenItem((Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN));
     }
   };
 
-  public ActivityResultLauncher<Intent> addRegimenProductLauncher = registerForActivityResult(
+  private final ActivityResultLauncher<Intent> addRegimenProductLauncher = registerForActivityResult(
       new StartActivityForResult(), addRegimenProductCallback);
 
   @Override
@@ -537,7 +537,14 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     etTotalMonth.setText(String.valueOf(DEFAULT_AMOUNT));
   }
 
+  //Getter for Test
   public ActivityResultCallback<ActivityResult> getAddRegimenProductCallback() {
     return addRegimenProductCallback;
   }
+
+  //Getter for MMIARegimeList
+  public ActivityResultLauncher<Intent> getAddRegimenProductLauncher() {
+    return addRegimenProductLauncher;
+  }
+
 }

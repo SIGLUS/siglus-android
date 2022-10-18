@@ -157,7 +157,7 @@ public class MMIARegimeList extends LinearLayout {
     view.setOnClickListener(new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        getFragment().addRegimenProductLauncher.launch(
+        getFragment().getAddRegimenProductLauncher().launch(
             SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults));
       }
     });
@@ -172,7 +172,7 @@ public class MMIARegimeList extends LinearLayout {
     view.setOnClickListener(new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        getFragment().addRegimenProductLauncher.launch(SelectRegimeProductsActivity
+        getFragment().getAddRegimenProductLauncher().launch(SelectRegimeProductsActivity
             .getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics));
       }
     });

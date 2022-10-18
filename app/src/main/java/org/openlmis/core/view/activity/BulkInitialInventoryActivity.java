@@ -59,7 +59,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
   @InjectView(R.id.btn_add_products)
   TextView btnAddProducts;
 
-  protected ActivityResultCallback<ActivityResult> addProductsResultCallback = result -> {
+  private final ActivityResultCallback<ActivityResult> addProductsResultCallback = result -> {
     int resultCode = result.getResultCode();
     Intent data = result.getData();
     if (areThereSelectedProducts(resultCode, data)) {
@@ -265,5 +265,10 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
               && inventoryViewModel.getViewType() != BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER)
           .toList().size();
     }
+  }
+
+  //Getter for Test
+  public ActivityResultCallback<ActivityResult> getAddProductsResultCallback() {
+    return addProductsResultCallback;
   }
 }

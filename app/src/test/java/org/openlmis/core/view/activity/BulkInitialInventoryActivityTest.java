@@ -224,7 +224,7 @@ public class BulkInitialInventoryActivityTest {
     ActivityResult mockResult = new ActivityResult(RESULT_CODE, intent);
 
     // when
-    bulkInventoryActivity.addProductsResultCallback.onActivityResult(mockResult);
+    bulkInventoryActivity.getAddProductsResultCallback().onActivityResult(mockResult);
 
     // then
     verify(mockedPresenter, times(1)).addNonBasicProductsObservable(newAddedProduct);

@@ -49,14 +49,14 @@ public class StockCardListActivity extends SearchBarActivity {
 
   private final ActivityResultLauncher<Intent> toBulkIssuesOrEntriesLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
-        if (result.getResultCode() == RESULT_OK) {
+        if (result.getResultCode() == RESULT_OK && stockCardFragment != null) {
           stockCardFragment.refreshPresenterIfHasIssuesOrEntries(result.getData());
         }
       });
 
   private final ActivityResultLauncher<Intent> toArchivedListLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
-        if (result.getResultCode() == RESULT_OK) {
+        if (result.getResultCode() == RESULT_OK && stockCardFragment != null) {
           stockCardFragment.loadStockCards();
         }
       });
