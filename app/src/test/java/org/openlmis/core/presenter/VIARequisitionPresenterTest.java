@@ -207,7 +207,7 @@ public class VIARequisitionPresenterTest {
     presenter.rnRForm = form;
 
     //when
-    presenter.processSign("userSignature");
+    presenter.processSign("user");
 
     //then
     assertThat(Status.SUBMITTED, is(form.getStatus()));
