@@ -26,6 +26,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
@@ -89,13 +91,15 @@ public class ReportListFragment extends BaseReportListFragment {
 
   private WarningDialogFragment warningDialog;
 
+  private ActivityResultCallback<ActivityResult> createRequisitionCallback = result -> {
+    if (result.getResultCode() == Activity.RESULT_OK) {
+      deleteCacheFragments();
+      loadForms();
+    }
+  };
+
   private final ActivityResultLauncher<Intent> createRequisitionLauncher = registerForActivityResult(
-      new StartActivityForResult(), result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-          deleteCacheFragments();
-          loadForms();
-        }
-      });
+      new StartActivityForResult(), createRequisitionCallback);
 
   private final ActivityResultLauncher<Intent> selectPeriodLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
@@ -298,4 +302,9 @@ public class ReportListFragment extends BaseReportListFragment {
       createRequisitionLauncher.launch(intent);
     }
   };
+
+  //Getter for ReportListActivity
+  public ActivityResultCallback<ActivityResult> getCreateRequisitionCallback() {
+    return createRequisitionCallback;
+  }
 }

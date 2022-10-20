@@ -85,8 +85,7 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
 
   private final ActivityResultLauncher<Intent> toRequisitionLauncher =
       registerForActivityResult(new StartActivityForResult(), result -> {
-        int resultCode = result.getResultCode();
-        if (resultCode == Activity.RESULT_OK) {
+        if (result.getResultCode() == Activity.RESULT_OK) {
           setResult(RESULT_OK);
           finish();
         }

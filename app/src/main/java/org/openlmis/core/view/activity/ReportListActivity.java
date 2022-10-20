@@ -41,6 +41,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.ReportListNavigatorAdapter;
 import org.openlmis.core.view.adapter.ReportListPageAdapter;
+import org.openlmis.core.view.fragment.ReportListFragment;
 import org.openlmis.core.view.widget.SingleClickMenuListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -64,8 +65,9 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
 
   private final ActivityResultLauncher<Intent> toSelectEmergencyProductsLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
-        //do nothing as it would never come back from SelectEmergencyProductsActivity
-        //ReportListActivity -> SelectEmergencyProductsActivity -> VIARequisitionActivity
+        ReportListFragment viaRequisitionFragment =
+            (ReportListFragment) getSupportFragmentManager().findFragmentById(0);
+        viaRequisitionFragment.getCreateRequisitionCallback().onActivityResult(result);
       });
 
   private final OnPageChangeCallback pageChangeCallback = new OnPageChangeCallback() {
