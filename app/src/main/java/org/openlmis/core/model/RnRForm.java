@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Include;
 import lombok.Getter;
 import lombok.Setter;
 import org.joda.time.DateTime;
@@ -44,7 +45,7 @@ import org.openlmis.core.view.widget.MMIARegimeList;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @DatabaseTable(tableName = "rnr_forms")
 public class RnRForm extends BaseModel {
 
@@ -98,26 +99,33 @@ public class RnRForm extends BaseModel {
   @Expose
   @SerializedName("comments")
   @DatabaseField
+  @Include
   private String comments;
 
   @DatabaseField(defaultValue = "DRAFT")
+  @Include
   private Status status;
 
+  @Include
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private Program program;
 
   @DatabaseField
   private boolean synced = false;
 
+  @Include
   @DatabaseField(dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
   private Date periodBegin;
 
+  @Include
   @DatabaseField(dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
   private Date periodEnd;
 
+  @Include
   @DatabaseField
   private Date submittedTime;
 
+  @Include
   @Expose
   @DatabaseField
   private boolean emergency;

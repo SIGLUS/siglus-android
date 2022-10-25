@@ -33,6 +33,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Exclude;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.core.enumeration.OrderStatus;
@@ -133,9 +134,11 @@ public class Pod extends BaseModel implements Serializable {
   @DatabaseField
   private boolean isSynced;
 
+  @Exclude
   @ForeignCollectionField(eager = true)
   private ForeignCollection<PodProductItem> podProductItemForeignCollection;
 
+  @Exclude
   @Setter
   private List<PodProductItem> podProductItemsWrapper;
 

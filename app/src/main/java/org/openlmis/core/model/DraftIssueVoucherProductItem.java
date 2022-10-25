@@ -27,6 +27,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Exclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -54,9 +55,11 @@ public class DraftIssueVoucherProductItem extends BaseModel {
   @DatabaseField(defaultValue = "false")
   boolean done;
 
+  @Exclude
   @ForeignCollectionField(eager = true)
   private ForeignCollection<DraftIssueVoucherProductLotItem> foreignDraftLotItems;
 
+  @Exclude
   private List<DraftIssueVoucherProductLotItem> draftLotItemListWrapper;
 
   public List<DraftIssueVoucherProductLotItem> getDraftLotItemListWrapper() {

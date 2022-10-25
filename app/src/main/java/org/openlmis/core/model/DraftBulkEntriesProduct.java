@@ -26,6 +26,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Exclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -52,9 +53,11 @@ public class DraftBulkEntriesProduct extends BaseModel {
   @DatabaseField
   Long quantity;
 
+  @Exclude
   @ForeignCollectionField(eager = true)
   private ForeignCollection<DraftBulkEntriesProductLotItem> foreignDraftLotItems;
 
+  @Exclude
   private List<DraftBulkEntriesProductLotItem> draftLotItemListWrapper;
 
   public DraftBulkEntriesProduct(BulkEntriesViewModel bulkEntriesViewModel) {

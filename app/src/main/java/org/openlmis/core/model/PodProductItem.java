@@ -28,6 +28,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Exclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -56,9 +57,11 @@ public class PodProductItem extends BaseModel {
   @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false)
   private Pod pod;
 
+  @Exclude
   @ForeignCollectionField
   private ForeignCollection<PodProductLotItem> podProductLotItemForeignCollection;
 
+  @Exclude
   private List<PodProductLotItem> podProductLotItemsWrapper;
 
   public List<PodProductLotItem> getPodProductLotItemsWrapper() {
