@@ -49,10 +49,10 @@ public class ProductPresenter extends Presenter {
   }
 
   @SuppressWarnings("squid:S1905")
-  public Observable<List<RegimeProductViewModel>> loadRegimeProducts(Regimen.RegimeType type) {
+  public Observable<List<RegimeProductViewModel>> loadRegimeProducts(String programCode, Regimen.RegimeType type) {
     return Observable.create((Observable.OnSubscribe<List<RegimeProductViewModel>>) subscriber -> {
       try {
-        List<Regimen> regimens = regimenRepository.listNonCustomRegimen(type);
+        List<Regimen> regimens = regimenRepository.listNonCustomRegimen(programCode, type);
         List<RegimeProductViewModel> regimeProductViewModels = new ArrayList<>();
         for (Regimen item : regimens) {
           RegimeProductViewModel regimeProductViewModel = new RegimeProductViewModel(
@@ -68,11 +68,8 @@ public class ProductPresenter extends Presenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
-  @SuppressWarnings("squid:S1905")
-  public Observable<Regimen> saveRegimes(RegimeProductViewModel viewModel,
-      final Regimen.RegimeType regimeType) {
-    final String regimenName = viewModel.getShortCode();
-
+  public Observable<Regimen> saveRegimes(RegimeProductViewModel viewModel, Regimen.RegimeType regimeType) {
+    String regimenName = viewModel.getShortCode();
     return Observable.create((Observable.OnSubscribe<Regimen>) subscriber -> {
       Regimen regimen = null;
       try {

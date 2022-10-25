@@ -40,7 +40,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
@@ -183,14 +182,15 @@ public class MMIARepository extends RnrFormRepository {
 
   @Override
   protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
-    List<RegimenItem> regimenItems = new ArrayList<>();
-    for (Regimen regimen : regimenRepository.listDefaultRegime()) {
-      RegimenItem item = new RegimenItem();
-      item.setForm(form);
-      item.setRegimen(regimen);
-      regimenItems.add(item);
-    }
-    return regimenItems;
+    return FluentIterable
+        .from(regimenRepository.listDefaultRegime(programCode))
+        .transform(regimen -> {
+          RegimenItem item = new RegimenItem();
+          item.setForm(form);
+          item.setRegimen(regimen);
+          return item;
+        })
+        .toList();
   }
 
   @Override

@@ -31,6 +31,7 @@ import org.openlmis.core.constant.ReportConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
@@ -64,6 +65,19 @@ public class MMTBRepository extends RnrFormRepository {
   public MMTBRepository(Context context) {
     super(context);
     programCode = Constants.MMTB_PROGRAM_CODE;
+  }
+
+  @Override
+  protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
+    return FluentIterable
+        .from(regimenRepository.listDefaultRegime(programCode))
+        .transform(regimen -> {
+          RegimenItem item = new RegimenItem();
+          item.setForm(form);
+          item.setRegimen(regimen);
+          return item;
+        })
+        .toList();
   }
 
   @Override

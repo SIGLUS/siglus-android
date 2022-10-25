@@ -6,6 +6,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.presenter.ProductPresenter;
 import org.openlmis.core.utils.Constants;
@@ -50,10 +53,10 @@ public class SelectRegimeProductsActivityTest {
 
     Observable<List<RegimeProductViewModel>> value = Observable.create(subscriber -> {
     });
-    when(presenter.loadRegimeProducts(Regimen.RegimeType.Adults)).thenReturn(value);
+    when(presenter.loadRegimeProducts(anyString(), eq(Regimen.RegimeType.Adults))).thenReturn(value);
 
     Intent intent = new Intent();
-    intent.putExtra(SelectRegimeProductsActivity.PARAM_REGIME_TYPE, Regimen.RegimeType.Adults);
+    intent.putExtra(IntentConstants.PARAM_REGIME_TYPE, Regimen.RegimeType.Adults);
     activityController = Robolectric.buildActivity(SelectRegimeProductsActivity.class, intent);
     selectProductsActivity = activityController.create().get();
   }
@@ -75,7 +78,7 @@ public class SelectRegimeProductsActivityTest {
   }
 
   @Test
-  public void shouldShowToastWhenMoreThanLimitChecked() throws Exception {
+  public void shouldShowToastWhenMoreThanLimitChecked() {
     RobolectricUtils.resetNextClickTime();
 
     selectProductsActivity.viewModels = getInventoryViewModels();
