@@ -190,7 +190,7 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
   public void refreshAllReportListFragments() {
     List<Fragment> allFragments = getSupportFragmentManager().getFragments();
     for (Fragment fragment : allFragments) {
-      if (fragment instanceof ReportListFragment){
+      if (fragment instanceof ReportListFragment) {
         ((ReportListFragment) fragment).loadForms();
       }
     }
