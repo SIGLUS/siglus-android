@@ -382,7 +382,7 @@
   <string name="label_total">Total:%1$d</string>
   <string name="requisition_delete_failed">Delete Failed</string>
   <string name="delete_rnr_form_failed_warning">Delete Failed</string>
-  <string name="label_program_no_movement"><![CDATA[<b>There is no stock card of any product under %1$s, you cannot process the requisition/report.</b>]]></string>
+  <string name="label_program_no_movement">There is no stock card of any product under this program, you cannot process the requisition/report.</string>
 
   <!-- Signature -->
   <string name="dialog_request_signature">Enter your initials to sign the movement</string>

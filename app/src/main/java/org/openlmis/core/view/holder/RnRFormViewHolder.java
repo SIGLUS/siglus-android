@@ -137,7 +137,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
   private void showCannotDoMonthlyInventoryNoMovement(RnRFormViewModel model) {
     configHolder(model.getTitle(),
-        CompatUtil.fromHtml(context.getString(R.string.label_program_no_movement, model.getName())),
+        CompatUtil.fromHtml(context.getString(R.string.label_program_no_movement)),
         R.drawable.ic_description, R.color.color_draft_title, color_white);
     btnView.setVisibility(View.GONE);
   }

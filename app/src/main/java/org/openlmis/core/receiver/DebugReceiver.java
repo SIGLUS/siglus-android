@@ -42,7 +42,10 @@ import org.openlmis.core.event.DebugPhysicalInventoryEvent;
  * <p>2. quickly complete physical inventory:
  * eg: adb shell am broadcast -a org.openlmis.core.debug.physical_inventory
  *
- * <p>3. quickly complete mmia requisition:
+ * <p>3. quickly complete mmtb requisition:
+ * eg: adb shell am broadcast -a org.openlmis.core.debug.mmtb_requisition
+ *
+ * <p>4. quickly complete mmia requisition:
  * eg: adb shell am broadcast -a org.openlmis.core.debug.mmia_requisition
  */
 public class DebugReceiver extends BroadcastReceiver {
