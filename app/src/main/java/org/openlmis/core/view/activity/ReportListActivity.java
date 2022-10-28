@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 import java.util.List;
@@ -184,5 +185,14 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
   protected void onDestroy() {
     super.onDestroy();
     reportListViewpager.unregisterOnPageChangeCallback(pageChangeCallback);
+  }
+
+  public void refreshAllReportListFragments() {
+    List<Fragment> allFragments = getSupportFragmentManager().getFragments();
+    for (Fragment fragment : allFragments) {
+      if (fragment instanceof ReportListFragment){
+        ((ReportListFragment) fragment).loadForms();
+      }
+    }
   }
 }

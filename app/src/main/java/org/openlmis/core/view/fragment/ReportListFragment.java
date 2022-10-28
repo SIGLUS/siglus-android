@@ -31,15 +31,12 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.TrackerActions;
@@ -56,6 +53,7 @@ import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.activity.MMTBRequisitionActivity;
 import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.activity.RapidTestReportFormActivity;
+import org.openlmis.core.view.activity.ReportListActivity;
 import org.openlmis.core.view.activity.SelectPeriodActivity;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
@@ -93,8 +91,8 @@ public class ReportListFragment extends BaseReportListFragment {
 
   private ActivityResultCallback<ActivityResult> createRequisitionCallback = result -> {
     if (result.getResultCode() == Activity.RESULT_OK) {
-      deleteCacheFragments();
-      loadForms();
+      ReportListActivity activity = (ReportListActivity) getActivity();
+      activity.refreshAllReportListFragments();
     }
   };
 
@@ -152,7 +150,7 @@ public class ReportListFragment extends BaseReportListFragment {
   }
 
   @Override
-  protected void loadForms() {
+  public void loadForms() {
     if (!isLoading()) {
       loading();
     }
@@ -211,17 +209,6 @@ public class ReportListFragment extends BaseReportListFragment {
         adapter.notifyDataSetChanged();
       }
     };
-  }
-
-  private void deleteCacheFragments() {
-    List<Fragment> fragments = getParentFragmentManager().getFragments();
-    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-    for (Fragment fragment : fragments) {
-      if (!Objects.equals(fragment.getTag(), this.getTag())) {
-        transaction.remove(fragment);
-      }
-    }
-    transaction.commit();
   }
 
   protected RnRFormItemClickListener rnRFormItemClickListener = new RnRFormItemClickListener() {
