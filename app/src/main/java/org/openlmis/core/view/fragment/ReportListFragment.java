@@ -37,7 +37,10 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
+import org.openlmis.core.event.BackToReportListPageEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -53,7 +56,6 @@ import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.activity.MMTBRequisitionActivity;
 import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.activity.RapidTestReportFormActivity;
-import org.openlmis.core.view.activity.ReportListActivity;
 import org.openlmis.core.view.activity.SelectPeriodActivity;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
@@ -64,6 +66,7 @@ import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
 
+@BindEventBus
 public class ReportListFragment extends BaseReportListFragment {
 
   public static final int DEFAULT_FORM_ID_OF_NOT_AUTHORIZED = 0;
@@ -91,8 +94,7 @@ public class ReportListFragment extends BaseReportListFragment {
 
   private ActivityResultCallback<ActivityResult> createRequisitionCallback = result -> {
     if (result.getResultCode() == Activity.RESULT_OK) {
-      ReportListActivity activity = (ReportListActivity) getActivity();
-      activity.refreshAllReportListFragments();
+      EventBus.getDefault().post(new BackToReportListPageEvent());
     }
   };
 
@@ -150,7 +152,7 @@ public class ReportListFragment extends BaseReportListFragment {
   }
 
   @Override
-  public void loadForms() {
+  protected void loadForms() {
     if (!isLoading()) {
       loading();
     }

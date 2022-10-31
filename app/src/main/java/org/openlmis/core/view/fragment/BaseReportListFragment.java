@@ -21,13 +21,24 @@ package org.openlmis.core.view.fragment;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.annotation.BindEventBus;
+import org.openlmis.core.event.BackToReportListPageEvent;
 import org.openlmis.core.event.SyncRnrFinishEvent;
 
 @BindEventBus
 public abstract class BaseReportListFragment extends BaseFragment {
 
+  @Override
+  public void onStart() {
+    super.onStart();
+  }
+
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveSyncStatusEvent(SyncRnrFinishEvent event) {
+    loadForms();
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReturnReportListPage(BackToReportListPageEvent event) {
     loadForms();
   }
 
