@@ -29,26 +29,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import java.util.Map;
 import org.openlmis.core.R;
+import org.openlmis.core.constant.ReportConstants;
+import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.utils.SimpleTextWatcher;
 
 public class MMTBDrugConsumptionInfoList extends LinearLayout {
 
-  private static final List<DrugConsumptionItem> mockData = Collections.unmodifiableList(Arrays.asList(
-      new DrugConsumptionItem("Consumption of drugs 1", ""),
-      new DrugConsumptionItem("Consumption of drugs 2", ""),
-      new DrugConsumptionItem("Consumption of drugs 3", ""),
-      new DrugConsumptionItem("Consumption of drugs 4", ""),
-      new DrugConsumptionItem("Consumption of drugs 5 Consumption of drugs 5", ""),
-      new DrugConsumptionItem("Consumption of drugs 6", ""),
-      new DrugConsumptionItem("Consumption of drugs 7", ""),
-      new DrugConsumptionItem("Consumption of drugs 8", "")
-  ));
-
+  private final Map<String, String> keyToFieldNameMap = new HashMap<>();
   private final TextView rtvPharmacyOutpatient;
   private final LinearLayout llConsumptionContainer;
   private final LinearLayout llTitleContainer;
@@ -70,6 +61,7 @@ public class MMTBDrugConsumptionInfoList extends LinearLayout {
     llConsumptionContainer = findViewById(R.id.ll_consumption_container);
     llTitleContainer = findViewById(R.id.ll_title_container);
     rtvPharmacyOutpatient = findViewById(R.id.rtv_pharmacy_outpatient);
+    initKeyToFieldNameMap();
   }
 
   public boolean isCompleted() {
@@ -83,20 +75,34 @@ public class MMTBDrugConsumptionInfoList extends LinearLayout {
     return true;
   }
 
-  public void setData() {
+  public void setData(List<BaseInfoItem> baseInfoItemList) {
     llConsumptionContainer.removeAllViews();
     editTexts.clear();
-    for (DrugConsumptionItem phaseItem : mockData) {
+    for (BaseInfoItem baseInfoItem : baseInfoItemList) {
       View itemView = layoutInflater.inflate(R.layout.item_mmtb_requisition_treatment_phase, this, false);
       TextView tvTitle = itemView.findViewById(R.id.tv_title);
-      tvTitle.setText(phaseItem.name);
+      tvTitle.setText(keyToFieldNameMap.get(baseInfoItem.getName()));
       EditText etAmount = itemView.findViewById(R.id.et_treatment_phase_amount);
-      etAmount.setText(phaseItem.value);
-      etAmount.addTextChangedListener(new EditTextWatcher(phaseItem));
+      if (baseInfoItem.getValue() != null) {
+        etAmount.setText(baseInfoItem.getValue());
+      }
+      etAmount.addTextChangedListener(new EditTextWatcher(baseInfoItem));
       editTexts.add(etAmount);
       llConsumptionContainer.addView(itemView);
     }
     post(this::updateLeftHeader);
+  }
+
+  private void initKeyToFieldNameMap() {
+    keyToFieldNameMap.put(ReportConstants.KEY_PHARMACY_PRODUCT_ISONIAZIDA_100, "Isoniazida 100 mg");
+    keyToFieldNameMap.put(ReportConstants.KEY_PHARMACY_PRODUCT_ISONIAZIDA_300, "Isoniazida 300 mg");
+    keyToFieldNameMap.put(ReportConstants.KEY_PHARMACY_PRODUCT_LEVOFLOXACINA_100, "Levofloxacina 100 mg Disp");
+    keyToFieldNameMap.put(ReportConstants.KEY_PHARMACY_PRODUCT_LEVOFLOXACINA_250, "Levofloxacina 250 mg Rev");
+    keyToFieldNameMap.put(ReportConstants.KEY_PHARMACY_PRODUCT_RIFAPENTINA_300,
+        "Rifapentina 300mg \n+Isoniazida 300mg");
+    keyToFieldNameMap.put(ReportConstants.KEY_PHARMACY_PRODUCT_RIFAPENTINA_150, "Rifapentina 150 mg");
+    keyToFieldNameMap.put(ReportConstants.KEY_PHARMACY_PRODUCT_PIRIDOXINA_25, "Piridoxina 25mg");
+    keyToFieldNameMap.put(ReportConstants.KEY_PHARMACY_PRODUCT_PIRIDOXINA_50, "Piridoxina 50mg");
   }
 
   private void updateLeftHeader() {
@@ -105,30 +111,12 @@ public class MMTBDrugConsumptionInfoList extends LinearLayout {
     rtvPharmacyOutpatient.setLayoutParams(adultParams);
   }
 
-  @AllArgsConstructor
-  @Data
-  private static class DrugConsumptionItem {
+  private static class EditTextWatcher extends SimpleTextWatcher {
 
-    private String name;
-    private String value;
-  }
+    private final BaseInfoItem item;
 
-  private static class EditTextWatcher implements android.text.TextWatcher {
-
-    private final DrugConsumptionItem item;
-
-    public EditTextWatcher(DrugConsumptionItem item) {
+    public EditTextWatcher(BaseInfoItem item) {
       this.item = item;
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      // do nothing
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      // do nothing
     }
 
     @Override

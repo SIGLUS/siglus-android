@@ -63,8 +63,7 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>,
   }
 
   @Override
-  public JsonElement serialize(RnrFormItem rnrFormItem, Type typeOfSrc,
-      JsonSerializationContext context) {
+  public JsonElement serialize(RnrFormItem rnrFormItem, Type typeOfSrc, JsonSerializationContext context) {
     transformExpireDate(rnrFormItem, SIMPLE_DATE_FORMAT, DB_DATE_FORMAT);
     return gson.toJsonTree(rnrFormItem).getAsJsonObject();
   }

@@ -21,6 +21,7 @@ package org.openlmis.core.network.adapter;
 import static org.openlmis.core.model.repository.VIARepository.ATTR_CONSULTATION;
 import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.MMTB_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.PARAM_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.REGIMEN_INFORMATION_TO_REGIMEN_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
@@ -270,15 +271,17 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   }
 
   private void setPatientLineItem(String programCode, JsonObject root, RnRForm rnRForm) {
-    if (programCode.endsWith(MMIA_PROGRAM_CODE) && rnRForm != null
-        && !rnRForm.getBaseInfoItemListWrapper().isEmpty()) {
-      HashMap<String, List<BaseInfoItem>> tableNameToItems = groupPatientInfo(rnRForm);
-      List<PatientLineItemRequest> patientLineItemRequests = new ArrayList<>();
-      for (Map.Entry<String, List<BaseInfoItem>> map : tableNameToItems.entrySet()) {
-        patientLineItemRequests.add(new PatientLineItemRequest(map.getKey(), map.getValue()));
-      }
-      root.add(PATIENT_LINE_ITEMS, jsonParser.parse(gson.toJson(patientLineItemRequests)));
+    if (rnRForm == null
+        || rnRForm.getBaseInfoItemListWrapper().isEmpty()
+        || !(MMIA_PROGRAM_CODE.equals(programCode) || MMTB_PROGRAM_CODE.equals(programCode))) {
+      return;
     }
+    HashMap<String, List<BaseInfoItem>> tableNameToItems = groupPatientInfo(rnRForm);
+    List<PatientLineItemRequest> patientLineItemRequests = new ArrayList<>();
+    for (Map.Entry<String, List<BaseInfoItem>> map : tableNameToItems.entrySet()) {
+      patientLineItemRequests.add(new PatientLineItemRequest(map.getKey(), map.getValue()));
+    }
+    root.add(PATIENT_LINE_ITEMS, jsonParser.parse(gson.toJson(patientLineItemRequests)));
   }
 
   @NotNull

@@ -58,9 +58,9 @@ public class MMTBPatientThreeLineList extends LinearLayout {
   public MMTBPatientThreeLineList(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     Map<String, String> map = new HashMap<>();
-    map.put(ReportConstants.KEY_MMTB_THREE_LINE_1, context.getString(R.string.mmtb_three_line_1));
-    map.put(ReportConstants.KEY_MMTB_THREE_LINE_2, context.getString(R.string.mmtb_three_line_2));
-    map.put(ReportConstants.KEY_MMTB_THREE_LINE_3, context.getString(R.string.mmtb_three_line_3));
+    map.put(ReportConstants.KEY_SERVICE_ADULT, context.getString(R.string.mmtb_three_line_1));
+    map.put(ReportConstants.KEY_SERVICE_LESS_THAN_25, context.getString(R.string.mmtb_three_line_2));
+    map.put(ReportConstants.KEY_SERVICE_MORE_THAN_25, context.getString(R.string.mmtb_three_line_3));
     keyToFieldMap = Collections.unmodifiableMap(map);
     initView();
   }
@@ -99,9 +99,9 @@ public class MMTBPatientThreeLineList extends LinearLayout {
     llAgeRange.removeAllViews();
     patientsPharmacyEdits.clear();
     patientsTotalEdits.clear();
-    addViewItem(keyToDataMap.get(ReportConstants.KEY_MMTB_THREE_LINE_1));
-    addViewItem(keyToDataMap.get(ReportConstants.KEY_MMTB_THREE_LINE_2));
-    addViewItem(keyToDataMap.get(ReportConstants.KEY_MMTB_THREE_LINE_3));
+    addViewItem(keyToDataMap.get(ReportConstants.KEY_SERVICE_ADULT));
+    addViewItem(keyToDataMap.get(ReportConstants.KEY_SERVICE_LESS_THAN_25));
+    addViewItem(keyToDataMap.get(ReportConstants.KEY_SERVICE_MORE_THAN_25));
   }
 
   private void addViewItem(RegimenItemThreeLines itemThreeLines) {

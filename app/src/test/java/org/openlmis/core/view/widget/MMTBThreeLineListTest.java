@@ -58,11 +58,11 @@ public class MMTBThreeLineListTest {
     product.setPrimaryName("product");
     product.setCode("08S17");
     RnRForm rnRForm = RnRForm.init(Program.builder().programCode(Program.MMTB_CODE).build(), new Date());
-    line1.setRegimeTypes(ReportConstants.KEY_MMTB_THREE_LINE_1);
+    line1.setRegimeTypes(ReportConstants.KEY_SERVICE_ADULT);
     line1.setForm(rnRForm);
-    line2.setRegimeTypes(ReportConstants.KEY_MMTB_THREE_LINE_2);
+    line2.setRegimeTypes(ReportConstants.KEY_SERVICE_LESS_THAN_25);
     line2.setForm(rnRForm);
-    line3.setRegimeTypes(ReportConstants.KEY_MMTB_THREE_LINE_3);
+    line3.setRegimeTypes(ReportConstants.KEY_SERVICE_MORE_THAN_25);
     line3.setForm(rnRForm);
     dataList.add(line1);
     dataList.add(line2);

@@ -151,7 +151,6 @@
   <string name="mmtb_final_phase">Final/Last Dispensation</string>
   <string name="mmtb_frequency_monthly">Monthly</string>
   <string name="mmtb_frequency_quarterly">Quarterly</string>
-  <string name="mmtb_frequency_six_monthly">6-Monthly</string>
 
   <!-- VIA Form -->
   <string name="label_via_kit_received">No. of Kits Received</string>

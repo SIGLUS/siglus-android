@@ -18,16 +18,23 @@
 
 package org.openlmis.core.presenter;
 
+import static org.openlmis.core.constant.ReportConstants.KEY_PHARMACY_PRODUCT_TABLE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_ADULT_TABLE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_PEDIATRIC_TABLE;
+
 import java.util.Date;
+import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.MMTBRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.view.BaseView;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -78,13 +85,14 @@ public class MMTBRequisitionPresenter extends BaseRequisitionPresenter {
 
   @Override
   public void updateFormUI() {
-    if (rnRForm != null) {
-      view.refreshRequisitionForm(rnRForm);
-      view.setProcessButtonName(
-          rnRForm.isDraft()
-              ? context.getResources().getString(R.string.btn_submit)
-              : context.getResources().getString(R.string.btn_complete));
+    if (rnRForm == null) {
+      return;
     }
+    view.refreshRequisitionForm(rnRForm);
+    view.setProcessButtonName(
+        rnRForm.isDraft()
+            ? context.getResources().getString(R.string.btn_submit)
+            : context.getResources().getString(R.string.btn_complete));
   }
 
   public boolean formItemHasNull() {
@@ -99,6 +107,19 @@ public class MMTBRequisitionPresenter extends BaseRequisitionPresenter {
 
   public void setComments(String comments) {
     rnRForm.setComments(comments);
+  }
+
+  public List<BaseInfoItem> getTreatmentPhaseData() {
+    return FluentIterable.from(rnRForm.getBaseInfoItemListWrapper())
+        .filter(baseInfoItem -> KEY_TREATMENT_ADULT_TABLE.equals(baseInfoItem.getTableName())
+            || KEY_TREATMENT_PEDIATRIC_TABLE.equals(baseInfoItem.getTableName()))
+        .toSortedList((o1, o2) -> Long.compare(o1.getDisplayOrder(), o2.getDisplayOrder()));
+  }
+
+  public List<BaseInfoItem> getDrugConsumptionData() {
+    return FluentIterable.from(rnRForm.getBaseInfoItemListWrapper())
+        .filter(baseInfoItem -> KEY_PHARMACY_PRODUCT_TABLE.equals(baseInfoItem.getTableName()))
+        .toSortedList((o1, o2) -> Long.compare(o1.getDisplayOrder(), o2.getDisplayOrder()));
   }
 
   public interface MMTBRequisitionView extends BaseRequisitionView {

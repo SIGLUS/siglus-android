@@ -23,43 +23,68 @@ public class ReportConstants {
   private ReportConstants() {
   }
 
-  // mmtb three lines table
-  public static final String KEY_MMTB_THREE_LINE_1 = "key_mmtb_three_line_1";
+  // treatment table
+  public static final String KEY_TREATMENT_ADULT_TABLE = "table_treatment_adult_key";
+  public static final String KEY_TREATMENT_ADULT_SENSITIVE_INTENSIVE = "table_treatment_adult_key_sensitive_intensive";
+  public static final String KEY_TREATMENT_ADULT_SENSITIVE_MAINTENANCE =
+      "table_treatment_adult_key_sensitive_maintenance";
+  public static final String KEY_TREATMENT_ADULT_MR_INDUCTION = "table_treatment_adult_key_mr_induction";
+  public static final String KEY_TREATMENT_ADULT_MR_INTENSIVE = "table_treatment_adult_key_mr_intensive";
+  public static final String KEY_TREATMENT_ADULT_MR_MAINTENANCE = "table_treatment_adult_key_mr_maintenance";
+  public static final String KEY_TREATMENT_ADULT_XR_INDUCTION = "table_treatment_adult_key_xr_induction";
+  public static final String KEY_TREATMENT_ADULT_XR_MAINTENANCE = "table_treatment_adult_key_xr_maintenance";
 
-  public static final String KEY_MMTB_THREE_LINE_2 = "key_mmtb_three_line_2";
+  public static final String KEY_TREATMENT_PEDIATRIC_TABLE = "table_treatment_pediatric_key";
+  public static final String KEY_TREATMENT_PEDIATRIC_SENSITIVE_INTENSIVE =
+      "table_treatment_pediatric_key_sensitive_intensive";
+  public static final String KEY_TREATMENT_PEDIATRIC_SENSITIVE_MAINTENANCE =
+      "table_treatment_pediatric_key_sensitive_maintenance";
+  public static final String KEY_TREATMENT_PEDIATRIC_MR_INDUCTION = "table_treatment_pediatric_key_mr_induction";
+  public static final String KEY_TREATMENT_PEDIATRIC_MR_INTENSIVE = "table_treatment_pediatric_key_mr_intensive";
+  public static final String KEY_TREATMENT_PEDIATRIC_MR_MAINTENANCE = "table_treatment_pediatric_key_mr_maintenance";
+  public static final String KEY_TREATMENT_PEDIATRIC_XR_INDUCTION = "table_treatment_pediatric_key_xr_intensive";
+  public static final String KEY_TREATMENT_PEDIATRIC_XR_MAINTENANCE = "table_treatment_pediatric_key_xr_maintenance";
 
-  public static final String KEY_MMTB_THREE_LINE_3 = "key_mmtb_three_line_3";
+  // pharmacy product table
+  public static final String KEY_PHARMACY_PRODUCT_TABLE = "table_pharmacy_product_key";
+  public static final String KEY_PHARMACY_PRODUCT_ISONIAZIDA_100 = "table_pharmacy_product_key_isoniazida_100_mg";
+  public static final String KEY_PHARMACY_PRODUCT_ISONIAZIDA_300 = "table_pharmacy_product_key_isoniazida_300_mg";
+  public static final String KEY_PHARMACY_PRODUCT_LEVOFLOXACINA_100 = "table_pharmacy_product_key_levofloxacina_100_mg";
+  public static final String KEY_PHARMACY_PRODUCT_LEVOFLOXACINA_250 = "table_pharmacy_product_key_levofloxacina_250_mg";
+  public static final String KEY_PHARMACY_PRODUCT_RIFAPENTINA_300 =
+      "table_pharmacy_product_key_rifapentina_300_mg_isoniazida_300_mg";
+  public static final String KEY_PHARMACY_PRODUCT_RIFAPENTINA_150 = "table_pharmacy_product_key_rifapentina_150_mg";
+  public static final String KEY_PHARMACY_PRODUCT_PIRIDOXINA_25 = "table_pharmacy_product_key_piridoxina_25_mg";
+  public static final String KEY_PHARMACY_PRODUCT_PIRIDOXINA_50 = "table_pharmacy_product_key_piridoxina_50_mg";
+
+  // mmtb age group table
+  public static final String KEY_SERVICE_ADULT = "table_age_group_service_key_adult";
+  public static final String KEY_SERVICE_LESS_THAN_25 = "table_age_group_service_key_child_less_than_25kg";
+  public static final String KEY_SERVICE_MORE_THAN_25 = "table_age_group_service_key_child_more_than_25kg";
+  public static final String KEY_AGE_GROUP_TREATMENT = "table_age_group_header_key_treatment";
+  public static final String KEY_AGE_GROUP_PROPHYLAXIS = "table_age_group_header_key_prophylaxis";
 
   // mmtb new patient table
-  public static final String KEY_MMTB_NEW_PATIENT_TABLE = "key_mmtb_new_patient_table";
+  public static final String KEY_NEW_PATIENT_TABLE = "table_new_patients_key";
+  public static final String KEY_NEW_ADULT_SENSITIVE = "table_new_patients_key_new_adult_sensitive";
+  public static final String KEY_NEW_ADULT_MR = "table_new_patients_key_new_adult_mr";
+  public static final String KEY_NEW_ADULT_XR = "table_new_patients_key_new_adult_xr";
+  public static final String KEY_NEW_CHILD_SENSITIVE = "table_new_patients_key_new_child_sensitive";
+  public static final String KEY_NEW_CHILD_MR = "table_new_patients_key_new_child_mr";
+  public static final String KEY_NEW_CHILD_XR = "table_new_patients_key_new_child_xr";
+  public static final String KEY_NEW_PATIENT_TOTAL = "table_new_patients_key_total";
 
-  public static final String KEY_MMTB_NEW_ADULT_SENSITIVE = "key_mmtb_new_adult_sensitive";
-
-  public static final String KEY_MMTB_NEW_ADULT_MR = "key_mmtb_new_adult_mr";
-
-  public static final String KEY_MMTB_NEW_ADULT_XR = "key_mmtb_new_adult_xr";
-
-  public static final String KEY_MMTB_NEW_CHILD_SENSITIVE = "key_mmtb_new_child_sensitive";
-
-  public static final String KEY_MMTB_NEW_CHILD_MR = "key_mmtb_new_child_mr";
-
-  public static final String KEY_MMTB_NEW_CHILD_XR = "key_mmtb_new_child_xr";
-
-  // mmtb follow-up prophylaxis table
-  public static final String KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE = "key_mmtb_follow_up_prophylaxis_table";
-
-  public static final String KEY_MMTB_START_PHASE = "key_mmtb_start_phase";
-
-  public static final String KEY_MMTB_CONTINUE_PHASE = "key_mmtb_continue_phase";
-
-  public static final String KEY_MMTB_FINAL_PHASE = "key_mmtb_final_phase";
+  // mmtb prophylaxis table
+  public static final String KEY_PROPHYLAXIS_TABLE = "table_prophylaxis_key";
+  public static final String KEY_START_PHASE = "table_prophylaxis_key_initial";
+  public static final String KEY_CONTINUE_PHASE = "table_prophylaxis_key_continuous_maintenance";
+  public static final String KEY_FINAL_PHASE = "table_prophylaxis_key_final_last_dismissal";
+  public static final String KEY_PROPHYLAXIS_TABLE_TOTAL = "table_prophylaxis_key_total";
 
   // mmtb type of dispensation of prophylactics table
-  public static final String KEY_MMTB_TYPE_OF_DISPENSATION_TABLE = "key_mmtb_type_of_dispensation_table";
+  public static final String KEY_TYPE_OF_DISPENSATION_TABLE = "table_prophylactics_key";
+  public static final String KEY_FREQUENCY_MONTHLY = "table_prophylactics_key_monthly";
+  public static final String KEY_FREQUENCY_QUARTERLY = "table_prophylactics_key_trimenstral";
+  public static final String KEY_FREQUENCY_TOTAL = "table_prophylactics_key_total";
 
-  public static final String KEY_MMTB_FREQUENCY_MONTHLY = "key_mmtb_frequency_monthly";
-
-  public static final String KEY_MMTB_FREQUENCY_QUARTERLY = "key_mmtb_frequency_quarterly";
-
-  public static final String KEY_MMTB_FREQUENCY_SIX_MONTHLY = "key_mmtb_frequency_six_monthly";
 }

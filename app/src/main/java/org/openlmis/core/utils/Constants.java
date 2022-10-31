@@ -66,12 +66,12 @@ public final class Constants {
   public static final String AL_PROGRAM_CODE = "ML";
   public static final String RAPID_TEST_PROGRAM_CODE = "TR";
   public static final String MMTB_PROGRAM_CODE = "TB";
-  public static final List<Constants.Program> PROGRAMS = Collections
-      .unmodifiableList(Arrays.asList(Constants.Program.VIA_PROGRAM,
-          Constants.Program.MMIA_PROGRAM,
-          Constants.Program.AL_PROGRAM,
-          Constants.Program.RAPID_TEST_PROGRAM,
-          Constants.Program.RAPID_TEST_PROGRAM));
+  public static final List<Constants.Program> PROGRAMS = Collections.unmodifiableList(Arrays.asList(
+      Program.VIA_PROGRAM,
+      Program.MMIA_PROGRAM,
+      Program.AL_PROGRAM,
+      Program.RAPID_TEST_PROGRAM,
+      Program.MMTB_PROGRAM));
 
   //Don't change these reportTypes codes!!!
   public static final String MMIA_REPORT = "MMIA";
@@ -139,8 +139,8 @@ public final class Constants {
   public static final String PARAM_MOVEMENT_TYPE = "movementType";
   public static final String PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER
       = "confirmGenerateLotNumberMessage";
-  public static final String PARAM_ISSUE_VOUCHER_FORM_ID  = "issueVoucherFormId";
-  public static final String PARAM_ISSUE_VOUCHER_OR_POD  = "issueVoucherOrPod";
+  public static final String PARAM_ISSUE_VOUCHER_FORM_ID = "issueVoucherFormId";
+  public static final String PARAM_ISSUE_VOUCHER_OR_POD = "issueVoucherOrPod";
   public static final String PARAM_POD = "pod";
   public static final String PARAM_ISSUE_VOUCHER = "issueVoucher";
   public static final String PARAM_IS_ELECTRONIC_ISSUE_VOUCHER = "isElectronicIssueVoucher";
@@ -208,7 +208,7 @@ public final class Constants {
 
   public static final int STOCK_CARD_MAX_SYNC_MONTH = 12;
 
-  public static final String  DEFAULT_REASON_FOR_NO_AMOUNT_LOT = "INTERMEDIATE_WAREHOUSE";
+  public static final String DEFAULT_REASON_FOR_NO_AMOUNT_LOT = "INTERMEDIATE_WAREHOUSE";
 
   public static final String SIGLUS_API_ERROR_NOT_ANDROID = "siglusapi.error.notAndroidUser";
 

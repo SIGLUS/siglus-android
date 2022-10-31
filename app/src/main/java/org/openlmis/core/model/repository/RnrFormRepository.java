@@ -642,6 +642,7 @@ public class RnrFormRepository {
 
   private void saveRegimens(RnRForm form) throws LMISException {
     if (MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
+        || MMTB_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
         || AL_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
       regimenItemRepository.batchCreateOrUpdate(form.getRegimenItemListWrapper());
     }

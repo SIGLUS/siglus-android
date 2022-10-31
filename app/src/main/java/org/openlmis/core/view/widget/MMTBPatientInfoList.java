@@ -83,14 +83,14 @@ public class MMTBPatientInfoList extends LinearLayout {
       tableList.add(item);
       tableMap.put(item.getTableName(), tableList);
     }
-    if (tableMap.containsKey(ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE)) {
-      addTableView(tableMap.get(ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE), llNewPatientContainer);
+    if (tableMap.containsKey(ReportConstants.KEY_NEW_PATIENT_TABLE)) {
+      addTableView(tableMap.get(ReportConstants.KEY_NEW_PATIENT_TABLE), llNewPatientContainer);
     }
-    if (tableMap.containsKey(ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE)) {
-      addTableView(tableMap.get(ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE), llProphylaxisPhasesContainer);
+    if (tableMap.containsKey(ReportConstants.KEY_PROPHYLAXIS_TABLE)) {
+      addTableView(tableMap.get(ReportConstants.KEY_PROPHYLAXIS_TABLE), llProphylaxisPhasesContainer);
     }
-    if (tableMap.containsKey(ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE)) {
-      addTableView(tableMap.get(ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE), llDispensationTypeContainer);
+    if (tableMap.containsKey(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE)) {
+      addTableView(tableMap.get(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE), llDispensationTypeContainer);
     }
     if (!editTexts.isEmpty()) {
       editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -126,13 +126,13 @@ public class MMTBPatientInfoList extends LinearLayout {
   }
 
   private int getPosition(int i, String tableName) {
-    if (ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE.equals(tableName)) {
+    if (ReportConstants.KEY_NEW_PATIENT_TABLE.equals(tableName)) {
       return i;
-    } else if (ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE.equals(tableName)) {
-      return i + tableMap.get(ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE).size();
+    } else if (ReportConstants.KEY_PROPHYLAXIS_TABLE.equals(tableName)) {
+      return i + tableMap.get(ReportConstants.KEY_PROPHYLAXIS_TABLE).size();
     } else {
-      return i + tableMap.get(ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE).size()
-          + tableMap.get(ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE).size();
+      return i + tableMap.get(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE).size()
+          + tableMap.get(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE).size();
     }
   }
 
@@ -147,26 +147,24 @@ public class MMTBPatientInfoList extends LinearLayout {
   }
 
   private void initKeyToFieldNameMap() {
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_NEW_ADULT_SENSITIVE,
+    keyToFieldNameMap.put(ReportConstants.KEY_NEW_ADULT_SENSITIVE,
         getContext().getString(R.string.mmtb_new_adult_sensitive));
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_NEW_ADULT_MR, getContext().getString(R.string.mmtb_new_adult_mr));
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_NEW_ADULT_XR, getContext().getString(R.string.mmtb_new_adult_xr));
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_NEW_CHILD_SENSITIVE,
+    keyToFieldNameMap.put(ReportConstants.KEY_NEW_ADULT_MR, getContext().getString(R.string.mmtb_new_adult_mr));
+    keyToFieldNameMap.put(ReportConstants.KEY_NEW_ADULT_XR, getContext().getString(R.string.mmtb_new_adult_xr));
+    keyToFieldNameMap.put(ReportConstants.KEY_NEW_CHILD_SENSITIVE,
         getContext().getString(R.string.mmtb_new_child_sensitive));
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_NEW_CHILD_MR, getContext().getString(R.string.mmtb_new_child_mr));
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_NEW_CHILD_XR, getContext().getString(R.string.mmtb_new_child_xr));
+    keyToFieldNameMap.put(ReportConstants.KEY_NEW_CHILD_MR, getContext().getString(R.string.mmtb_new_child_mr));
+    keyToFieldNameMap.put(ReportConstants.KEY_NEW_CHILD_XR, getContext().getString(R.string.mmtb_new_child_xr));
 
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_START_PHASE, getContext().getString(R.string.mmtb_start_phase));
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_CONTINUE_PHASE,
+    keyToFieldNameMap.put(ReportConstants.KEY_START_PHASE, getContext().getString(R.string.mmtb_start_phase));
+    keyToFieldNameMap.put(ReportConstants.KEY_CONTINUE_PHASE,
         getContext().getString(R.string.mmtb_continue_phase));
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_FINAL_PHASE, getContext().getString(R.string.mmtb_final_phase));
+    keyToFieldNameMap.put(ReportConstants.KEY_FINAL_PHASE, getContext().getString(R.string.mmtb_final_phase));
 
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_FREQUENCY_MONTHLY,
+    keyToFieldNameMap.put(ReportConstants.KEY_FREQUENCY_MONTHLY,
         getContext().getString(R.string.mmtb_frequency_monthly));
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_FREQUENCY_QUARTERLY,
+    keyToFieldNameMap.put(ReportConstants.KEY_FREQUENCY_QUARTERLY,
         getContext().getString(R.string.mmtb_frequency_quarterly));
-    keyToFieldNameMap.put(ReportConstants.KEY_MMTB_FREQUENCY_SIX_MONTHLY,
-        getContext().getString(R.string.mmtb_frequency_six_monthly));
   }
 
   private class EditTextWatcher implements android.text.TextWatcher {
@@ -201,17 +199,17 @@ public class MMTBPatientInfoList extends LinearLayout {
     for (BaseInfoItem infoItem : data) {
       Long itemValue = valueOfString(infoItem.getValue());
       switch (infoItem.getTableName()) {
-        case ReportConstants.KEY_MMTB_NEW_PATIENT_TABLE:
+        case ReportConstants.KEY_NEW_PATIENT_TABLE:
           if (itemValue != null) {
             patientTotal += itemValue;
           }
           break;
-        case ReportConstants.KEY_MMTB_FOLLOW_UP_PROPHYLAXIS_TABLE:
+        case ReportConstants.KEY_PROPHYLAXIS_TABLE:
           if (itemValue != null) {
             prophylaxisPhaseTotal += itemValue;
           }
           break;
-        case ReportConstants.KEY_MMTB_TYPE_OF_DISPENSATION_TABLE:
+        case ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE:
           if (itemValue != null) {
             dispensationTypeTotal += itemValue;
           }

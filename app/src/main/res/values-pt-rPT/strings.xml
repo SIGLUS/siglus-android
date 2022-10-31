@@ -136,7 +136,7 @@
 
   <string name="mmtb_drug_consumption_form_title">Consumos dos Medicamentos Profilácticos</string>
   <string name="mmtb_title_product">Produto</string>
-  <string name="mmtb_title_number_of_pills">N° Compromidos</string>
+  <string name="mmtb_title_number_of_pills">N° Comprimidos</string>
   <string name="mmtb_title_pharmacy_outpatient">PUs e farmácia ambulatório</string>
 
   <string name="mmtb_new_adult_sensitive">Novo Adulto Sensível</string>
@@ -150,7 +150,6 @@
   <string name="mmtb_final_phase">Final/última Dispensa</string>
   <string name="mmtb_frequency_monthly">Mensal</string>
   <string name="mmtb_frequency_quarterly">Trimestral</string>
-  <string name="mmtb_frequency_six_monthly">6-Monthly</string>
 
   <!--VIA Form-->
   <string name="label_via_kit_received">No. de Kits recebidos</string>

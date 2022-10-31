@@ -188,9 +188,9 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
     threeLineList.setData(form.getRegimenThreeLineListWrapper());
     // 3. refresh base info
     patientInfoList.setData(form.getBaseInfoItemListWrapper());
-    // TODO 4. consider how to save treatment phase form and consumption form info.
-    treatmentPhaseInfoList.setData();
-    drugConsumptionInfoList.setData();
+    // 4. consider how to save treatment phase form and consumption form info.
+    treatmentPhaseInfoList.setData(presenter.getTreatmentPhaseData());
+    drugConsumptionInfoList.setData(presenter.getDrugConsumptionData());
     // 5. set comment
     etComment.setText(form.getComments());
     bindListener();

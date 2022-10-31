@@ -18,6 +18,22 @@
 
 package org.openlmis.core.view.widget;
 
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_ADULT_MR_INDUCTION;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_ADULT_MR_INTENSIVE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_ADULT_MR_MAINTENANCE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_ADULT_SENSITIVE_INTENSIVE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_ADULT_SENSITIVE_MAINTENANCE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_ADULT_TABLE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_ADULT_XR_INDUCTION;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_ADULT_XR_MAINTENANCE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_PEDIATRIC_MR_INDUCTION;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_PEDIATRIC_MR_INTENSIVE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_PEDIATRIC_MR_MAINTENANCE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_PEDIATRIC_SENSITIVE_INTENSIVE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_PEDIATRIC_SENSITIVE_MAINTENANCE;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_PEDIATRIC_XR_INDUCTION;
+import static org.openlmis.core.constant.ReportConstants.KEY_TREATMENT_PEDIATRIC_XR_MAINTENANCE;
+
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -30,35 +46,16 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import java.util.Map;
 import org.openlmis.core.R;
+import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.utils.SimpleTextWatcher;
 
 public class MMTBTreatmentPhaseInfoList extends LinearLayout {
 
-  private static final String MOCK_ADULT_CATEGORY = "Adult";
-  private static final String MOCK_PEDIATRIC_CATEGORY = "Pediatric";
-
-  private static final List<TreatmentPhaseItem> mockData = Collections.unmodifiableList(Arrays.asList(
-      new TreatmentPhaseItem("Adult Treatment Phase 1", "", MOCK_ADULT_CATEGORY),
-      new TreatmentPhaseItem("Adult Treatment Phase 2", "", MOCK_ADULT_CATEGORY),
-      new TreatmentPhaseItem("Adult Treatment Phase 3", "", MOCK_ADULT_CATEGORY),
-      new TreatmentPhaseItem("Adult Treatment Phase 4", "", MOCK_ADULT_CATEGORY),
-      new TreatmentPhaseItem("Adult Treatment Phase 5", "", MOCK_ADULT_CATEGORY),
-      new TreatmentPhaseItem("Adult Treatment Phase 6", "", MOCK_ADULT_CATEGORY),
-      new TreatmentPhaseItem("Adult Treatment Phase 7", "", MOCK_ADULT_CATEGORY),
-      new TreatmentPhaseItem("Pediatric Treatment Phase 1", "", MOCK_PEDIATRIC_CATEGORY),
-      new TreatmentPhaseItem("Pediatric Treatment Phase 2", "", MOCK_PEDIATRIC_CATEGORY),
-      new TreatmentPhaseItem("Pediatric Treatment Phase 3", "", MOCK_PEDIATRIC_CATEGORY),
-      new TreatmentPhaseItem("Pediatric Treatment Phase 4", "", MOCK_PEDIATRIC_CATEGORY),
-      new TreatmentPhaseItem("Pediatric Treatment Phase 5", "", MOCK_PEDIATRIC_CATEGORY),
-      new TreatmentPhaseItem("Pediatric Treatment Phase 6", "", MOCK_PEDIATRIC_CATEGORY),
-      new TreatmentPhaseItem("Pediatric Treatment Phase 7", "", MOCK_PEDIATRIC_CATEGORY)
-  ));
-
+  private final Map<String, String> keyToFieldNameMap = new HashMap<>();
   private RotateTextView rtvAdult;
   private RotateTextView rtvPediatric;
   private final LinearLayout llAdultContainer;
@@ -82,6 +79,7 @@ public class MMTBTreatmentPhaseInfoList extends LinearLayout {
     llPediatricContainer = findViewById(R.id.ll_pediatric_container);
     rtvAdult = findViewById(R.id.rtv_adult);
     rtvPediatric = findViewById(R.id.rtv_pediatric);
+    initKeyToFieldNameMap();
   }
 
   public boolean isCompleted() {
@@ -95,19 +93,21 @@ public class MMTBTreatmentPhaseInfoList extends LinearLayout {
     return true;
   }
 
-  public void setData() {
+  public void setData(List<BaseInfoItem> baseInfoItemList) {
     llAdultContainer.removeAllViews();
     llPediatricContainer.removeAllViews();
     editTexts.clear();
-    for (TreatmentPhaseItem phaseItem : mockData) {
+    for (BaseInfoItem baseInfoItem : baseInfoItemList) {
       View itemView = layoutInflater.inflate(R.layout.item_mmtb_requisition_treatment_phase, this, false);
       TextView tvTitle = itemView.findViewById(R.id.tv_title);
-      tvTitle.setText(phaseItem.name);
+      tvTitle.setText(keyToFieldNameMap.get(baseInfoItem.getName()));
       EditText etAmount = itemView.findViewById(R.id.et_treatment_phase_amount);
-      etAmount.setText(phaseItem.value);
-      etAmount.addTextChangedListener(new EditTextWatcher(phaseItem));
+      if (baseInfoItem.getValue() != null) {
+        etAmount.setText(String.valueOf(baseInfoItem.getValue()));
+      }
+      etAmount.addTextChangedListener(new EditTextWatcher(baseInfoItem));
       editTexts.add(etAmount);
-      if (MOCK_ADULT_CATEGORY.equals(phaseItem.category)) {
+      if (KEY_TREATMENT_ADULT_TABLE.equals(baseInfoItem.getTableName())) {
         itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_e5f2ff));
         etAmount.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_blue_no_border));
         llAdultContainer.addView(itemView);
@@ -120,6 +120,24 @@ public class MMTBTreatmentPhaseInfoList extends LinearLayout {
     post(this::updateLeftHeader);
   }
 
+  private void initKeyToFieldNameMap() {
+    keyToFieldNameMap.put(KEY_TREATMENT_ADULT_SENSITIVE_INTENSIVE, "Sensível Intensiva");
+    keyToFieldNameMap.put(KEY_TREATMENT_ADULT_SENSITIVE_MAINTENANCE, "Sensível Manutenção");
+    keyToFieldNameMap.put(KEY_TREATMENT_ADULT_MR_INDUCTION, "MR Indução");
+    keyToFieldNameMap.put(KEY_TREATMENT_ADULT_MR_INTENSIVE, "MR Intensiva");
+    keyToFieldNameMap.put(KEY_TREATMENT_ADULT_MR_MAINTENANCE, "MR Manutenção");
+    keyToFieldNameMap.put(KEY_TREATMENT_ADULT_XR_INDUCTION, "XR Indução");
+    keyToFieldNameMap.put(KEY_TREATMENT_ADULT_XR_MAINTENANCE, "XR Manutenção");
+
+    keyToFieldNameMap.put(KEY_TREATMENT_PEDIATRIC_SENSITIVE_INTENSIVE, "Sensível Intensiva");
+    keyToFieldNameMap.put(KEY_TREATMENT_PEDIATRIC_SENSITIVE_MAINTENANCE, "Sensível Manutenção");
+    keyToFieldNameMap.put(KEY_TREATMENT_PEDIATRIC_MR_INDUCTION, "MR Indução");
+    keyToFieldNameMap.put(KEY_TREATMENT_PEDIATRIC_MR_INTENSIVE, "MR Intensiva");
+    keyToFieldNameMap.put(KEY_TREATMENT_PEDIATRIC_MR_MAINTENANCE, "MR Manutenção");
+    keyToFieldNameMap.put(KEY_TREATMENT_PEDIATRIC_XR_INDUCTION, "XR Intensiva");
+    keyToFieldNameMap.put(KEY_TREATMENT_PEDIATRIC_XR_MAINTENANCE, "XR Manutenção");
+  }
+
   private void updateLeftHeader() {
     LayoutParams adultParams = (LayoutParams) rtvAdult.getLayoutParams();
     adultParams.height = llAdultContainer.getHeight();
@@ -129,31 +147,12 @@ public class MMTBTreatmentPhaseInfoList extends LinearLayout {
     rtvPediatric.setLayoutParams(childrenParams);
   }
 
-  @AllArgsConstructor
-  @Data
-  private static class TreatmentPhaseItem {
+  private static class EditTextWatcher extends SimpleTextWatcher {
 
-    private String name;
-    private String value;
-    private String category;
-  }
+    private final BaseInfoItem item;
 
-  private static class EditTextWatcher implements android.text.TextWatcher {
-
-    private final TreatmentPhaseItem item;
-
-    public EditTextWatcher(TreatmentPhaseItem item) {
+    public EditTextWatcher(BaseInfoItem item) {
       this.item = item;
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      // do nothing
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      // do nothing
     }
 
     @Override

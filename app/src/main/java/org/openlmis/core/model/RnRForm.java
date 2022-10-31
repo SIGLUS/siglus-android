@@ -267,12 +267,11 @@ public class RnRForm extends BaseModel {
     }
   }
 
-  public List<RnrFormItem> getDeactivatedAndUnsupportedProductItems(
-      final List<String> supportedProductCodes) {
-
-    return from(getRnrFormItemListWrapper()).filter(
-        rnrFormItem -> !(rnrFormItem.getProduct().isActive() && supportedProductCodes
-            .contains(rnrFormItem.getProduct().getCode()))).toList();
+  public List<RnrFormItem> getDeactivatedAndUnsupportedProductItems(List<String> supportedProductCodes) {
+    return from(getRnrFormItemListWrapper())
+        .filter(rnrFormItem -> !(rnrFormItem.getProduct().isActive()
+            && supportedProductCodes.contains(rnrFormItem.getProduct().getCode())))
+        .toList();
   }
 
   public List<RnrFormItem> getRnrItems(final Product.IsKit isKit) {
