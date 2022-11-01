@@ -90,28 +90,33 @@ public class MMTBRepository extends RnrFormRepository {
           ReportConstants.KEY_PHARMACY_PRODUCT_TABLE, 20),
       new KeyEntry(ReportConstants.KEY_PHARMACY_PRODUCT_PIRIDOXINA_50,
           ReportConstants.KEY_PHARMACY_PRODUCT_TABLE, 21),
-      // mmtb age group table
-      new KeyEntry(ReportConstants.KEY_SERVICE_ADULT, ReportConstants.KEY_AGE_GROUP_TREATMENT, 22),
-      new KeyEntry(ReportConstants.KEY_SERVICE_LESS_THAN_25, ReportConstants.KEY_AGE_GROUP_TREATMENT, 23),
-      new KeyEntry(ReportConstants.KEY_SERVICE_MORE_THAN_25, ReportConstants.KEY_AGE_GROUP_TREATMENT, 24),
-      new KeyEntry(ReportConstants.KEY_SERVICE_ADULT, ReportConstants.KEY_AGE_GROUP_PROPHYLAXIS, 25),
-      new KeyEntry(ReportConstants.KEY_SERVICE_LESS_THAN_25, ReportConstants.KEY_AGE_GROUP_PROPHYLAXIS, 26),
-      new KeyEntry(ReportConstants.KEY_SERVICE_MORE_THAN_25, ReportConstants.KEY_AGE_GROUP_PROPHYLAXIS, 27),
       // mmtb new patient table
-      new KeyEntry(ReportConstants.KEY_NEW_ADULT_SENSITIVE, ReportConstants.KEY_NEW_PATIENT_TABLE, 28),
-      new KeyEntry(ReportConstants.KEY_NEW_ADULT_MR, ReportConstants.KEY_NEW_PATIENT_TABLE, 29),
-      new KeyEntry(ReportConstants.KEY_NEW_ADULT_XR, ReportConstants.KEY_NEW_PATIENT_TABLE, 30),
-      new KeyEntry(ReportConstants.KEY_NEW_CHILD_SENSITIVE, ReportConstants.KEY_NEW_PATIENT_TABLE, 31),
-      new KeyEntry(ReportConstants.KEY_NEW_CHILD_MR, ReportConstants.KEY_NEW_PATIENT_TABLE, 32),
-      new KeyEntry(ReportConstants.KEY_NEW_CHILD_XR, ReportConstants.KEY_NEW_PATIENT_TABLE, 33),
+      new KeyEntry(ReportConstants.KEY_NEW_ADULT_SENSITIVE, ReportConstants.KEY_NEW_PATIENT_TABLE, 22),
+      new KeyEntry(ReportConstants.KEY_NEW_ADULT_MR, ReportConstants.KEY_NEW_PATIENT_TABLE, 23),
+      new KeyEntry(ReportConstants.KEY_NEW_ADULT_XR, ReportConstants.KEY_NEW_PATIENT_TABLE, 24),
+      new KeyEntry(ReportConstants.KEY_NEW_CHILD_SENSITIVE, ReportConstants.KEY_NEW_PATIENT_TABLE, 25),
+      new KeyEntry(ReportConstants.KEY_NEW_CHILD_MR, ReportConstants.KEY_NEW_PATIENT_TABLE, 26),
+      new KeyEntry(ReportConstants.KEY_NEW_CHILD_XR, ReportConstants.KEY_NEW_PATIENT_TABLE, 27),
+      new KeyEntry(ReportConstants.KEY_NEW_PATIENT_TOTAL, ReportConstants.KEY_NEW_PATIENT_TABLE, 28),
       // mmtb follow-up prophylaxis table
-      new KeyEntry(ReportConstants.KEY_START_PHASE, ReportConstants.KEY_PROPHYLAXIS_TABLE, 34),
-      new KeyEntry(ReportConstants.KEY_CONTINUE_PHASE, ReportConstants.KEY_PROPHYLAXIS_TABLE, 35),
-      new KeyEntry(ReportConstants.KEY_FINAL_PHASE, ReportConstants.KEY_PROPHYLAXIS_TABLE, 36),
+      new KeyEntry(ReportConstants.KEY_START_PHASE, ReportConstants.KEY_PROPHYLAXIS_TABLE, 29),
+      new KeyEntry(ReportConstants.KEY_CONTINUE_PHASE, ReportConstants.KEY_PROPHYLAXIS_TABLE, 30),
+      new KeyEntry(ReportConstants.KEY_FINAL_PHASE, ReportConstants.KEY_PROPHYLAXIS_TABLE, 31),
+      new KeyEntry(ReportConstants.KEY_PROPHYLAXIS_TABLE_TOTAL, ReportConstants.KEY_PROPHYLAXIS_TABLE, 32),
       // mmtb type of dispensation of prophylactics table
-      new KeyEntry(ReportConstants.KEY_FREQUENCY_MONTHLY, ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE, 37),
-      new KeyEntry(ReportConstants.KEY_FREQUENCY_QUARTERLY, ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE, 38)
+      new KeyEntry(ReportConstants.KEY_FREQUENCY_MONTHLY, ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE, 33),
+      new KeyEntry(ReportConstants.KEY_FREQUENCY_QUARTERLY, ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE, 34),
+      new KeyEntry(ReportConstants.KEY_FREQUENCY_TOTAL, ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE, 35)
   ));
+
+  public static int getDisplayOrderByKey(String attrKey) {
+    for (KeyEntry keyEntry : KEY_ENTRIES) {
+      if (keyEntry.attrKey.equals(attrKey)) {
+        return keyEntry.displayOrder;
+      }
+    }
+    return 0;
+  }
 
   @Inject
   public MMTBRepository(Context context) {

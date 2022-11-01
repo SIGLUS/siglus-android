@@ -18,6 +18,10 @@
 
 package org.openlmis.core.view.widget;
 
+import static org.openlmis.core.constant.ReportConstants.KEY_FREQUENCY_TOTAL;
+import static org.openlmis.core.constant.ReportConstants.KEY_NEW_PATIENT_TOTAL;
+import static org.openlmis.core.constant.ReportConstants.KEY_PROPHYLAXIS_TABLE_TOTAL;
+
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -42,7 +46,8 @@ public class MMTBPatientInfoList extends LinearLayout {
 
   private final Map<String, String> keyToFieldNameMap = new HashMap<>();
   private final List<EditText> editTexts = new ArrayList<>();
-  private final Map<String, List<BaseInfoItem>> tableMap = new HashMap<>();
+  private final Map<String, List<BaseInfoItem>> tableNameToShowItemMap = new HashMap<>();
+  private final Map<String, BaseInfoItem> tableNameToTotalItemMap = new HashMap<>();
   private final LinearLayout llNewPatientContainer;
   private final LinearLayout llProphylaxisPhasesContainer;
   private final LinearLayout llDispensationTypeContainer;
@@ -76,21 +81,28 @@ public class MMTBPatientInfoList extends LinearLayout {
   public void setData(List<BaseInfoItem> data) {
     this.data = data;
     editTexts.clear();
-    tableMap.clear();
+    tableNameToShowItemMap.clear();
+    tableNameToTotalItemMap.clear();
     for (BaseInfoItem item : data) {
-      List<BaseInfoItem> baseInfoItems = tableMap.get(item.getTableName());
-      List<BaseInfoItem> tableList = baseInfoItems == null ? new ArrayList<>() : baseInfoItems;
-      tableList.add(item);
-      tableMap.put(item.getTableName(), tableList);
+      if (isTotalItem(item)) {
+        // total base info item
+        tableNameToTotalItemMap.put(item.getName(), item);
+      } else {
+        List<BaseInfoItem> baseInfoItems = tableNameToShowItemMap.get(item.getTableName());
+        List<BaseInfoItem> tableList = baseInfoItems == null ? new ArrayList<>() : baseInfoItems;
+        tableList.add(item);
+        tableNameToShowItemMap.put(item.getTableName(), tableList);
+      }
     }
-    if (tableMap.containsKey(ReportConstants.KEY_NEW_PATIENT_TABLE)) {
-      addTableView(tableMap.get(ReportConstants.KEY_NEW_PATIENT_TABLE), llNewPatientContainer);
+    if (tableNameToShowItemMap.containsKey(ReportConstants.KEY_NEW_PATIENT_TABLE)) {
+      addTableView(tableNameToShowItemMap.get(ReportConstants.KEY_NEW_PATIENT_TABLE), llNewPatientContainer);
     }
-    if (tableMap.containsKey(ReportConstants.KEY_PROPHYLAXIS_TABLE)) {
-      addTableView(tableMap.get(ReportConstants.KEY_PROPHYLAXIS_TABLE), llProphylaxisPhasesContainer);
+    if (tableNameToShowItemMap.containsKey(ReportConstants.KEY_PROPHYLAXIS_TABLE)) {
+      addTableView(tableNameToShowItemMap.get(ReportConstants.KEY_PROPHYLAXIS_TABLE), llProphylaxisPhasesContainer);
     }
-    if (tableMap.containsKey(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE)) {
-      addTableView(tableMap.get(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE), llDispensationTypeContainer);
+    if (tableNameToShowItemMap.containsKey(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE)) {
+      addTableView(tableNameToShowItemMap.get(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE),
+          llDispensationTypeContainer);
     }
     if (!editTexts.isEmpty()) {
       editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -129,10 +141,10 @@ public class MMTBPatientInfoList extends LinearLayout {
     if (ReportConstants.KEY_NEW_PATIENT_TABLE.equals(tableName)) {
       return i;
     } else if (ReportConstants.KEY_PROPHYLAXIS_TABLE.equals(tableName)) {
-      return i + tableMap.get(ReportConstants.KEY_PROPHYLAXIS_TABLE).size();
+      return i + tableNameToShowItemMap.get(ReportConstants.KEY_PROPHYLAXIS_TABLE).size();
     } else {
-      return i + tableMap.get(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE).size()
-          + tableMap.get(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE).size();
+      return i + tableNameToShowItemMap.get(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE).size()
+          + tableNameToShowItemMap.get(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE).size();
     }
   }
 
@@ -157,14 +169,18 @@ public class MMTBPatientInfoList extends LinearLayout {
     keyToFieldNameMap.put(ReportConstants.KEY_NEW_CHILD_XR, getContext().getString(R.string.mmtb_new_child_xr));
 
     keyToFieldNameMap.put(ReportConstants.KEY_START_PHASE, getContext().getString(R.string.mmtb_start_phase));
-    keyToFieldNameMap.put(ReportConstants.KEY_CONTINUE_PHASE,
-        getContext().getString(R.string.mmtb_continue_phase));
+    keyToFieldNameMap.put(ReportConstants.KEY_CONTINUE_PHASE, getContext().getString(R.string.mmtb_continue_phase));
     keyToFieldNameMap.put(ReportConstants.KEY_FINAL_PHASE, getContext().getString(R.string.mmtb_final_phase));
 
     keyToFieldNameMap.put(ReportConstants.KEY_FREQUENCY_MONTHLY,
         getContext().getString(R.string.mmtb_frequency_monthly));
     keyToFieldNameMap.put(ReportConstants.KEY_FREQUENCY_QUARTERLY,
         getContext().getString(R.string.mmtb_frequency_quarterly));
+  }
+
+  private boolean isTotalItem(BaseInfoItem item) {
+    return KEY_NEW_PATIENT_TOTAL.equals(item.getName()) || KEY_PROPHYLAXIS_TABLE_TOTAL.equals(item.getName())
+        || KEY_FREQUENCY_TOTAL.equals(item.getName());
   }
 
   private class EditTextWatcher implements android.text.TextWatcher {
@@ -197,6 +213,9 @@ public class MMTBPatientInfoList extends LinearLayout {
     long prophylaxisPhaseTotal = 0;
     long dispensationTypeTotal = 0;
     for (BaseInfoItem infoItem : data) {
+      if (isTotalItem(infoItem)) {
+        continue;
+      }
       Long itemValue = valueOfString(infoItem.getValue());
       switch (infoItem.getTableName()) {
         case ReportConstants.KEY_NEW_PATIENT_TABLE:
@@ -218,9 +237,22 @@ public class MMTBPatientInfoList extends LinearLayout {
           break;
       }
     }
-    tvPatientTotal.setText(String.valueOf(patientTotal));
-    tvProphylaxisPhaseTotal.setText(String.valueOf(prophylaxisPhaseTotal));
-    tvDispensationTypeTotal.setText(String.valueOf(dispensationTypeTotal));
+    String patientTotalValue = String.valueOf(patientTotal);
+    tvPatientTotal.setText(patientTotalValue);
+    setValue(tableNameToTotalItemMap.get(KEY_NEW_PATIENT_TOTAL), patientTotalValue);
+    String prophylaxisTotal = String.valueOf(prophylaxisPhaseTotal);
+    tvProphylaxisPhaseTotal.setText(prophylaxisTotal);
+    setValue(tableNameToTotalItemMap.get(KEY_PROPHYLAXIS_TABLE_TOTAL), prophylaxisTotal);
+    String dispensationTotal = String.valueOf(dispensationTypeTotal);
+    tvDispensationTypeTotal.setText(dispensationTotal);
+    setValue(tableNameToTotalItemMap.get(KEY_FREQUENCY_TOTAL), dispensationTotal);
+  }
+
+  private void setValue(BaseInfoItem infoItem, String value) {
+    if (infoItem == null) {
+      return;
+    }
+    infoItem.setValue(value);
   }
 
   private Long valueOfString(String value) {
