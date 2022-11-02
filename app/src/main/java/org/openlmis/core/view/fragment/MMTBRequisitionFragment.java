@@ -209,12 +209,14 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
       rnrFormItem.setInventory(0L);
     }
     for (BaseInfoItem baseInfoItem : rnRForm.getBaseInfoItemListWrapper()) {
-      baseInfoItem.setValue("0");
+      baseInfoItem.setValue("2");
     }
     for (RegimenItemThreeLines lines : rnRForm.getRegimenThreeLineListWrapper()) {
-      lines.setPatientsAmount(0L);
-      lines.setPharmacyAmount(0L);
+      lines.setPatientsAmount(2L);
+      lines.setPharmacyAmount(2L);
     }
+    treatmentPhaseInfoList.setData(presenter.getTreatmentPhaseData());
+    drugConsumptionInfoList.setData(presenter.getDrugConsumptionData());
     rnrFormList.setData(rnRForm.getRnrFormItemListWrapper());
     threeLineList.setData(rnRForm.getRegimenThreeLineListWrapper());
     patientInfoList.setData(rnRForm.getBaseInfoItemListWrapper());
