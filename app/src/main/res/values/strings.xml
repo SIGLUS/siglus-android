@@ -140,12 +140,12 @@
   <string name="mmtb_title_number_of_pills">Number of Pills</string>
   <string name="mmtb_title_pharmacy_outpatient">PUs and Pharmacy Outpatient</string>
 
-  <string name="mmtb_new_adult_sensitive">New Sensitive Adult</string>
+  <string name="mmtb_new_adult_sensitive">New Adult Sensitive</string>
   <string name="mmtb_new_adult_mr">New Adult MR</string>
   <string name="mmtb_new_adult_xr">New Adult XR</string>
-  <string name="mmtb_new_child_sensitive">New Sensitive Child</string>
-  <string name="mmtb_new_child_mr">New child MR</string>
-  <string name="mmtb_new_child_xr">New child XR</string>
+  <string name="mmtb_new_child_sensitive">New Child Sensitive</string>
+  <string name="mmtb_new_child_mr">New Child MR</string>
+  <string name="mmtb_new_child_xr">New Child XR</string>
   <string name="mmtb_start_phase">Start</string>
   <string name="mmtb_continue_phase">Continues/Maintenance</string>
   <string name="mmtb_final_phase">Final/Last Dispensation</string>

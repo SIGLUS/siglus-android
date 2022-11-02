@@ -142,9 +142,9 @@
   <string name="mmtb_new_adult_sensitive">Novo Adulto Sensível</string>
   <string name="mmtb_new_adult_mr">Novo Adulto MR</string>
   <string name="mmtb_new_adult_xr">Novo Adulto XR</string>
-  <string name="mmtb_new_child_sensitive">Novo criança Sensível</string>
-  <string name="mmtb_new_child_mr">Novo criança MR</string>
-  <string name="mmtb_new_child_xr">Novo criança XR</string>
+  <string name="mmtb_new_child_sensitive">Novo Criança Sensível</string>
+  <string name="mmtb_new_child_mr">Novo Criança MR</string>
+  <string name="mmtb_new_child_xr">Novo Criança XR</string>
   <string name="mmtb_start_phase">início</string>
   <string name="mmtb_continue_phase">Continua/Manutenção</string>
   <string name="mmtb_final_phase">Final/última Dispensa</string>
