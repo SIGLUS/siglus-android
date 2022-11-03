@@ -88,6 +88,10 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     return true;
   }
 
+  public ActivityResultCallback<ActivityResult> getAddProductsResultCallback() {
+    return addProductsResultCallback;
+  }
+
   public SingleClickButtonListener goToAddNonBasicProductsLister() {
     return new SingleClickButtonListener() {
       @Override
@@ -265,10 +269,5 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
               && inventoryViewModel.getViewType() != BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER)
           .toList().size();
     }
-  }
-
-  //Getter for Test
-  public ActivityResultCallback<ActivityResult> getAddProductsResultCallback() {
-    return addProductsResultCallback;
   }
 }

@@ -114,6 +114,10 @@ public class ReportListFragment extends BaseReportListFragment {
         }
       });
 
+  public ActivityResultCallback<ActivityResult> getCreateRequisitionCallback() {
+    return createRequisitionCallback;
+  }
+
   public static ReportListFragment newInstance(String programCode) {
     final ReportListFragment reportListFragment = new ReportListFragment();
     final Bundle params = new Bundle();
@@ -292,8 +296,4 @@ public class ReportListFragment extends BaseReportListFragment {
     }
   };
 
-  //Getter for ReportListActivity
-  public ActivityResultCallback<ActivityResult> getCreateRequisitionCallback() {
-    return createRequisitionCallback;
-  }
 }

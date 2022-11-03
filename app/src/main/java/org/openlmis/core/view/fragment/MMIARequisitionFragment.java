@@ -157,6 +157,14 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
   private final ActivityResultLauncher<Intent> addRegimenProductLauncher = registerForActivityResult(
       new StartActivityForResult(), addRegimenProductCallback);
 
+  public ActivityResultCallback<ActivityResult> getAddRegimenProductCallback() {
+    return addRegimenProductCallback;
+  }
+
+  public ActivityResultLauncher<Intent> getAddRegimenProductLauncher() {
+    return addRegimenProductLauncher;
+  }
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -164,12 +172,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     formId = requireActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
     periodEndDate = ((Date) requireActivity().getIntent()
         .getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
-  }
-
-  @Override
-  protected BaseReportPresenter injectPresenter() {
-    presenter = RoboGuice.getInjector(requireActivity()).getInstance(MMIARequisitionPresenter.class);
-    return presenter;
   }
 
   @Override
@@ -200,6 +202,12 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
   public void onDestroyView() {
     rnrFormList.removeListenerOnDestroyView();
     super.onDestroyView();
+  }
+
+  @Override
+  protected BaseReportPresenter injectPresenter() {
+    presenter = RoboGuice.getInjector(requireActivity()).getInstance(MMIARequisitionPresenter.class);
+    return presenter;
   }
 
   protected void initUI() {
@@ -536,15 +544,4 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     etTotalPatient.setText(String.valueOf(DEFAULT_AMOUNT));
     etTotalMonth.setText(String.valueOf(DEFAULT_AMOUNT));
   }
-
-  //Getter for Test
-  public ActivityResultCallback<ActivityResult> getAddRegimenProductCallback() {
-    return addRegimenProductCallback;
-  }
-
-  //Getter for MMIARegimeList
-  public ActivityResultLauncher<Intent> getAddRegimenProductLauncher() {
-    return addRegimenProductLauncher;
-  }
-
 }
