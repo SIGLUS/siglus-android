@@ -199,21 +199,24 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
   @VisibleForTesting
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveMMTBRequisitionEvent(DebugMMTBRequisitionEvent event) {
+    final long mmtbProductNum = event.getMmtbProductNum();
+    final long mmtbPatientInfoNum = event.getMmtbPatientInfoNum();
+    final long mmtbThreeLineNum = event.getMmtbThreeLineNum();
     RnRForm rnRForm = presenter.getRnRForm();
     for (RnrFormItem rnrFormItem : rnRForm.getRnrFormItemListWrapper()) {
       if (Boolean.TRUE.equals(rnrFormItem.getIsCustomAmount())) {
-        rnrFormItem.setInitialAmount(0L);
+        rnrFormItem.setInitialAmount(mmtbProductNum);
       }
-      rnrFormItem.setIssued(0L);
-      rnrFormItem.setAdjustment(0L);
-      rnrFormItem.setInventory(0L);
+      rnrFormItem.setIssued(mmtbProductNum);
+      rnrFormItem.setAdjustment(mmtbProductNum);
+      rnrFormItem.setInventory(mmtbProductNum);
     }
     for (BaseInfoItem baseInfoItem : rnRForm.getBaseInfoItemListWrapper()) {
-      baseInfoItem.setValue("2");
+      baseInfoItem.setValue(String.valueOf(mmtbPatientInfoNum));
     }
     for (RegimenItemThreeLines lines : rnRForm.getRegimenThreeLineListWrapper()) {
-      lines.setPatientsAmount(2L);
-      lines.setPharmacyAmount(2L);
+      lines.setPatientsAmount(mmtbThreeLineNum);
+      lines.setPharmacyAmount(mmtbThreeLineNum);
     }
     treatmentPhaseInfoList.setData(presenter.getTreatmentPhaseData());
     drugConsumptionInfoList.setData(presenter.getDrugConsumptionData());

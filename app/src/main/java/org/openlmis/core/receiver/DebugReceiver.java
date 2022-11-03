@@ -33,27 +33,24 @@ import org.openlmis.core.event.DebugMalariaRequisitionEvent;
 import org.openlmis.core.event.DebugPhysicalInventoryEvent;
 
 /**
- * <p>1. quickly complete initial inventory:
+ * 1. quickly complete initial inventory:
  * eg: adb shell am broadcast -a org.openlmis.core.debug.initial_inventory
  * [--ei basicProduct 10 --ei nonBasicProduct 10 --ei lotPerProduct 10]
- *
- * basicProduct: the basic product amount which need add lot.
- * nonBasicProduct: the non basic product amount which need add lot.
- * lotPerProduct: lot amount per product
+ * - basicProduct: the basic product amount which need add lot.
+ * - nonBasicProduct: the non basic product amount which need add lot.
+ * - lotPerProduct: lot amount per product
  *
  * <p>2. quickly complete physical inventory:
  * eg: adb shell am broadcast -a org.openlmis.core.debug.physical_inventory
  *
  * <p>3. quickly complete mmtb requisition:
  * eg: adb shell am broadcast -a org.openlmis.core.debug.mmtb_requisition [--ei num 10]
- *
- * num: fulfill amount
+ * - num: fulfill amount
  *
  * <p>4. quickly complete mmia requisition:
  * eg: adb shell am broadcast -a org.openlmis.core.debug.mmia_requisition
  * [--ei product 10 --ei regime 10 --ei threeLine 10 --ei patientInfo 10 --ei total 10]
- *
- * num: fulfill amount
+ * - num: fulfill amount
  */
 public class DebugReceiver extends BroadcastReceiver {
   private static final String TAG = "DebugReceiver";
@@ -63,8 +60,11 @@ public class DebugReceiver extends BroadcastReceiver {
   private static final String PARAM_LOT_AMOUNT_PER_PRODUCT = "lotPerProduct";
 
   private static final String ACTION_PHYSICAL_INVENTORY = "org.openlmis.core.debug.physical_inventory";
+
   private static final String ACTION_REQUISITION_MMTB = "org.openlmis.core.debug.mmtb_requisition";
-  private static final String PARAM_MMTB_FULFILL_NUM = "num";
+  private static final String PARAM_MMTB_PRODUCT_NUM = "product";
+  private static final String PARAM_MMTB_PATIENT_INFO_NUM = "patientInfo";
+  private static final String PARAM_MMTB_THREE_LINE_NUM = "threeLine";
 
   private static final String ACTION_REQUISITION_MMIA = "org.openlmis.core.debug.mmia_requisition";
   private static final String PARAM_MMIA_PRODUCT_NUM = "product";
@@ -90,7 +90,7 @@ public class DebugReceiver extends BroadcastReceiver {
 
   @Override
   public void onReceive(Context context, Intent intent) {
-    int DEFAULT_NUM = 0;
+    final int DEFAULT_NUM = 0;
     switch (intent.getAction()) {
       case ACTION_INITIAL_INVENTORY:
         Log.d(TAG, ACTION_INITIAL_INVENTORY);
@@ -105,7 +105,11 @@ public class DebugReceiver extends BroadcastReceiver {
         break;
       case ACTION_REQUISITION_MMTB:
         Log.d(TAG, ACTION_REQUISITION_MMTB);
-        EventBus.getDefault().post(new DebugMMTBRequisitionEvent());
+        long mmtbProductNum = intent.getIntExtra(PARAM_MMTB_PRODUCT_NUM, DEFAULT_NUM);
+        long mmtbPatientInfoNum = intent.getIntExtra(PARAM_MMTB_PATIENT_INFO_NUM, DEFAULT_NUM);
+        long mmtbThreeLineNum = intent.getIntExtra(PARAM_MMTB_THREE_LINE_NUM, DEFAULT_NUM);
+        EventBus.getDefault().post(new DebugMMTBRequisitionEvent(mmtbProductNum,
+            mmtbPatientInfoNum, mmtbThreeLineNum));
         break;
       case ACTION_REQUISITION_MMIA:
         Log.d(TAG, ACTION_REQUISITION_MMIA);
