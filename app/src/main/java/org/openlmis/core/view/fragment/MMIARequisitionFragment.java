@@ -510,38 +510,42 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
   @VisibleForTesting
   @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveDebugFullfillMMIAReq(DebugMMIARequisitionEvent event) {
-    final long DEFAULT_AMOUNT = 2;
+  public void onReceiveDebugFulfillMMIAReq(DebugMMIARequisitionEvent event) {
+    final long mmiaProductNum = event.getMmiaProductNum();
+    final long mmiaRegimeNum = event.getMmiaRegimeNum();
+    final long mmiaThreeLineNum = event.getMmiaThreeLineNum();
+    final long mmiaPatientInfoNum = event.getMmiaPatientInfoNum();
+    final long mmiaTotal = event.getMmiaTotal();
     RnRForm form = presenter.getRnRForm();
 
     rnrFormList.removeOriginalTable();
     for (RnrFormItem formItem : form.getRnrFormItemListWrapper()) {
-      formItem.setIssued(DEFAULT_AMOUNT);
-      formItem.setAdjustment(DEFAULT_AMOUNT);
-      formItem.setInventory(DEFAULT_AMOUNT);
+      formItem.setIssued(mmiaProductNum);
+      formItem.setAdjustment(mmiaProductNum);
+      formItem.setInventory(mmiaProductNum);
     }
 
     regimeWrap.removeOriginalTable();
     for (RegimenItem regimenItem : form.getRegimenItemListWrapper()) {
-      regimenItem.setAmount(DEFAULT_AMOUNT);
-      regimenItem.setPharmacy(DEFAULT_AMOUNT);
+      regimenItem.setAmount(mmiaRegimeNum);
+      regimenItem.setPharmacy(mmiaRegimeNum);
     }
 
     mmiaRegimeThreeLineListView.removeOriginalTable();
     for (RegimenItemThreeLines regimenItemThreeLines : form.getRegimenThreeLineListWrapper()) {
-      regimenItemThreeLines.setPatientsAmount(DEFAULT_AMOUNT);
-      regimenItemThreeLines.setPharmacyAmount(DEFAULT_AMOUNT);
+      regimenItemThreeLines.setPatientsAmount(mmiaThreeLineNum);
+      regimenItemThreeLines.setPharmacyAmount(mmiaThreeLineNum);
     }
 
     mmiaPatientInfoListView.removeOriginalTable();
     mmiaDispensedInfoList.removeOriginalTable();
     for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
-      item.setValue(String.valueOf(DEFAULT_AMOUNT));
+      item.setValue(String.valueOf(mmiaPatientInfoNum));
     }
 
     refreshRequisitionForm(form);
 
-    etTotalPatient.setText(String.valueOf(DEFAULT_AMOUNT));
-    etTotalMonth.setText(String.valueOf(DEFAULT_AMOUNT));
+    etTotalPatient.setText(String.valueOf(mmiaTotal));
+    etTotalMonth.setText(String.valueOf(mmiaTotal));
   }
 }

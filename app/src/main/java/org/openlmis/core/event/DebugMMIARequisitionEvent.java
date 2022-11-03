@@ -18,7 +18,17 @@
 
 package org.openlmis.core.event;
 
-@SuppressWarnings("squid:S2094")
-public class DebugMMIARequisitionEvent {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.ToString;
 
+@AllArgsConstructor
+@ToString
+@Data
+public class DebugMMIARequisitionEvent {
+  long mmiaProductNum;
+  long mmiaRegimeNum;
+  long mmiaThreeLineNum;
+  long mmiaPatientInfoNum;
+  long mmiaTotal;
 }

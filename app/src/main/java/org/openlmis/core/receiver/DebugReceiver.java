@@ -29,34 +29,51 @@ import org.openlmis.core.R;
 import org.openlmis.core.event.DebugInitialInventoryEvent;
 import org.openlmis.core.event.DebugMMIARequisitionEvent;
 import org.openlmis.core.event.DebugMMTBRequisitionEvent;
+import org.openlmis.core.event.DebugMalariaRequisitionEvent;
 import org.openlmis.core.event.DebugPhysicalInventoryEvent;
 
 /**
- * 1. quickly complete initial inventory:
+ * <p>1. quickly complete initial inventory:
  * eg: adb shell am broadcast -a org.openlmis.core.debug.initial_inventory
- * --ei basicProduct 10 --ei nonBasicProduct 10 --ei lotPerProduct 10
+ * [--ei basicProduct 10 --ei nonBasicProduct 10 --ei lotPerProduct 10]
  *
- * <p>basicProduct: the basic product amount which need add lot.
- * nonBasicProduct: the non basic product amount which need add lot. lotPerProduct: lot amount per product
+ * basicProduct: the basic product amount which need add lot.
+ * nonBasicProduct: the non basic product amount which need add lot.
+ * lotPerProduct: lot amount per product
  *
  * <p>2. quickly complete physical inventory:
  * eg: adb shell am broadcast -a org.openlmis.core.debug.physical_inventory
  *
  * <p>3. quickly complete mmtb requisition:
- * eg: adb shell am broadcast -a org.openlmis.core.debug.mmtb_requisition
+ * eg: adb shell am broadcast -a org.openlmis.core.debug.mmtb_requisition [--ei num 10]
+ *
+ * num: fulfill amount
  *
  * <p>4. quickly complete mmia requisition:
  * eg: adb shell am broadcast -a org.openlmis.core.debug.mmia_requisition
+ * [--ei product 10 --ei regime 10 --ei threeLine 10 --ei patientInfo 10 --ei total 10]
+ *
+ * num: fulfill amount
  */
 public class DebugReceiver extends BroadcastReceiver {
+  private static final String TAG = "DebugReceiver";
   private static final String ACTION_INITIAL_INVENTORY = "org.openlmis.core.debug.initial_inventory";
-  private static final String ACTION_PHYSICAL_INVENTORY = "org.openlmis.core.debug.physical_inventory";
-  private static final String ACTION_REQUISITION_MMTB = "org.openlmis.core.debug.mmtb_requisition";
-  private static final String ACTION_FULLFILL_MMIA_REQUISITION = "org.openlmis.core.debug.mmia_requisition";
   private static final String PARAM_BASIC_PRODUCT_AVAILABLE = "basicProduct";
   private static final String PARAM_NON_BASIC_PRODUCT_AVAILABLE = "nonBasicProduct";
   private static final String PARAM_LOT_AMOUNT_PER_PRODUCT = "lotPerProduct";
-  private static final String TAG = "DebugReceiver";
+
+  private static final String ACTION_PHYSICAL_INVENTORY = "org.openlmis.core.debug.physical_inventory";
+  private static final String ACTION_REQUISITION_MMTB = "org.openlmis.core.debug.mmtb_requisition";
+  private static final String PARAM_MMTB_FULFILL_NUM = "num";
+
+  private static final String ACTION_REQUISITION_MMIA = "org.openlmis.core.debug.mmia_requisition";
+  private static final String PARAM_MMIA_PRODUCT_NUM = "product";
+  private static final String PARAM_MMIA_REGIME_NUM = "regime";
+  private static final String PARAM_MMIA_THREE_LINE_NUM = "threeLine";
+  private static final String PARAM_MMIA_PATIENT_INFO_NUM = "patientInfo";
+  private static final String PARAM_MMIA_TOTAL_NUM = "total";
+
+  private static final String ACTION_REQUISITION_MALARIA = "org.openlmis.core.debug.malaria_requisition";
 
   public static void registerDebugBoardCastReceiver(Context context) {
     if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_debug)) {
@@ -66,20 +83,21 @@ public class DebugReceiver extends BroadcastReceiver {
     filter.addAction(ACTION_INITIAL_INVENTORY);
     filter.addAction(ACTION_PHYSICAL_INVENTORY);
     filter.addAction(ACTION_REQUISITION_MMTB);
-    filter.addAction(ACTION_FULLFILL_MMIA_REQUISITION);
+    filter.addAction(ACTION_REQUISITION_MMIA);
+    filter.addAction(ACTION_REQUISITION_MALARIA);
     context.registerReceiver(new DebugReceiver(), filter);
   }
 
   @Override
   public void onReceive(Context context, Intent intent) {
+    int DEFAULT_NUM = 0;
     switch (intent.getAction()) {
       case ACTION_INITIAL_INVENTORY:
-        int basicProduct = intent.getIntExtra(PARAM_BASIC_PRODUCT_AVAILABLE, 0);
-        int nonBasicProduct = intent.getIntExtra(PARAM_NON_BASIC_PRODUCT_AVAILABLE, 0);
-        int lotPerProduct = intent.getIntExtra(PARAM_LOT_AMOUNT_PER_PRODUCT, 0);
-        DebugInitialInventoryEvent event = new DebugInitialInventoryEvent(basicProduct, nonBasicProduct, lotPerProduct);
-        Log.d(TAG, event.toString());
-        EventBus.getDefault().post(event);
+        Log.d(TAG, ACTION_INITIAL_INVENTORY);
+        int basicProduct = intent.getIntExtra(PARAM_BASIC_PRODUCT_AVAILABLE, (int) DEFAULT_NUM);
+        int nonBasicProduct = intent.getIntExtra(PARAM_NON_BASIC_PRODUCT_AVAILABLE, (int) DEFAULT_NUM);
+        int lotPerProduct = intent.getIntExtra(PARAM_LOT_AMOUNT_PER_PRODUCT, (int) DEFAULT_NUM);
+        EventBus.getDefault().post(new DebugInitialInventoryEvent(basicProduct, nonBasicProduct, lotPerProduct));
         break;
       case ACTION_PHYSICAL_INVENTORY:
         Log.d(TAG, ACTION_PHYSICAL_INVENTORY);
@@ -89,9 +107,19 @@ public class DebugReceiver extends BroadcastReceiver {
         Log.d(TAG, ACTION_REQUISITION_MMTB);
         EventBus.getDefault().post(new DebugMMTBRequisitionEvent());
         break;
-      case ACTION_FULLFILL_MMIA_REQUISITION:
-        Log.d(TAG, ACTION_FULLFILL_MMIA_REQUISITION);
-        EventBus.getDefault().post(new DebugMMIARequisitionEvent());
+      case ACTION_REQUISITION_MMIA:
+        Log.d(TAG, ACTION_REQUISITION_MMIA);
+        long mmiaProductNum = intent.getIntExtra(PARAM_MMIA_PRODUCT_NUM, DEFAULT_NUM);
+        long mmiaRegimeNum = intent.getIntExtra(PARAM_MMIA_REGIME_NUM, DEFAULT_NUM);
+        long mmiaThreeLineNum = intent.getIntExtra(PARAM_MMIA_THREE_LINE_NUM, DEFAULT_NUM);
+        long mmiaPatientInfoNum = intent.getIntExtra(PARAM_MMIA_PATIENT_INFO_NUM, DEFAULT_NUM);
+        long mmiaTotal = intent.getIntExtra(PARAM_MMIA_TOTAL_NUM, DEFAULT_NUM);
+        EventBus.getDefault().post(new DebugMMIARequisitionEvent(mmiaProductNum,
+            mmiaRegimeNum, mmiaThreeLineNum, mmiaPatientInfoNum, mmiaTotal));
+        break;
+      case ACTION_REQUISITION_MALARIA:
+        Log.d(TAG, ACTION_REQUISITION_MALARIA);
+        EventBus.getDefault().post(new DebugMalariaRequisitionEvent());
         break;
       default:
         // do nothing
