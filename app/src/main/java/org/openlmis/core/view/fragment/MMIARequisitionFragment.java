@@ -510,7 +510,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
   @VisibleForTesting
   @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveDebugFulfillMMIAReq(DebugMMIARequisitionEvent event) {
+  public void onReceiveMMIARequisitionEvent(DebugMMIARequisitionEvent event) {
     final long mmiaProductNum = event.getMmiaProductNum();
     final long mmiaRegimeNum = event.getMmiaRegimeNum();
     final long mmiaThreeLineNum = event.getMmiaThreeLineNum();

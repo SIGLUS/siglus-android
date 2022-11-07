@@ -44,13 +44,26 @@ import org.openlmis.core.event.DebugPhysicalInventoryEvent;
  * eg: adb shell am broadcast -a org.openlmis.core.debug.physical_inventory
  *
  * <p>3. quickly complete mmtb requisition:
- * eg: adb shell am broadcast -a org.openlmis.core.debug.mmtb_requisition [--ei num 10]
- * - num: fulfill amount
+ * eg: adb shell am broadcast -a org.openlmis.core.debug.mmtb_requisition
+ * [--ei product 10 --ei patientInfo 10 --ei threeLine 10]
+ * - product: each product amount in product list
+ * - patientInfo: amount of regime product & patient info list
+ * - threeLine: amount of age groups
  *
  * <p>4. quickly complete mmia requisition:
  * eg: adb shell am broadcast -a org.openlmis.core.debug.mmia_requisition
  * [--ei product 10 --ei regime 10 --ei threeLine 10 --ei patientInfo 10 --ei total 10]
- * - num: fulfill amount
+ * - product: each product amount in product list
+ * - regime: each product amount in regime list
+ * - threeLine: amount of Therapeutic lines
+ * - patientInfo: amount of patient info list
+ * - total: amount of HF & Therapy
+ *
+ *  <p>5. quickly complete malaria requisition:
+ *  eg: adb shell am broadcast -a org.openlmis.core.debug.malaria_requisition
+ *  [--ei hf 10 --ei chw 10]
+ *  - hf: amount of HF, both treatments and existent stock
+ *  - chw: amount of CHW, both treatments and existent stock
  */
 public class DebugReceiver extends BroadcastReceiver {
   private static final String TAG = "DebugReceiver";
@@ -74,6 +87,8 @@ public class DebugReceiver extends BroadcastReceiver {
   private static final String PARAM_MMIA_TOTAL_NUM = "total";
 
   private static final String ACTION_REQUISITION_MALARIA = "org.openlmis.core.debug.malaria_requisition";
+  private static final String PARAM_MALARIA_HF_NUM = "hf";
+  private static final String PARAM_MALARIA_CHW_NUM = "chw";
 
   public static void registerDebugBoardCastReceiver(Context context) {
     if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_debug)) {
@@ -123,7 +138,9 @@ public class DebugReceiver extends BroadcastReceiver {
         break;
       case ACTION_REQUISITION_MALARIA:
         Log.d(TAG, ACTION_REQUISITION_MALARIA);
-        EventBus.getDefault().post(new DebugMalariaRequisitionEvent());
+        long malariaHfNum = intent.getIntExtra(PARAM_MALARIA_HF_NUM, DEFAULT_NUM);
+        long malariaChwNum = intent.getIntExtra(PARAM_MALARIA_CHW_NUM, DEFAULT_NUM);
+        EventBus.getDefault().post(new DebugMalariaRequisitionEvent(malariaHfNum, malariaChwNum));
         break;
       default:
         // do nothing

@@ -31,7 +31,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.Date;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
+import org.openlmis.core.event.DebugMalariaRequisitionEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
@@ -42,6 +46,9 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.ALReportAdapter;
 import org.openlmis.core.view.holder.ALReportViewHolder;
+import org.openlmis.core.view.viewmodel.ALGridViewModel;
+import org.openlmis.core.view.viewmodel.ALReportItemViewModel;
+import org.openlmis.core.view.viewmodel.ALReportViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -49,6 +56,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 
+@BindEventBus
 public class ALRequisitionFragment extends BaseReportFragment implements
     ALRequisitionPresenter.ALRequisitionView {
 
@@ -277,5 +285,32 @@ public class ALRequisitionFragment extends BaseReportFragment implements
       presenter.getAlReportViewModel().updateTotal(columnCode, gridColumnCode);
       adapter.updateTotal();
     };
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveMalariaRequisitionEvent(DebugMalariaRequisitionEvent event) {
+    Log.d(TAG, "onReceiveMalariaRequisitionEvent: Malaria");
+    final long malariaHfNum = event.getMalariaHfNum();
+    final long malariaChwNum = event.getMalariaChwNum();
+    final long malariaTotalNum = malariaHfNum + malariaChwNum;
+
+    final ALReportViewModel alReportViewModel = presenter.getAlReportViewModel();
+
+    final ALReportItemViewModel itemHfViewModel = alReportViewModel.getItemHF();
+    for (ALGridViewModel model : itemHfViewModel.getAlGridViewModelList()) {
+      model.autoFillValue(malariaHfNum);
+    }
+
+    final ALReportItemViewModel itemChwViewModel = alReportViewModel.getItemCHW();
+    for (ALGridViewModel model : itemChwViewModel.getAlGridViewModelList()) {
+      model.autoFillValue(malariaChwNum);
+    }
+
+    final ALReportItemViewModel itemTotalViewModel = alReportViewModel.getItemTotal();
+    for (ALGridViewModel model : itemTotalViewModel.getAlGridViewModelList()) {
+      model.autoFillValue(malariaTotalNum);
+    }
+
+    adapter.refresh(alReportViewModel);
   }
 }

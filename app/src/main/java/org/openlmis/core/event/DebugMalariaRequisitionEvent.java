@@ -18,7 +18,14 @@
 
 package org.openlmis.core.event;
 
-@SuppressWarnings("squid:S2094")
-public class DebugMalariaRequisitionEvent {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.ToString;
 
+@AllArgsConstructor
+@ToString
+@Data
+public class DebugMalariaRequisitionEvent {
+  long malariaHfNum;
+  long malariaChwNum;
 }
