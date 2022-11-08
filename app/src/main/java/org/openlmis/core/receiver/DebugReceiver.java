@@ -60,18 +60,18 @@ import org.openlmis.core.event.DebugPhysicalInventoryEvent;
  * - patientInfo: amount of patient info list
  * - total: amount of HF & Therapy
  *
- *  <p>5. quickly complete malaria requisition:
- *  eg: adb shell am broadcast -a org.openlmis.core.debug.malaria_requisition
- *  [--ei hf 10 --ei chw 10]
- *  - hf: amount of HF, both treatments and existent stock
- *  - chw: amount of CHW, both treatments and existent stock
+ * <p>5. quickly complete malaria requisition:
+ * eg: adb shell am broadcast -a org.openlmis.core.debug.malaria_requisition
+ * [--ei hf 10 --ei chw 10]
+ * - hf: amount of HF, both treatments and existent stock
+ * - chw: amount of CHW, both treatments and existent stock
  *
- *  <p>6. quickly complete mmit requisition:
- *  eg: adb shell am broadcast -a org.openlmis.core.debug.mmit_requisition
- *  [--ei product 10 --ei report 10 --ei ape 10]
- *  - product: each product amount in top list
- *  - report: each report number in report list (HIV Detemine, HIV Unigold, Syphillis, Malaria)
- *  - ape: each APE number in report list (HIV Detemine, HIV Unigold, Syphillis, Malaria)
+ * <p>6. quickly complete mmit requisition:
+ * eg: adb shell am broadcast -a org.openlmis.core.debug.mmit_requisition
+ * [--ei product 10 --ei report 10 --ei ape 10]
+ * - product: each product amount in top list
+ * - report: each report number in report list (HIV Detemine, HIV Unigold, Syphillis, Malaria)
+ * - ape: each APE number in report list (HIV Detemine, HIV Unigold, Syphillis, Malaria)
  */
 public class DebugReceiver extends BroadcastReceiver {
   private static final String TAG = "DebugReceiver";
