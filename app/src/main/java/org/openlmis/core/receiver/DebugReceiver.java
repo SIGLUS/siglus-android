@@ -28,6 +28,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.event.DebugInitialInventoryEvent;
 import org.openlmis.core.event.DebugMMIARequisitionEvent;
+import org.openlmis.core.event.DebugMMITRequisitionEvent;
 import org.openlmis.core.event.DebugMMTBRequisitionEvent;
 import org.openlmis.core.event.DebugMalariaRequisitionEvent;
 import org.openlmis.core.event.DebugPhysicalInventoryEvent;
@@ -64,6 +65,13 @@ import org.openlmis.core.event.DebugPhysicalInventoryEvent;
  *  [--ei hf 10 --ei chw 10]
  *  - hf: amount of HF, both treatments and existent stock
  *  - chw: amount of CHW, both treatments and existent stock
+ *
+ *  <p>6. quickly complete mmit requisition:
+ *  eg: adb shell am broadcast -a org.openlmis.core.debug.mmit_requisition
+ *  [--ei product 10 --ei report 10 --ei ape 10]
+ *  - product: each product amount in top list
+ *  - report: each report number in report list (HIV Detemine, HIV Unigold, Syphillis, Malaria)
+ *  - ape: each APE number in report list (HIV Detemine, HIV Unigold, Syphillis, Malaria)
  */
 public class DebugReceiver extends BroadcastReceiver {
   private static final String TAG = "DebugReceiver";
@@ -90,6 +98,11 @@ public class DebugReceiver extends BroadcastReceiver {
   private static final String PARAM_MALARIA_HF_NUM = "hf";
   private static final String PARAM_MALARIA_CHW_NUM = "chw";
 
+  private static final String ACTION_REQUISITION_MMIT = "org.openlmis.core.debug.mmit_requisition";
+  private static final String PARAM_MMIT_PRODUCT_NUM = "product";
+  private static final String PARAM_MMIT_REPORT_NUM = "report";
+  private static final String PARAM_MMIT_APE_NUM = "ape";
+
   public static void registerDebugBoardCastReceiver(Context context) {
     if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_debug)) {
       return;
@@ -100,6 +113,7 @@ public class DebugReceiver extends BroadcastReceiver {
     filter.addAction(ACTION_REQUISITION_MMTB);
     filter.addAction(ACTION_REQUISITION_MMIA);
     filter.addAction(ACTION_REQUISITION_MALARIA);
+    filter.addAction(ACTION_REQUISITION_MMIT);
     context.registerReceiver(new DebugReceiver(), filter);
   }
 
@@ -141,6 +155,13 @@ public class DebugReceiver extends BroadcastReceiver {
         long malariaHfNum = intent.getIntExtra(PARAM_MALARIA_HF_NUM, DEFAULT_NUM);
         long malariaChwNum = intent.getIntExtra(PARAM_MALARIA_CHW_NUM, DEFAULT_NUM);
         EventBus.getDefault().post(new DebugMalariaRequisitionEvent(malariaHfNum, malariaChwNum));
+        break;
+      case ACTION_REQUISITION_MMIT:
+        Log.d(TAG, ACTION_REQUISITION_MMIT);
+        int mmitProductNum = intent.getIntExtra(PARAM_MMIT_PRODUCT_NUM, (int) DEFAULT_NUM);
+        int mmitReportNum = intent.getIntExtra(PARAM_MMIT_REPORT_NUM, (int) DEFAULT_NUM);
+        int mmitAPENum = intent.getIntExtra(PARAM_MMIT_APE_NUM, (int) DEFAULT_NUM);
+        EventBus.getDefault().post(new DebugMMITRequisitionEvent(mmitProductNum, mmitReportNum, mmitAPENum));
         break;
       default:
         // do nothing

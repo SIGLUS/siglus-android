@@ -29,6 +29,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.holder.RapidTestReportObservationRowViewHolder;
 import org.openlmis.core.view.holder.RapidTestReportRowViewHolder;
+import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestFormItemViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 
@@ -118,5 +119,32 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RecyclerView
     if (apeViewHolder != null) {
       apeViewHolder.updateRowValue();
     }
+  }
+
+  public void autoFillReport(long reportNum, long apeNum) {
+    //fill all report
+    for (RapidTestFormItemViewModel itemViewModel : serviceLists) {
+      for (RapidTestFormGridViewModel gridViewModel : itemViewModel.getRapidTestFormGridViewModelList()) {
+        gridViewModel.autoFill(reportNum);
+      }
+    }
+    //adjust total & real total
+    long totalValue = reportNum * (serviceLists.size() - 2);
+    final List<RapidTestFormGridViewModel> totalGridViewModels = totalViewHolder.getRapidTestFormGridViewModelList();
+    for (RapidTestFormGridViewModel gridViewModel : totalGridViewModels) {
+      gridViewModel.autoFill(totalValue);
+    }
+    RapidTestFormItemViewModel itemRealTotal = rapidTestReportViewModel.getItemRealTotal();
+    final List<RapidTestFormGridViewModel> realTotalGridViewModelList =
+        itemRealTotal.getRapidTestFormGridViewModelList();
+    for (RapidTestFormGridViewModel gridViewModel : realTotalGridViewModelList) {
+      gridViewModel.autoFill(totalValue);
+    }
+    //adjust ape
+    final List<RapidTestFormGridViewModel> apeGridViewModels = apeViewHolder.getRapidTestFormGridViewModelList();
+    for (RapidTestFormGridViewModel gridViewModel : apeGridViewModels) {
+      gridViewModel.autoFill(apeNum);
+    }
+    updateRowValue();
   }
 }

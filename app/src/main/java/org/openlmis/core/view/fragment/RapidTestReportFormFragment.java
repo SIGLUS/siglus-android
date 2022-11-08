@@ -35,7 +35,11 @@ import androidx.recyclerview.widget.RapidTestLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
+import org.openlmis.core.event.DebugMMITRequisitionEvent;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.BaseReportPresenter;
@@ -53,6 +57,7 @@ import roboguice.inject.InjectView;
 import rx.Subscription;
 import rx.functions.Action1;
 
+@BindEventBus
 public class RapidTestReportFormFragment extends BaseReportFragment
     implements RapidTestReportFormPresenter.RapidTestReportView {
 
@@ -328,4 +333,16 @@ public class RapidTestReportFormFragment extends BaseReportFragment
         (float) location[1] + view.getHeight());
   }
 
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveMMITRequisitionEvent(DebugMMITRequisitionEvent event) {
+    final long mmitProductNum = event.getMmitProductNum();
+    final long mmitReportNum = event.getMmitReportNum();
+    final long mmitAPENum = event.getMmitAPENum();
+    RnRForm form = presenter.getRnRForm();
+    //fill top product
+    rapidTestFormTop.autoFillProductForm(mmitProductNum);
+    //fill MMIT Report
+    rapidBodyRightAdapter.autoFillReport(mmitReportNum, mmitAPENum);
+    refreshRequisitionForm(form);
+  }
 }
