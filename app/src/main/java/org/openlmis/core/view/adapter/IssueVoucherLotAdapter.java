@@ -31,7 +31,6 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -58,7 +57,7 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
 
 
   @Override
-  protected void convert(@NotNull IssueVoucherLotViewHolder holder, IssueVoucherLotViewModel viewModel) {
+  protected void convert(@NonNull IssueVoucherLotViewHolder holder, IssueVoucherLotViewModel viewModel) {
     holder.populate(viewModel);
   }
 

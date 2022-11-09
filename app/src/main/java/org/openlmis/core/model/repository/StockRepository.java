@@ -35,6 +35,7 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.misc.TransactionManager;
@@ -47,7 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
-import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.enumeration.StockOnHandStatus;
 import org.openlmis.core.exceptions.LMISException;
@@ -329,7 +329,7 @@ public class StockRepository {
     return getStockCardsBySqlSearch(cursor, programCode);
   }
 
-  @NotNull
+  @NonNull
   private List<StockCard> getStockCardsBySqlSearch(Cursor cursor, String programCode) {
     List<StockCard> stockCardList = new ArrayList<>();
     if (cursor.moveToFirst()) {

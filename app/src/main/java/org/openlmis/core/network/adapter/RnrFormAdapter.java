@@ -31,6 +31,7 @@ import static org.openlmis.core.utils.Constants.PARAM_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.REGIMEN_INFORMATION_TO_REGIMEN_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
+import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -51,7 +52,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.openlmis.core.LMISApp;
@@ -394,7 +394,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     root.add(PATIENT_LINE_ITEMS, jsonParser.parse(gson.toJson(patientLineItemRequests)));
   }
 
-  @NotNull
+  @NonNull
   private HashMap<String, List<BaseInfoItem>> groupPatientInfo(RnRForm rnRForm) {
     List<BaseInfoItem> baseInfoItems = rnRForm.getBaseInfoItemListWrapper();
     HashMap<String, List<BaseInfoItem>> tableNameToItems = new HashMap<>();

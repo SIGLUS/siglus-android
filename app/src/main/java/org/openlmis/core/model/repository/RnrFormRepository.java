@@ -35,6 +35,7 @@ import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
 import android.content.Context;
 import android.database.Cursor;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
@@ -50,7 +51,6 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -284,7 +284,7 @@ public class RnrFormRepository {
     return rnrFormItems;
   }
 
-  @NotNull
+  @NonNull
   private HashMap<String, String> getProductCodeToCategory() throws LMISException {
     List<ProductProgram> productPrograms = productProgramRepository
         .listActiveProductProgramsByProgramCodes(Arrays.asList(programCode));
