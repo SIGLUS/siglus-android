@@ -56,7 +56,7 @@
       android:label="@string/title_rapid_test_form"
       android:name=".view.activity.RapidTestReportFormActivity"
       android:screenOrientation="portrait"
-      android:windowSoftInputMode="adjustNothing|stateHidden" />
+      android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
     <activity
       android:label="@string/title_unpack_kit"
       android:name=".view.activity.UnpackKitActivity"
@@ -77,18 +77,18 @@
       android:configChanges="orientation|screenSize"
       android:label="@string/label_mmia_title"
       android:name=".view.activity.MMIARequisitionActivity"
-      android:windowSoftInputMode="stateHidden" />
+      android:windowSoftInputMode="stateAlwaysHidden" />
     <activity
       android:configChanges="orientation|screenSize"
       android:label="@string/label_mmtb_title"
       android:name=".view.activity.MMTBRequisitionActivity"
-      android:windowSoftInputMode="stateHidden"
+      android:windowSoftInputMode="stateAlwaysHidden"
       />
     <activity
       android:configChanges="orientation|screenSize"
       android:label="@string/label_AL_title"
       android:name=".view.activity.ALRequisitionActivity"
-      android:windowSoftInputMode="stateHidden" />
+      android:windowSoftInputMode="stateAlwaysHidden" />
     <activity
       android:label="@string/title_archived_drugs"
       android:name=".view.activity.ArchivedDrugsListActivity"
@@ -97,7 +97,7 @@
     <activity
       android:label="@string/title_requisition"
       android:name=".view.activity.VIARequisitionActivity"
-      android:windowSoftInputMode="adjustPan|stateHidden" />
+      android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
     <activity android:name=".view.activity.StockMovementHistoryActivity" />
     <activity
       android:label="@string/title_stock_movement"
