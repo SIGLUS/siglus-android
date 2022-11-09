@@ -199,11 +199,6 @@ dependencies {
 
 }
 
-repositories {
-    jcenter()
-    google()
-}
-
 configurations.all {
     resolutionStrategy.force 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
     resolutionStrategy.force 'com.squareup.okhttp:okhttp:2.2.0'
