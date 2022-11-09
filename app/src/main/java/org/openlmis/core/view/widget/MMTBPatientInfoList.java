@@ -141,10 +141,10 @@ public class MMTBPatientInfoList extends LinearLayout {
     if (ReportConstants.KEY_NEW_PATIENT_TABLE.equals(tableName)) {
       return i;
     } else if (ReportConstants.KEY_PROPHYLAXIS_TABLE.equals(tableName)) {
-      return i + tableNameToShowItemMap.get(ReportConstants.KEY_PROPHYLAXIS_TABLE).size();
+      return i + tableNameToShowItemMap.get(ReportConstants.KEY_NEW_PATIENT_TABLE).size();
     } else {
-      return i + tableNameToShowItemMap.get(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE).size()
-          + tableNameToShowItemMap.get(ReportConstants.KEY_TYPE_OF_DISPENSATION_TABLE).size();
+      return i + tableNameToShowItemMap.get(ReportConstants.KEY_NEW_PATIENT_TABLE).size()
+          + tableNameToShowItemMap.get(ReportConstants.KEY_PROPHYLAXIS_TABLE).size();
     }
   }
 

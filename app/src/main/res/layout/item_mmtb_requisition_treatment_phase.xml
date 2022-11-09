@@ -19,6 +19,7 @@
     android:id="@+id/et_treatment_phase_amount"
     android:layout_gravity="center"
     android:gravity="center"
+    android:imeOptions="actionNext"
     style="@style/MMIA.Regime.Total.Edit"
     android:background="@drawable/bg_white_no_border" />
 

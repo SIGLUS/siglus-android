@@ -19,6 +19,7 @@
     android:layout_width="@dimen/px_50"
     android:layout_height="match_parent"
     android:background="@color/color_white"
+    android:imeOptions="actionNext"
     android:gravity="center" />
 
 </LinearLayout>
