@@ -113,7 +113,7 @@
   <string name="mmia_3rdline">3ª Linha</string>
 
   <!-- MMTB -->
-  <string name="mmtb_age_group_form_title">Quantificação de usuários por faixas etárias</string>
+  <string name="mmtb_age_group_form_title">Quantificação de Usuários por Faixas Etárias</string>
   <string name="mmtb_three_line_1_title">Faixas Etarias</string>
   <string name="mmtb_three_line_1">Adultos</string>
   <string name="mmtb_three_line_2_title">Tratamento</string>
@@ -128,8 +128,8 @@
   <string name="mmtb_prophylaxis_phases_field">Fases Profilaxia</string>
   <string name="mmtb_dispensation_type_field">Periodicidade de Dispensa</string>
 
-  <string name="mmtb_treatment_phase_form_title">número de dias dispensados nas  diferentes fases do tratamento</string>
-  <string name="mmtb_title_treatment_phase">Fases de tratamento</string>
+  <string name="mmtb_treatment_phase_form_title">Número de dias dispensados nas diferentes fases do Tratamento</string>
+  <string name="mmtb_title_treatment_phase">Fases de Tratamento</string>
   <string name="mmtb_title_number_of_day_off">N° Dias Dispensados</string>
   <string name="mmtb_title_adult">Adulto</string>
   <string name="mmtb_title_pediatric">Pediátrico</string>
@@ -137,7 +137,7 @@
   <string name="mmtb_drug_consumption_form_title">Consumos dos Medicamentos Profilácticos</string>
   <string name="mmtb_title_product">Produto</string>
   <string name="mmtb_title_number_of_pills">N° Comprimidos</string>
-  <string name="mmtb_title_pharmacy_outpatient">PUs e farmácia ambulatório</string>
+  <string name="mmtb_title_pharmacy_outpatient">PUs e Farmácia Ambulatório</string>
 
   <string name="mmtb_new_adult_sensitive">Novo Adulto Sensível</string>
   <string name="mmtb_new_adult_mr">Novo Adulto MR</string>
