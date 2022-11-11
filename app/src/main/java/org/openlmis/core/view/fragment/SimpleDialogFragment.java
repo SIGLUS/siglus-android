@@ -52,6 +52,8 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
   private String negativeText;
   private String tag;
 
+  private boolean enableDialogShowTrigger = true;
+
   @Getter
   private MsgDialogCallBack mListener;
 
@@ -90,10 +92,16 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
   @Override
   public void show(@NonNull FragmentManager manager, String tag) {
     //avoid the duplicate Dialog
-    if (manager.findFragmentByTag(tag) != null) {
-      return;
+    if (manager.findFragmentByTag(tag) == null) {
+      super.show(manager, tag);
     }
-    super.show(manager, tag);
+  }
+
+  public void showOnlyOnce(@NonNull FragmentManager manager, String tag) {
+    if (enableDialogShowTrigger) {
+      enableDialogShowTrigger = false;
+      this.show(manager, tag);
+    }
   }
 
   @Override

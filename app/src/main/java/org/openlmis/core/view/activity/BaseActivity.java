@@ -50,6 +50,7 @@ import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.annotation.BindEventBus;
+import org.openlmis.core.enumeration.LoginErrorType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.googleanalytics.AnalyticsTracker;
@@ -64,6 +65,8 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.fragment.RetainedFragment;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.fragment.SimpleDialogFragment.MsgDialogCallBack;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.roboguice.shaded.goole.common.base.Optional;
@@ -102,6 +105,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   private long onCreateStartMili;
   private boolean isPageLoadTimerInProgress;
+  private static final String TAG_NOT_ANDROID_FRAGMENT = "not_android_user";
 
   public static synchronized void setLastOperateTime(long newOperateTIme) {
     BaseActivity.lastOperateTime = newOperateTIme;
@@ -109,6 +113,27 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   public static synchronized long getLastOperateTime() {
     return lastOperateTime;
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveSyncStatusEvent(LoginErrorType loginErrorType) {
+    if (loginErrorType.toString().equals(LoginErrorType.NON_MOBILE_USER.toString())) {
+      SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+          "Sync failed", getResources().getString(R.string.msg_not_android_user), "OK", null);
+      dialogFragment.setCallBackListener(new MsgDialogCallBack() {
+        @Override
+        public void positiveClick(String tag) {
+          logout();
+        }
+
+        @Override
+        public void negativeClick(String tag) {
+          //do nothing
+        }
+      });
+      dialogFragment.setCancelable(false);
+      dialogFragment.showOnlyOnce(getSupportFragmentManager(), TAG_NOT_ANDROID_FRAGMENT);
+    }
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
@@ -176,7 +201,9 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
   }
 
   protected void logout() {
-    startActivity(new Intent(this, LoginActivity.class));
+    Intent toLoginIntent = new Intent(this, LoginActivity.class);
+    toLoginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(toLoginIntent);
     setLastOperateTime(0L);
   }
 

@@ -95,6 +95,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   LoginPresenter presenter;
 
   boolean isPwdVisible = false;
+  boolean enableShowAlert = false;
 
   @Override
   public void sendScreenToGoogleAnalyticsAfterLogin() {
@@ -132,6 +133,9 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
   @Override
   public void showInvalidAlert(LoginErrorType loginErrorType) {
+    if (!enableShowAlert) {
+      return;
+    }
     clearErrorAlerts();
     if (loginErrorType == LoginErrorType.NO_INTERNET) {
       errorAlert.setText(getResources().getText(R.string.message_wipe_no_connection));
@@ -160,6 +164,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     etPassword.getBackground()
         .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+    enableShowAlert = false;
   }
 
   @Override
@@ -184,6 +189,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.btn_login:
+        enableShowAlert = true;
         startLogin(false);
         KeyboardUtil.hideKeyboard(btnLogin);
         break;
