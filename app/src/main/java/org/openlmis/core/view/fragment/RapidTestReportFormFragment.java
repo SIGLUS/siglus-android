@@ -45,6 +45,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.RapidTestReportFormPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RapidTestReportBodyLeftHeaderAdapter;
 import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
@@ -139,6 +140,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment
 
   @Override
   public void refreshRequisitionForm(RnRForm rnRForm) {
+    getActivity().setTitle(
+        getString(R.string.label_mmit_title, DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()),
+            DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
     RapidTestReportViewModel viewModel = presenter.getViewModel();
     if (!viewModel.getProductItems().isEmpty()) {
       rnrBasicItemHeader.setVisibility(View.VISIBLE);
