@@ -86,7 +86,7 @@
       />
     <activity
       android:configChanges="orientation|screenSize"
-      android:label="@string/label_AL_title"
+      android:label="@string/label_al_title"
       android:name=".view.activity.ALRequisitionActivity"
       android:windowSoftInputMode="stateAlwaysHidden" />
     <activity

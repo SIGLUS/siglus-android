@@ -260,7 +260,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements
   @Override
   public void refreshRequisitionForm(RnRForm rnRForm) {
     getActivity().setTitle(
-        getString(R.string.label_AL_title, DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()),
+        getString(R.string.label_al_title, DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()),
             DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
     monthTitle.setText(DateUtil.formatDateWithLongMonthAndYear(rnRForm.getPeriodEnd()));
     adapter.refresh(presenter.getAlReportViewModel());

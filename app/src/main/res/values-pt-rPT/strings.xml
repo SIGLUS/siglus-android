@@ -63,8 +63,6 @@
 
   <!--MMIA-->
   <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
-  <string name="label_mmtb_title">MMTB - %1$s to %2$s</string>
-  <string name="label_AL_title">Malaria - %1$s à %2$s</string>
   <string name="label_rnrfrom_left_header">PRODUCT</string>
   <string name="label_rnrfrom_left_header_old">MEDICAMENTO</string>
   <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
@@ -113,6 +111,7 @@
   <string name="mmia_3rdline">3ª Linha</string>
 
   <!-- MMTB -->
+  <string name="label_mmtb_title">MMTB - %1$s to %2$s</string>
   <string name="mmtb_age_group_form_title">Quantificação de Usuários por Faixas Etárias</string>
   <string name="mmtb_three_line_1_title">Faixas Etarias</string>
   <string name="mmtb_three_line_1">Adultos</string>
@@ -200,6 +199,7 @@
   <string name="msg_stock_movement_is_not_ready">Aplicativo está a sincronizar os movimentos de stock, por favor aguarde até que este processo seja concluído para continuar.</string>
 
   <!-- AL -->
+  <string name="label_al_title">Malaria - %1$s à %2$s</string>
   <string name="msg_al_submit_tip">O seu Relatório de AL foi gravado com sucesso,\ne será submetido automaticamente quando tiver conexão a internet.</string>
   <string name="msg_uncomplete_hint">Por favor, complete toda a informação para o relatório de AL.</string>
   <string name="hint_al_complete_failed">Não foi possível completar o Malaria, por favor, contacte o administrador.</string>
@@ -210,6 +210,7 @@
   <string name="month_year">Mês/Ano:   </string>
 
   <!-- MMIT -->
+  <string name="label_mmit_title">MMIT - %1$s to %2$s</string>
   <string name="balance_test_report">Balancete dos MMIT na Unidade Sanitária</string>
   <string name="attention_report_in_kit">(Atenção: Reportados em Kits)</string>
   <string name="unjustified">Injustificados</string>
