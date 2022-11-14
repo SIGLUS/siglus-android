@@ -335,13 +335,11 @@ public class SyncUpManager {
 
   public void syncAppVersion() {
     try {
-      if (!sharedPreferenceMgr.hasSyncedVersion()
-          && StringUtils.isNotBlank(UserInfoMgr.getInstance().getFacilityCode())) {
+      if (StringUtils.isNotBlank(UserInfoMgr.getInstance().getFacilityCode())) {
         AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(),
             UserInfoMgr.getInstance().getUser().getUsername(),
             UserInfoMgr.getInstance().getVersion());
         lmisRestApi.updateAppVersion(request);
-        sharedPreferenceMgr.setSyncedVersion(true);
       }
     } catch (LMISException e) {
       new LMISException(e, "SyncUpManager.syncArchivedProducts").reportToFabric();

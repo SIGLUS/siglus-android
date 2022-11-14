@@ -232,7 +232,6 @@ public class LMISRestManager {
 
     private LMISException forbidNotSameDevice() {
       EventBus.getDefault().post(SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE);
-      SharedPreferenceMgr.getInstance().setSyncedVersion(false);
       return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_is_same_device_false));
     }
   }
