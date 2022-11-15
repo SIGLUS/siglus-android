@@ -35,7 +35,7 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
   public static final String TIMEZONE_SUFFIX = "'T15:35:24.455Z'";
   public static final String MONTH_FIELD = " months') || ";
   public static final String MONTH = " months')";
-  private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2021-07-18", DateUtil.DB_DATE_FORMAT);
+  private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2022-10-18", DateUtil.DB_DATE_FORMAT);
   private int monthOffsetFromAnchor;
   private DatabaseConnection dbConnection;
   private static TrainingSqliteOpenHelper trainingSqliteOpenHelper;

@@ -82,7 +82,7 @@ import rx.Observable;
 public class SyncUpManager {
 
   private static final String TAG = "SyncUpManager";
-  private static final String FAKE_ORDER_NUMBER = "ErrorOrderNumber";
+  private static final String FAKE_ORDER_NUMBER = "local-tarv";
   private static volatile boolean syncing = false;
   protected LMISRestApi lmisRestApi;
   @Inject
@@ -517,34 +517,32 @@ public class SyncUpManager {
     }
     if (localPod.isLocal()) {
       if (Program.VIA_CODE.equals(localPod.getRequisitionProgramCode())) {
-        localPod.setOrderSupplyFacilityName("DDM de Mopeia");
-        localPod.setOrderSupplyFacilityDistrict("MOPEIA");
+        localPod.setOrderSupplyFacilityName("DDM de Alto Molocue");
+        localPod.setOrderSupplyFacilityDistrict("ALTO MOLOCUE");
         localPod.setOrderSupplyFacilityProvince("ZAMBEZIA");
         localPod.setOrderSupplyFacilityType("DDM");
-        localPod.setPreparedBy("android_user6_ddm");
-        localPod.setConferredBy("android_user6_ddm");
       } else {
         localPod.setOrderSupplyFacilityName("DPM ZAMBEZIA");
         localPod.setOrderSupplyFacilityDistrict("CIDADE DE QUELIMANE");
         localPod.setOrderSupplyFacilityProvince("ZAMBEZIA");
         localPod.setOrderSupplyFacilityType("DPM");
-        localPod.setPreparedBy("android_user6_dpm");
-        localPod.setConferredBy("android_user6_dpm");
       }
+      localPod.setPreparedBy("xzh");
+      localPod.setConferredBy("xzh");
       localPod.setOrderStatus(OrderStatus.RECEIVED);
-      localPod.setRequisitionNumber("RNR-NO010412110000039");
-      if ("ORDER-7SUPER".equals(localPod.getOrderCode())) {
-        localPod.setRequisitionStartDate(DateUtil.parseString("2021-08-21", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionEndDate(DateUtil.parseString("2021-09-20", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-08-21", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-09-18", DateUtil.DB_DATE_FORMAT));
-        localPod.setShippedDate(DateUtil.parseString("2021-10-05", DateUtil.DB_DATE_FORMAT));
+      localPod.setRequisitionNumber("RNO.01040203.2210.10");
+      if ("MIA.01040203.2209.07".equals(localPod.getOrderCode())) {
+        localPod.setRequisitionStartDate(DateUtil.parseString("2022-08-21", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionEndDate(DateUtil.parseString("2022-09-20", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualStartDate(DateUtil.parseString("2022-08-21", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualEndDate(DateUtil.parseString("2022-09-18", DateUtil.DB_DATE_FORMAT));
+        localPod.setShippedDate(DateUtil.parseString("2022-08-23", DateUtil.DB_DATE_FORMAT));
       } else {
-        localPod.setRequisitionStartDate(DateUtil.parseString("2021-10-21", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionEndDate(DateUtil.parseString("2021-11-20", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-10-18", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-11-18", DateUtil.DB_DATE_FORMAT));
-        localPod.setShippedDate(DateUtil.parseString("2021-11-18", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionStartDate(DateUtil.parseString("2022-09-21", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionEndDate(DateUtil.parseString("2022-10-20", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualStartDate(DateUtil.parseString("2022-09-18", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualEndDate(DateUtil.parseString("2022-10-18", DateUtil.DB_DATE_FORMAT));
+        localPod.setShippedDate(DateUtil.parseString("2022-09-24", DateUtil.DB_DATE_FORMAT));
       }
       localPod.setProcessedDate(DateUtil.getCurrentDate());
     }
