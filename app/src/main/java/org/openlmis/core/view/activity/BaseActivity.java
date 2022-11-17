@@ -119,7 +119,10 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
   public void onReceiveSyncStatusEvent(LoginErrorType loginErrorType) {
     if (loginErrorType.toString().equals(LoginErrorType.NON_MOBILE_USER.toString())) {
       SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-          "Sync failed", getResources().getString(R.string.msg_not_android_user), "OK", null);
+          getString(R.string.error_msg_sync_failed),
+          getString(R.string.msg_sync_not_android_user),
+          getString(R.string.btn_ok),
+          null);
       dialogFragment.setCallBackListener(new MsgDialogCallBack() {
         @Override
         public void positiveClick(String tag) {
@@ -132,7 +135,8 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
         }
       });
       dialogFragment.setCancelable(false);
-      dialogFragment.showOnlyOnce(getSupportFragmentManager(), TAG_NOT_ANDROID_FRAGMENT);
+      dialogFragment.showOnlyOnce(
+          LMISApp.getInstance().getTopActivity().getSupportFragmentManager(), TAG_NOT_ANDROID_FRAGMENT);
     }
   }
 
@@ -141,7 +145,6 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
     if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(message)
         && !LOGIN_ACTIVITY.equals(currentActivity)
         && !isInLoginActivity) {
-      logout();
       isInLoginActivity = true;
     }
   }

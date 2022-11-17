@@ -744,7 +744,8 @@
   <string name="Malaria_tab">Malaria</string>
   <string name="emergency">-EMERGENCY-</string>
   <string name="msg_is_same_device_false">Login failed, the facility already logged into another device, please contact the administrator.</string>
-  <string name="msg_not_android_user">The administrator has upgraded your facility to a Web facility, please use the Web portal to log in for your further management.</string>
+  <string name="error_msg_sync_failed">Sync failed</string>
+  <string name="msg_sync_not_android_user">The administrator has upgraded your facility to a Web facility, please use the Web portal to log in for your further management.</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minute</item>

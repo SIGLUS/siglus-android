@@ -32,7 +32,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigat
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ReportTypeForm;
@@ -48,7 +47,6 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 
-@BindEventBus
 @ContentView(R.layout.activity_report_list)
 public class ReportListActivity extends BaseActivity implements ReportListView {
 

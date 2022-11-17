@@ -58,7 +58,7 @@
   <string name="msg_back_twice_to_exit">Pressione o botão \"voltar\" duas vezes para sair</string>
   <string name="action_sign_out">Sair</string>
   <string name="initial_rnr_sync_failed">Sincronização inicial da requisição falhou, por favor tente novamente.</string>
-  <string name="initial_stock_movement_sync_failed">Sincronização Inicial  das fichas de stock falhou, por favor tente novamente.</string>
+  <string name="initial_stock_movement_sync_failed">Sincronização Inicial das fichas de stock falhou, por favor tente novamente.</string>
   <string name="initial_sync_failed">Sincronização inicial falhou</string>
 
   <!--MMIA-->
@@ -738,6 +738,8 @@
   <string name="Malaria_tab">Malária</string>
   <string name="emergency">-EMERGÊNCIA-</string>
   <string name="msg_is_same_device_false">Falha no login, a US já está cadastrada em outro dispositivo, entre em contato com o administrador.</string>
+  <string name="error_msg_sync_failed">A sincronização falhou</string>
+  <string name="msg_sync_not_android_user">O administrador actualizou as suas instalações para uma instalação Web, por favor utilize o portal Web para iniciar sessão para a sua posterior gestão.</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>
