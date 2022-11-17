@@ -38,8 +38,6 @@ import android.widget.TextView;
 import com.google.android.material.textfield.TextInputLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -206,17 +204,15 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     moveTaskToBack(true);
   }
 
-
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveSyncStatusEvent(LoginErrorType loginErrorType) {
+  @Override
+  public void onReceiveNotAndroidUserErrorEvent(LoginErrorType loginErrorType) {
     if (loginErrorType.toString().equals(LoginErrorType.NON_MOBILE_USER.toString())) {
       showInvalidAlert(LoginErrorType.NON_MOBILE_USER);
     }
   }
 
-  @Subscribe(threadMode = ThreadMode.MAIN)
   @Override
-  public void onReceiveSyncStatusEvent(String message) {
+  public void onReceiveNotRegisteredDeviceErrorEvent(String message) {
     if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(message)) {
       showInvalidAlert(LoginErrorType.NON_SAME_DEVICE);
     }

@@ -19,7 +19,6 @@
 
 package org.openlmis.core.view.activity;
 
-import static org.openlmis.core.utils.Constants.LOGIN_ACTIVITY;
 import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
@@ -100,12 +99,9 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   private long appTimeout;
 
-  private String currentActivity;
-  private boolean isInLoginActivity = false;
-
   private long onCreateStartMili;
   private boolean isPageLoadTimerInProgress;
-  private static final String TAG_NOT_ANDROID_FRAGMENT = "not_android_user";
+  private static final String TAG_LOGOUT_ALERT = "logout_alert";
 
   public static synchronized void setLastOperateTime(long newOperateTIme) {
     BaseActivity.lastOperateTime = newOperateTIme;
@@ -116,36 +112,18 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveSyncStatusEvent(LoginErrorType loginErrorType) {
+  public void onReceiveNotAndroidUserErrorEvent(LoginErrorType loginErrorType) {
     if (loginErrorType.toString().equals(LoginErrorType.NON_MOBILE_USER.toString())) {
-      SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-          getString(R.string.error_msg_sync_failed),
-          getString(R.string.msg_sync_not_android_user),
-          getString(R.string.btn_ok),
-          null);
-      dialogFragment.setCallBackListener(new MsgDialogCallBack() {
-        @Override
-        public void positiveClick(String tag) {
-          logout();
-        }
-
-        @Override
-        public void negativeClick(String tag) {
-          //do nothing
-        }
-      });
-      dialogFragment.setCancelable(false);
-      dialogFragment.showOnlyOnce(
-          LMISApp.getInstance().getTopActivity().getSupportFragmentManager(), TAG_NOT_ANDROID_FRAGMENT);
+      popUpLogoutAlertFragment(getString(
+          R.string.error_msg_sync_failed), getString(R.string.msg_sync_not_android_user));
     }
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveSyncStatusEvent(String message) {
-    if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(message)
-        && !LOGIN_ACTIVITY.equals(currentActivity)
-        && !isInLoginActivity) {
-      isInLoginActivity = true;
+  public void onReceiveNotRegisteredDeviceErrorEvent(String message) {
+    if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(message)) {
+      popUpLogoutAlertFragment(
+          getString(R.string.error_msg_sync_failed), getString(R.string.msg_sync_not_same_device_user));
     }
   }
 
@@ -248,12 +226,6 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
       EventBus.getDefault().register(this);
     }
 
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    currentActivity = getClass().getSimpleName();
   }
 
   @StyleRes
@@ -405,6 +377,26 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
   public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
     AutoSizeUtil.resetScreenSize(this);
+  }
+
+  private void popUpLogoutAlertFragment(String title, String msg) {
+    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+        title, msg, getString(R.string.btn_ok), null);
+    dialogFragment.setCallBackListener(new MsgDialogCallBack() {
+      @Override
+      public void positiveClick(String tag) {
+        SharedPreferenceMgr.getInstance().setLastLoginUser(StringUtils.EMPTY);
+        logout();
+      }
+
+      @Override
+      public void negativeClick(String tag) {
+        //do nothing
+      }
+    });
+    dialogFragment.setCancelable(false);
+    dialogFragment.showOnlyOnce(
+        LMISApp.getInstance().getTopActivity().getSupportFragmentManager(), TAG_LOGOUT_ALERT);
   }
 }
 

@@ -740,6 +740,7 @@
   <string name="msg_is_same_device_false">Falha no login, a US já está cadastrada em outro dispositivo, entre em contato com o administrador.</string>
   <string name="error_msg_sync_failed">A sincronização falhou</string>
   <string name="msg_sync_not_android_user">O administrador actualizou as suas instalações para uma instalação Web, por favor utilize o portal Web para iniciar sessão para a sua posterior gestão.</string>
+  <string name="msg_sync_not_same_device_user">A US já está cadastrada em outro dispositivo, entre em contato com o administrador.</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>

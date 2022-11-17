@@ -214,8 +214,6 @@ public final class Constants {
 
   public static final String SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE = "siglusapi.error.notRegisteredDevice";
 
-  public static final String LOGIN_ACTIVITY = "LoginActivity";
-
   public static final String VIRTUAL_LOT_NUMBER = "virtual lot number";
 
   public static final String SIGLUS_API_ORDER_NUMBER_NOT_EXIST = "This order number does not exist";
