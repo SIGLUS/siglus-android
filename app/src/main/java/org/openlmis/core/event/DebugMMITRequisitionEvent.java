@@ -28,5 +28,4 @@ import lombok.ToString;
 public class DebugMMITRequisitionEvent {
   long mmitProductNum;
   long mmitReportNum;
-  long mmitAPENum;
 }

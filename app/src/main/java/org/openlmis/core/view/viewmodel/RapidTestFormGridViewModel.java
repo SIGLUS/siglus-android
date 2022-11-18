@@ -253,10 +253,4 @@ public class RapidTestFormGridViewModel {
       programDataFormItems.add(consumeDataFormItem);
     }
   }
-
-  public void autoFill(long value) {
-    consumptionValue = String.valueOf(value);
-    positiveValue = String.valueOf(value);
-    unjustifiedValue = String.valueOf(value);
-  }
 }

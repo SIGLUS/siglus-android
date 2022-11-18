@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RapidTestLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.Date;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -42,6 +43,7 @@ import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.DebugMMITRequisitionEvent;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.RapidTestReportFormPresenter;
 import org.openlmis.core.utils.Constants;
@@ -50,6 +52,9 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RapidTestReportBodyLeftHeaderAdapter;
 import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
+import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
+import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
+import org.openlmis.core.view.viewmodel.RapidTestFormItemViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.openlmis.core.view.widget.RapidTestRnrForm;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -341,12 +346,28 @@ public class RapidTestReportFormFragment extends BaseReportFragment
   public void onReceiveMMITRequisitionEvent(DebugMMITRequisitionEvent event) {
     final long mmitProductNum = event.getMmitProductNum();
     final long mmitReportNum = event.getMmitReportNum();
-    final long mmitAPENum = event.getMmitAPENum();
-    RnRForm form = presenter.getRnRForm();
-    //fill top product
-    rapidTestFormTop.autoFillProductForm(mmitProductNum);
+
+    RapidTestReportViewModel viewModel = presenter.getViewModel();
+    // fill Balancete
+    List<RnrFormItem> productItems = viewModel.getProductItems();
+    for (RnrFormItem item : productItems) {
+      item.setInitialAmount(mmitProductNum);
+      item.setInventory(mmitProductNum);
+    }
     //fill MMIT Report
-    rapidBodyRightAdapter.autoFillReport(mmitReportNum, mmitAPENum);
-    refreshRequisitionForm(form);
+    for (RapidTestFormItemViewModel itemViewModel : viewModel.getItemViewModelList()) {
+      for (RapidTestFormGridViewModel gridViewModel : itemViewModel.getRapidTestFormGridViewModelList()) {
+        gridViewModel.setConsumptionValue(String.valueOf(mmitReportNum));
+        viewModel.updateTotal(gridViewModel.getColumnCode(), RapidTestGridColumnCode.CONSUMPTION);
+
+        gridViewModel.setPositiveValue(String.valueOf(mmitReportNum));
+        viewModel.updateTotal(gridViewModel.getColumnCode(), RapidTestGridColumnCode.POSITIVE);
+
+        gridViewModel.setUnjustifiedValue(String.valueOf(mmitReportNum));
+        viewModel.updateTotal(gridViewModel.getColumnCode(), RapidTestGridColumnCode.UNJUSTIFIED);
+      }
+    }
+
+    refreshRequisitionForm(presenter.getRnRForm());
   }
 }

@@ -148,8 +148,4 @@ public class RapidTestRnrForm extends LinearLayout {
     return true;
   }
 
-  public void autoFillProductForm(long value) {
-    infoAdapter.autoFillStockAndInventory(value);
-    rvRightProductInfo.notifyDataChange();
-  }
 }

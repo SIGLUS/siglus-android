@@ -68,10 +68,9 @@ import org.openlmis.core.event.DebugPhysicalInventoryEvent;
  *
  * <p>6. quickly complete mmit requisition:
  * eg: adb shell am broadcast -a org.openlmis.core.debug.mmit_requisition
- * [--ei product 10 --ei report 10 --ei ape 10]
+ * [--ei product 10 --ei report 10]
  * - product: each product amount in top list
  * - report: each report number in report list (HIV Detemine, HIV Unigold, Syphillis, Malaria)
- * - ape: each APE number in report list (HIV Detemine, HIV Unigold, Syphillis, Malaria)
  */
 public class DebugReceiver extends BroadcastReceiver {
   private static final String TAG = "DebugReceiver";
@@ -101,7 +100,6 @@ public class DebugReceiver extends BroadcastReceiver {
   private static final String ACTION_REQUISITION_MMIT = "org.openlmis.core.debug.mmit_requisition";
   private static final String PARAM_MMIT_PRODUCT_NUM = "product";
   private static final String PARAM_MMIT_REPORT_NUM = "report";
-  private static final String PARAM_MMIT_APE_NUM = "ape";
 
   public static void registerDebugBoardCastReceiver(Context context) {
     if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_debug)) {
@@ -160,8 +158,7 @@ public class DebugReceiver extends BroadcastReceiver {
         Log.d(TAG, ACTION_REQUISITION_MMIT);
         int mmitProductNum = intent.getIntExtra(PARAM_MMIT_PRODUCT_NUM, (int) DEFAULT_NUM);
         int mmitReportNum = intent.getIntExtra(PARAM_MMIT_REPORT_NUM, (int) DEFAULT_NUM);
-        int mmitAPENum = intent.getIntExtra(PARAM_MMIT_APE_NUM, (int) DEFAULT_NUM);
-        EventBus.getDefault().post(new DebugMMITRequisitionEvent(mmitProductNum, mmitReportNum, mmitAPENum));
+        EventBus.getDefault().post(new DebugMMITRequisitionEvent(mmitProductNum, mmitReportNum));
         break;
       default:
         // do nothing

@@ -190,18 +190,4 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     return productInfos == null ? 0 : productInfos.size();
   }
 
-  public void autoFillStockAndInventory(long value) {
-    for (int i = 0; i < stockEditTexts.size(); i++) {
-      final CleanableEditText editText = stockEditTexts.get(i);
-      if (TextUtils.isEmpty(editText.getText().toString())) {
-        editText.setText(String.valueOf(value));
-      }
-    }
-    for (int i = 0; i < inventoryEditTexts.size(); i++) {
-      final CleanableEditText editText = inventoryEditTexts.get(i);
-      if (TextUtils.isEmpty(editText.getText().toString())) {
-        editText.setText(String.valueOf(value));
-      }
-    }
-  }
 }
