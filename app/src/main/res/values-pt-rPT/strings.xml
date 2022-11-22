@@ -715,7 +715,7 @@
   <string name="label_issue_prepared_by">Elaborado por:</string>
   <string name="label_issue_conferred_by">Conferido por:</string>
   <string name="label_issue_delivered_by">Entregue por: </string>
-  <string name="label_issue_received_by">recebido por: </string>
+  <string name="label_issue_received_by">Recebido por: </string>
   <string name="error_sync_previous_period">A sincronização falhou. A requisição anterior teve erro de sincronização. Por favor contacte o administrador.</string>
   <string name="msg_quantity_can_not_be_zero">Quantidade não pode estar em 0</string>
   <string name="label_issued_amount">Montante emitido:&#160;</string>
