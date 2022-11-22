@@ -126,7 +126,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       if (lotViewModel.getLot() != null && !lotViewModel.getLot().getProduct().isKit()) {
         tvLotCode.setText(lotViewModel.getLot().getLotNumber());
         tvLotExpireDate.setText(DateUtil
-            .formatDate(lotViewModel.getLot().getExpirationDate(), DateUtil.DB_DATE_FORMAT));
+            .formatDate(lotViewModel.getLot().getExpirationDate(), DateUtil.SIMPLE_DATE_FORMAT));
       }
       tvPrice.setText(getPrice(lotViewModel));
       updateTotalValue(lotViewModel);
