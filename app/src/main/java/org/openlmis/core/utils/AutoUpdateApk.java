@@ -73,7 +73,7 @@ public class AutoUpdateApk {
   // and polling server every few minutes might be a reason for suspension)
   //
   public void checkUpdatesManually() {
-    checkUpdates(true); // force update check
+    checkUpdates(); // force update check
   }
 
   //
@@ -99,10 +99,8 @@ public class AutoUpdateApk {
   private int versionCode = 0; // as low as it gets
   private String packageName;
   private int deviceId;
+  private int facilityCode;
   private String mDownloadApkDirectory;
-
-  private static final long MINUTES = 60 * 1000L;
-  private static final long HOURS = 60 * MINUTES;
 
   private int notificationId = 12;
   private static final String CHANNEL_ID = "upgrade_channel_id";
@@ -116,6 +114,7 @@ public class AutoUpdateApk {
     packageName = context.getPackageName();
     preferences = SharedPreferenceMgr.getInstance();
     deviceId = crc32(Secure.getString(context.getContentResolver(), Secure.ANDROID_ID));
+    facilityCode = crc32(SharedPreferenceMgr.getInstance().getUserFacilityCode());
     lastUpdate = preferences.getLastUpdate();
     notificationId += crc32(packageName);
     mDownloadApkDirectory = context.getFilesDir().getAbsolutePath();
@@ -166,6 +165,7 @@ public class AutoUpdateApk {
         postdata.put("version", versionCode);
         postdata.put("md5", preferences.getMd5Key());
         postdata.put("id", String.format("%08x", deviceId));
+        postdata.put("facilityCode", String.format("%08x", facilityCode));
       } catch (JSONException e) {
         Log.w(TAG, e);
       }
@@ -298,7 +298,7 @@ public class AutoUpdateApk {
             .setContentText(getString(R.string.upgrade_download_msg, progressAmount));
         notificationManager
             .notify(notificationId, mNotificationBetweenLOLLIPOPAndroidOBuilder.build());
-      } else if (isBetweenJellyBeanAndLollipop()) {
+      } else if (isLowerThanLollipop()) {
         mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder
             .setProgress(maxAmount, progressAmount, false);
         mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder
@@ -362,7 +362,7 @@ public class AutoUpdateApk {
     private boolean isNotificationBuilderNull() {
       if (isBetweenLollipopAndO()) {
         return mNotificationBetweenLOLLIPOPAndroidOBuilder == null;
-      } else if (isBetweenJellyBeanAndLollipop()) {
+      } else if (isLowerThanLollipop()) {
         return mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder == null;
       } else if (isOAndHigher()) {
         return mNotificationOAndHigherBuilder == null;
@@ -377,7 +377,7 @@ public class AutoUpdateApk {
             .setContentTitle(getString(R.string.upgrade_download_complete));
         notificationManager
             .notify(notificationId, mNotificationBetweenLOLLIPOPAndroidOBuilder.build());
-      } else if (isBetweenJellyBeanAndLollipop()) {
+      } else if (isLowerThanLollipop()) {
         mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.setContentIntent(mPendingIntent)
             .setContentText(getString(R.string.upgrade_download_click_install))
             .setContentTitle(getString(R.string.upgrade_download_complete));
@@ -400,23 +400,17 @@ public class AutoUpdateApk {
     return context.getString(id);
   }
 
-  private void checkUpdates(boolean forced) {
-    long now = LMISApp.getInstance().getCurrentTimeMillis();
-    // 3-4 hours in dev.mode, 1-2 days for stable releases
-    // how often to check
-    long updateInterval = 3 * HOURS;
-    if (forced || (lastUpdate + updateInterval) < now) {
-      try {
-        PackageInfo packageInfo = context.getPackageManager()
-            .getPackageInfo(context.getPackageName(), 0);
-        versionCode = packageInfo.versionCode;
-      } catch (Exception e) {
-        Log.w(TAG, e);
-      }
-      new CheckUpdateTask().execute();
-      lastUpdate = LMISApp.getInstance().getCurrentTimeMillis();
-      preferences.setLastUpdate(lastUpdate);
+  private void checkUpdates() {
+    try {
+      PackageInfo packageInfo = context.getPackageManager()
+          .getPackageInfo(context.getPackageName(), 0);
+      versionCode = packageInfo.versionCode;
+    } catch (Exception e) {
+      Log.w(TAG, e);
     }
+    new CheckUpdateTask().execute();
+    lastUpdate = LMISApp.getInstance().getCurrentTimeMillis();
+    preferences.setLastUpdate(lastUpdate);
   }
 
   private boolean isBetweenLollipopAndO() {
@@ -424,9 +418,8 @@ public class AutoUpdateApk {
         && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
   }
 
-  private boolean isBetweenJellyBeanAndLollipop() {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-        && Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1;
+  private boolean isLowerThanLollipop() {
+    return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1;
   }
 
   private boolean isOAndHigher() {
@@ -445,7 +438,7 @@ public class AutoUpdateApk {
           .setProgress(0, 0, false)
           .setOngoing(false)
           .setAutoCancel(true);
-    } else if (isBetweenJellyBeanAndLollipop()) {
+    } else if (isLowerThanLollipop()) {
       mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder = new NotificationCompat.Builder(context)
           .setContentTitle(getString(R.string.upgrade_download_title))
           .setSmallIcon(R.mipmap.ic_launcher)
@@ -492,7 +485,7 @@ public class AutoUpdateApk {
         sb.append(Integer.toHexString((b & 0xFF) | 0x100)
             .substring(1, 3));
       }
-      Log.v(TAG, "md5sum: " + sb.toString());
+      Log.v(TAG, "md5sum: " + sb);
       return sb.toString();
     } catch (Exception e) {
       Log.v(TAG, e.getMessage());
