@@ -98,61 +98,6 @@ public class RapidTestFormItemViewModel {
     return programDataFormItems;
   }
 
-  public String validate() {
-    for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
-      if (!validateConsumption(gridViewModel)) {
-        return LMISApp.getInstance().getString(R.string.error_rapid_test_consumption);
-      } else if (!validatePositiveIsEmpty(gridViewModel)) {
-        return LMISApp.getInstance().getString(R.string.error_rapid_test_positive);
-      } else if (!validatePositiveMoreThanCon(gridViewModel)) {
-        return LMISApp.getInstance().getString(R.string.error_positive_larger_than_consumption);
-      } else if (!validateUnjustified(gridViewModel)) {
-        return LMISApp.getInstance().getString(R.string.error_rapid_test_unjustified);
-      }
-    }
-    return StringUtils.EMPTY;
-  }
-
-  public boolean validateConsumption(RapidTestFormGridViewModel gridViewModel) {
-    if (!gridViewModel.validateConsumption()) {
-      gridViewModel.setInvalidColumn(RapidTestGridColumnCode.CONSUMPTION);
-      return false;
-    } else {
-      gridViewModel.setInvalidColumn(null);
-      return true;
-    }
-  }
-
-  public boolean validatePositiveIsEmpty(RapidTestFormGridViewModel gridViewModel) {
-    if (!gridViewModel.validatePositiveIsEmpty()) {
-      gridViewModel.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
-      return false;
-    } else {
-      gridViewModel.setInvalidColumn(null);
-      return true;
-    }
-  }
-
-  public boolean validatePositiveMoreThanCon(RapidTestFormGridViewModel gridViewModel) {
-    if (!gridViewModel.validatePositiveMoreThanCon()) {
-      gridViewModel.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
-      return false;
-    } else {
-      gridViewModel.setInvalidColumn(null);
-      return true;
-    }
-  }
-
-  public boolean validateUnjustified(RapidTestFormGridViewModel gridViewModel) {
-    if (!gridViewModel.validateUnjustified()) {
-      gridViewModel.setInvalidColumn(RapidTestGridColumnCode.UNJUSTIFIED);
-      return false;
-    } else {
-      gridViewModel.setInvalidColumn(null);
-      return true;
-    }
-  }
-
   public boolean isEmpty() {
     for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
       if (!gridViewModel.isEmpty()) {

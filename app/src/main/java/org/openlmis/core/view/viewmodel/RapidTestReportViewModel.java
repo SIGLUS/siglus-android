@@ -34,6 +34,7 @@ import lombok.Getter;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.enumeration.MMITGridErrorType;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
@@ -235,18 +236,12 @@ public class RapidTestReportViewModel {
   public boolean validate() {
     clearError();
     for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-      errorMessage = itemViewModel.validate();
-      if (!errorMessage.isEmpty()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public boolean validateAPES() {
-    for (RapidTestFormGridViewModel itemViewModel : itemAPEs.rapidTestFormGridViewModelList) {
-      if (itemViewModel.isNeedAddGridViewWarning()) {
-        return false;
+      for (RapidTestFormGridViewModel gridViewModel : itemViewModel.getRapidTestFormGridViewModelList()) {
+        MMITGridErrorType errorType = gridViewModel.validateThreeGrid();
+        if (errorType.isError()) {
+          errorMessage = errorType.getErrorString();
+          return false;
+        }
       }
     }
     return true;

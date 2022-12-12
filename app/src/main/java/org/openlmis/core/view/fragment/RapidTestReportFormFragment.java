@@ -248,9 +248,6 @@ public class RapidTestReportFormFragment extends BaseReportFragment
         } else if (!presenter.getViewModel().validate()) {
           errorMessage = presenter.getViewModel().getErrorMessage();
           rapidBodyRightAdapter.notifyDataSetChanged();
-        } else if (!presenter.getViewModel().validateAPES()) {
-          rapidBodyRightAdapter.notifyDataSetChanged();
-          errorMessage = getString(R.string.error_rapid_test_ape);
         } else if (presenter.getViewModel().validateOnlyAPES()) {
           errorMessage = getString(R.string.error_rapid_test_only_ape);
         }

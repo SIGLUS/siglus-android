@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.enumeration.MMITGridErrorType;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.UsageColumnsMap;
@@ -77,7 +78,28 @@ public class RapidTestFormGridViewModel {
     }
   }
 
-  public boolean validateConsumption() {
+  public MMITGridErrorType validateThreeGrid() {
+    if (!validateConsumption()) {
+      this.setInvalidColumn(RapidTestGridColumnCode.CONSUMPTION);
+      return MMITGridErrorType.EMPTY_CONSUMPTION;
+    } else if (!validatePositiveIsEmpty()) {
+      this.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
+      return MMITGridErrorType.EMPTY_POSITIVE;
+    } else if (!validateUnjustified()) {
+      this.setInvalidColumn(RapidTestGridColumnCode.UNJUSTIFIED);
+      return MMITGridErrorType.EMPTY_UNJUSTIFIED;
+    } else if (!validatePositiveMoreThanCon()) {
+      this.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
+      return MMITGridErrorType.POSITIVE_MORE_THAN_CONSUMPTION;
+    } else if (isNeedAddGridViewWarning()) {
+      this.setInvalidColumn(RapidTestGridColumnCode.CONSUMPTION);
+      return MMITGridErrorType.APE_ALL_EMPTY;
+    } else {
+      return MMITGridErrorType.NO_ERROR;
+    }
+  }
+
+  private boolean validateConsumption() {
     try {
       return !((StringUtils.isNotEmpty(positiveValue) || StringUtils.isNotEmpty(unjustifiedValue))
           && StringUtils.isEmpty(consumptionValue));
@@ -86,7 +108,7 @@ public class RapidTestFormGridViewModel {
     }
   }
 
-  public boolean validatePositiveIsEmpty() {
+  private boolean validatePositiveIsEmpty() {
     try {
       return !(StringUtils.isNotEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue));
     } catch (NumberFormatException e) {
@@ -94,7 +116,7 @@ public class RapidTestFormGridViewModel {
     }
   }
 
-  public boolean validatePositiveMoreThanCon() {
+  private boolean validatePositiveMoreThanCon() {
     try {
       return !positiveGreaterThanConsumption();
     } catch (NumberFormatException e) {
@@ -102,7 +124,7 @@ public class RapidTestFormGridViewModel {
     }
   }
 
-  public boolean validateUnjustified() {
+  private boolean validateUnjustified() {
     try {
       return !(StringUtils.isNotEmpty(consumptionValue)
           && StringUtils.isNotEmpty(positiveValue)
