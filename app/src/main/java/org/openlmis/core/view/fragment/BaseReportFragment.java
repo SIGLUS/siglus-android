@@ -53,7 +53,7 @@ public abstract class BaseReportFragment extends BaseFragment {
   }
 
   public void onBackPressed() {
-    if (baseReportFragmentPresenter.isDraft()) {
+    if (baseReportFragmentPresenter.isDraft() || baseReportFragmentPresenter.isSubmit()) {
       showConfirmDialog();
     } else {
       finish();
@@ -71,7 +71,9 @@ public abstract class BaseReportFragment extends BaseFragment {
     dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
       @Override
       public void positiveClick(String tag) {
-        baseReportFragmentPresenter.deleteDraft();
+        if (baseReportFragmentPresenter.isDraft()) {
+          baseReportFragmentPresenter.deleteDraft();
+        }
         finish();
       }
 

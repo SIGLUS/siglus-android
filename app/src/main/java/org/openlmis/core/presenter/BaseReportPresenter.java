@@ -32,6 +32,8 @@ public abstract class BaseReportPresenter extends Presenter {
 
   public abstract boolean isDraft();
 
+  public abstract boolean isSubmit();
+
   public Observable<Void> getOnSignObservable(final String signature) {
     return Observable.create(subscriber -> {
       try {

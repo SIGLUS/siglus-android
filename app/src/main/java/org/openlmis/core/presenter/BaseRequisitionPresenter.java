@@ -267,6 +267,11 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
         || getRnrFormStatus() == Status.DRAFT_MISSED;
   }
 
+  public boolean isSubmit() {
+    return getRnrFormStatus() == Status.SUBMITTED
+        || getRnrFormStatus() == Status.SUBMITTED_MISSED;
+  }
+
   public boolean isDraftOrDraftMissed() {
     return rnRForm.isDraft();
   }

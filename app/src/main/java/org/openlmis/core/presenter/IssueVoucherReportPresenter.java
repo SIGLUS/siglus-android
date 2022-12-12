@@ -112,6 +112,11 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   }
 
   @Override
+  public boolean isSubmit() {
+    return false;
+  }
+
+  @Override
   protected void addSignature(String signature) {
     // do nothing
   }
