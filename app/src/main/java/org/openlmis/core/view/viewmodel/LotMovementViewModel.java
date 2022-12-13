@@ -170,8 +170,6 @@ public class LotMovementViewModel {
     if (expireDate != null) {
       Calendar expireCalender = Calendar.getInstance();
       expireCalender.setTime(expireDate);
-      expireCalender.add(Calendar.MONTH, 1);
-      expireCalender.set(Calendar.DAY_OF_MONTH, 1);
       return expireCalender.before(nowCalender);
     }
     return false;
