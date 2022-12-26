@@ -90,7 +90,7 @@ public class BulkEntriesActivity extends BaseActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
-    getMenuInflater().inflate(R.menu.menu_bulk_entries, menu);
+    getMenuInflater().inflate(R.menu.menu_add_products, menu);
     return true;
   }
 

@@ -32,7 +32,6 @@ import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DT2;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -49,6 +48,7 @@ import java.util.Objects;
 import org.openlmis.core.R;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
+import org.openlmis.core.utils.SimpleTextWatcher;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public class MMIADispensedInfoList extends LinearLayout {
@@ -316,22 +316,12 @@ public class MMIADispensedInfoList extends LinearLayout {
     adjustment.setText(getAdjustment());
   }
 
-  class EditTextWatcher implements TextWatcher {
+  class EditTextWatcher extends SimpleTextWatcher {
 
     private final BaseInfoItem item;
 
     public EditTextWatcher(BaseInfoItem item) {
       this.item = item;
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      // do nothing
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      // do nothing
     }
 
     @Override

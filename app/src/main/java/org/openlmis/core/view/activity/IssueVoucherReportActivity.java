@@ -179,7 +179,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
-    getMenuInflater().inflate(R.menu.menu_issue_voucher_draft, menu);
+    getMenuInflater().inflate(R.menu.menu_add_products, menu);
     return true;
   }
 

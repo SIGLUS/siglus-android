@@ -37,6 +37,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.utils.SimpleTextWatcher;
 
 public class MMIAPatientInfoList extends LinearLayout {
 
@@ -258,22 +259,12 @@ public class MMIAPatientInfoList extends LinearLayout {
     return false;
   }
 
-  class EditTextWatcher implements android.text.TextWatcher {
+  class EditTextWatcher extends SimpleTextWatcher {
 
     private final BaseInfoItem item;
 
     public EditTextWatcher(BaseInfoItem item) {
       this.item = item;
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      // do nothing
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      // do nothing
     }
 
     @Override

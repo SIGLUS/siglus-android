@@ -151,7 +151,7 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
-    getMenuInflater().inflate(R.menu.menu_bulk_issue, menu);
+    getMenuInflater().inflate(R.menu.menu_add_products, menu);
     MenuItem item = menu.findItem(R.id.action_add_product);
     item.setOnMenuItemClickListener(new SingleClickMenuListener() {
       @Override

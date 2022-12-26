@@ -41,6 +41,7 @@ import java.util.Map;
 import org.openlmis.core.R;
 import org.openlmis.core.constant.ReportConstants;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.utils.SimpleTextWatcher;
 
 public class MMTBPatientInfoList extends LinearLayout {
 
@@ -183,22 +184,12 @@ public class MMTBPatientInfoList extends LinearLayout {
         || KEY_FREQUENCY_TOTAL.equals(item.getName());
   }
 
-  private class EditTextWatcher implements android.text.TextWatcher {
+  private class EditTextWatcher extends SimpleTextWatcher {
 
     private final BaseInfoItem item;
 
     public EditTextWatcher(BaseInfoItem item) {
       this.item = item;
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      // do nothing
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      // do nothing
     }
 
     @Override

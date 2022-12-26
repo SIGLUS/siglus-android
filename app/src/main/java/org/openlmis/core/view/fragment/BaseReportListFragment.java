@@ -27,11 +27,6 @@ import org.openlmis.core.event.SyncRnrFinishEvent;
 @BindEventBus
 public abstract class BaseReportListFragment extends BaseFragment {
 
-  @Override
-  public void onStart() {
-    super.onStart();
-  }
-
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveSyncStatusEvent(SyncRnrFinishEvent event) {
     loadForms();
