@@ -68,6 +68,7 @@ import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.fragment.SimpleDialogFragment.MsgDialogCallBack;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
+import org.openlmis.core.view.widget.ClickIntervalChecker;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
@@ -77,8 +78,6 @@ import rx.Subscription;
 
 @SuppressWarnings("PMD")
 public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivity implements BaseView {
-
-  private static long lastOperateTime = 0L;
 
   @Inject
   SharedPreferenceMgr preferencesMgr;
@@ -97,19 +96,9 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
   @Getter
   protected boolean isLoading = false;
 
-  private long appTimeout;
-
   private long onCreateStartMili;
   private boolean isPageLoadTimerInProgress;
   private static final String TAG_LOGOUT_ALERT = "logout_alert";
-
-  public static synchronized void setLastOperateTime(long newOperateTIme) {
-    BaseActivity.lastOperateTime = newOperateTIme;
-  }
-
-  public static synchronized long getLastOperateTime() {
-    return lastOperateTime;
-  }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveNotAndroidUserErrorEvent(LoginErrorType loginErrorType) {
@@ -172,29 +161,23 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev) {
-    if (getLastOperateTime() > 0L && alreadyTimeOuted() && !isLoginActivityActive()) {
+    if (!isLoginActivityActive() && ClickIntervalChecker.getInstance().isAppTimeOut()) {
+      ClickIntervalChecker.getInstance().resetLastOperateTime();
       logout();
       return true;
-    } else {
-      setLastOperateTime(LMISApp.getInstance().getCurrentTimeMillis());
-      return super.dispatchTouchEvent(ev);
     }
+    ClickIntervalChecker.setLastOperateTime(LMISApp.getInstance().getCurrentTimeMillis());
+    return super.dispatchTouchEvent(ev);
   }
 
   protected void logout() {
     Intent toLoginIntent = new Intent(this, LoginActivity.class);
     toLoginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
     startActivity(toLoginIntent);
-    setLastOperateTime(0L);
   }
 
   private boolean isLoginActivityActive() {
     return this instanceof LoginActivity;
-  }
-
-  private boolean alreadyTimeOuted() {
-    long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
-    return currentTimeMillis - getLastOperateTime() > appTimeout;
   }
 
   @Override
@@ -219,8 +202,6 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
       getSupportActionBar().setHomeButtonEnabled(false);
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
-    appTimeout = Long.parseLong(getResources().getString(R.string.app_time_out));
 
     if (this.getClass().isAnnotationPresent(BindEventBus.class)) {
       EventBus.getDefault().register(this);
@@ -337,6 +318,10 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
+    if (!ClickIntervalChecker.getInstance().isClickLongerThanInterval()) {
+      return true;
+    }
+    ClickIntervalChecker.setLastClickItemTime(LMISApp.getInstance().getCurrentTimeMillis());
     if (android.R.id.home == item.getItemId()) {
       onBackPressed();
       return true;
