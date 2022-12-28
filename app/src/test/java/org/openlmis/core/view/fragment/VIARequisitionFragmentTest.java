@@ -28,9 +28,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
@@ -56,6 +58,7 @@ import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.RobolectricUtils;
+import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
@@ -252,6 +255,21 @@ public class VIARequisitionFragmentTest {
     String msg = viaRequisitionFragment.getString(R.string.msg_stock_movement_is_not_ready);
     assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(msg);
     verify(presenter, never()).loadData(anyLong(), any(Date.class));
+  }
+
+  @Test
+  public void shouldGoToAddDrugsToVIAActivityWhenClickMenuItem() {
+    //given
+    MenuItem menuItem = mock(MenuItem.class);
+    when(menuItem.getItemId()).thenReturn(R.id.action_add_new_drugs_to_via);
+
+    //when
+    viaRequisitionFragment.onOptionsItemSelected(menuItem);
+    Intent intent = shadowOf(viaRequisitionFragment.getActivity()).getNextStartedActivity();
+
+    //then
+    assertThat(intent).isNotNull();
+    assertThat(intent.getComponent().getClassName()).isEqualTo(AddDrugsToVIAActivity.class.getName());
   }
 }
 

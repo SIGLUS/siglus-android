@@ -27,7 +27,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
+import android.content.Intent;
+import android.view.MenuItem;
 import android.view.View;
 import androidx.fragment.app.DialogFragment;
 import com.google.inject.AbstractModule;
@@ -47,6 +50,7 @@ import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import org.openlmis.core.view.widget.OrderInfoView;
 import org.robolectric.Robolectric;
+import org.openlmis.core.R;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
@@ -176,6 +180,31 @@ public class IssueVoucherReportActivityTest {
     DialogFragment fragment = (DialogFragment) (reportActivity
         .getSupportFragmentManager().findFragmentByTag("signature_dialog"));
     assertThat(fragment).isNotNull();
+  }
+
+  @Test
+  public void shouldOpenAddProductsWhenClickMenuItem() throws Exception {
+    //given
+    Pod pod = PodBuilder.generatePod();
+    pod.setLocal(true);
+    pod.setDraft(true);
+    IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
+    Program program = new Program();
+    program.setProgramName("VIA");
+    issueVoucherReportViewModel.setProgram(program);
+    when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(issueVoucherReportViewModel);
+
+    MenuItem menuItem = mock(MenuItem.class);
+    when(menuItem.getItemId()).thenReturn(R.id.action_add_product);
+
+    //when
+    reportActivity.refreshIssueVoucherForm(pod);
+    reportActivity.onOptionsItemSelected(menuItem);
+    Intent intent = shadowOf(reportActivity).getNextStartedActivity();
+
+    //then
+    assertThat(intent).isNotNull();
+    assertThat(intent.getComponent().getClassName()).isEqualTo(AddProductsToBulkEntriesActivity.class.getName());
   }
 
 }

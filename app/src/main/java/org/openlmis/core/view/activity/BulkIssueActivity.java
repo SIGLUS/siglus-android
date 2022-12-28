@@ -52,7 +52,6 @@ import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.widget.BulkEntriesSignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
-import org.openlmis.core.view.widget.SingleClickMenuListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -124,21 +123,22 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView, On
     }
   };
 
-
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
     getMenuInflater().inflate(R.menu.menu_add_products, menu);
-    MenuItem item = menu.findItem(R.id.action_add_product);
-    item.setOnMenuItemClickListener(new SingleClickMenuListener() {
-      @Override
-      public void onSingleClick(MenuItem item) {
-        openAddProducts();
-      }
-    });
     return true;
   }
 
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    super.onOptionsItemSelected(item);
+    if (R.id.action_add_product == item.getItemId()) {
+      openAddProducts();
+      return true;
+    }
+    return false;
+  }
 
   @Override
   public void onRefreshViewModels() {

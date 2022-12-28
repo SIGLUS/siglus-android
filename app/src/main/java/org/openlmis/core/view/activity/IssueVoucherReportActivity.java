@@ -60,7 +60,6 @@ import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.IssueVoucherSignatureDialog;
 import org.openlmis.core.view.widget.OrderInfoView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
-import org.openlmis.core.view.widget.SingleClickMenuListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -180,21 +179,20 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
     getMenuInflater().inflate(R.menu.menu_add_products, menu);
+    addProductMenu = menu;
+    MenuItem item = addProductMenu.findItem(R.id.action_add_product);
+    item.setVisible(isVisible);
     return true;
   }
 
   @Override
-  public boolean onPrepareOptionsMenu(Menu menu) {
-    addProductMenu = menu;
-    MenuItem item = addProductMenu.findItem(R.id.action_add_product);
-    item.setVisible(isVisible);
-    item.setOnMenuItemClickListener(new SingleClickMenuListener() {
-      @Override
-      public void onSingleClick(MenuItem item) {
-        openAddProducts();
-      }
-    });
-    return super.onPrepareOptionsMenu(menu);
+  public boolean onOptionsItemSelected(MenuItem item) {
+    super.onOptionsItemSelected(item);
+    if (R.id.action_add_product == item.getItemId()) {
+      openAddProducts();
+      return true;
+    }
+    return false;
   }
 
   @NonNull

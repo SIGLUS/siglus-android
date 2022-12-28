@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -51,7 +50,6 @@ import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.LotInfoGroup;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
-import org.openlmis.core.view.widget.SingleClickMenuListener;
 import org.openlmis.core.view.widget.StockMovementHeaderView;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.inject.ContentView;
@@ -231,28 +229,29 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.menu_stock_movement, menu);
-    MenuItem historyItem = menu.findItem(R.id.action_history);
-    historyItem.setOnMenuItemClickListener(new SingleClickMenuListener() {
-      @Override
-      public void onSingleClick(MenuItem item) {
-        startActivity(
-            StockMovementHistoryActivity.getIntentToMe(getApplicationContext(), stockId, stockName, false, isKit));
-      }
-    });
+    getMenuInflater().inflate(R.menu.menu_stock_movement, menu);
     return true;
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
+    super.onOptionsItemSelected(item);
     if (item.getItemId() == R.id.action_archive) {
       presenter.archiveStockCard();
       ToastUtil.show(getString(R.string.msg_drug_archived));
       onBackPressed();
       return true;
+    } else if (item.getItemId() == R.id.action_history) {
+      startActivity(
+          StockMovementHistoryActivity.getIntentToMe(
+              getApplicationContext(),
+              stockId,
+              stockName,
+              false,
+              isKit));
+      return true;
     }
-    return super.onOptionsItemSelected(item);
+    return false;
   }
 
   private void unpackKit() {

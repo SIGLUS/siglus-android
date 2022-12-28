@@ -20,7 +20,6 @@ import java.util.Collections;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -64,7 +63,7 @@ public class IssueVoucherDraftActivityTest {
     RoboGuice.Util.reset();
   }
 
-  @Ignore
+  @Test
   public void shouldCorrectOpenAddProducts() {
     // given
     MenuItem mockMenuItem = mock(MenuItem.class);
@@ -74,10 +73,9 @@ public class IssueVoucherDraftActivityTest {
 
     // when
     issueVoucherDraftActivity.onOptionsItemSelected(mockMenuItem);
-    RobolectricUtils.waitLooperIdle();
+    Intent intent = shadowOf(issueVoucherDraftActivity).getNextStartedActivity();
 
     // then
-    Intent intent = shadowOf(issueVoucherDraftActivity).getNextStartedActivity();
     assertNotNull(intent);
     assertEquals(AddProductsToBulkEntriesActivity.class.getName(), intent.getComponent().getClassName());
     assertFalse(intent.getBooleanExtra(IS_FROM_BULK_ISSUE, false));

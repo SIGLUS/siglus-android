@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.content.Intent;
+import android.view.MenuItem;
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
@@ -158,8 +159,11 @@ public class ReportListActivityTest {
     when(mockedPresenter.hasMissedViaProgramPeriod()).thenReturn(value);
     when(mockedPresenter.isHasVCReportType()).thenReturn(true);
 
+    MenuItem menuItem = mock(MenuItem.class);
+    when(menuItem.getItemId()).thenReturn(R.id.action_create_emergency_rnr);
+
     // when
-    reportListActivity.checkAndGotoEmergencyPage();
+    reportListActivity.onOptionsItemSelected(menuItem);
 
     // then
     ShadowActivity shadowActivity = shadowOf(reportListActivity);
@@ -167,6 +171,18 @@ public class ReportListActivityTest {
     ShadowIntent shadowIntent = shadowOf(startedIntent);
     MatcherAssert.assertThat(shadowIntent.getIntentClass().getCanonicalName(),
         equalTo(SelectEmergencyProductsActivity.class.getName()));
+  }
+
+  @Test
+  public void shouldGotoEmergencyPageWhenClickMenuItem() throws Exception {
+    // given
+    MenuItem menuItem = mock(MenuItem.class);
+
+    // when
+    when(menuItem.getItemId()).thenReturn(R.id.action_create_emergency_rnr);
+
+    // then
+    assertThat(reportListActivity.onOptionsItemSelected(menuItem)).isEqualTo(true);
   }
 
   @After
