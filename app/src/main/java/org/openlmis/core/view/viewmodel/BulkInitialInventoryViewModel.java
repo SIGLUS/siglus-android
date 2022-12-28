@@ -57,7 +57,7 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
   @Override
   public boolean isDataChanged() {
     if (draftInventory == null) {
-      return hasLotInInventoryModelChanged();
+      return hasLotInventoryModelChanged();
     }
     return isDifferentFromDraft();
   }
@@ -77,23 +77,6 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
       }
     }
     return !newLotMovementViewModelList.isEmpty();
-  }
-
-  private boolean hasLotInInventoryModelChanged() {
-    for (LotMovementViewModel viewModel : getExistingLotMovementViewModelList()) {
-      if (viewModel.getQuantity() != null && !viewModel.getQuantity().isEmpty()) {
-        return true;
-      }
-    }
-    if (!newLotMovementViewModelList.isEmpty()) {
-      return true;
-    }
-    for (LotMovementViewModel viewModel : getNewLotMovementViewModelList()) {
-      if (viewModel.getQuantity() != null && !viewModel.getQuantity().isEmpty()) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public SpannableStringBuilder getGreenName() {
