@@ -182,7 +182,7 @@ public class ReportListActivityTest {
     when(menuItem.getItemId()).thenReturn(R.id.action_create_emergency_rnr);
 
     // then
-    assertThat(reportListActivity.onOptionsItemSelected(menuItem)).isEqualTo(true);
+    assertThat(reportListActivity.onOptionsItemSelected(menuItem)).isTrue();
   }
 
   @After
