@@ -62,6 +62,8 @@ public class IssueVoucherReportActivityTest {
   private IssueVoucherReportPresenter mockedPresenter;
   private ActivityController<IssueVoucherReportActivity> activityController;
 
+  private final String TEST_PROGRAM_NAME = "VIA";
+
   @Before
   public void setUp() {
     mockedPresenter = mock(IssueVoucherReportPresenter.class);
@@ -127,7 +129,7 @@ public class IssueVoucherReportActivityTest {
     OrderInfoView orderInfoView = mock(OrderInfoView.class);
     IssueVoucherReportViewModel viewModel = new IssueVoucherReportViewModel(pod);
     Program program = new Program();
-    program.setProgramName("VIA");
+    program.setProgramName(TEST_PROGRAM_NAME);
     program.setProgramCode(Program.VIA_CODE);
     viewModel.setProgram(program);
     when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(viewModel);
@@ -147,7 +149,7 @@ public class IssueVoucherReportActivityTest {
     Pod pod = PodBuilder.generatePod();
     IssueVoucherReportViewModel viewModel = new IssueVoucherReportViewModel(pod);
     Program program = new Program();
-    program.setProgramName("VIA");
+    program.setProgramName(TEST_PROGRAM_NAME);
     program.setProgramCode(Program.VIA_CODE);
     viewModel.setProgram(program);
     reportActivity.setOrderInfo(orderInfoView);
@@ -168,7 +170,7 @@ public class IssueVoucherReportActivityTest {
     Pod pod = PodBuilder.generatePod();
     IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
     Program program = new Program();
-    program.setProgramName("VIA");
+    program.setProgramName(TEST_PROGRAM_NAME);
     issueVoucherReportViewModel.setProgram(program);
     when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(issueVoucherReportViewModel);
 
@@ -190,7 +192,7 @@ public class IssueVoucherReportActivityTest {
     pod.setDraft(true);
     IssueVoucherReportViewModel issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
     Program program = new Program();
-    program.setProgramName("VIA");
+    program.setProgramName(TEST_PROGRAM_NAME);
     issueVoucherReportViewModel.setProgram(program);
     when(mockedPresenter.getIssueVoucherReportViewModel()).thenReturn(issueVoucherReportViewModel);
 

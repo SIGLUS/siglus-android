@@ -32,7 +32,8 @@ public class ClickIntervalChecker {
   private static long lastOperateTime = 0L;
   private static long lastClickItemTime = 0L;
 
-  private ClickIntervalChecker(){}
+  private ClickIntervalChecker(){
+  }
 
   public static synchronized ClickIntervalChecker getInstance() {
     if (instance == null) {
@@ -72,17 +73,4 @@ public class ClickIntervalChecker {
   public void resetLastOperateTime() {
     setLastOperateTime(0L);
   }
-
-//  public boolean checkInterval() {
-//    long currentClickTime = LMISApp.getInstance().getCurrentTimeMillis();
-//    long elapsedTime = currentClickTime - lastClickTime;
-//
-//    lastClickTime = currentClickTime;
-//
-//    //disable click when user click twice in 500ms
-//    if (elapsedTime <= CLICK_ITEM_INTERVAL) {
-//      return false;
-//    }
-//    return true;
-//  }
 }
