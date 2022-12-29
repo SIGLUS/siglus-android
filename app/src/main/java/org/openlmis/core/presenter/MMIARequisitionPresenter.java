@@ -18,7 +18,6 @@
 
 package org.openlmis.core.presenter;
 
-import android.util.Log;
 import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.Date;
@@ -89,18 +88,13 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
   }
 
   public RnRForm getLastRnrForm() {
-    try {
-      List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, Constants.MMIA_PROGRAM_CODE);
-      if (rnRForms == null || rnRForms.size() == 1) {
-        return null;
-      }
-      Collections
-          .sort(rnRForms, (lhs, rhs) -> rhs.getPeriodBegin().compareTo(lhs.getPeriodBegin()));
-      return rnRForms.get(1);
-    } catch (LMISException e) {
-      Log.w("MMIAPresenter", e);
+    List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, Constants.MMIA_PROGRAM_CODE);
+    if (rnRForms == null || rnRForms.size() == 1) {
+      return null;
     }
-    return null;
+    Collections
+        .sort(rnRForms, (lhs, rhs) -> rhs.getPeriodBegin().compareTo(lhs.getPeriodBegin()));
+    return rnRForms.get(1);
   }
 
   public void setViewModels(List<RnrFormItem> formItems,

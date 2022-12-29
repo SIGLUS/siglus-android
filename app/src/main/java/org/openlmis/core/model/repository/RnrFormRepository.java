@@ -211,14 +211,20 @@ public class RnrFormRepository {
     return genericDao.queryForAll();
   }
 
-  public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode) throws LMISException {
+  public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode) {
     ReportTypeForm reportTypeForm = reportTypeFormRepository.getReportType(programCode);
     return listInclude(includeEmergency, programCode, reportTypeForm);
   }
 
   public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode,
-      ReportTypeForm reportTypeForm) throws LMISException {
-    return listForm(programCode, includeEmergency.isEmergency(), reportTypeForm);
+      ReportTypeForm reportTypeForm) {
+    try {
+      return listForm(programCode, includeEmergency.isEmergency(), reportTypeForm);
+    } catch (LMISException e) {
+      new LMISException(e, "Fail to listForm in listInclude").reportToFabric();
+      e.printStackTrace();
+      return null;
+    }
   }
 
   public List<RnRForm> queryAllUnsyncedForms() throws LMISException {
@@ -357,7 +363,7 @@ public class RnrFormRepository {
   }
 
   protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
-      List<StockMovementItem> notFullStockItemsByCreatedData) throws LMISException {
+      List<StockMovementItem> notFullStockItemsByCreatedData) {
     RnrFormItem rnrFormItem = new RnrFormItem();
     if (notFullStockItemsByCreatedData.isEmpty()) {
       rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));

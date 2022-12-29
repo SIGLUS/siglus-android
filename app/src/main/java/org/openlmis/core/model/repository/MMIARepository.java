@@ -285,7 +285,7 @@ public class MMIARepository extends RnrFormRepository {
   @SuppressWarnings("squid:S1130")
   @Override
   protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
-      List<StockMovementItem> notFullStockItemsByCreatedData) throws LMISException {
+      List<StockMovementItem> notFullStockItemsByCreatedData) {
     RnrFormItem rnrFormItem = this.createMMIARnrFormItemByPeriod(stockCard, notFullStockItemsByCreatedData);
 
     rnrFormItem.setProduct(stockCard.getProduct());
@@ -297,8 +297,7 @@ public class MMIARepository extends RnrFormRepository {
     return rnrFormItem;
   }
 
-  protected RnrFormItem createMMIARnrFormItemByPeriod(StockCard stockCard, List<StockMovementItem> stockMovementItems)
-      throws LMISException {
+  protected RnrFormItem createMMIARnrFormItemByPeriod(StockCard stockCard, List<StockMovementItem> stockMovementItems) {
     RnrFormItem rnrFormItem = new RnrFormItem();
 
     if (stockMovementItems.isEmpty()) {
@@ -313,7 +312,7 @@ public class MMIARepository extends RnrFormRepository {
   }
 
   protected long getMMiAInitialAmount(StockCard stockCard,
-      List<StockMovementItem> stockMovementItems) throws LMISException {
+      List<StockMovementItem> stockMovementItems) {
     List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.NO, programCode);
     if (rnRForms.size() == 1) {
       return stockMovementItems.get(0).calculatePreviousSOH();
