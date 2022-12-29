@@ -27,6 +27,7 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -187,6 +188,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     view.setEnabled(true);
   }
 
+  @EqualsAndHashCode(callSuper = false)
   class MyTextWatcher extends SingleTextWatcher {
 
     private final RequisitionFormItemViewModel entry;

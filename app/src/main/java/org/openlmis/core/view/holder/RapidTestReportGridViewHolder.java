@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
+import lombok.EqualsAndHashCode;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -177,6 +178,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         RapidTestGridColumnCode gridColumnCode);
   }
 
+  @EqualsAndHashCode(callSuper = false)
   class TextWatcher extends SingleTextWatcher {
 
     private final EditText editText;
