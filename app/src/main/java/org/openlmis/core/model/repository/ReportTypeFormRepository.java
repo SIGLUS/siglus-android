@@ -19,6 +19,7 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.util.Log;
 import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.List;
@@ -76,7 +77,7 @@ public class ReportTypeFormRepository {
       return queryByCode(programCode);
     } catch (LMISException e) {
       new LMISException(e, "Fail to queryByCode in getReportType").reportToFabric();
-      e.printStackTrace();
+      Log.e("ReportTypeFormRepo", "getReportType: ", e);
       return null;
     }
   }

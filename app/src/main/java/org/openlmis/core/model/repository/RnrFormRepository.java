@@ -35,6 +35,7 @@ import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;
@@ -222,7 +223,7 @@ public class RnrFormRepository {
       return listForm(programCode, includeEmergency.isEmergency(), reportTypeForm);
     } catch (LMISException e) {
       new LMISException(e, "Fail to listForm in listInclude").reportToFabric();
-      e.printStackTrace();
+      Log.e("RnrFormRepo", "listInclude: ", e);
       return null;
     }
   }
