@@ -138,10 +138,6 @@ public class UnpackKitPresenter extends Presenter {
 
     kitStockCard.setStockOnHand(kitStockCard.getStockOnHand() - kitUnpackQuantity);
 
-    if (0 == kitStockCard.getStockOnHand()) {
-      kitStockCard.setExpireDates("");
-    }
-
     StockMovementItem kitMovementItem = new StockMovementItem(kitStockCard);
     kitMovementItem.setReason(MovementReasonManager.UNPACK_KIT);
     kitMovementItem.setMovementType(MovementReasonManager.MovementType.ISSUE);

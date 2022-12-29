@@ -93,9 +93,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
           viewModel.setSignature(sign);
           StockCard stockCard = viewModel.getStockCard();
           stockCard.setStockOnHand(viewModel.getLotListQuantityTotalAmount());
-          if (stockCard.getStockOnHand() == 0) {
-            stockCard.setExpireDates("");
-          }
           stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(viewModel, stockCard), createdTime);
         }
         inventoryRepository.clearDraft();

@@ -162,7 +162,6 @@ public class StockCardPresenterTest {
 
     verify(stockRepository).updateStockCardWithProduct(stockCard);
     verify(stockRepository, never()).updateProductOfStockCard(stockCard.getProduct());
-    assertThat(stockCard.getExpireDates()).isEmpty();
     assertFalse(stockCard.getProduct().isArchived());
   }
 
