@@ -134,8 +134,8 @@ public class RoboMigrationAndroidXActionBarActivity extends AppCompatActivity im
   }
 
   @Override
-  public void onSupportContentChanged() {
-    super.onSupportContentChanged();
+  public void onContentChanged() {
+    super.onContentChanged();
     RoboGuice.getInjector(this).injectViewMembers(this);
     eventManager.fire(new OnContentChangedEvent(this));
   }
