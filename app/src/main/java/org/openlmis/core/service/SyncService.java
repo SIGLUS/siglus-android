@@ -107,7 +107,6 @@ public class SyncService extends Service {
       if (account != null) {
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         bundle.putBoolean(Constants.IS_USER_TRIGGERED_SYCED, isUserTriggered);
 

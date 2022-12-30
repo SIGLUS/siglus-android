@@ -28,6 +28,8 @@ import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.provider.Settings.Secure;
 import android.util.Log;
 import androidx.core.app.NotificationCompat;
@@ -404,7 +406,8 @@ public class AutoUpdateApk {
     try {
       PackageInfo packageInfo = context.getPackageManager()
           .getPackageInfo(context.getPackageName(), 0);
-      versionCode = packageInfo.versionCode;
+      versionCode =
+          (VERSION.SDK_INT < VERSION_CODES.P) ? packageInfo.versionCode : (int) packageInfo.getLongVersionCode();
     } catch (Exception e) {
       Log.w(TAG, e);
     }
@@ -431,21 +434,9 @@ public class AutoUpdateApk {
         .getSystemService(Context.NOTIFICATION_SERVICE);
 
     if (isBetweenLollipopAndO()) {
-      mNotificationBetweenLOLLIPOPAndroidOBuilder = new NotificationCompat.Builder(context)
-          .setContentTitle(getString(R.string.upgrade_download_title))
-          .setSmallIcon(R.mipmap.ic_launcher)
-          .setPriority(NotificationCompat.DEFAULT_ALL)
-          .setProgress(0, 0, false)
-          .setOngoing(false)
-          .setAutoCancel(true);
+      mNotificationBetweenLOLLIPOPAndroidOBuilder = initNotificationBuilderForLowerO();
     } else if (isLowerThanLollipop()) {
-      mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder = new NotificationCompat.Builder(context)
-          .setContentTitle(getString(R.string.upgrade_download_title))
-          .setSmallIcon(R.mipmap.ic_launcher)
-          .setPriority(NotificationCompat.DEFAULT_ALL)
-          .setProgress(0, 0, false)
-          .setOngoing(false)
-          .setAutoCancel(true);
+      mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder = initNotificationBuilderForLowerO();
     } else if (isOAndHigher()) {
       NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID,
           CHANNEL_NAME,
@@ -467,6 +458,16 @@ public class AutoUpdateApk {
           .setAutoCancel(true);
     }
 
+  }
+
+  private NotificationCompat.Builder initNotificationBuilderForLowerO() {
+    return new NotificationCompat.Builder(context)
+        .setContentTitle(getString(R.string.upgrade_download_title))
+        .setSmallIcon(R.mipmap.ic_launcher)
+        .setPriority(NotificationCompat.DEFAULT_ALL)
+        .setProgress(0, 0, false)
+        .setOngoing(false)
+        .setAutoCancel(true);
   }
 
   private String md5Hex(String filename) {
