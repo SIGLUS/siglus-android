@@ -11,17 +11,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import com.google.inject.AbstractModule;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
@@ -39,7 +36,7 @@ import roboguice.RoboGuice;
 import rx.Observable;
 
 @RunWith(LMISTestRunner.class)
-public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
+public class PhysicalInventoryActivityTest {
 
   private PhysicalInventoryActivity physicalInventoryActivity;
   private ActivityController<PhysicalInventoryActivity> activityController;
@@ -60,7 +57,7 @@ public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
       }
     });
     activityController = Robolectric.buildActivity(PhysicalInventoryActivity.class);
-    physicalInventoryActivity = activityController.create().start().resume().get();
+    physicalInventoryActivity = activityController.create().get();
     Product product = new ProductBuilder()
         .setCode("Product code")
         .setPrimaryName("Primary name")
@@ -140,7 +137,7 @@ public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
     final Fragment backConfirmDialog = physicalInventoryActivity.getSupportFragmentManager()
         .findFragmentByTag("back_confirm_dialog");
     assertNotNull(backConfirmDialog);
-    assertNotNull(((DialogFragment) backConfirmDialog).getDialog());
+    assertTrue(backConfirmDialog.isAdded());
   }
 
   @Test
@@ -155,11 +152,17 @@ public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
     Mockito.verify(mockedPresenter,times(1)).saveDraftInventoryObservable();
   }
 
-  @Ignore
   @Test
   public void shouldShowErrorWhenOnErrorCalled() {
     String errorMessage = "This is throwable error";
     physicalInventoryActivity.errorAction.call(new Throwable(errorMessage));
+
+    assertNull(physicalInventoryActivity.loadingDialog);
+  }
+
+  @Test
+  public void shouldGoToMainPageWhenOnNextCalled() {
+    physicalInventoryActivity.onNextMainPageAction.call(null);
 
     assertNull(physicalInventoryActivity.loadingDialog);
   }
