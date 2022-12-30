@@ -44,6 +44,7 @@ import com.j256.ormlite.stmt.Where;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -224,7 +225,7 @@ public class RnrFormRepository {
     } catch (LMISException e) {
       new LMISException(e, "Fail to listForm in listInclude").reportToFabric();
       Log.e("RnrFormRepo", "listInclude: ", e);
-      return null;
+      return Collections.emptyList();
     }
   }
 
