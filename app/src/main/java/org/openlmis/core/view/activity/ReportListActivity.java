@@ -62,6 +62,8 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
 
   ReportListPageAdapter pageAdapter;
 
+  Menu emergencyMenu;
+
   private final ActivityResultLauncher<Intent> toSelectEmergencyProductsLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
         ReportListFragment viaRequisitionFragment =
@@ -77,6 +79,7 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
 
     @Override
     public void onPageSelected(int position) {
+      setMenuVisible(position);
       magicIndicator.onPageSelected(position);
     }
 
@@ -101,6 +104,7 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
+    emergencyMenu = menu;
     getMenuInflater().inflate(R.menu.menu_rnr_list, menu);
     return true;
   }
@@ -113,6 +117,12 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
       return true;
     }
     return false;
+  }
+
+  public void setMenuVisible(int position) {
+    if (emergencyMenu != null) {
+      emergencyMenu.findItem(R.id.action_create_emergency_rnr).setVisible(position == 0);
+    }
   }
 
   protected void checkAndGotoEmergencyPage() {
