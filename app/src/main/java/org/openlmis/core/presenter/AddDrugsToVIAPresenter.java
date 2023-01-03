@@ -50,14 +50,14 @@ public class AddDrugsToVIAPresenter extends Presenter {
   @SuppressWarnings("squid:S1905")
   public Observable<Void> loadActiveProductsNotInVIAForm(final List<String> existingProducts) {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
-    inventoryViewModelList.addAll(FluentIterable
-        .from(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm())
-        .filter(product -> !existingProducts.contains(product.getCode()))
-        .transform(AddDrugsToViaInventoryViewModel::new)
-        .toSortedList((o1, o2) ->
-            o1.getProductName() == null ? 0 : o1.getProductName().compareToIgnoreCase(o2.getProductName())));
-    subscriber.onNext(null);
-    subscriber.onCompleted();
+      inventoryViewModelList.addAll(FluentIterable
+          .from(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm())
+          .filter(product -> !existingProducts.contains(product.getCode()))
+          .transform(AddDrugsToViaInventoryViewModel::new)
+          .toSortedList((o1, o2) ->
+              o1.getProductName() == null ? 0 : o1.getProductName().compareToIgnoreCase(o2.getProductName())));
+      subscriber.onNext(null);
+      subscriber.onCompleted();
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
