@@ -228,8 +228,7 @@ public class RnRFormListPresenter extends Presenter {
     repository.removeRnrForm(form);
   }
 
-  private boolean isAllRnrFormInDBCompletedOrNoRnrFormInDB(ReportTypeForm reportTypeForm)
-      throws LMISException {
+  private boolean isAllRnrFormInDBCompletedOrNoRnrFormInDB(ReportTypeForm reportTypeForm) {
     List<RnRForm> rnRForms = repository
         .listInclude(RnRForm.Emergency.NO, programCode, reportTypeForm);
     return rnRForms.isEmpty()

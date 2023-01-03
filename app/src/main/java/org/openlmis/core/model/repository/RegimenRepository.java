@@ -29,6 +29,7 @@ import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Regimen;
@@ -96,13 +97,18 @@ public class RegimenRepository {
     regimenGenericDao.create(regimen);
   }
 
-  public List<Regimen> listDefaultRegime(String programCode) throws LMISException {
-    return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder()
-        .where()
-        .eq(IS_CUSTOM, false)
-        .and().eq(ACTIVE, true)
-        .and().eq(PROGRAM_ID, programRepository.queryByCode(programCode).getId())
-        .query());
+  public List<Regimen> listDefaultRegime(String programCode) {
+    try {
+      return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder()
+          .where()
+          .eq(IS_CUSTOM, false)
+          .and().eq(ACTIVE, true)
+          .and().eq(PROGRAM_ID, programRepository.queryByCode(programCode).getId())
+          .query());
+    } catch (LMISException e) {
+      new LMISException(e, "Fail to listDefaultRegime").reportToFabric();
+      return Collections.emptyList();
+    }
   }
 
   public List<Regimen> listNonCustomRegimen(String programCode, Regimen.RegimeType type) throws LMISException {

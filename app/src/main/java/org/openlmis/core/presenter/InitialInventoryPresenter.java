@@ -48,18 +48,13 @@ public class InitialInventoryPresenter extends InventoryPresenter {
   @Override
   public Observable<List<InventoryViewModel>> loadInventory() {
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
-      try {
-        List<Product> inventoryProducts = productRepository.listProductsArchivedOrNotInStockCard();
+      List<Product> inventoryProducts = productRepository.listProductsArchivedOrNotInStockCard();
 
-        inventoryViewModelList.addAll(from(inventoryProducts)
-            .transform(this::convertProductToStockCardViewModel).filter(inventoryViewModel ->
-                !(inventoryViewModel.getProduct().isArchived() && inventoryViewModel.getStockCard() == null)).toList());
-        subscriber.onNext(inventoryViewModelList);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "InitialInventoryPresenter.loadInventory").reportToFabric();
-        subscriber.onError(e);
-      }
+      inventoryViewModelList.addAll(from(inventoryProducts)
+          .transform(this::convertProductToStockCardViewModel).filter(inventoryViewModel ->
+              !(inventoryViewModel.getProduct().isArchived() && inventoryViewModel.getStockCard() == null)).toList());
+      subscriber.onNext(inventoryViewModelList);
+      subscriber.onCompleted();
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
@@ -70,18 +65,11 @@ public class InitialInventoryPresenter extends InventoryPresenter {
 
   public Observable<List<InventoryViewModel>> loadInventoryWithBasicProducts() {
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
-
-      try {
-        List<Product> basicProducts = productRepository.listBasicProducts();
-        inventoryViewModelList.addAll(from(basicProducts).transform(this::convertProductToStockCardViewModel).toList());
-        subscriber.onNext(inventoryViewModelList);
-        defaultViewModelList = new ArrayList<>(inventoryViewModelList);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "InitialInventoryPresenter.loadInventoryWithBasicProducts")
-            .reportToFabric();
-        subscriber.onError(e);
-      }
+      List<Product> basicProducts = productRepository.listBasicProducts();
+      inventoryViewModelList.addAll(from(basicProducts).transform(this::convertProductToStockCardViewModel).toList());
+      subscriber.onNext(inventoryViewModelList);
+      defaultViewModelList = new ArrayList<>(inventoryViewModelList);
+      subscriber.onCompleted();
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 

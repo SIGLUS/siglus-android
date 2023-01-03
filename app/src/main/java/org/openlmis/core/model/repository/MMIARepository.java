@@ -181,7 +181,7 @@ public class MMIARepository extends RnrFormRepository {
   }
 
   @Override
-  protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
+  protected List<RegimenItem> generateRegimeItems(RnRForm form) {
     return FluentIterable
         .from(regimenRepository.listDefaultRegime(programCode))
         .transform(regimen -> {

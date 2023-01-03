@@ -417,7 +417,7 @@ public class RnrFormRepository {
     // do nothing
   }
 
-  protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
+  protected List<RegimenItem> generateRegimeItems(RnRForm form) {
     return new ArrayList<>();
   }
 
