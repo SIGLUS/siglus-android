@@ -278,10 +278,10 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     stockCard.setLotOnHandListWrapper(newArrayList(new LotOnHand(lot, stockCard, 10L)));
     when(mockStockMovementRepository
         .queryStockMovementsByMovementDate(anyLong(), any(Date.class), any(Date.class)))
-        .thenReturn(new ArrayList<StockMovementItem>());
+        .thenReturn(new ArrayList<>());
 
     RnrFormItem rnrFormItemByPeriod = mmiaRepository
-        .createRnrFormItemByPeriod(stockCard, new ArrayList<StockMovementItem>());
+        .createRnrFormItemByPeriod(stockCard, new ArrayList<>());
 
     assertThat(rnrFormItemByPeriod.getValidate(), is("01/02/2015"));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
@@ -289,13 +289,12 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
     stockCard.setLotOnHandListWrapper(Lists.newArrayList());
     rnrFormItemByPeriod = mmiaRepository
-        .createRnrFormItemByPeriod(stockCard, new ArrayList<StockMovementItem>());
+        .createRnrFormItemByPeriod(stockCard, new ArrayList<>());
     assertNull(rnrFormItemByPeriod.getValidate());
   }
 
   private StockMovementItem createMovementItem(MovementReasonManager.MovementType type,
-      long quantity, StockCard stockCard, Date createdTime, Date movementDate)
-      throws LMISException {
+      long quantity, StockCard stockCard, Date createdTime, Date movementDate) {
     StockMovementItem stockMovementItem = new StockMovementItem();
     stockMovementItem.setMovementQuantity(quantity);
     stockMovementItem.setMovementType(type);
