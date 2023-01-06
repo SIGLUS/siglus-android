@@ -23,6 +23,8 @@ import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -33,7 +35,9 @@ import static org.mockito.Mockito.when;
 import android.util.Log;
 import com.google.inject.AbstractModule;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,17 +46,22 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenItemRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.service.SyncUpManager;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
+import rx.Observable;
 import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)
@@ -232,6 +241,48 @@ public class MMIARequisitionPresenterTest {
     presenter.getRnRForm().getRegimenItemListWrapper().add(regimenItem);
 
     assertTrue(presenter.isRegimeItemExists(regimen));
+  }
+
+  @Test
+  public void shouldLoadData() {
+    presenter.loadData(10L, null);
+    Assert.assertNotNull(presenter.subscriptions);
+    Assert.assertEquals(1, presenter.subscriptions.size());
+  }
+
+  @Test
+  public void shouldGetRnrFormObservable() {
+    Observable<RnRForm> rnrFormObservableValidFormId = presenter.getRnrFormObservable(100L);
+    assertNotNull(rnrFormObservableValidFormId);
+  }
+
+  @Test
+  public void shouldGetSaveFormObservable() {
+    Observable<Void> saveFormObservable = presenter.getSaveFormObservable(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), null);
+    assertNotNull(saveFormObservable);
+  }
+
+  @Test
+  public void shouldSetViewModels() {
+    //given
+    List<RnrFormItem> rnrFormItems = new ArrayList<>();
+    rnrFormItems.add(new RnrFormItem());
+    List<RegimenItem> regimenItems = new ArrayList<>();
+    regimenItems.add(new RegimenItem());
+    List<BaseInfoItem> baseInfoItems = new ArrayList<>();
+    baseInfoItems.add(new BaseInfoItem());
+    List<RegimenItemThreeLines> threeLinesList = new ArrayList<>();
+    threeLinesList.add(new RegimenItemThreeLines());
+
+    //when
+    presenter.setViewModels(rnrFormItems, regimenItems, baseInfoItems, threeLinesList, "comment");
+
+    //then
+    assertEquals(1, rnRForm.getRnrFormItemListWrapper().size());
+    assertEquals(1, rnRForm.getRegimenItemListWrapper().size());
+    assertEquals(1, rnRForm.getBaseInfoItemListWrapper().size());
+    assertEquals(1, rnRForm.getRegimenThreeLinesWrapper().size());
+    assertEquals("comment", rnRForm.getComments());
   }
 
   private void waitObservableToExecute() {
