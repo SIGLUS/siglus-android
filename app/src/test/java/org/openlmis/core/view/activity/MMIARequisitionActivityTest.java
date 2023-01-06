@@ -1,10 +1,7 @@
 package org.openlmis.core.view.activity;
 
 import android.content.Intent;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,23 +10,26 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
-public class VIARequisitionActivityTest {
-  VIARequisitionActivity viaRequisitionActivity;
-  private ActivityController<VIARequisitionActivity> activityController;
+public class MMIARequisitionActivityTest {
+  MMIARequisitionActivity viaRequisitionActivity;
+  private ActivityController<MMIARequisitionActivity> activityController;
 
   @Before
   public void setUp() throws Exception {
     LMISTestApp.getContext().setTheme(R.style.AppTheme);
-    activityController = Robolectric.buildActivity(VIARequisitionActivity.class);
+    activityController = Robolectric.buildActivity(MMIARequisitionActivity.class);
     viaRequisitionActivity = activityController.create().start().resume().get();
   }
 
@@ -40,30 +40,31 @@ public class VIARequisitionActivityTest {
   }
 
   @Test
-  public void shouldGetIntentToMeForNewRequisition() {
+  public void shouldGetIntentToMeForEndData() {
     //given
-    Date inventoryDate = DateUtil.parseString("02/02/2021", DateUtil.SIMPLE_DATE_FORMAT);
-    boolean isMissedPeriod = false;
+    Date endDate = DateUtil.parseString("02/02/2021", DateUtil.SIMPLE_DATE_FORMAT);
+
+    Program program = new Program();
+    program.setProgramCode(Program.TARV_CODE);
+    program.setProgramName(Program.TARV_CODE);
+    RnRForm form = RnRForm.init(program, DateUtil.today());
+    form.setStatus(Status.DRAFT);
+    RnRFormViewModel viewModel = RnRFormViewModel.buildNormalRnrViewModel(form);
+    long viewModelId = 100L;
+    viewModel.setId(viewModelId);
 
     //when
-    Intent newRequisitionIntent = VIARequisitionActivity.getIntentToMe(RuntimeEnvironment.application, inventoryDate, isMissedPeriod);
+    Intent emptyViewModelIntent = MMIARequisitionActivity.getIntentToMe(RuntimeEnvironment.application, endDate, null);
+    Intent withViewModelIntent = MMIARequisitionActivity.getIntentToMe(RuntimeEnvironment.application, endDate, viewModel);
 
     //then
-    Assert.assertEquals(inventoryDate, newRequisitionIntent.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
-    Assert.assertEquals(isMissedPeriod, newRequisitionIntent.getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, true));
-  }
+    Assert.assertEquals(MMIARequisitionActivity.class.getName(), emptyViewModelIntent.getComponent().getClassName());
+    Assert.assertEquals(endDate, emptyViewModelIntent.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
+    Assert.assertEquals(0L, emptyViewModelIntent.getLongExtra(Constants.PARAM_PREVIOUS_FORM, 0L));
 
-  @Test
-  public void shouldGetIntentToMeForEmergencyRequisition() {
-    //given
-    StockCard stockCard1 = new StockCard();
-    StockCard stockCard2 = new StockCard();
-    ArrayList<StockCard> stockCards  = (ArrayList<StockCard>) Arrays.asList(stockCard1, stockCard2);
+    Assert.assertEquals(MMIARequisitionActivity.class.getName(), withViewModelIntent.getComponent().getClassName());
+    Assert.assertEquals(endDate, emptyViewModelIntent.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
+    Assert.assertEquals(viewModelId, emptyViewModelIntent.getLongExtra(Constants.PARAM_PREVIOUS_FORM, 0L));
 
-    //when
-    Intent emergencyRequisitionIntent = VIARequisitionActivity.getIntentToMe(RuntimeEnvironment.application, stockCards);
-
-    //then
-    Assert.assertEquals(stockCards, emergencyRequisitionIntent.getSerializableExtra(Constants.PARAM_SELECTED_EMERGENCY));
   }
 }

@@ -18,16 +18,16 @@ import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
-public class VIARequisitionActivityTest {
+public class MMTBRequisitionActivityTest {
 
-  ALRequisitionActivity alRequisitionActivity;
-  private ActivityController<ALRequisitionActivity> activityController;
+  MMTBRequisitionActivity mmtbRequisitionActivity;
+  private ActivityController<MMTBRequisitionActivity> activityController;
 
   @Before
   public void setUp() throws Exception {
     LMISTestApp.getContext().setTheme(R.style.AppTheme);
-    activityController = Robolectric.buildActivity(ALRequisitionActivity.class);
-    alRequisitionActivity = activityController.create().start().resume().get();
+    activityController = Robolectric.buildActivity(MMTBRequisitionActivity.class);
+    mmtbRequisitionActivity = activityController.create().start().resume().get();
   }
 
   @After
@@ -37,9 +37,28 @@ public class VIARequisitionActivityTest {
   }
 
   @Test
-  public void shouldGetIntentToMe() {
+  public void shouldGetIntentToMeForEndDate() {
+    //given
     Date endDate = DateUtil.parseString("02/02/2021", DateUtil.SIMPLE_DATE_FORMAT);
-    Intent intent = ALRequisitionActivity.getIntentToMe(RuntimeEnvironment.application, endDate);
+
+    //when
+    Intent intent = MMTBRequisitionActivity.getIntentToMe(RuntimeEnvironment.application, endDate);
+
+    //then
+    Assert.assertEquals(MMTBRequisitionActivity.class.getName(), intent.getComponent().getClassName());
     Assert.assertEquals(endDate, intent.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
+  }
+
+  @Test
+  public void shouldGetIntentToMeForFormId() {
+    //given
+    long formId = 100L;
+
+    //when
+    Intent intent = MMTBRequisitionActivity.getIntentToMe(RuntimeEnvironment.application, formId);
+
+    //then
+    Assert.assertEquals(MMTBRequisitionActivity.class.getName(), intent.getComponent().getClassName());
+    Assert.assertEquals(formId, intent.getLongExtra(Constants.PARAM_FORM_ID, 0L));
   }
 }
