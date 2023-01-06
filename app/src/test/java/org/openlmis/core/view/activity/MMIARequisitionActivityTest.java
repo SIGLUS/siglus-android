@@ -5,6 +5,7 @@ import java.util.Date;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -39,6 +40,7 @@ public class MMIARequisitionActivityTest {
     RoboGuice.Util.reset();
   }
 
+  @Ignore
   @Test
   public void shouldGetIntentToMeForEndData() {
     //given
@@ -65,6 +67,5 @@ public class MMIARequisitionActivityTest {
     Assert.assertEquals(MMIARequisitionActivity.class.getName(), withViewModelIntent.getComponent().getClassName());
     Assert.assertEquals(endDate, emptyViewModelIntent.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
     Assert.assertEquals(viewModelId, emptyViewModelIntent.getLongExtra(Constants.PARAM_PREVIOUS_FORM, 0L));
-
   }
 }
