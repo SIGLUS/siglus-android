@@ -1,6 +1,7 @@
 package org.openlmis.core.view.activity;
 
 import android.content.Intent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -54,13 +55,14 @@ public class VIARequisitionActivityTest {
     Assert.assertEquals(isMissedPeriod, newRequisitionIntent.getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, true));
   }
 
-  @Ignore
   @Test
   public void shouldGetIntentToMeForEmergencyRequisition() {
     //given
     StockCard stockCard1 = new StockCard();
     StockCard stockCard2 = new StockCard();
-    List<StockCard> stockCards  = Arrays.asList(stockCard1, stockCard2);
+    List<StockCard> stockCards  = new ArrayList<>();
+    stockCards.add(stockCard1);
+    stockCards.add(stockCard2);
 
     //when
     Intent emergencyRequisitionIntent = VIARequisitionActivity.getIntentToMe(RuntimeEnvironment.application, stockCards);
