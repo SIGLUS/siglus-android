@@ -406,8 +406,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     File currentXMLBackup = new File(Environment.getDataDirectory(),
         EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
             + "//shared_prefs//LMISPreferenceBackup.xml");
-    File externalBackup = new File(getExternalFilesDir(null), "lmis_backup");
-    File xmlExternalBackup = new File(getExternalFilesDir(null), "LMISPreferenceBackup.xml");
+    File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
+    File xmlExternalBackup = new File(Environment.getExternalStorageDirectory(), "LMISPreferenceBackup.xml");
     try {
       FileUtil.copy(currentDB, tempBackup);
       FileUtil.copy(currentXML, currentXMLBackup);
