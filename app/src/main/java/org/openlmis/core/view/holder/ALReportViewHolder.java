@@ -86,7 +86,7 @@ public class ALReportViewHolder extends BaseViewHolder {
 
   }
 
-  public void setEditTextValue() {
+  private void setEditTextValue() {
     oneTreatment.setText(getValue(viewModel.getGridOne().getTreatmentsValue()));
     oneStock.setText(getValue(viewModel.getGridOne().getExistentStockValue()));
     twoTreatment.setText(getValue(viewModel.getGridTwo().getTreatmentsValue()));
