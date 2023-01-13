@@ -18,16 +18,18 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,11 +38,10 @@ import android.widget.TextView;
 import com.google.android.material.textfield.TextInputLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.enumeration.LoginErrorType;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
@@ -48,6 +49,7 @@ import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -56,6 +58,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @SuppressWarnings({"squid:S1874", "squid:S110"})
+@BindEventBus
 @ContentView(R.layout.activity_login)
 public class LoginActivity extends BaseActivity implements LoginPresenter.LoginView, View.OnClickListener {
 
@@ -90,6 +93,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   LoginPresenter presenter;
 
   boolean isPwdVisible = false;
+  boolean enableShowAlert = false;
 
   @Override
   public void sendScreenToGoogleAnalyticsAfterLogin() {
@@ -127,6 +131,9 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
   @Override
   public void showInvalidAlert(LoginErrorType loginErrorType) {
+    if (!enableShowAlert) {
+      return;
+    }
     clearErrorAlerts();
     if (loginErrorType == LoginErrorType.NO_INTERNET) {
       errorAlert.setText(getResources().getText(R.string.message_wipe_no_connection));
@@ -145,10 +152,17 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
       lyUserName.setError(" ");
       lyPassword.setError(getResources().getText(R.string.msg_isAndroid_False));
     }
+    if (loginErrorType == LoginErrorType.NON_SAME_DEVICE) {
+      etUsername.setEnabled(true);
+      errorAlert.setVisibility(View.GONE);
+      lyUserName.setError(" ");
+      lyPassword.setError(getResources().getText(R.string.msg_is_same_device_false));
+    }
     etUsername.getBackground()
         .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     etPassword.getBackground()
         .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+    enableShowAlert = false;
   }
 
   @Override
@@ -173,6 +187,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.btn_login:
+        enableShowAlert = true;
         startLogin(false);
         KeyboardUtil.hideKeyboard(btnLogin);
         break;
@@ -189,11 +204,17 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     moveTaskToBack(true);
   }
 
-
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveSyncStatusEvent(LoginErrorType loginErrorType) {
+  @Override
+  public void onReceiveNotAndroidUserErrorEvent(LoginErrorType loginErrorType) {
     if (loginErrorType.toString().equals(LoginErrorType.NON_MOBILE_USER.toString())) {
       showInvalidAlert(LoginErrorType.NON_MOBILE_USER);
+    }
+  }
+
+  @Override
+  public void onReceiveNotRegisteredDeviceErrorEvent(String message) {
+    if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(message)) {
+      showInvalidAlert(LoginErrorType.NON_SAME_DEVICE);
     }
   }
 
@@ -231,18 +252,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   }
 
   @Override
-  protected void onStart() {
-    super.onStart();
-    EventBus.getDefault().register(this);
-  }
-
-  @Override
-  protected void onStop() {
-    EventBus.getDefault().unregister(this);
-    super.onStop();
-  }
-
-  @Override
   protected ScreenName getScreenName() {
     return null;
   }
@@ -268,7 +277,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   private void initUI() throws PackageManager.NameNotFoundException {
     String versionNumber = LMISApp.getInstance().getPackageManager()
         .getPackageInfo(LMISApp.getContext().getApplicationContext().getPackageName(), 0).versionName;
-    tvVersion.setText(Html.fromHtml(getResources().getString(R.string.version_number, versionNumber)));
+    tvVersion.setText(CompatUtil.fromHtml(getResources().getString(R.string.version_number, versionNumber)));
 
     ivVisibilityPwd.setOnClickListener(this);
     btnLogin.setOnClickListener(this);
@@ -313,21 +322,23 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     etPassword.setSelection(etPassword.getText().length());
   }
 
-  // This code is purely for enable some hacker ways for tester
-  private int clickTimes;
+  private static final int DEVELOPER_TIMES = 7;
 
   private void setDeveloperMode() {
-    clickTimes = 0;
-    final int developerTimes = 7;
-    ivLogo.setOnClickListener(v -> {
-      if (clickTimes == developerTimes) {
-        return;
-      }
-      if (++clickTimes == developerTimes) {
-        SharedPreferenceMgr.getInstance().setEnableQaDebug(true);
-        ToastUtil.show("Woohoo! You are Cong or Wei now, please test me");
-      } else if (clickTimes > 3) {
-        ToastUtil.show("Tap it " + (developerTimes - clickTimes) + " times to be Cong or Wei");
+    ivLogo.setOnClickListener(new OnClickListener() {
+      private int clickTimes = 0;
+
+      @Override
+      public void onClick(View v) {
+        if (clickTimes == DEVELOPER_TIMES) {
+          return;
+        }
+        if (++clickTimes == DEVELOPER_TIMES) {
+          SharedPreferenceMgr.getInstance().setEnableQaDebug(true);
+          ToastUtil.show("Woohoo! You are Cong or Wei now, please test me");
+        } else if (clickTimes > 3) {
+          ToastUtil.show("Tap it " + (DEVELOPER_TIMES - clickTimes) + " times to be Cong or Wei");
+        }
       }
     });
   }

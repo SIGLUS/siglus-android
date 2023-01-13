@@ -18,15 +18,23 @@
 
 package org.openlmis.core.network.adapter;
 
+import static org.openlmis.core.constant.ReportConstants.KEY_AGE_GROUP_PROPHYLAXIS;
+import static org.openlmis.core.constant.ReportConstants.KEY_AGE_GROUP_TREATMENT;
+import static org.openlmis.core.constant.ReportConstants.KEY_SERVICE_ADULT;
+import static org.openlmis.core.constant.ReportConstants.KEY_SERVICE_LESS_THAN_25;
+import static org.openlmis.core.constant.ReportConstants.KEY_SERVICE_MORE_THAN_25;
 import static org.openlmis.core.model.repository.VIARepository.ATTR_CONSULTATION;
 import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.MMTB_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.PARAM_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.REGIMEN_INFORMATION_TO_REGIMEN_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
+import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -44,7 +52,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.openlmis.core.LMISApp;
@@ -54,12 +61,14 @@ import org.openlmis.core.model.BaseInfoItem.TYPE;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.repository.MMIARepository;
+import org.openlmis.core.model.repository.MMTBRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
@@ -74,10 +83,12 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   public static final String ACTUAL_START_DATE = "actualStartDate";
   public static final String ACTUAL_END_DATE = "actualEndDate";
   public static final String PATIENT_LINE_ITEMS = "patientLineItems";
+  public static final String AGE_GROUP_LINE_ITEMS = "ageGroupLineItems";
   public static final String NAME = "name";
   public static final String COLUMNS = "columns";
+  public static final String SERVICE = "service";
+  public static final String GROUP = "group";
   public static final String VALUE = "value";
-  public static final String TABLE_NAME = "tableName";
   public static final String SIGNATURES = "signatures";
   public static final String CLIENT_SUBMITTED_TIME = "clientSubmittedTime";
   public static final String PRODUCTS = "products";
@@ -100,12 +111,10 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
 
   public RnrFormAdapter() {
     RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
-    gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-        .registerTypeAdapter(Date.class, new DateAdapter()).setDateFormat(DateFormat.LONG)
-        .registerTypeAdapter(RegimenItem.class, new RegimenItemAdapter())
+    gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(Date.class, new DateAdapter())
+        .setDateFormat(DateFormat.LONG).registerTypeAdapter(RegimenItem.class, new RegimenItemAdapter())
         .registerTypeAdapter(RnrFormItem.class, new RnrFormItemAdapter())
-        .registerTypeAdapter(TestConsumptionItem.class, new TestConsumptionLineItemAdapter())
-        .create();
+        .registerTypeAdapter(TestConsumptionItem.class, new TestConsumptionLineItemAdapter()).create();
     jsonParser = new JsonParser();
   }
 
@@ -151,6 +160,8 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     setBaseInfoForVIA(rnRForm, jsonObject);
     setBaseInfoForMMIA(rnRForm, jsonObject);
     setRegimenLineItemsForMalaria(rnRForm, jsonObject);
+    setBaseInfoForMMTB(rnRForm, jsonObject);
+    setAgeGroupInfoForMMTB(rnRForm, jsonObject);
   }
 
   private void setBaseInfoForVIA(RnRForm rnRForm, JsonObject jsonObject) {
@@ -177,8 +188,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
         for (JsonElement column : jsonObjectForPatient.get(COLUMNS).getAsJsonArray()) {
           JsonObject jsonColumn = column.getAsJsonObject();
           String tableName = jsonColumn.get(NAME).getAsString();
-          BaseInfoItem baseInfoItem = new BaseInfoItem(tableName,
-              TYPE.STRING, rnRForm, componentName,
+          BaseInfoItem baseInfoItem = new BaseInfoItem(tableName, TYPE.STRING, rnRForm, componentName,
               tableNameToDisplayOrder.containsKey(tableName) ? tableNameToDisplayOrder.get(tableName) : 0);
 
           baseInfoItem.setValue(jsonColumn.get(VALUE).getAsString());
@@ -194,16 +204,85 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       List<RegimenItem> regimenItems = new ArrayList<>();
       for (JsonElement jsonRegimenItem : jsonObject.get(USAGE_INFORMATION_LINE_ITEMS).getAsJsonArray()) {
         JsonObject jsonObjectForRegimenItem = jsonRegimenItem.getAsJsonObject();
-        RegimenItem regimenItem = RegimenItem.builder()
-            .form(rnRForm)
-            .regimen(getRegimen(jsonObjectForRegimenItem))
+        RegimenItem regimenItem = RegimenItem.builder().form(rnRForm).regimen(getRegimen(jsonObjectForRegimenItem))
             .amount(calculateAmount(jsonObjectForRegimenItem))
             .hf(jsonObjectForRegimenItem.get(ALItemType.HF.getName()).getAsLong())
-            .chw(jsonObjectForRegimenItem.get(ALItemType.CHW.getName()).getAsLong())
-            .build();
+            .chw(jsonObjectForRegimenItem.get(ALItemType.CHW.getName()).getAsLong()).build();
         regimenItems.add(regimenItem);
       }
       rnRForm.setRegimenItemListWrapper(regimenItems);
+    }
+  }
+
+  private void setBaseInfoForMMTB(RnRForm rnRForm, JsonObject jsonObject) {
+    if (!MMTB_PROGRAM_CODE.equals(rnRForm.getProgram().getProgramCode())) {
+      return;
+    }
+    List<BaseInfoItem> baseInfoItems = new ArrayList<>();
+    for (JsonElement jsonPatient : jsonObject.get(PATIENT_LINE_ITEMS).getAsJsonArray()) {
+      JsonObject jsonObjectForPatient = jsonPatient.getAsJsonObject();
+      String tableName = jsonObjectForPatient.get(NAME).getAsString();
+      for (JsonElement column : jsonObjectForPatient.get(COLUMNS).getAsJsonArray()) {
+        JsonObject jsonColumn = column.getAsJsonObject();
+        JsonElement jsonValue = jsonColumn.get(VALUE);
+        if (jsonValue.isJsonNull()) {
+          continue;
+        }
+        String columnName = jsonColumn.get(NAME).getAsString();
+        BaseInfoItem baseInfoItem = new BaseInfoItem(columnName, TYPE.STRING, rnRForm, tableName,
+            MMTBRepository.getDisplayOrderByKey(columnName));
+        baseInfoItem.setValue(jsonValue.getAsString());
+        baseInfoItems.add(baseInfoItem);
+      }
+    }
+    rnRForm.setBaseInfoItemListWrapper(baseInfoItems);
+  }
+
+  private void setAgeGroupInfoForMMTB(RnRForm rnRForm, JsonObject jsonObject) {
+    if (!MMTB_PROGRAM_CODE.equals(rnRForm.getProgram().getProgramCode())) {
+      return;
+    }
+    ArrayList<RegimenItemThreeLines> threeLines = new ArrayList<>();
+    RegimenItemThreeLines adult = new RegimenItemThreeLines(KEY_SERVICE_ADULT);
+    adult.setForm(rnRForm);
+    threeLines.add(adult);
+    RegimenItemThreeLines lessThan25 = new RegimenItemThreeLines(KEY_SERVICE_LESS_THAN_25);
+    lessThan25.setForm(rnRForm);
+    threeLines.add(lessThan25);
+    RegimenItemThreeLines moreThan25 = new RegimenItemThreeLines(KEY_SERVICE_MORE_THAN_25);
+    moreThan25.setForm(rnRForm);
+    threeLines.add(moreThan25);
+    for (JsonElement item : jsonObject.get(AGE_GROUP_LINE_ITEMS).getAsJsonArray()) {
+      JsonObject jsonThreeLineItem = item.getAsJsonObject();
+      String service = jsonThreeLineItem.get(SERVICE).getAsString();
+      String group = jsonThreeLineItem.get(GROUP).getAsString();
+      String value = jsonThreeLineItem.get(VALUE).getAsString();
+      switch (service) {
+        case KEY_SERVICE_ADULT:
+          setThreeLineItemData(adult, group, value);
+          break;
+        case KEY_SERVICE_LESS_THAN_25:
+          setThreeLineItemData(lessThan25, group, value);
+          break;
+        default:
+          setThreeLineItemData(moreThan25, group, value);
+          break;
+      }
+    }
+    rnRForm.setRegimenThreeLinesWrapper(threeLines);
+  }
+
+  private void setThreeLineItemData(RegimenItemThreeLines threeLine, String group, String value) {
+    long longValue;
+    try {
+      longValue = Long.parseLong(value);
+    } catch (Exception e) {
+      longValue = 0;
+    }
+    if (KEY_AGE_GROUP_TREATMENT.equals(group)) {
+      threeLine.setPatientsAmount(longValue);
+    } else {
+      threeLine.setPharmacyAmount(longValue);
     }
   }
 
@@ -223,8 +302,8 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   }
 
   private Long calculateAmount(JsonObject jsonObjectForRegimenItem) {
-    return jsonObjectForRegimenItem.get(ALItemType.HF.getName()).getAsLong() + jsonObjectForRegimenItem
-        .get(ALItemType.CHW.getName()).getAsLong();
+    return jsonObjectForRegimenItem.get(ALItemType.HF.getName()).getAsLong() + jsonObjectForRegimenItem.get(
+        ALItemType.CHW.getName()).getAsLong();
   }
 
   private JsonElement buildRnrFormJson(RnRForm rnRForm) throws LMISException {
@@ -244,22 +323,55 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   private void sectionInfo(RnRForm rnRForm, JsonObject root, String programCode) {
     if (AL_PROGRAM_CODE.equals(programCode)) {
       root.add(USAGE_INFORMATION_LINE_ITEMS, buildUsageInformationLineItems(rnRForm));
+      return;
+    }
+    if (MMTB_PROGRAM_CODE.equals(programCode)) {
+      root.add(AGE_GROUP_LINE_ITEMS, buildAgeGroupLineItems(rnRForm));
     } else {
-      root.add(PRODUCTS, jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
       root.add(REGIMEN_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
       root.add(REGIMEN_SUMMARY_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getRegimenThreeLineListWrapper())));
       root.add(TEST_CONSUMPTION_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getTestConsumptionItemList())));
       if (programCode.endsWith(VIA_PROGRAM_CODE)) {
         root.addProperty(CONSULTATION_NUMBER, getConsultationNumber(rnRForm));
       }
-      setPatientLineItem(programCode, root, rnRForm);
     }
+    root.add(PRODUCTS, jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
+    setPatientLineItem(programCode, root, rnRForm);
   }
 
   private JsonElement buildUsageInformationLineItems(RnRForm rnRForm) {
     List<RegimenItem> regimenItems = rnRForm.getRegimenItemListWrapper();
     regimenItems = FluentIterable.from(regimenItems).transform(RegimenItem::buildInformationAndProductCode).toList();
     return jsonParser.parse(gson.toJson(regimenItems));
+  }
+
+  private JsonElement buildAgeGroupLineItems(RnRForm rnrForm) {
+    JsonArray ageGroup = new JsonArray();
+    for (RegimenItemThreeLines item : rnrForm.getRegimenThreeLineListWrapper()) {
+      switch (item.getRegimeTypes()) {
+        case KEY_SERVICE_ADULT:
+          addAgeGroupByGroup(ageGroup, KEY_SERVICE_ADULT, KEY_AGE_GROUP_TREATMENT, item.getPatientsAmount());
+          addAgeGroupByGroup(ageGroup, KEY_SERVICE_ADULT, KEY_AGE_GROUP_PROPHYLAXIS, item.getPharmacyAmount());
+          break;
+        case KEY_SERVICE_LESS_THAN_25:
+          addAgeGroupByGroup(ageGroup, KEY_SERVICE_LESS_THAN_25, KEY_AGE_GROUP_TREATMENT, item.getPatientsAmount());
+          addAgeGroupByGroup(ageGroup, KEY_SERVICE_LESS_THAN_25, KEY_AGE_GROUP_PROPHYLAXIS, item.getPharmacyAmount());
+          break;
+        default:
+          addAgeGroupByGroup(ageGroup, KEY_SERVICE_MORE_THAN_25, KEY_AGE_GROUP_TREATMENT, item.getPatientsAmount());
+          addAgeGroupByGroup(ageGroup, KEY_SERVICE_MORE_THAN_25, KEY_AGE_GROUP_PROPHYLAXIS, item.getPharmacyAmount());
+          break;
+      }
+    }
+    return ageGroup;
+  }
+
+  private void addAgeGroupByGroup(JsonArray jsonArray, String types, String group, Long value) {
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.addProperty(SERVICE, types);
+    jsonObject.addProperty(GROUP, group);
+    jsonObject.addProperty(VALUE, String.valueOf(value));
+    jsonArray.add(jsonObject);
   }
 
   private Long getConsultationNumber(RnRForm rnRForm) {
@@ -270,18 +382,19 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   }
 
   private void setPatientLineItem(String programCode, JsonObject root, RnRForm rnRForm) {
-    if (programCode.endsWith(MMIA_PROGRAM_CODE) && rnRForm != null
-        && !rnRForm.getBaseInfoItemListWrapper().isEmpty()) {
-      HashMap<String, List<BaseInfoItem>> tableNameToItems = groupPatientInfo(rnRForm);
-      List<PatientLineItemRequest> patientLineItemRequests = new ArrayList<>();
-      for (Map.Entry<String, List<BaseInfoItem>> map : tableNameToItems.entrySet()) {
-        patientLineItemRequests.add(new PatientLineItemRequest(map.getKey(), map.getValue()));
-      }
-      root.add(PATIENT_LINE_ITEMS, jsonParser.parse(gson.toJson(patientLineItemRequests)));
+    if (rnRForm == null || rnRForm.getBaseInfoItemListWrapper().isEmpty() || !(MMIA_PROGRAM_CODE.equals(programCode)
+        || MMTB_PROGRAM_CODE.equals(programCode))) {
+      return;
     }
+    HashMap<String, List<BaseInfoItem>> tableNameToItems = groupPatientInfo(rnRForm);
+    List<PatientLineItemRequest> patientLineItemRequests = new ArrayList<>();
+    for (Map.Entry<String, List<BaseInfoItem>> map : tableNameToItems.entrySet()) {
+      patientLineItemRequests.add(new PatientLineItemRequest(map.getKey(), map.getValue()));
+    }
+    root.add(PATIENT_LINE_ITEMS, jsonParser.parse(gson.toJson(patientLineItemRequests)));
   }
 
-  @NotNull
+  @NonNull
   private HashMap<String, List<BaseInfoItem>> groupPatientInfo(RnRForm rnRForm) {
     List<BaseInfoItem> baseInfoItems = rnRForm.getBaseInfoItemListWrapper();
     HashMap<String, List<BaseInfoItem>> tableNameToItems = new HashMap<>();

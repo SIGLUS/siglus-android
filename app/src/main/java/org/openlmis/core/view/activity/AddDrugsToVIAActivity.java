@@ -81,7 +81,7 @@ public class AddDrugsToVIAActivity extends SearchBarActivity {
         .loadActiveProductsNotInVIAForm(existingAdditionalProductList).subscribe(subscriber);
     subscriptions.add(subscription);
 
-    btnComplete.setOnClickListener((v) -> getRnrFormItemsAndPassToViaForm());
+    btnComplete.setOnClickListener(v -> getRnrFormItemsAndPassToViaForm());
   }
 
   private void initRecyclerView() {
@@ -157,10 +157,10 @@ public class AddDrugsToVIAActivity extends SearchBarActivity {
     showErrorMessage(throwable.getMessage());
   };
 
-  public static Intent getIntentToMe(Context context, Date periodBegin, ArrayList<String> addedDrugsInVIAs) {
+  public static Intent getIntentToMe(Context context, Date periodBegin, List<String> addedDrugsInVIAs) {
     Intent intent = new Intent(context, AddDrugsToVIAActivity.class);
     intent.putExtra(Constants.PARAM_PERIOD_BEGIN, periodBegin);
-    intent.putExtra(Constants.PARAM_ADDED_DRUG_CODES_IN_VIA, addedDrugsInVIAs);
+    intent.putExtra(Constants.PARAM_ADDED_DRUG_CODES_IN_VIA, (ArrayList) addedDrugsInVIAs);
     return intent;
   }
 }

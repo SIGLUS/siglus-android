@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  style="@style/MMTB.Table.Container.Item"
+  android:background="@color/color_white"
+  >
+
+  <TextView
+    android:id="@+id/tv_title"
+    android:gravity="end"
+    android:paddingEnd="@dimen/px_6"
+    android:layout_width="0dp"
+    android:layout_weight="1"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:text="@string/mmia_1stline" />
+
+  <EditText
+    android:id="@+id/therapeutic_total"
+    style="@style/MMIA.Regime.Total.Edit"
+    android:imeOptions="actionNext"
+    android:layout_width="@dimen/mmtb_spread_item_common_width"
+    android:background="@drawable/bg_white_no_border"
+    />
+
+  <EditText
+    android:layout_width="@dimen/mmtb_spread_item_common_width"
+    android:id="@+id/therapeutic_pharmacy"
+    android:imeOptions="actionNext"
+    style="@style/MMIA.Regime.Total.Edit"
+    android:background="@drawable/bg_white_no_border" />
+</LinearLayout>

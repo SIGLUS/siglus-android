@@ -63,7 +63,6 @@
 
   <!--MMIA-->
   <string name="label_mmia_title">MMIA - %1$s to %2$s</string>
-  <string name="label_AL_title">Malaria - %1$s to %2$s</string>
   <string name="label_rnrfrom_left_header">PRODUCT</string>
   <string name="label_rnrfrom_left_header_old">Medicine</string>
   <string name="label_regime_header_name">THERAPEUTIC REGIME</string>
@@ -100,6 +99,7 @@
   <string name="btn_positive">Yes</string>
   <string name="btn_negative">No</string>
   <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved,\nand will submit automatically when you have a data connection.</string>
+  <string name="msg_mmtb_submit_tip">Your MMTB form has been successfully saved,\nand will submit automatically when you have a data connection.</string>
   <string name="msg_reason_for_total_not_match"><![CDATA[Add reason for mismatch between regime & patient totals]]></string>
   <string name="msg_regime_total_and_patient_total_not_match">The regime and patient totals do not match. Please correct your figures or add a comment that explains why the totals differ</string>
   <string name="btn_ok">OK</string>
@@ -110,6 +110,46 @@
   <string name="mmia_1stline">1st Line</string>
   <string name="mmia_2ndline">2nd Line</string>
   <string name="mmia_3rdline">3rd Line</string>
+
+  <!-- MMTB -->
+  <string name="label_mmtb_title">MMTB - %1$s to %2$s</string>
+  <string name="mmtb_age_group_form_title">Quantification of users by age groups</string>
+  <string name="mmtb_three_line_1_title">Age Groups</string>
+  <string name="mmtb_three_line_1">Adults</string>
+  <string name="mmtb_three_line_2_title">Treatment</string>
+  <string name="mmtb_three_line_2">Child &lt; 25 Kg</string>
+  <string name="mmtb_three_line_3_title">Prophylaxis</string>
+  <string name="mmtb_three_line_3">Child &gt; 25 Kg</string>
+  <string name="mmtb_patient_info_form_title">Quantification of patients</string>
+  <string name="mmtb_new_patient_form_title">New Patients in the TB Sector</string>
+  <string name="mmtb_follow_up_prophylaxis_form_title">Follow-up Prophylaxis\n(PUs and Public Pharmacy)</string>
+  <string name="mmtb_dispensation_type_form_title">Type of Dispensation of Prophylactics</string>
+  <string name="mmtb_patient_type_field">Patient/Type</string>
+  <string name="mmtb_prophylaxis_phases_field">Prophylaxis Phases</string>
+  <string name="mmtb_dispensation_type_field">Dispensation Frequency</string>
+
+  <string name="mmtb_treatment_phase_form_title">Number of ays spent in the different phases of Treatment</string>
+  <string name="mmtb_title_treatment_phase">Treatment Phases</string>
+  <string name="mmtb_title_number_of_day_off">Number of Days off</string>
+  <string name="mmtb_title_adult">Adult</string>
+  <string name="mmtb_title_pediatric">Pediatric</string>
+
+  <string name="mmtb_drug_consumption_form_title">Consumption of Prophylactic Drugs</string>
+  <string name="mmtb_title_product">Product</string>
+  <string name="mmtb_title_number_of_pills">Number of Pills</string>
+  <string name="mmtb_title_pharmacy_outpatient">PUs and Pharmacy Outpatient</string>
+
+  <string name="mmtb_new_adult_sensitive">New Adult Sensitive</string>
+  <string name="mmtb_new_adult_mr">New Adult MR</string>
+  <string name="mmtb_new_adult_xr">New Adult XR</string>
+  <string name="mmtb_new_child_sensitive">New Child Sensitive</string>
+  <string name="mmtb_new_child_mr">New Child MR</string>
+  <string name="mmtb_new_child_xr">New Child XR</string>
+  <string name="mmtb_start_phase">Start</string>
+  <string name="mmtb_continue_phase">Continues/Maintenance</string>
+  <string name="mmtb_final_phase">Final/Last Dispensation</string>
+  <string name="mmtb_frequency_monthly">Monthly</string>
+  <string name="mmtb_frequency_quarterly">Quarterly</string>
 
   <!-- VIA Form -->
   <string name="label_via_kit_received">No. of Kits Received</string>
@@ -141,11 +181,14 @@
   <string name="msg_via_submit_signature">Enter your initials and then approve the requisition amounts</string>
   <string name="msg_rapid_test_submit_signature">Enter your initials and then approve the MMIT amounts</string>
   <string name="msg_mmia_submit_signature">Enter your initials to approve MMIA information</string>
+  <string name="msg_mmtb_submit_signature">Enter your initials to approve MMTB information</string>
   <string name="msg_approve_signature_rapid_test">Enter your initials and then approve the MMIT</string>
   <string name="msg_approve_signature_via">Enter your initials and then approve the Requisition Balancete</string>
   <string name="msg_approve_signature_mmia">Enter your initials and then approve the MMIA</string>
+  <string name="msg_approve_signature_mmtb">Enter your initials and then approve the MMTB</string>
   <string name="msg_requisition_signature_message_notify_via">Please hand the device to the person responsible for approval and submission of the Requisition Balancete</string>
   <string name="msg_requisition_signature_message_notify_mmia">Please hand the device to the person responsible for approval and submission of MMIA</string>
+  <string name="msg_requisition_signature_message_notify_mmtb">Please hand the device to the person responsible for approval and submission of MMTB</string>
   <string name="msg_requisition_signature_message_notify_rapid_test">Please hand the device to the person responsible for approval and submission of Rapid Test</string>
   <string name="btn_continue">Continue</string>
   <string name="label_adjustment_dialog_header"><![CDATA[The quantity to request has been adjusted based on: <br/>]]></string>
@@ -158,6 +201,7 @@
   <string name="msg_stock_movement_is_not_ready">Application is trying to sync down all the stock movements, Please wait for this process to complete before continuing.</string>
 
   <!-- AL -->
+  <string name="label_al_title">Malaria - %1$s to %2$s</string>
   <string name="msg_al_submit_tip">Your Malaria form has been successfully saved,\nand will submit automatically when you have a data connection.</string>
   <string name="msg_uncomplete_hint"> Please Complete Malaria information. </string>
   <string name="hint_al_complete_failed">Unable to complete Malaria form, Please contact your administrator.</string>
@@ -168,6 +212,7 @@
   <string name="month_year">Month/Year:   </string>
 
   <!-- MMIT -->
+  <string name="label_mmit_title">MMIT - %1$s to %2$s</string>
   <string name="balance_test_report">Balancete of the rapid tests in the Health Facility</string>
   <string name="msg_rapid_test_submit_tip">Your rapid tests form has been successfully saved,\nand will submit automatically when you have a data connection </string>
   <string name="attention_report_in_kit">(Attention: Reported in Kits)</string>
@@ -245,9 +290,9 @@
   <string name="table_patients_10to14">Pediatric from 10 to 14 years old</string>
   <string name="table_prophylaxis">Prophylaxy</string>
   <string name="table_prophylaxis_ppe">PPE</string>
-  <string name="table_prophylaxis_prep">PrEP</string>
   <string name="table_prophylaxis_child">Exposed Child</string>
-  <string name="table_prophylaxis_total">Total patients in ARVT on the HF</string>
+  <string name="table_total_patient">Total patients in ARVT on the HF</string>
+  <string name="table_total_month">Total Months of Therapy</string>
   <string name="hint_has_not_new_data">You are at the end of the list</string>
   <string name="label_mmia_regime_adult"><![CDATA[Adults & Adolescents]]></string>
   <string name="label_mmia_regime_children">Pediatrics</string>
@@ -261,8 +306,10 @@
   <string name="search_hint">Search…</string>
   <string name="action_navigate_archive">Archived drugs</string>
   <string name="hint_save_mmia_failed">Unable to save MMIA form, Please contact your administrator.</string>
+  <string name="hint_save_mmtb_failed">Unable to save MMTB form, Please contact your administrator.</string>
   <string name="hint_save_requisition_failed">Unable to save Requisition Balencete, Please contact your administrator.</string>
   <string name="hint_mmia_complete_failed">Unable to complete MMIA form, Please contact your administrator.</string>
+  <string name="hint_mmtb_complete_failed">Unable to complete MMTB form, Please contact your administrator.</string>
   <string name="hint_requisition_complete_failed">Unable to complete Requisition Balencete, Please contact your administrator.</string>
   <string name="hint_update_banner_tips">%1$s has been deactivated and removed to the <![CDATA[<b>archived drug</b>]]> list</string>
   <string name="msg_expiring_date">Expiring %1$s</string>
@@ -335,6 +382,7 @@
   <string name="label_total">Total:%1$d</string>
   <string name="requisition_delete_failed">Delete Failed</string>
   <string name="delete_rnr_form_failed_warning">Delete Failed</string>
+  <string name="label_program_no_movement">There is no stock card of any product under this program, you cannot process the requisition/report.</string>
 
   <!-- Signature -->
   <string name="dialog_request_signature">Enter your initials to sign the movement</string>
@@ -392,6 +440,7 @@
   <string name="app_name_in_dev">SIGLUS DEV</string>
   <string name="app_name_in_prd">SIGLUS</string>
   <string name="app_name_in_qa">SIGLUS QA</string>
+  <string name="app_name_in_mgt">SIGLUS MGT</string>
   <string name="app_name_in_training">SIGLUS TREINO II</string>
 
   <!--Incomplete Requisition Banner-->
@@ -437,7 +486,7 @@
   <string name="wrong_expire_date_warning">The expiry date that you have entered is in the past. Please double check the date before adding the lot.</string>
   <string name="btn_add_new_lot">Add New Lot</string>
   <string name="title_add_new_lot">Add new lot to</string>
-  <string name="hint_lot_info"><![CDATA[Lot number & expiry date]]></string>
+  <string name="hint_lot_info"><![CDATA[Lot number]]></string>
   <string name="hint_lot_amount">Amount</string>
   <string name="label_existing_soh_of_lot">Existing stock on hand of lot </string>
   <string name="label_new_added_lot">Lot was just added and has no stock on hand</string>
@@ -462,6 +511,7 @@
   <string name="title_generate_lot_number">Auto generate lot number for new lot?</string>
   <string name="btn_confirm_generate_lot_number">AUTO GENERATE LOT NUMBER</string>
   <string name="title_rapid_test_reports">Rapid Test</string>
+  <string name="title_mmtb_reports">MMTB</string>
   <string name="btn_create_rapid_test_period">CREATE MMIT REPORT</string>
   <string name="title_rapid_test_form">MMIT Report</string>
   <string name="msg_sync_rapid_tests_failed">Sync Rapid Tests failed.</string>
@@ -564,6 +614,7 @@
   <string name="ml_program_name">Malaria</string>
   <string name="tarv_program_name">MMIA</string>
   <string name="tr_program_name">MMIT</string>
+  <string name="tb_program_name">MMTB</string>
   <string name="msg_cannot_create_emergency_requisition">Cannot create emergency requisition</string>
   <string name="label_stockcard_lot_code">Lot Code</string>
   <string name="label_stockcard_lot_expire_date">Expiry Date</string>
@@ -663,9 +714,6 @@
 
   <string name="supplied_quantity">Supplied Quantity</string>
   <string name="quantity_received">Quantity Received</string>
-  <string name="label_destination_product">Destination of Product</string>
-  <string name="label_dosage">Dosage</string>
-  <string name="label_designation">Designation</string>
   <string name="label_header_lot_number">Lot Number</string>
   <string name="label_expiring_date">Expiring Date</string>
   <string name="label_qf">QF</string>
@@ -689,6 +737,16 @@
   <string name="msg_initial_dirty_data_check">The app is checking for dirty data, this process will take a while. \n Please wait...</string>
   <string name="msg_logging_in">logging in...</string>
   <string name="TR_program_name_for_issue_voucher_title">Testes Rápidos</string>
+  <string name="alert_issue_all_lot_expired">Please remove the product</string>
+  <string name="error_rapid_test_consumption">The number of consumption cannot be empty.</string>
+  <string name="error_rapid_test_positive">The number of positive cannot be empty.</string>
+  <string name="requisition_tab">Requisition</string>
+  <string name="Malaria_tab">Malaria</string>
+  <string name="emergency">-EMERGENCY-</string>
+  <string name="msg_is_same_device_false">Login failed, the facility already logged into another device, please contact the administrator.</string>
+  <string name="error_msg_sync_failed">Sync failed</string>
+  <string name="msg_sync_not_android_user">The administrator has upgraded your facility to a Web facility, please use the Web portal to log in for your further management.</string>
+  <string name="msg_sync_not_same_device_user">the facility already logged into another device, please contact the administrator.</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minute</item>

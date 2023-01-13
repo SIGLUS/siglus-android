@@ -22,9 +22,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.AllArgsConstructor;
-
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -73,4 +71,8 @@ public class Regimen extends BaseModel {
 
   @DatabaseField
   private boolean active;
+
+  public long getDisplayOrder() {
+    return displayOrder == null ? 0 : displayOrder;
+  }
 }

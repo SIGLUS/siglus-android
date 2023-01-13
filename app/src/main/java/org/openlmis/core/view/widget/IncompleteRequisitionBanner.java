@@ -30,6 +30,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.service.RequisitionPeriodService;
+import org.openlmis.core.utils.TranslationUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -69,6 +70,7 @@ public class IncompleteRequisitionBanner extends LinearLayout {
       if (incompleteReports.isEmpty()) {
         this.setVisibility(GONE);
       } else {
+        TranslationUtil.translateReportName(incompleteReports);
         txMissedRequisition.setText(buildTipMessage(incompleteReports));
         this.setVisibility(VISIBLE);
       }

@@ -23,11 +23,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.presenter.StockCardListPresenter;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 import roboguice.inject.ContentView;
@@ -45,6 +46,21 @@ public class StockCardListActivity extends SearchBarActivity {
 
   @InjectPresenter(StockCardListPresenter.class)
   private StockCardListPresenter presenter;
+
+  private final ActivityResultLauncher<Intent> toBulkIssuesOrEntriesLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK && stockCardFragment != null) {
+          stockCardFragment.refreshPresenterIfHasIssuesOrEntries(result.getData());
+        }
+      });
+
+  private final ActivityResultLauncher<Intent> toArchivedListLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK && stockCardFragment != null) {
+          stockCardFragment.loadStockCards();
+        }
+      });
+
 
   public static Intent getIntentToMe(Context context) {
     Intent intent = new Intent(context, StockCardListActivity.class);
@@ -81,20 +97,18 @@ public class StockCardListActivity extends SearchBarActivity {
         startActivity(InitialInventoryActivity.getIntentToMe(this, true));
         return true;
       case MENU_ID_ARCHIVE_LIST:
-        startActivityForResult(ArchivedDrugsListActivity.getIntentToMe(this),
-            Constants.REQUEST_ARCHIVED_LIST_PAGE);
+        toArchivedListLauncher.launch(ArchivedDrugsListActivity.getIntentToMe(this));
         return true;
       case MENU_ID_MOVEMENT_HISTORY:
         startActivity(AllDrugsMovementHistoryActivity.getIntentToMe(this));
         return true;
       case MENU_ID_BULK_ENTRIES:
-        startActivityForResult(new Intent(LMISApp.getContext(), BulkEntriesActivity.class),
-            Constants.REQUEST_FROM_STOCK_LIST_PAGE);
+        toBulkIssuesOrEntriesLauncher.launch(new Intent(LMISApp.getContext(), BulkEntriesActivity.class));
         return true;
       case MENU_ID_BULK_ISSUES:
         Intent intent = new Intent(LMISApp.getContext(),
             presenter.hasBulkIssueDraft() ? BulkIssueActivity.class : BulkIssueChooseDestinationActivity.class);
-        startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
+        toBulkIssuesOrEntriesLauncher.launch(intent);
         return true;
       default:
         return super.onOptionsItemSelected(item);
@@ -108,14 +122,6 @@ public class StockCardListActivity extends SearchBarActivity {
       return true;
     } else {
       return false;
-    }
-  }
-
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (stockCardFragment != null) {
-      stockCardFragment.onActivityResult(requestCode, resultCode, data);
     }
   }
 

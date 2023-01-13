@@ -25,6 +25,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.Date;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
@@ -32,6 +33,7 @@ import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 @Data
 @DatabaseTable(tableName = "draft_initial_lot_items")
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class DraftInitialInventoryLotItem extends BaseModel {
 
   @DatabaseField
@@ -55,9 +57,7 @@ public class DraftInitialInventoryLotItem extends BaseModel {
     } catch (Exception e) {
       quantity = null;
     }
-    setExpirationDate(DateUtil.getActualMaximumDate(DateUtil
-        .parseString(lotMovementViewModel.getExpiryDate(),
-            DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
+    setExpirationDate(DateUtil.parseString(lotMovementViewModel.getExpiryDate(), DB_DATE_FORMAT));
     setLotNumber(lotMovementViewModel.getLotNumber());
     setProduct(product);
   }

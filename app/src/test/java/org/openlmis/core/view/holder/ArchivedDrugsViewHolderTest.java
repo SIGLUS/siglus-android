@@ -47,8 +47,8 @@ public class ArchivedDrugsViewHolderTest {
 
   @Test
   public void shouldShowProductNameAndStyledUnit() {
-    assertThat(viewHolder.tvProductName.getText().toString()).isEqualTo("Lamivudina 150mg [08S40]");
-    assertThat(viewHolder.tvProductUnit.getText().toString()).isEqualTo("10mg VIA");
+    assertThat(viewHolder.tvProductName.getText().toString()).hasToString("Lamivudina 150mg [08S40]");
+    assertThat(viewHolder.tvProductUnit.getText().toString()).hasToString("10mg VIA");
     assertThat(viewHolder.tvArchiveBack.getVisibility()).isEqualTo(View.VISIBLE);
   }
 

@@ -220,9 +220,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     long regimenTotal = RnRForm.calculateTotalRegimenAmount(DBForm.getRegimenItemListWrapper(),
         MMIARegimeList.COUNTTYPE.AMOUNT);
     assertThat(expectRegimeTotal, is(regimenTotal));
-
-    assertThat(mmiaRepository.getTotalPatients(initForm),
-        is(mmiaRepository.getTotalPatients(DBForm)));
   }
 
   @Test
@@ -253,11 +250,10 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     assertThat(baseInfoItems.get(7).getName(), is(mmiaRepository.attrTablePatients5To9Key));
     assertThat(baseInfoItems.get(8).getName(), is(mmiaRepository.attrTablePatients10To14Key));
     assertThat(baseInfoItems.get(9).getName(), is(mmiaRepository.attrTableProphylaxisPpeKey));
-    assertThat(baseInfoItems.get(10).getName(), is(mmiaRepository.attrTableProphylaxisPrepKey));
-    assertThat(baseInfoItems.get(11).getName(),
+    assertThat(baseInfoItems.get(10).getName(),
         is(mmiaRepository.attrTableProphylaxisChildKey));
-    assertThat(baseInfoItems.get(12).getName(),
-        is(mmiaRepository.attrTableProphylaxisTotalKey));
+    assertThat(baseInfoItems.get(11).getName(), is(mmiaRepository.attrTableTotalPatientKey));
+    assertThat(baseInfoItems.get(12).getName(), is(mmiaRepository.attrTableTotalMonthKey));
   }
 
   @Test
@@ -282,10 +278,10 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     stockCard.setLotOnHandListWrapper(newArrayList(new LotOnHand(lot, stockCard, 10L)));
     when(mockStockMovementRepository
         .queryStockMovementsByMovementDate(anyLong(), any(Date.class), any(Date.class)))
-        .thenReturn(new ArrayList<StockMovementItem>());
+        .thenReturn(new ArrayList<>());
 
     RnrFormItem rnrFormItemByPeriod = mmiaRepository
-        .createRnrFormItemByPeriod(stockCard, new ArrayList<StockMovementItem>());
+        .createRnrFormItemByPeriod(stockCard, new ArrayList<>());
 
     assertThat(rnrFormItemByPeriod.getValidate(), is("01/02/2015"));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
@@ -293,13 +289,12 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
     stockCard.setLotOnHandListWrapper(Lists.newArrayList());
     rnrFormItemByPeriod = mmiaRepository
-        .createRnrFormItemByPeriod(stockCard, new ArrayList<StockMovementItem>());
+        .createRnrFormItemByPeriod(stockCard, new ArrayList<>());
     assertNull(rnrFormItemByPeriod.getValidate());
   }
 
   private StockMovementItem createMovementItem(MovementReasonManager.MovementType type,
-      long quantity, StockCard stockCard, Date createdTime, Date movementDate)
-      throws LMISException {
+      long quantity, StockCard stockCard, Date createdTime, Date movementDate) {
     StockMovementItem stockMovementItem = new StockMovementItem();
     stockMovementItem.setMovementQuantity(quantity);
     stockMovementItem.setMovementType(type);

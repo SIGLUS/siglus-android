@@ -378,9 +378,8 @@ public class SyncDownManager {
       } catch (Exception e) {
         subscriber.onError(e);
       }
-    }).observeOn(SchedulerBuilder.createScheduler()).doOnTerminate(() -> {
-      EventBus.getDefault().post(new CmmCalculateEvent(false));
-    });
+    }).observeOn(SchedulerBuilder.createScheduler())
+    .doOnTerminate(() -> EventBus.getDefault().post(new CmmCalculateEvent(false)));
   }
 
 

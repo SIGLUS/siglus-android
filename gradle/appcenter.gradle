@@ -1,7 +1,7 @@
 apply plugin: "com.betomorrow.appcenter"
 
 appcenter {
-    apiToken = "8e0e3d7f8a828e0ec7913acb32b5776e847a57ef"
+    apiToken = "6808959844cd46a63a1d3397d7124a0e1b9bd3ae"
     ownerName = "SIGLUS"
     distributionGroups = ["Internal"]
     releaseNotes = getGitCommit()
@@ -12,6 +12,9 @@ appcenter {
         }
         qaRelease {
             appName = "SIGLUS-V3-QA"
+        }
+        mgtRelease {
+            appName = "SIGLUS-V3-MGT"
         }
         integRelease {
             appName = "SIGLUS-V3-INTEG"

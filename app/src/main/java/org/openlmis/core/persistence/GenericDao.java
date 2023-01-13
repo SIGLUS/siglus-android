@@ -19,6 +19,7 @@
 package org.openlmis.core.persistence;
 
 import android.content.Context;
+import com.j256.ormlite.dao.Dao;
 import java.util.List;
 import javax.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
@@ -64,7 +65,7 @@ public class GenericDao<T> {
   }
 
   public List<T> queryForAll() throws LMISException {
-    return dbUtil.withDao(context, type, dao -> dao.queryForAll());
+    return dbUtil.withDao(context, type, Dao::queryForAll);
   }
 
   public Integer update(final T object) throws LMISException {
@@ -76,7 +77,7 @@ public class GenericDao<T> {
   }
 
   public void refresh(final T model) throws LMISException {
-    dbUtil.withDao(context, type, (DbUtil.Operation<T, Void>) dao -> {
+    dbUtil.withDao(context, type, dao -> {
       dao.refresh(model);
       return null;
     });

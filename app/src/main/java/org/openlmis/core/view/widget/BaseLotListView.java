@@ -124,6 +124,7 @@ public class BaseLotListView extends FrameLayout {
         addNewLot(new LotMovementViewModel(lotNumber, expiryDate,
             MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
       }
+      addLotDialogFragment = null;
     };
   }
 

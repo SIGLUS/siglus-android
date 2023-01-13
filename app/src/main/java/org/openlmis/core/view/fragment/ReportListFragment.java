@@ -26,18 +26,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
+import org.openlmis.core.event.BackToReportListPageEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -50,6 +53,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.activity.ALRequisitionActivity;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
+import org.openlmis.core.view.activity.MMTBRequisitionActivity;
 import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.activity.RapidTestReportFormActivity;
 import org.openlmis.core.view.activity.SelectPeriodActivity;
@@ -62,6 +66,7 @@ import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
 
+@BindEventBus
 public class ReportListFragment extends BaseReportListFragment {
 
   public static final int DEFAULT_FORM_ID_OF_NOT_AUTHORIZED = 0;
@@ -86,6 +91,32 @@ public class ReportListFragment extends BaseReportListFragment {
   private List<RnRFormViewModel> data;
 
   private WarningDialogFragment warningDialog;
+
+  private ActivityResultCallback<ActivityResult> createRequisitionCallback = result -> {
+    if (result.getResultCode() == Activity.RESULT_OK) {
+      EventBus.getDefault().post(new BackToReportListPageEvent());
+    }
+  };
+
+  private final ActivityResultLauncher<Intent> createRequisitionLauncher = registerForActivityResult(
+      new StartActivityForResult(), createRequisitionCallback);
+
+  private final ActivityResultLauncher<Intent> selectPeriodLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          Intent dataIntent = result.getData();
+          if (dataIntent == null) {
+            return;
+          }
+          Date periodEndDate = (Date) dataIntent.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
+          boolean isMissedPeriod = dataIntent.getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
+          createRequisition(periodEndDate, isMissedPeriod);
+        }
+      });
+
+  public ActivityResultCallback<ActivityResult> getCreateRequisitionCallback() {
+    return createRequisitionCallback;
+  }
 
   public static ReportListFragment newInstance(String programCode) {
     final ReportListFragment reportListFragment = new ReportListFragment();
@@ -133,58 +164,6 @@ public class ReportListFragment extends BaseReportListFragment {
     subscriptions.add(subscription);
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode != Activity.RESULT_OK) {
-      return;
-    }
-
-    switch (requestCode) {
-      case Constants.REQUEST_FROM_RNR_LIST_PAGE:
-        deleteCacheFragments();
-        loadForms();
-        break;
-      case Constants.REQUEST_SELECT_PERIOD_END:
-        if (data == null) {
-          return;
-        }
-        Date periodEndDate = (Date) data.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
-        boolean isMissedPeriod = data.getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
-        createRequisition(periodEndDate, isMissedPeriod);
-        break;
-      default:
-        // do nothing
-    }
-  }
-
-  @NonNull
-  private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(
-      final RnRForm form) {
-    return () -> deleteRnRForm(form);
-  }
-
-  private void goToRequisitionPage(long rnrFormId) {
-    Intent intent = null;
-    switch (programCode) {
-      case Program.VIA_CODE:
-        intent = VIARequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
-        break;
-      case Program.MALARIA_CODE:
-        intent = ALRequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
-        break;
-      case Program.TARV_CODE:
-        intent = MMIARequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
-        break;
-      case Program.RAPID_TEST_CODE:
-        intent = RapidTestReportFormActivity.getIntentToMe(requireContext(), rnrFormId);
-        break;
-      default:
-        // do nothing
-    }
-    startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
-  }
-
   private void createRequisition(Date periodEndDate, boolean isMissedPeriod) {
     Intent intent = null;
     switch (programCode) {
@@ -200,10 +179,13 @@ public class ReportListFragment extends BaseReportListFragment {
       case Program.RAPID_TEST_CODE:
         intent = RapidTestReportFormActivity.getIntentToMe(requireContext(), periodEndDate);
         break;
+      case Program.MMTB_CODE:
+        intent = MMTBRequisitionActivity.getIntentToMe(requireContext(), periodEndDate);
+        break;
       default:
         // do nothing
     }
-    startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
+    createRequisitionLauncher.launch(intent);
   }
 
   private Intent createMMIARequisitionIntent(Date periodEndDate) {
@@ -211,16 +193,7 @@ public class ReportListFragment extends BaseReportListFragment {
     return MMIARequisitionActivity.getIntentToMe(requireContext(), periodEndDate, viewModel);
   }
 
-  private void deleteRnRForm(RnRForm form) {
-    try {
-      presenter.deleteRnRForm(form);
-      Subscription subscription = presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
-      subscriptions.add(subscription);
-    } catch (LMISException e) {
-      ToastUtil.show(getString(R.string.requisition_delete_failed));
-      Log.w("ReportListFragment", e);
-    }
-  }
+
 
   protected Subscriber<List<RnRFormViewModel>> getRnRFormSubscriber() {
     return new Subscriber<List<RnRFormViewModel>>() {
@@ -244,17 +217,6 @@ public class ReportListFragment extends BaseReportListFragment {
     };
   }
 
-  private void deleteCacheFragments() {
-    List<Fragment> fragments = getParentFragmentManager().getFragments();
-    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-    for (Fragment fragment : fragments) {
-      if (!Objects.equals(fragment.getTag(), this.getTag())) {
-        transaction.remove(fragment);
-      }
-    }
-    transaction.commit();
-  }
-
   protected RnRFormItemClickListener rnRFormItemClickListener = new RnRFormItemClickListener() {
     @Override
     public void deleteForm(final RnRForm form) {
@@ -271,13 +233,10 @@ public class ReportListFragment extends BaseReportListFragment {
     public void clickBtnView(RnRFormViewModel model, View view) {
       switch (model.getType()) {
         case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
-          startActivityForResult(PhysicalInventoryActivity.getIntentToMe(requireContext()),
-              Constants.REQUEST_FROM_RNR_LIST_PAGE);
+          createRequisitionLauncher.launch(PhysicalInventoryActivity.getIntentToMe(requireContext()));
           break;
         case RnRFormViewModel.TYPE_INVENTORY_DONE:
-          startActivityForResult(
-              SelectPeriodActivity.getIntentToMe(requireContext(), model.getProgramCode()),
-              Constants.REQUEST_SELECT_PERIOD_END);
+          selectPeriodLauncher.launch(SelectPeriodActivity.getIntentToMe(requireContext(), model.getProgramCode()));
           TrackRnREventUtil.trackRnRListEvent(TrackerActions.CREATE_RNR, programCode);
           break;
         case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
@@ -285,11 +244,8 @@ public class ReportListFragment extends BaseReportListFragment {
           goToRequisitionPage(rnrFormId);
           break;
         case RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD:
-          startActivityForResult(SelectPeriodActivity.getIntentToMe(requireContext(),
-              model.getProgramCode(),
-              true,
-              model.getPeriodEndMonth()),
-              Constants.REQUEST_SELECT_PERIOD_END);
+          selectPeriodLauncher.launch(SelectPeriodActivity.getIntentToMe(requireContext(),
+              model.getProgramCode(), true, model.getPeriodEndMonth()));
           break;
         default:
           rnrFormId = DEFAULT_FORM_ID_OF_NOT_AUTHORIZED;
@@ -298,5 +254,46 @@ public class ReportListFragment extends BaseReportListFragment {
       }
       view.setEnabled(true);
     }
+
+    @NonNull
+    private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(RnRForm form) {
+      return () -> deleteRnRForm(form);
+    }
+
+    private void deleteRnRForm(RnRForm form) {
+      try {
+        presenter.deleteRnRForm(form);
+        Subscription subscription = presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
+        subscriptions.add(subscription);
+      } catch (LMISException e) {
+        ToastUtil.show(getString(R.string.requisition_delete_failed));
+        Log.w("ReportListFragment", e);
+      }
+    }
+
+    private void goToRequisitionPage(long rnrFormId) {
+      Intent intent = null;
+      switch (programCode) {
+        case Program.VIA_CODE:
+          intent = VIARequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
+          break;
+        case Program.MALARIA_CODE:
+          intent = ALRequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
+          break;
+        case Program.TARV_CODE:
+          intent = MMIARequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
+          break;
+        case Program.RAPID_TEST_CODE:
+          intent = RapidTestReportFormActivity.getIntentToMe(requireContext(), rnrFormId);
+          break;
+        case Program.MMTB_CODE:
+          intent = MMTBRequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
+          break;
+        default:
+          // do nothing
+      }
+      createRequisitionLauncher.launch(intent);
+    }
   };
+
 }

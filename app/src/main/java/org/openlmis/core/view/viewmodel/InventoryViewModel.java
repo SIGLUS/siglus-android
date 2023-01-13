@@ -219,6 +219,23 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         + '}';
   }
 
+  protected boolean hasLotInventoryModelChanged() {
+    for (LotMovementViewModel viewModel : getExistingLotMovementViewModelList()) {
+      if (viewModel.getQuantity() != null && !viewModel.getQuantity().isEmpty()) {
+        return true;
+      }
+    }
+    if (!newLotMovementViewModelList.isEmpty()) {
+      return true;
+    }
+    for (LotMovementViewModel viewModel : getNewLotMovementViewModelList()) {
+      if (viewModel.getQuantity() != null && !viewModel.getQuantity().isEmpty()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private String getNewMovementString() {
     StringBuilder list = new StringBuilder();
     for (LotMovementViewModel model : newLotMovementViewModelList) {

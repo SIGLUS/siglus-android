@@ -54,7 +54,7 @@ import roboguice.util.RoboContext;
 public class RoboMigrationAndroidXActionBarActivity extends AppCompatActivity implements RoboContext {
 
   protected EventManager eventManager;
-  protected HashMap<Key<?>, Object> scopedObjects = new HashMap<Key<?>, Object>();
+  protected HashMap<Key<?>, Object> scopedObjects = new HashMap<>();
 
   @Inject
   ContentViewListener ignored;
@@ -134,8 +134,8 @@ public class RoboMigrationAndroidXActionBarActivity extends AppCompatActivity im
   }
 
   @Override
-  public void onSupportContentChanged() {
-    super.onSupportContentChanged();
+  public void onContentChanged() {
+    super.onContentChanged();
     RoboGuice.getInjector(this).injectViewMembers(this);
     eventManager.fire(new OnContentChangedEvent(this));
   }

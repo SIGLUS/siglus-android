@@ -23,6 +23,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -30,6 +31,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @DatabaseTable(tableName = "program_additional_products")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class AdditionalProductProgram extends BaseModel {
 
   @DatabaseField

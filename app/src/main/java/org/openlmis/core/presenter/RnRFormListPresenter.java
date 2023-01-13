@@ -135,6 +135,11 @@ public class RnRFormListPresenter extends Presenter {
 
   private RnRFormViewModel generateRnrFormViewModelWithoutRnrForm(Period currentPeriod)
       throws LMISException {
+    if (stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode) == null) {
+      return new RnRFormViewModel(currentPeriod, programCode,
+          RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS);
+    }
+
     if (isCanNotCreateRnr(currentPeriod)) {
       return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
     }
@@ -183,14 +188,14 @@ public class RnRFormListPresenter extends Presenter {
   protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels,
       ReportTypeForm typeForm) throws LMISException {
     int offsetMonth = requisitionPeriodService.getMissedPeriodOffsetMonth(this.programCode, typeForm);
-    DateTime inventoryBeginDate = requisitionPeriodService.getCurrentMonthInventoryBeginDate();
+    DateTime periodBeginDate = requisitionPeriodService.getCurrentPeriodBeginDate();
 
     for (int i = 0; i < offsetMonth; i++) {
-      viewModels.add(RnRFormViewModel.buildMissedPeriod(inventoryBeginDate.toDate(),
-          inventoryBeginDate.plusMonths(1).toDate()));
-      inventoryBeginDate = inventoryBeginDate.minusMonths(1);
+      viewModels.add(RnRFormViewModel.buildMissedPeriod(periodBeginDate.toDate(),
+          periodBeginDate.plusMonths(1).toDate()));
+      periodBeginDate = periodBeginDate.minusMonths(1);
     }
-    generateFirstMissedRnrFormViewModel(viewModels, inventoryBeginDate, typeForm);
+    generateFirstMissedRnrFormViewModel(viewModels, periodBeginDate, typeForm);
   }
 
   private void generateFirstMissedRnrFormViewModel(List<RnRFormViewModel> viewModels,
@@ -223,8 +228,7 @@ public class RnRFormListPresenter extends Presenter {
     repository.removeRnrForm(form);
   }
 
-  private boolean isAllRnrFormInDBCompletedOrNoRnrFormInDB(ReportTypeForm reportTypeForm)
-      throws LMISException {
+  private boolean isAllRnrFormInDBCompletedOrNoRnrFormInDB(ReportTypeForm reportTypeForm) {
     List<RnRForm> rnRForms = repository
         .listInclude(RnRForm.Emergency.NO, programCode, reportTypeForm);
     return rnRForms.isEmpty()

@@ -46,8 +46,8 @@ public class InitialInventoryViewHolderTest {
 
     viewHolder.populate(viewModel, queryKeyWord, mockedListener);
 
-    assertThat(viewHolder.productName.getText().toString()).isEqualTo("Lamivudina 150mg [08S40]");
-    assertThat(viewHolder.productUnit.getText().toString()).isEqualTo("Embalagem");
+    assertThat(viewHolder.productName.getText().toString()).hasToString("Lamivudina 150mg [08S40]");
+    assertThat(viewHolder.productUnit.getText().toString()).hasToString("Embalagem");
 
     assertThat(viewHolder.tvHistoryAction.getVisibility()).isEqualTo(View.GONE);
   }

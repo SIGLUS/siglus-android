@@ -21,14 +21,13 @@ package org.openlmis.core.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.DebugPhysicalInventoryEvent;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -43,6 +42,7 @@ import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import rx.Subscription;
 
+@BindEventBus
 @ContentView(R.layout.activity_physical_inventory)
 public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInventoryPresenter> {
 
@@ -50,23 +50,15 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
 
   public static final String KEY_FROM_PHYSICAL_VERIFY = "Physical-Verify";
 
-  final SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-    public void onSign(String sign) {
-      loading();
-      Subscription subscription = presenter.doInventory(sign).subscribe(onNextMainPageAction, errorAction);
-      subscriptions.add(subscription);
-      trackInventoryEvent(TrackerActions.APPROVE_INVENTORY);
-    }
+  final SignatureDialog.DialogDelegate signatureDialogDelegate = sign -> {
+    loading();
+    Subscription subscription = presenter.doInventory(sign).subscribe(onNextMainPageAction, errorAction);
+    subscriptions.add(subscription);
+    trackInventoryEvent(TrackerActions.APPROVE_INVENTORY);
   };
 
   public static Intent getIntentToMe(Context context) {
     return new Intent(context, PhysicalInventoryActivity.class);
-  }
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    EventBus.getDefault().register(this);
   }
 
   @Override
@@ -75,7 +67,6 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
     if (SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()) {
       ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
       finish();
-      return;
     }
   }
 
@@ -90,12 +81,6 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
       return;
     }
     super.onBackPressed();
-  }
-
-  @Override
-  protected void onDestroy() {
-    EventBus.getDefault().unregister(this);
-    super.onDestroy();
   }
 
   @VisibleForTesting

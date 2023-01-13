@@ -2,13 +2,18 @@ package org.openlmis.core.model.repository;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +32,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
@@ -235,5 +241,101 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
 
     assertEquals(lowerCaseLot, upperCaseLot);
 
+  }
+
+  @Test
+  public void shouldGetLotNumberAndProductIdToLot() throws LMISException {
+    product.setId(1L);
+
+    Lot lot = new Lot();
+    lot.setLotNumber("ABC");
+    lot.setProduct(product);
+
+    lotRepository.createOrUpdateLot(lot);
+    Map<String, Lot> lotNumberAndProductIdToLot = lotRepository.getLotNumberAndProductIdToLot();
+
+    assertNotNull(lotNumberAndProductIdToLot);
+  }
+
+  @Test
+  public void shouldDeleteLotInfo() throws LMISException {
+    String lotNumber = "ABC";
+    long productId = 1L;
+    product.setId(productId);
+
+
+    Lot lot = new Lot();
+    lot.setLotNumber(lotNumber);
+    lot.setProduct(product);
+
+    stockCard.setId(10L);
+    stockCard.setProduct(product);
+
+    lotRepository.createOrUpdateLot(lot);
+    Lot shouldBeEmptyLot = lotRepository.getLotByLotNumberAndProductId(lotNumber, productId);
+    assertNotNull(shouldBeEmptyLot);
+
+    lotRepository.deleteLotInfo(stockCard);
+    shouldBeEmptyLot = lotRepository.getLotByLotNumberAndProductId(lotNumber, productId);
+    assertNull(shouldBeEmptyLot);
+  }
+
+  @Test
+  public void shouldGetLotNumberAndProductIdToLotAndResetKeepLotMovementItems() throws LMISException {
+    //given
+    Lot lot1 = new Lot();
+    lot1.setProduct(product);
+    lot1.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
+    lot1.setLotNumber("AAA");
+
+    LotOnHand lotOnHand1 = new LotOnHand();
+    lotOnHand1.setLot(lot1);
+    lotOnHand1.setStockCard(stockCard);
+    lotOnHand1.setQuantityOnHand(10L);
+
+    List<LotOnHand> lotOnHandList = Arrays.asList(lotOnHand1);
+    lotRepository.createOrUpdateLotsInformation(lotOnHandList);
+
+    StockMovementItem stockMovementItem = new StockMovementItemBuilder()
+        .withStockOnHand(100)
+        .withMovementType(MovementReasonManager.MovementType.RECEIVE)
+        .withMovementDate("2016-12-31")
+        .withQuantity(10)
+        .build();
+    stockMovementItem.setStockCard(stockCard);
+    stockMovementItem.setId(100L);
+    stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+
+    LotMovementItem lotMovementItem = new LotMovementItemBuilder()
+        .setStockMovementItem(stockMovementItem)
+        .setLot(lot1)
+        .setMovementQuantity(2L)
+        .setStockOnHand(lotOnHand1.getQuantityOnHand() + 2L)
+        .build();
+    lotRepository.createLotMovementItem(lotMovementItem);
+
+    Map<String, Lot> expectedMap = new HashMap<>();
+    expectedMap.put(lot1.getLotNumber() + lot1.getProduct().getId(), lot1);
+
+    //when
+    Map<String, Lot> lotNumberAndProductIdToLot = lotRepository.getLotNumberAndProductIdToLot();
+
+    //then
+    assertEquals(1, lotNumberAndProductIdToLot.size());
+    assertEquals(expectedMap, lotNumberAndProductIdToLot);
+
+    //when
+    List<StockMovementItem> toRestStockMovementItems = new ArrayList<>();
+    toRestStockMovementItems.add(stockMovementItem);
+    Map<String, List<StockMovementItem>> stockMovementItemsMap = new HashMap<>();
+    stockMovementItemsMap.put("UnusedStringKey", toRestStockMovementItems);
+
+    List<LotMovementItem> shouldBeEmptyItems = lotRepository.resetKeepLotMovementItems(new HashMap<>());
+    List<LotMovementItem> resetLotMovementItems = lotRepository.resetKeepLotMovementItems(stockMovementItemsMap);
+    RobolectricUtils.waitLooperIdle();
+
+    //then
+    assertEquals(0, shouldBeEmptyItems.size());
+    assertNotNull(resetLotMovementItems);
   }
 }

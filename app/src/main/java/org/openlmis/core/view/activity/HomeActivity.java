@@ -29,7 +29,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -42,11 +41,11 @@ import androidx.core.content.ContextCompat;
 import com.google.inject.Inject;
 import java.io.File;
 import org.apache.commons.collections.CollectionUtils;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.event.InitialDirtyDataCheckEvent;
@@ -63,6 +62,7 @@ import org.openlmis.core.persistence.ExportSqliteOpenHelper;
 import org.openlmis.core.presenter.HomePresenter;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.service.SyncService;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.InjectPresenter;
@@ -77,7 +77,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
-
+@BindEventBus
 @ContentView(R.layout.activity_home_page)
 public class HomeActivity extends BaseActivity implements HomePresenter.HomeView {
 
@@ -275,7 +275,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    EventBus.getDefault().register(this);
     if (UserInfoMgr.getInstance().getUser() == null) {
       // In case some users use some unknown way entered here!!!
       logout();
@@ -321,14 +320,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     refreshDashboard();
   }
 
-  @Override
-  protected void onDestroy() {
-    EventBus.getDefault().unregister(this);
-    super.onDestroy();
-  }
-
   protected final InternetCheckListener validateConnectionListener = internet -> {
-    if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+    if (!internet) {
       ToastUtil.show(R.string.message_wipe_no_connection);
     } else {
       WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
@@ -421,7 +414,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       ExportSqliteOpenHelper.removePrivateUserInfo(this);
       FileUtil.copy(tempBackup, externalBackup);
       FileUtil.copy(currentXMLBackup, xmlExternalBackup);
-      ToastUtil.show(Html.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
+      ToastUtil.show(CompatUtil.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
     } catch (Exception e) {
       new LMISException(e, "HomeActivity.exportDB").reportToFabric();
       ToastUtil.show(e.getMessage());
@@ -436,7 +429,15 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   }
 
   private void alertWipeData() {
-    new InternetCheck().check(validateConnectionListener);
+    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
+          R.string.message_warning_wipe_data,
+          R.string.btn_positive,
+          R.string.btn_negative);
+      getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
+    } else {
+      new InternetCheck().check(validateConnectionListener);
+    }
   }
 
   private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {

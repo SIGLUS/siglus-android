@@ -79,10 +79,6 @@ public class RequisitionPeriodService {
     DateTime periodEndDate;
     periodBeginDate = new DateTime(lastRnR.getPeriodEnd());
 
-    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-      return Period.generateForTraining(periodBeginDate.plusDays(1).toDate());
-    }
-
     if (physicalInventoryDate == null) {
       Calendar date = Calendar.getInstance();
       date.set(periodBeginDate.getYear(), periodBeginDate.getMonthOfYear(), Period.END_DAY,
@@ -113,51 +109,32 @@ public class RequisitionPeriodService {
     DateTime initializeDateTime = null;
     ReportTypeForm reportTypeForm = reportTypeFormRepository.queryByCode(programCode);
     DateTime lastReportEndTime = reportTypeForm.getLastReportEndTimeForDateTime();
-    if (lastReportEndTime != null && Months.monthsBetween(lastReportEndTime, new DateTime()).getMonths() > 12) {
-      initializeDateTime = new DateTime().minusMonths(sharedPreferenceMgr.getMonthOffsetThatDefinedOldData())
-          .toDateTime();
+    if (lastReportEndTime != null) {
+      DateTime currentDateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+      if (Months.monthsBetween(lastReportEndTime, currentDateTime).getMonths() > 12) {
+        initializeDateTime = currentDateTime.minusMonths(sharedPreferenceMgr.getMonthOffsetThatDefinedOldData())
+            .toDateTime();
+      }
     }
     initializeDateTime = initializeDateTime == null ? new DateTime(stockMovementRepository
         .queryEarliestStockMovementDateByProgram(programCode)) : initializeDateTime;
 
-    int initializeDayOfMonth = initializeDateTime.getDayOfMonth();
+    DateTime reportStartTime = new DateTime(reportTypeFormRepository.getReportType(programCode).getStartTime());
+
+    DateTime resultDate = initializeDateTime.isAfter(reportStartTime) ? initializeDateTime : reportStartTime;
+
+    int initializeDayOfMonth = resultDate.getDayOfMonth();
 
     Calendar currentBeginDate = Calendar.getInstance();
 
-    if (initializeDayOfMonth >= Period.INVENTORY_BEGIN_DAY
-        && initializeDayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
-      currentBeginDate.set(initializeDateTime.getYear(), initializeDateTime.getMonthOfYear() - 1,
-          initializeDayOfMonth);
+    if (initializeDayOfMonth >= Period.BEGIN_DAY) {
+      currentBeginDate.set(resultDate.getYear(), resultDate.getMonthOfYear(), Period.BEGIN_DAY);
     } else {
-      currentBeginDate.set(initializeDateTime.getYear(), initializeDateTime.getMonthOfYear() - 1,
-          Period.BEGIN_DAY);
-    }
-
-    DateTime periodBeginDate = DateUtil.cutTimeStamp(new DateTime(currentBeginDate));
-
-    if (initializeDayOfMonth < Period.INVENTORY_BEGIN_DAY) {
-      periodBeginDate = periodBeginDate.minusMonths(1);
-    }
-
-    DateTime reportStartTime = reportTypePeriod(programCode);
-    if (reportStartTime.isAfter(initializeDateTime)) {
-      periodBeginDate = reportStartTime;
-    }
-    return periodBeginDate;
-  }
-
-  private DateTime reportTypePeriod(String programCode) throws LMISException {
-    DateTime startTime = new DateTime(
-        reportTypeFormRepository.getReportType(programCode).getStartTime());
-    Calendar currentBeginDate = Calendar.getInstance();
-    int initializeDayOfMonth = startTime.getDayOfMonth();
-    if (initializeDayOfMonth < Period.BEGIN_DAY) {
-      currentBeginDate.set(startTime.getYear(), startTime.getMonthOfYear() - 1, Period.BEGIN_DAY);
-    } else {
-      currentBeginDate.set(startTime.getYear(), startTime.getMonthOfYear(), Period.BEGIN_DAY);
+      currentBeginDate.set(resultDate.getYear(), resultDate.getMonthOfYear() - 1, Period.BEGIN_DAY);
     }
     return DateUtil.cutTimeStamp(new DateTime(currentBeginDate));
   }
+
 
   private DateTime defaultEndDateTo20th(DateTime periodBeginDate) {
     Calendar date = Calendar.getInstance();
@@ -175,7 +152,7 @@ public class RequisitionPeriodService {
     List<RnRForm> rnRForms = rnrFormRepository
         .listInclude(RnRForm.Emergency.NO, programCode, reportTypeForm);
 
-    if (rnRForms.size() == 0 || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
+    if (rnRForms.isEmpty() || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
       DateTime nextPeriodInScheduleEnd = generateNextPeriod(rnRForms, programCode, null).getEnd();
 
       DateTime lastInventoryDateForNextPeriodInSchedule = nextPeriodInScheduleEnd
@@ -195,7 +172,7 @@ public class RequisitionPeriodService {
     DateTime nextPeriodInScheduleBegin = generateNextPeriod(programCode, null).getBegin();
 
     DateTime currentMonthInventoryBeginDate;
-    currentMonthInventoryBeginDate = getCurrentMonthInventoryBeginDate();
+    currentMonthInventoryBeginDate = getCurrentPeriodBeginDate();
     return DateUtil.calculateDateMonthOffset(nextPeriodInScheduleBegin.toDate(),
         currentMonthInventoryBeginDate.toDate());
   }
@@ -204,18 +181,9 @@ public class RequisitionPeriodService {
       throws LMISException {
     DateTime nextPeriodInScheduleBegin = generateNextPeriod(programCode, null, typeForm).getBegin();
     DateTime currentMonthInventoryBeginDate;
-    currentMonthInventoryBeginDate = getCurrentMonthInventoryBeginDate();
+    currentMonthInventoryBeginDate = getCurrentPeriodBeginDate();
     return DateUtil.calculateDateMonthOffset(nextPeriodInScheduleBegin.toDate(),
         currentMonthInventoryBeginDate.toDate());
-  }
-
-  public int getIncompletePeriodOffsetMonth(String programCode) throws LMISException {
-    List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, programCode);
-    if (rnRForms.isEmpty() || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
-      return getMissedPeriodOffsetMonth(programCode);
-    } else {
-      return getMissedPeriodOffsetMonth(programCode) + 1;
-    }
   }
 
   public List<ReportTypeForm> getIncompleteReports() throws LMISException {
@@ -236,27 +204,27 @@ public class RequisitionPeriodService {
     return incompleteReports;
   }
 
-  public DateTime getCurrentMonthInventoryBeginDate() {
+  public DateTime getCurrentPeriodBeginDate() {
     DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
-    DateTime currentMonthInventoryBeginDate;
-    if (currentDate.getDayOfMonth() >= Period.INVENTORY_BEGIN_DAY) {
-      currentMonthInventoryBeginDate = currentDate
+    DateTime currentMonthBeginDate;
+    if (currentDate.getDayOfMonth() >= Period.BEGIN_DAY) {
+      currentMonthBeginDate = currentDate
           .withDate(currentDate.getYear(),
               currentDate.getMonthOfYear(),
-              Period.INVENTORY_BEGIN_DAY);
+              Period.BEGIN_DAY);
     } else {
       if (currentDate.getMonthOfYear() == 1) {
-        currentMonthInventoryBeginDate = currentDate
+        currentMonthBeginDate = currentDate
             .withDate(currentDate.getYear() - 1,
                 12,
-                Period.INVENTORY_BEGIN_DAY);
+                Period.BEGIN_DAY);
       } else {
-        currentMonthInventoryBeginDate = currentDate
+        currentMonthBeginDate = currentDate
             .withDate(currentDate.getYear(),
                 currentDate.getMonthOfYear() - 1,
-                Period.INVENTORY_BEGIN_DAY);
+                Period.BEGIN_DAY);
       }
     }
-    return currentMonthInventoryBeginDate;
+    return currentMonthBeginDate;
   }
 }

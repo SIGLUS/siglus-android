@@ -21,6 +21,8 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
@@ -32,7 +34,6 @@ import org.openlmis.core.presenter.MMIARequisitionPresenter;
 
 public class MMIARegimeListWrap extends LinearLayout {
 
-  private LayoutInflater layoutInflater;
   private MMIARegimeList regimeList;
   private LinearLayout regimeLeftHeader;
   private TextView leftHeaderAdult;
@@ -49,7 +50,7 @@ public class MMIARegimeListWrap extends LinearLayout {
   }
 
   private void init(Context context) {
-    layoutInflater = LayoutInflater.from(context);
+    LayoutInflater layoutInflater = LayoutInflater.from(context);
     regimeList = (MMIARegimeList) layoutInflater
         .inflate(R.layout.fragment_mmia_requisition_regime_list_conent, this, false);
     regimeLeftHeader = (LinearLayout) layoutInflater
@@ -62,12 +63,12 @@ public class MMIARegimeListWrap extends LinearLayout {
   public void initView(TextView totalView, TextView totalPharmacy, TextView tvTotalPharmacyTitle,
       MMIARequisitionPresenter presenter) {
     regimeList.initView(totalView, totalPharmacy, tvTotalPharmacyTitle, presenter);
-    addView(regimeLeftHeader);
-    addView(regimeList);
+    this.addView(regimeLeftHeader);
+    this.addView(regimeList);
     leftHeaderAdult.setBackgroundResource(R.color.color_green_light);
     leftHeaderChildren.setBackgroundResource(R.color.color_regime_baby);
 
-    if (regimeList.isPharmacyEmpty) {
+    if (regimeList.isPharmacyEmpty()) {
       regimeLeftHeader.setVisibility(GONE);
     }
     regimeList.post(this::updateLeftHeader);
@@ -75,11 +76,15 @@ public class MMIARegimeListWrap extends LinearLayout {
 
   public void updateLeftHeader() {
     LayoutParams adultParams = (LayoutParams) leftHeaderAdult.getLayoutParams();
-    adultParams.height = regimeList.adultHeight;
+    adultParams.height = regimeList.getAdultHeight();
     leftHeaderAdult.setLayoutParams(adultParams);
     LayoutParams childrenParams = (LayoutParams) leftHeaderChildren.getLayoutParams();
-    childrenParams.height = regimeList.childrenHeight;
+    childrenParams.height = regimeList.getChildrenHeight();
     leftHeaderChildren.setLayoutParams(childrenParams);
+  }
+
+  public void removeOriginalTable() {
+    regimeList.removeAllViews();
   }
 
   public List<RegimenItem> getDataList() {
@@ -100,5 +105,13 @@ public class MMIARegimeListWrap extends LinearLayout {
 
   public void setRegimeListener(MMIARegimeList.MMIARegimeListener regimeListener) {
     regimeList.setRegimeListener(regimeListener);
+  }
+
+  @Override
+  public void addView(View child) {
+    if (child.getParent() != null) {
+      ((ViewGroup) child.getParent()).removeView(child);
+    }
+    super.addView(child);
   }
 }

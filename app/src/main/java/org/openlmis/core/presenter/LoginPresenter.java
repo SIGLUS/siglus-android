@@ -40,7 +40,6 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.PodRepository;
-import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -79,9 +78,6 @@ public class LoginPresenter extends Presenter {
 
   @Inject
   LotRepository lotRepository;
-
-  @Inject
-  ProgramDataFormRepository programDataFormRepository;
 
   @Inject
   StockRepository stockRepository;
@@ -145,7 +141,11 @@ public class LoginPresenter extends Presenter {
     }
     view.loading(LMISApp.getInstance().getString(R.string.msg_logging_in));
     user = new User(userName.trim(), password);
-    internetCheck.check(checkNetworkConnected(fromReSync));
+    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      offlineLogin(user);
+    } else {
+      internetCheck.check(checkNetworkConnected(fromReSync));
+    }
   }
 
   protected void onLoginFailed(LoginErrorType loginErrorType) {
@@ -282,10 +282,10 @@ public class LoginPresenter extends Presenter {
 
   protected InternetCheckListener checkNetworkConnected(boolean fromReSync) {
     return internet -> {
-      if (internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-        Observable.create((OnSubscribe<Boolean>) subscriber -> {
-          loginRemote(user, fromReSync, (Subscriber<Boolean>) subscriber);
-        }).timeout(TIMEOUT, TimeUnit.MILLISECONDS)
+      if (internet) {
+        Observable.create(
+                (OnSubscribe<Boolean>) subscriber -> loginRemote(user, fromReSync, (Subscriber<Boolean>) subscriber))
+            .timeout(TIMEOUT, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(resultObserver);
@@ -394,8 +394,8 @@ public class LoginPresenter extends Presenter {
           Log.w(TAG, e);
         }
       }).subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
     }
   }
 
@@ -420,8 +420,8 @@ public class LoginPresenter extends Presenter {
         podRepository.deleteOldData();
       }
     }).subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
 
   }
 

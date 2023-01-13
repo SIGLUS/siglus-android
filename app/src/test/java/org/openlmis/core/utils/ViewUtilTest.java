@@ -16,7 +16,7 @@ import org.openlmis.core.R;
 public class ViewUtilTest extends TestCase {
 
   @Test
-  public void shouldBeSameHeightAfterSyncHeight() throws Exception {
+  public void shouldBeSameHeightAfterSyncHeight() {
     final View leftView = new View(LMISApp.getContext());
     final View rightView = new View(LMISApp.getContext());
     leftView.setLayoutParams(new ViewGroup.LayoutParams(1, 100));
@@ -27,11 +27,9 @@ public class ViewUtilTest extends TestCase {
   }
 
   @Test
-  public void shouldSetErrorWhenEditTextIsEmpty() throws Exception {
+  public void shouldSetErrorWhenEditTextIsEmpty() {
     EditText editText = new EditText(LMISApp.getContext());
-    boolean checkEditTextEmpty = ViewUtil.checkEditTextEmpty(editText);
-    assertFalse(checkEditTextEmpty);
-    assertThat(editText.getError().toString())
-        .isEqualTo(LMISApp.getContext().getString(R.string.hint_error_input));
+    assertFalse(ViewUtil.checkEditTextEmpty(editText));
+    assertThat(editText.getError().toString()).hasToString(LMISApp.getContext().getString(R.string.hint_error_input));
   }
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/MMTB.Table.Container.Outer"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <TextView
+    style="@style/MMIA.SpreadHeader"
+    android:text="@string/mmtb_drug_consumption_form_title"
+    android:background="@color/color_a5a8a7" />
+
+  <LinearLayout style="@style/MMTB.Table.Container.Item">
+
+    <org.openlmis.core.view.widget.RotateTextView
+      android:id="@+id/rtv_pharmacy_outpatient"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/mmtb_title_pharmacy_outpatient"
+      android:padding="@dimen/dp_10"
+      android:gravity="center"
+      android:background="@color/color_cce5ff" />
+    <LinearLayout style="@style/MMTB.Table.Container">
+      <LinearLayout
+        android:id="@+id/ll_title_container"
+        style="@style/MMTB.Table.Container.Item"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/color_mmtb_green"
+        tools:layout_height="wrap_content"
+        android:minHeight="@dimen/px_30">
+
+        <TextView
+          android:gravity="center"
+          android:paddingEnd="@dimen/px_6"
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:textSize="@dimen/px_14"
+          android:text="@string/mmtb_title_product" />
+
+        <TextView
+          android:layout_height="wrap_content"
+          android:layout_width="@dimen/mmtb_spread_item_common_width"
+          android:gravity="center"
+          android:textSize="@dimen/px_14"
+          android:text="@string/mmtb_title_number_of_pills" />
+      </LinearLayout>
+      <LinearLayout
+        style="@style/MMTB.Table.Container"
+        android:id="@+id/ll_consumption_container" />
+    </LinearLayout>
+  </LinearLayout>
+</LinearLayout>

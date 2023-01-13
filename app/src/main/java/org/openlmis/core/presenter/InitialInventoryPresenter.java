@@ -48,17 +48,13 @@ public class InitialInventoryPresenter extends InventoryPresenter {
   @Override
   public Observable<List<InventoryViewModel>> loadInventory() {
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
-      try {
-        List<Product> inventoryProducts = productRepository.listProductsArchivedOrNotInStockCard();
+      List<Product> inventoryProducts = productRepository.listProductsArchivedOrNotInStockCard();
 
-        inventoryViewModelList.addAll(from(inventoryProducts)
-            .transform(this::convertProductToStockCardViewModel).toList());
-        subscriber.onNext(inventoryViewModelList);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "InitialInventoryPresenter.loadInventory").reportToFabric();
-        subscriber.onError(e);
-      }
+      inventoryViewModelList.addAll(from(inventoryProducts)
+          .transform(this::convertProductToStockCardViewModel).filter(inventoryViewModel ->
+              !(inventoryViewModel.getProduct().isArchived() && inventoryViewModel.getStockCard() == null)).toList());
+      subscriber.onNext(inventoryViewModelList);
+      subscriber.onCompleted();
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
@@ -69,18 +65,11 @@ public class InitialInventoryPresenter extends InventoryPresenter {
 
   public Observable<List<InventoryViewModel>> loadInventoryWithBasicProducts() {
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
-
-      try {
-        List<Product> basicProducts = productRepository.listBasicProducts();
-        inventoryViewModelList.addAll(from(basicProducts).transform(this::convertProductToStockCardViewModel).toList());
-        subscriber.onNext(inventoryViewModelList);
-        defaultViewModelList = new ArrayList<>(inventoryViewModelList);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "InitialInventoryPresenter.loadInventoryWithBasicProducts")
-            .reportToFabric();
-        subscriber.onError(e);
-      }
+      List<Product> basicProducts = productRepository.listBasicProducts();
+      inventoryViewModelList.addAll(from(basicProducts).transform(this::convertProductToStockCardViewModel).toList());
+      subscriber.onNext(inventoryViewModelList);
+      defaultViewModelList = new ArrayList<>(inventoryViewModelList);
+      subscriber.onCompleted();
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
@@ -89,7 +78,12 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     try {
       InventoryViewModel viewModel;
       if (product.isArchived()) {
-        viewModel = new InventoryViewModel(stockRepository.queryStockCardByProductId(product.getId()));
+        StockCard stockCard = stockRepository.queryStockCardByProductId(product.getId());
+        if (stockCard != null) {
+          viewModel = new InventoryViewModel(stockCard);
+        } else {
+          viewModel = new InventoryViewModel(product);
+        }
       } else {
         viewModel = new InventoryViewModel(product);
       }
@@ -115,19 +109,18 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     defaultViewModelList.addAll(inventoryViewModelList);
     long createdTime = LMISApp.getInstance().getCurrentTimeMillis();
     for (InventoryViewModel inventoryViewModel : defaultViewModelList) {
-      if (!inventoryViewModel.isChecked()) {
-        continue;
-      }
-      try {
-        if (inventoryViewModel.getProduct().isArchived()) {
-          StockCard stockCard = inventoryViewModel.getStockCard();
-          stockCard.getProduct().setArchived(false);
-          stockRepository.updateStockCardWithProduct(stockCard);
-          continue;
+      if (inventoryViewModel.isChecked()) {
+        try {
+          if (inventoryViewModel.getProduct().isArchived()) {
+            StockCard stockCard = inventoryViewModel.getStockCard();
+            stockCard.getProduct().setArchived(false);
+            stockRepository.updateStockCardWithProduct(stockCard);
+            continue;
+          }
+          createStockCardAndInventoryMovementWithLot(inventoryViewModel, createdTime);
+        } catch (LMISException e) {
+          new LMISException(e, "InitialInventoryPresenter.initOrArchiveBackStockCard").reportToFabric();
         }
-        createStockCardAndInventoryMovementWithLot(inventoryViewModel, createdTime);
-      } catch (LMISException e) {
-        new LMISException(e, "InitialInventoryPresenter.initOrArchiveBackStockCard").reportToFabric();
       }
     }
   }

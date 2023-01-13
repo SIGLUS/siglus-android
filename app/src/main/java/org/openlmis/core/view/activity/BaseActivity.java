@@ -19,6 +19,7 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.app.Activity;
@@ -41,9 +42,14 @@ import java.util.Set;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
+import org.openlmis.core.enumeration.LoginErrorType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.googleanalytics.AnalyticsTracker;
@@ -58,8 +64,11 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.fragment.RetainedFragment;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.fragment.SimpleDialogFragment.MsgDialogCallBack;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
+import org.openlmis.core.view.widget.ClickIntervalChecker;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
@@ -69,8 +78,6 @@ import rx.Subscription;
 
 @SuppressWarnings("PMD")
 public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivity implements BaseView {
-
-  private static long lastOperateTime = 0L;
 
   @Inject
   SharedPreferenceMgr preferencesMgr;
@@ -89,17 +96,24 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
   @Getter
   protected boolean isLoading = false;
 
-  private long appTimeout;
-
   private long onCreateStartMili;
   private boolean isPageLoadTimerInProgress;
+  private static final String TAG_LOGOUT_ALERT = "logout_alert";
 
-  public static synchronized void setLastOperateTime(long newOperateTIme) {
-    BaseActivity.lastOperateTime = newOperateTIme;
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveNotAndroidUserErrorEvent(LoginErrorType loginErrorType) {
+    if (loginErrorType.toString().equals(LoginErrorType.NON_MOBILE_USER.toString())) {
+      popUpLogoutAlertFragment(getString(
+          R.string.error_msg_sync_failed), getString(R.string.msg_sync_not_android_user));
+    }
   }
 
-  public static synchronized long getLastOperateTime() {
-    return lastOperateTime;
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveNotRegisteredDeviceErrorEvent(String message) {
+    if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(message)) {
+      popUpLogoutAlertFragment(
+          getString(R.string.error_msg_sync_failed), getString(R.string.msg_sync_not_same_device_user));
+    }
   }
 
   public void injectPresenter() {
@@ -147,27 +161,23 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev) {
-    if (getLastOperateTime() > 0L && alreadyTimeOuted() && !isLoginActivityActive()) {
+    if (!isLoginActivityActive() && ClickIntervalChecker.getInstance().isAppTimeOut()) {
+      ClickIntervalChecker.getInstance().resetLastOperateTime();
       logout();
       return true;
-    } else {
-      setLastOperateTime(LMISApp.getInstance().getCurrentTimeMillis());
-      return super.dispatchTouchEvent(ev);
     }
+    ClickIntervalChecker.setLastOperateTime(LMISApp.getInstance().getCurrentTimeMillis());
+    return super.dispatchTouchEvent(ev);
   }
 
   protected void logout() {
-    startActivity(new Intent(this, LoginActivity.class));
-    setLastOperateTime(0L);
+    Intent toLoginIntent = new Intent(this, LoginActivity.class);
+    toLoginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(toLoginIntent);
   }
 
   private boolean isLoginActivityActive() {
     return this instanceof LoginActivity;
-  }
-
-  private boolean alreadyTimeOuted() {
-    long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
-    return currentTimeMillis - getLastOperateTime() > appTimeout;
   }
 
   @Override
@@ -193,7 +203,9 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    appTimeout = Long.parseLong(getResources().getString(R.string.app_time_out));
+    if (this.getClass().isAnnotationPresent(BindEventBus.class)) {
+      EventBus.getDefault().register(this);
+    }
 
   }
 
@@ -211,6 +223,9 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
     unSubscribeSubscriptions();
     super.onDestroy();
+    if (this.getClass().isAnnotationPresent(BindEventBus.class)) {
+      EventBus.getDefault().unregister(this);
+    }
   }
 
   private void unSubscribeSubscriptions() {
@@ -303,6 +318,10 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
+    if (!ClickIntervalChecker.getInstance().isClickLongerThanInterval()) {
+      return true;
+    }
+    ClickIntervalChecker.setLastClickItemTime(LMISApp.getInstance().getCurrentTimeMillis());
     if (android.R.id.home == item.getItemId()) {
       onBackPressed();
       return true;
@@ -343,6 +362,26 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
   public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
     AutoSizeUtil.resetScreenSize(this);
+  }
+
+  private void popUpLogoutAlertFragment(String title, String msg) {
+    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+        title, msg, getString(R.string.btn_ok), null);
+    dialogFragment.setCallBackListener(new MsgDialogCallBack() {
+      @Override
+      public void positiveClick(String tag) {
+        SharedPreferenceMgr.getInstance().setLastLoginUser(StringUtils.EMPTY);
+        logout();
+      }
+
+      @Override
+      public void negativeClick(String tag) {
+        //do nothing
+      }
+    });
+    dialogFragment.setCancelable(false);
+    dialogFragment.showOnlyOnce(
+        LMISApp.getInstance().getTopActivity().getSupportFragmentManager(), TAG_LOGOUT_ALERT);
   }
 }
 

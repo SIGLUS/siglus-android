@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/MMTB.Table.Container.Item">
+
+  <TextView
+    android:id="@+id/tv_name"
+    style="@style/MMTB.Table.Text.Label"
+    android:layout_width="@dimen/px_0"
+    android:layout_height="match_parent"
+    android:layout_weight="3"
+    android:gravity="center"
+    android:textAlignment="textStart"
+    tools:text="table name" />
+
+  <EditText
+    android:id="@+id/et_value"
+    style="@style/MMTB.Table.EditText"
+    android:layout_width="@dimen/px_50"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:imeOptions="actionNext"
+    android:gravity="center" />
+
+</LinearLayout>

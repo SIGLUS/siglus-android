@@ -70,7 +70,6 @@ import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
@@ -100,7 +99,6 @@ public class SyncUpManagerTest {
   private LMISRestApi mockedLmisRestApi;
   private StockRepository stockRepository;
   private SyncUpManager syncUpManager;
-  private ProgramDataFormRepository mockedProgramDataFormRepository;
   private DirtyDataRepository mockedDirtyDataRepository;
   private PodRepository mockedPodRepository;
   private final String facilityID = "1";
@@ -112,7 +110,6 @@ public class SyncUpManagerTest {
     mockedSyncErrorsRepository = mock(SyncErrorsRepository.class);
     mockedProductRepository = mock(ProductRepository.class);
     mockedCmmRepository = mock(CmmRepository.class);
-    mockedProgramDataFormRepository = mock(ProgramDataFormRepository.class);
     mockedSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
     mockedLmisRestApi = mock(LMISRestApi.class);
     mockedDirtyDataRepository = mock(DirtyDataRepository.class);
@@ -248,8 +245,8 @@ public class SyncUpManagerTest {
 
   @Test
   public void shouldSyncAppVersion() throws Exception {
-    when(mockedSharedPreferenceMgr.hasSyncedVersion()).thenReturn(false);
     User user = new User();
+    user.setFacilityCode("12121210");
     UserInfoMgr.getInstance().setUser(user);
     syncUpManager.syncAppVersion();
     verify(mockedLmisRestApi).updateAppVersion(any(AppInfoRequest.class));
@@ -277,13 +274,6 @@ public class SyncUpManagerTest {
     syncUpManager.syncRnr();
 
     verify(mockedSyncErrorsRepository).save(any(SyncError.class));
-  }
-
-  @Test
-  public void shouldNotSyncAppVersion() throws Exception {
-    when(mockedSharedPreferenceMgr.hasSyncedVersion()).thenReturn(true);
-    syncUpManager.syncAppVersion();
-    verify(mockedLmisRestApi, never()).updateAppVersion(any(AppInfoRequest.class));
   }
 
   @Test
@@ -484,7 +474,6 @@ public class SyncUpManagerTest {
       bind(SharedPreferenceMgr.class).toInstance(mockedSharedPreferenceMgr);
       bind(SyncErrorsRepository.class).toInstance(mockedSyncErrorsRepository);
       bind(CmmRepository.class).toInstance(mockedCmmRepository);
-      bind(ProgramDataFormRepository.class).toInstance(mockedProgramDataFormRepository);
       bind(DirtyDataRepository.class).toInstance(mockedDirtyDataRepository);
       bind(PodRepository.class).toInstance(mockedPodRepository);
     }

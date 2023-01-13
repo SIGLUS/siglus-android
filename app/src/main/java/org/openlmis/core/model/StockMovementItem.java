@@ -29,6 +29,7 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,6 +48,7 @@ import org.roboguice.shaded.goole.common.collect.ImmutableList;
 @Setter
 @NoArgsConstructor
 @DatabaseTable(tableName = "stock_items")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class StockMovementItem extends BaseModel {
 
   @Expose

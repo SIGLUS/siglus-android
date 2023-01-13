@@ -60,7 +60,6 @@ import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.IssueVoucherSignatureDialog;
 import org.openlmis.core.view.widget.OrderInfoView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
-import org.openlmis.core.view.widget.SingleClickMenuListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -87,7 +86,6 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   private ActionPanelView actionPanelView;
   private Menu addProductMenu;
   private boolean isVisible = false;
-  private Long podId;
   private Pod pod;
   private final ActivityResultLauncher<Intent> addProductPageLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
@@ -105,7 +103,6 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    podId = getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 0);
     String toPage = getIntent().getStringExtra(Constants.PARAM_ISSUE_VOUCHER_OR_POD);
     pageName = toPage == null ? Constants.PARAM_ISSUE_VOUCHER : toPage;
     if (getIntent().getExtras() != null) {
@@ -124,7 +121,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     } else if (pod != null) {
       presenter.loadViewModelByPod(pod, isBackToCurrentPage);
     } else {
-      presenter.loadData(podId);
+      presenter.loadData(getIntent().getLongExtra(Constants.PARAM_ISSUE_VOUCHER_FORM_ID, 0));
     }
   }
 
@@ -181,22 +178,21 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
-    getMenuInflater().inflate(R.menu.menu_issue_voucher_draft, menu);
+    getMenuInflater().inflate(R.menu.menu_add_products, menu);
+    addProductMenu = menu;
+    MenuItem item = addProductMenu.findItem(R.id.action_add_product);
+    item.setVisible(isVisible);
     return true;
   }
 
   @Override
-  public boolean onPrepareOptionsMenu(Menu menu) {
-    addProductMenu = menu;
-    MenuItem item = addProductMenu.findItem(R.id.action_add_product);
-    item.setVisible(isVisible);
-    item.setOnMenuItemClickListener(new SingleClickMenuListener() {
-      @Override
-      public void onSingleClick(MenuItem item) {
-        openAddProducts();
-      }
-    });
-    return super.onPrepareOptionsMenu(menu);
+  public boolean onOptionsItemSelected(MenuItem item) {
+    super.onOptionsItemSelected(item);
+    if (R.id.action_add_product == item.getItemId()) {
+      openAddProducts();
+      return true;
+    }
+    return false;
   }
 
   @NonNull
@@ -268,14 +264,11 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   }
 
   private IssueVoucherSignatureDialog.DialogDelegate getSignatureDialogDelegate() {
-    return new IssueVoucherSignatureDialog.DialogDelegate() {
-      @Override
-      public void onSign(String receivedBy) {
-        loading();
-        Subscription subscription = presenter.getCompleteFormObservable(receivedBy)
-            .subscribe(getCompleteIssueVoucherSubscriber());
-        subscriptions.add(subscription);
-      }
+    return receivedBy -> {
+      loading();
+      Subscription subscription = presenter.getCompleteFormObservable(receivedBy)
+          .subscribe(getCompleteIssueVoucherSubscriber());
+      subscriptions.add(subscription);
     };
   }
 
@@ -283,7 +276,14 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
     return new Subscriber<Void>() {
       @Override
       public void onCompleted() {
-        internetCheck.check(checkInternetListener());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+          syncService.requestSyncImmediatelyByTask();
+          loaded();
+          ToastUtil.show(R.string.msg_complete_successfully);
+          backToPodListActivity();
+        } else {
+          internetCheck.check(checkInternetListener());
+        }
       }
 
       @Override

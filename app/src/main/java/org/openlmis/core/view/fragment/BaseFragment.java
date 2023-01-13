@@ -21,6 +21,8 @@ package org.openlmis.core.view.fragment;
 import android.os.Bundle;
 import java.util.ArrayList;
 import java.util.List;
+import org.greenrobot.eventbus.EventBus;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.presenter.DummyPresenter;
@@ -50,6 +52,9 @@ public abstract class BaseFragment extends RoboMigrationAndroidXFragment impleme
 
     setPresenter();
     attachPresenterView();
+    if (this.getClass().isAnnotationPresent(BindEventBus.class)) {
+      EventBus.getDefault().register(this);
+    }
   }
 
   private void setPresenter() {
@@ -119,6 +124,9 @@ public abstract class BaseFragment extends RoboMigrationAndroidXFragment impleme
   @Override
   public void onDestroy() {
     unSubscribeSubscriptions();
+    if (this.getClass().isAnnotationPresent(BindEventBus.class)) {
+      EventBus.getDefault().unregister(this);
+    }
     super.onDestroy();
   }
 

@@ -33,7 +33,7 @@ public class StockHistoryMovementItemViewModel {
 
   StockMovementItem stockMovementItem;
   private String movementDate;
-  private static String EMPTY_FIELD = "-";
+  private static final String EMPTY_FIELD = "-";
 
   private Map<MovementType, String> typeQuantityMap;
 

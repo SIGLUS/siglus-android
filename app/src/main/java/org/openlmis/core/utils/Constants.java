@@ -33,7 +33,8 @@ public final class Constants {
     MMIA_PROGRAM(MMIA_PROGRAM_CODE, R.string.mmia_list, MMIA_REPORT),
     VIA_PROGRAM(VIA_PROGRAM_CODE, R.string.requisition_list, VIA_REPORT),
     AL_PROGRAM(AL_PROGRAM_CODE, R.string.label_al_name, AL_REPORT),
-    RAPID_TEST_PROGRAM(RAPID_TEST_PROGRAM_CODE, R.string.title_rapid_test_reports, RAPID_REPORT);
+    RAPID_TEST_PROGRAM(RAPID_TEST_PROGRAM_CODE, R.string.title_rapid_test_reports, RAPID_REPORT),
+    MMTB_PROGRAM(MMTB_PROGRAM_CODE, R.string.title_mmtb_reports, MMTB_REPORT);
 
 
     private final String code;
@@ -64,21 +65,20 @@ public final class Constants {
   public static final String VIA_PROGRAM_CODE = "VC";
   public static final String AL_PROGRAM_CODE = "ML";
   public static final String RAPID_TEST_PROGRAM_CODE = "TR";
-  public static final List<Constants.Program> PROGRAMS = Collections
-      .unmodifiableList(Arrays.asList(Constants.Program.VIA_PROGRAM,
-          Constants.Program.MMIA_PROGRAM,
-          Constants.Program.AL_PROGRAM,
-          Constants.Program.RAPID_TEST_PROGRAM));
+  public static final String MMTB_PROGRAM_CODE = "TB";
+  public static final List<Constants.Program> PROGRAMS = Collections.unmodifiableList(Arrays.asList(
+      Program.VIA_PROGRAM,
+      Program.MMIA_PROGRAM,
+      Program.AL_PROGRAM,
+      Program.RAPID_TEST_PROGRAM,
+      Program.MMTB_PROGRAM));
 
   //Don't change these reportTypes codes!!!
   public static final String MMIA_REPORT = "MMIA";
   public static final String VIA_REPORT = "VIA";
   public static final String RAPID_REPORT = "TEST_KIT";
   public static final String AL_REPORT = "MALARIA";
-  public static final String PTV_REPORT = "PTV";
-
-  public static final String PTV_REGIME_CHILD = "PTV Crianças";
-  public static final String PTV_REGIME_ADULT = "PTV Mulheres";
+  public static final String MMTB_REPORT = "MMTB";
 
   public static final String EXISTENT_STOCK = "existentStock";
   public static final String TREATMENTS_ATTENDED = "treatmentsAttended";
@@ -139,24 +139,11 @@ public final class Constants {
   public static final String PARAM_MOVEMENT_TYPE = "movementType";
   public static final String PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER
       = "confirmGenerateLotNumberMessage";
-  public static final String PARAM_ISSUE_VOUCHER_FORM_ID  = "issueVoucherFormId";
-  public static final String PARAM_ISSUE_VOUCHER_OR_POD  = "issueVoucherOrPod";
+  public static final String PARAM_ISSUE_VOUCHER_FORM_ID = "issueVoucherFormId";
+  public static final String PARAM_ISSUE_VOUCHER_OR_POD = "issueVoucherOrPod";
   public static final String PARAM_POD = "pod";
   public static final String PARAM_ISSUE_VOUCHER = "issueVoucher";
   public static final String PARAM_IS_ELECTRONIC_ISSUE_VOUCHER = "isElectronicIssueVoucher";
-
-
-  // Request Params
-  public static final int REQUEST_FROM_STOCK_LIST_PAGE = 100;
-  public static final int REQUEST_UNPACK_KIT = 200;
-  public static final int REQUEST_FROM_RNR_LIST_PAGE = 300;
-  public static final int REQUEST_SELECT_PERIOD_END = 400;
-  public static final int REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM = 500;
-  public static final int REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM = 500;
-  public static final int REQUEST_ARCHIVED_LIST_PAGE = 700;
-
-  public static final int REQUEST_ADD_DRUGS_TO_VIA = 500;
-  public static final int REQUEST_NEW_MOVEMENT_PAGE = 600;
 
   // Broadcast Intent Filter
   public static final String INTENT_FILTER_DELETED_PRODUCT =
@@ -221,9 +208,11 @@ public final class Constants {
 
   public static final int STOCK_CARD_MAX_SYNC_MONTH = 12;
 
-  public static final String  DEFAULT_REASON_FOR_NO_AMOUNT_LOT = "INTERMEDIATE_WAREHOUSE";
+  public static final String DEFAULT_REASON_FOR_NO_AMOUNT_LOT = "INTERMEDIATE_WAREHOUSE";
 
   public static final String SIGLUS_API_ERROR_NOT_ANDROID = "siglusapi.error.notAndroidUser";
+
+  public static final String SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE = "siglusapi.error.notRegisteredDevice";
 
   public static final String VIRTUAL_LOT_NUMBER = "virtual lot number";
 

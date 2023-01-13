@@ -122,12 +122,12 @@ public class ProductRepository {
     return productCodeToProgramCode;
   }
 
-  public List<Product> listBasicProducts() throws LMISException {
+  public List<Product> listBasicProducts() {
     String rawSql = SELECT_PRODUCTS + "AND products.isbasic = '1' " + ARCHIVED;
     return queryProducts(rawSql);
   }
 
-  public List<Product> listProductsArchivedOrNotInStockCard() throws LMISException {
+  public List<Product> listProductsArchivedOrNotInStockCard() {
     String rawSql = SELECT_PRODUCTS + "AND products.iskit = '0' " + ARCHIVED;
     return queryProducts(rawSql);
   }
@@ -345,7 +345,7 @@ public class ProductRepository {
         .withDao(Product.class, dao -> dao.queryBuilder().where().in(ID, productIds).query());
   }
 
-  public List<Product> queryActiveProductsInVIAProgramButNotInDraftVIAForm() throws LMISException {
+  public List<Product> queryActiveProductsInVIAProgramButNotInDraftVIAForm() {
     String rawSql = "SELECT p1.* FROM products p1 "
         + "JOIN product_programs p2 "
         + "ON p1.code = p2.productCode "

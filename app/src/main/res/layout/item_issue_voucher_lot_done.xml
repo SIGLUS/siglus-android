@@ -17,7 +17,7 @@
     app:layout_constraintGuide_percent="0.48" />
 
   <TextView
-    android:id="@+id/tv_lot_number_and_date"
+    android:id="@+id/tv_lot_number"
     android:layout_width="@dimen/px_0"
     android:layout_height="wrap_content"
     android:gravity="left|center_vertical"
@@ -39,7 +39,7 @@
     android:layout_marginLeft="@dimen/px_45"
     android:textColor="@color/color_6b6b6b"
     android:textSize="@dimen/px_18"
-    app:layout_constraintBottom_toTopOf="@+id/tv_lot_number_and_date"
+    app:layout_constraintBottom_toTopOf="@+id/tv_lot_number"
     app:layout_constraintLeft_toRightOf="@+id/guideline"
     tools:text="Quantity shipped:10"/>
 
@@ -50,7 +50,7 @@
     android:layout_marginLeft="@dimen/px_45"
     android:textColor="@color/color_6b6b6b"
     android:textSize="@dimen/px_18"
-    app:layout_constraintTop_toBottomOf="@+id/tv_lot_number_and_date"
+    app:layout_constraintTop_toBottomOf="@+id/tv_lot_number"
     app:layout_constraintLeft_toRightOf="@+id/guideline"
     tools:text="Quantity shipped:10"/>
 

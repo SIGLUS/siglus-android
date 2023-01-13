@@ -26,6 +26,7 @@ import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import org.openlmis.core.R;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -96,19 +97,19 @@ public class SelectUnpackNumCardView extends CardView implements Checkable {
   }
 
   private void setDeSelected() {
-    unpackNumContainer.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-    tvUnpackType.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-    tvUnpackNum.setTextColor(getResources().getColor(R.color.color_text_primary));
-    tvUnpackType.setTextColor(getResources().getColor(R.color.color_text_primary));
+    unpackNumContainer.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+    tvUnpackType.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+    tvUnpackNum.setTextColor(ContextCompat.getColor(getContext(), R.color.color_text_primary));
+    tvUnpackType.setTextColor(ContextCompat.getColor(getContext(), R.color.color_text_primary));
     horizontalLine.setVisibility(View.VISIBLE);
     checkmarkIcon.setVisibility(View.GONE);
   }
 
   private void setSelected() {
-    unpackNumContainer.setBackgroundColor(getResources().getColor(R.color.color_teal));
-    tvUnpackType.setBackgroundColor(getResources().getColor(R.color.color_teal_dark));
-    tvUnpackNum.setTextColor(getResources().getColor(R.color.color_white));
-    tvUnpackType.setTextColor(getResources().getColor(R.color.color_white));
+    unpackNumContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_teal));
+    tvUnpackType.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_teal_dark));
+    tvUnpackNum.setTextColor(ContextCompat.getColor(getContext(), R.color.color_white));
+    tvUnpackType.setTextColor(ContextCompat.getColor(getContext(), R.color.color_white));
     horizontalLine.setVisibility(View.GONE);
     checkmarkIcon.setVisibility(View.VISIBLE);
   }

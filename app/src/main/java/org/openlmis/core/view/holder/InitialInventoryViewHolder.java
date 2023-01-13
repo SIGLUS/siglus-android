@@ -59,7 +59,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
   }
 
   private void initView() {
-    taCheckbox.setOnClickListener((v) -> checkBox.setChecked(!checkBox.isChecked()));
+    taCheckbox.setOnClickListener(v -> checkBox.setChecked(!checkBox.isChecked()));
   }
 
   public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord,

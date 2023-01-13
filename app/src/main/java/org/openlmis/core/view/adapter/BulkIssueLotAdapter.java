@@ -33,7 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.adapter.BulkIssueLotAdapter.BulkIssueLotViewHolder;
 import org.openlmis.core.view.listener.AmountChangeListener;
@@ -77,8 +76,7 @@ public class BulkIssueLotAdapter extends BaseMultiItemQuickAdapter<BulkIssueLotV
       } else {
         tilAmount = getView(R.id.til_amount);
         setVisible(R.id.til_amount, !viewModel.isExpired());
-        setText(R.id.tv_lot_number_and_date,
-            lot.getLotNumber() + " - " + DateUtil.formatDateWithoutDay(lot.getExpirationDate()));
+        setText(R.id.tv_lot_number, lot.getLotNumber());
         setText(R.id.tv_existing_lot_on_hand,
             itemView.getContext().getString(R.string.label_existing_soh_of_lot)
                 + "  "

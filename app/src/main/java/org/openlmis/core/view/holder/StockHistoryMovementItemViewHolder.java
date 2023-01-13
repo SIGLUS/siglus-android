@@ -20,6 +20,7 @@ package org.openlmis.core.view.holder;
 
 import android.view.View;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import org.openlmis.core.R;
 import org.openlmis.core.view.viewmodel.StockHistoryMovementItemViewModel;
 import roboguice.inject.InjectView;
@@ -56,8 +57,8 @@ public class StockHistoryMovementItemViewHolder extends BaseViewHolder {
   public StockHistoryMovementItemViewHolder(View itemView) {
     super(itemView);
 
-    blackColor = context.getResources().getColor(R.color.color_black);
-    redColor = context.getResources().getColor(R.color.color_red);
+    blackColor = ContextCompat.getColor(context, R.color.color_black);
+    redColor = ContextCompat.getColor(context, R.color.color_red);
   }
 
   public void populate(StockHistoryMovementItemViewModel viewModel) {

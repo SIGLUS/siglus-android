@@ -20,8 +20,6 @@ package org.openlmis.core.view.widget;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.res.Resources;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,6 +30,9 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 import com.google.android.material.textfield.TextInputLayout;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -40,7 +41,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
@@ -91,7 +91,6 @@ public class AddLotDialogFragment extends BaseDialogFragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    hideDay();
     if (getArguments() != null) {
       String drugNameFromArgs = getArguments().getString(Constants.PARAM_STOCK_NAME);
       if (drugNameFromArgs != null) {
@@ -111,43 +110,19 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     return dialog;
   }
 
-  private void hideDay() {
-    if (datePicker == null) {
-      return;
-    }
-    ViewGroup datePickerLayout = (ViewGroup) datePicker.getChildAt(0);
-    if (datePickerLayout == null) {
-      return;
-    }
-
-    try {
-      int dayIdentifier = Resources.getSystem().getIdentifier("day", "id", "android");
-      ViewGroup pickers = (ViewGroup) datePickerLayout.getChildAt(0);
-      for (int i = 0; i < pickers.getChildCount(); i++) {
-        View childView = pickers.getChildAt(i);
-        if (childView.getId() == dayIdentifier) {
-          childView.setVisibility(View.GONE);
-          return;
-        }
-
-      }
-    } catch (NullPointerException e) {
-      new LMISException(e, "AddLotDialogFragment,hideDay").reportToFabric();
-    }
-  }
-
   public boolean validate() {
     clearErrorMessage();
-    Date enteredDate = DateUtil.getActualMaximumDate(
-        new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), 1).getTime());
-    expiryDate = DateUtil.formatDate(enteredDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+    Date enteredDate = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(),
+        datePicker.getDayOfMonth()).getTime();
+    expiryDate = DateUtil.formatDate(enteredDate, DateUtil.DB_DATE_FORMAT);
 
     if (StringUtils.isBlank(etLotNumber.getText().toString())) {
       showConfirmNoLotNumberDialog();
       return false;
     }
 
-    lotNumber = etLotNumber.getText().toString().trim().toUpperCase();
+    lotNumber = etLotNumber.getText().toString().trim().toUpperCase() + "-"
+        + DateUtil.convertDate(expiryDate, DateUtil.DB_DATE_FORMAT, DateUtil.SIMPLE_DATE_FORMAT);
     return true;
   }
 
@@ -165,7 +140,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         AddLotDialogFragment.this.dismiss();
       }
     });
-    confirmDialog.show(getFragmentManager(), "confirm generate lot number");
+    confirmDialog.show(getParentFragmentManager(), "confirm generate lot number");
   }
 
   private String getString1(int resId) {
@@ -208,10 +183,10 @@ public class AddLotDialogFragment extends BaseDialogFragment {
   }
 
   public boolean hasIdenticalLot(List<String> existingLots) {
-    if (existingLots.contains(etLotNumber.getText().toString().toUpperCase())) {
+    if (existingLots.contains(lotNumber)) {
       lyLotNumber.setError(getString1(R.string.error_lot_already_exists));
-      etLotNumber.getBackground()
-          .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+      etLotNumber.getBackground().setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+          ContextCompat.getColor(requireContext(), R.color.color_red), BlendModeCompat.SRC_ATOP));
       return true;
     }
     return false;

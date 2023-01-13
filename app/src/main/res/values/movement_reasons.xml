@@ -4,6 +4,7 @@
     <item>RECEIVE|DISTRICT_DDM|District( DDM)</item>
     <item>RECEIVE|PROVINCE_DPM|Province ( DPM)</item>
     <item>RECEIVE|INTERMEDIATE_WAREHOUSE|Intermediate Warehouse ( AI)</item>
+    <item>RECEIVE|UNPACK_FROM_KIT|Unpacked from Kit</item>
 
     <item>ISSUE|PUB_PHARMACY|Public pharmacy</item>
     <item>ISSUE|MATERNITY|Maternity</item>
@@ -15,7 +16,7 @@
     <item>ISSUE|PNCTL|PNCTL</item>
     <item>ISSUE|PAV|PAV</item>
     <item>ISSUE|DENTAL_WARD|Dental ward</item>
-    <item>ISSUE|UNPACK_KIT|Unpack kit</item>
+    <item>ISSUE|UNPACK_KIT|Unpack Kit</item>
     <item>ISSUE|APE|APE</item>
 
     <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Drugs in quarantine have expired, returned to Supplier</item>
@@ -23,6 +24,7 @@
     <item>NEGATIVE_ADJUST|LOANS_DEPOSIT|Loans made from a health facility deposit</item>
     <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)</item>
     <item>NEGATIVE_ADJUST|PROD_DEFECTIVE|Product defective, moved to quarantine</item>
+    <item>NEGATIVE_ADJUST|RETURN_TO_SUPPLIER|Return to Supplier Warehouse</item>
 
     <item>POSITIVE_ADJUST|CUSTOMER_RETURN|Returns from Customers(HF and dependent wards)</item>
     <item>POSITIVE_ADJUST|EXPIRED_RETURN_FROM_CUSTOMER|Returns of expired drugs (HF and dependent wards)</item>

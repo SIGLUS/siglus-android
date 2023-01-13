@@ -47,7 +47,7 @@ public class RequisitionProductAdapter extends BaseAdapter {
 
   @Override
   public RequisitionFormItemViewModel getItem(int position) {
-    return data() == null && data().size() == 0 ? null : data().get(position);
+    return data() == null || data().isEmpty() ? null : data().get(position);
   }
 
   @Override

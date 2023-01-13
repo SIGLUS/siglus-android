@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/MMTB.Table.Container.Outer"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <TextView
+    style="@style/MMIA.SpreadHeader"
+    android:text="@string/mmtb_treatment_phase_form_title"
+    android:background="@color/color_a5a8a7" />
+
+  <!-- header -->
+  <LinearLayout
+    style="@style/MMTB.Table.Container.Item"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@color/color_mmtb_green"
+    android:minHeight="@dimen/px_30"
+    tools:layout_height="wrap_content">
+
+    <TextView
+      android:gravity="center"
+      android:paddingEnd="@dimen/px_6"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/px_14"
+      android:text="@string/mmtb_title_treatment_phase" />
+
+    <TextView
+      android:layout_height="wrap_content"
+      android:layout_width="@dimen/mmtb_spread_item_common_width"
+      android:gravity="center"
+      android:textSize="@dimen/px_14"
+      android:text="@string/mmtb_title_number_of_day_off" />
+  </LinearLayout>
+  <LinearLayout
+    style="@style/MMTB.Table.Container"
+    android:orientation="vertical">
+    <LinearLayout style="@style/MMTB.Table.Container.Item">
+      <org.openlmis.core.view.widget.RotateTextView
+        android:id="@+id/rtv_adult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mmtb_title_adult"
+        android:padding="@dimen/px_10"
+        android:gravity="center"
+        android:background="@color/color_e5f2ff" />
+      <LinearLayout
+        android:id="@+id/ll_adult_container"
+        style="@style/MMTB.Table.Container"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/MMTB.Table.Container.Item">
+      <org.openlmis.core.view.widget.RotateTextView
+        android:id="@+id/rtv_pediatric"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/px_10"
+        android:text="@string/mmtb_title_pediatric"
+        android:gravity="center"
+        android:background="@color/color_cce5ff" />
+      <LinearLayout
+        android:id="@+id/ll_pediatric_container"
+        style="@style/MMTB.Table.Container"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+    </LinearLayout>
+  </LinearLayout>
+</LinearLayout>

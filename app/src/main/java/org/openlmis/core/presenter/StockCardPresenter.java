@@ -205,7 +205,6 @@ public class StockCardPresenter extends Presenter {
 
   public void archiveBackStockCard(StockCard stockCard) {
     stockCard.getProduct().setArchived(false);
-    stockCard.setExpireDates("");
     try {
       stockRepository.updateStockCardWithProduct(stockCard);
     } catch (LMISException e) {

@@ -22,14 +22,15 @@ import static org.openlmis.core.constant.FieldConstants.ACTIVE;
 import static org.openlmis.core.constant.FieldConstants.CODE;
 import static org.openlmis.core.constant.FieldConstants.IS_CUSTOM;
 import static org.openlmis.core.constant.FieldConstants.NAME;
+import static org.openlmis.core.constant.FieldConstants.PROGRAM_ID;
 import static org.openlmis.core.constant.FieldConstants.TYPE;
 
 import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.persistence.DbUtil;
@@ -39,6 +40,9 @@ import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 public class RegimenRepository {
 
   GenericDao<Regimen> regimenGenericDao;
+
+  @Inject
+  ProgramRepository programRepository;
 
   @Inject
   DbUtil dbUtil;
@@ -93,35 +97,28 @@ public class RegimenRepository {
     regimenGenericDao.create(regimen);
   }
 
-  public List<Regimen> listDefaultRegime() throws LMISException {
+  public List<Regimen> listDefaultRegime(String programCode) {
+    try {
+      return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder()
+          .where()
+          .eq(IS_CUSTOM, false)
+          .and().eq(ACTIVE, true)
+          .and().eq(PROGRAM_ID, programRepository.queryByCode(programCode).getId())
+          .query());
+    } catch (LMISException e) {
+      new LMISException(e, "Fail to listDefaultRegime").reportToFabric();
+      return Collections.emptyList();
+    }
+  }
+
+  public List<Regimen> listNonCustomRegimen(String programCode, Regimen.RegimeType type) throws LMISException {
     return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder()
         .where()
-        .eq(IS_CUSTOM, false)
+        .eq(IS_CUSTOM, true)
         .and().eq(ACTIVE, true)
+        .and().eq(TYPE, type)
+        .and().eq(PROGRAM_ID, programRepository.queryByCode(programCode).getId())
         .query());
   }
 
-  public List<Regimen> listNonCustomRegimen(Regimen.RegimeType type) throws LMISException {
-    return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder()
-    .where()
-    .eq(IS_CUSTOM, true)
-    .and()
-    .eq(ACTIVE, true)
-    .and()
-    .eq(TYPE, type)
-    .query());
-  }
-
-  public void deleteRegimeDirtyData(String programCode) {
-    String deleteRegimeThreeLines = "DELETE FROM regime_three_lines "
-        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM "
-        + "programs "
-        + "WHERE programCode='" + programCode + "'));";
-    String deleteRegimeItems = "DELETE FROM regime_items "
-        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM "
-        + "programs "
-        + "WHERE programCode='" + programCode + "'));";
-    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRegimeThreeLines);
-    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRegimeItems);
-  }
 }

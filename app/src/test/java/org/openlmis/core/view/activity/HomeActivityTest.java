@@ -24,8 +24,6 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,9 +37,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import androidx.fragment.app.Fragment;
 import com.google.inject.AbstractModule;
-import org.hamcrest.core.Is;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -184,7 +180,8 @@ public class HomeActivityTest {
   public void shouldNotLogOutOrResetTimeIfFirstTimeOperation() {
     testApp.setCurrentTimeMillis(1234L);
     homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
-    Assert.assertThat(BaseActivity.getLastOperateTime(), Is.is(not(0L)));
+    Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
+    assertNull(startedIntent);
   }
 
   @Test
@@ -197,7 +194,6 @@ public class HomeActivityTest {
         9000L + Long.parseLong(homeActivity.getString(R.string.app_time_out)));
     homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
-    Assert.assertThat(BaseActivity.getLastOperateTime(), Is.is(not(0L)));
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
     assertNull(startedIntent);
   }
@@ -211,9 +207,8 @@ public class HomeActivityTest {
         11000L + Long.parseLong(homeActivity.getString(R.string.app_time_out)));
     homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
-    Assert.assertThat(BaseActivity.getLastOperateTime(), is(0L));
-
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
+    assertNotNull(startedIntent);
     assertThat(startedIntent.getComponent().getClassName(), equalTo(LoginActivity.class.getName()));
   }
 

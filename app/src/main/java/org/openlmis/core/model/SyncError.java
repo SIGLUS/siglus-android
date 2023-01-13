@@ -18,16 +18,18 @@
 
 package org.openlmis.core.model;
 
+import androidx.annotation.NonNull;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.Locale;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.exceptions.SyncServerException;
 import org.openlmis.core.utils.Constants;
 
 @NoArgsConstructor
 @DatabaseTable(tableName = "sync_errors")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class SyncError extends BaseModel {
 
   @DatabaseField
@@ -49,7 +51,7 @@ public class SyncError extends BaseModel {
     this.syncObjectId = syncObjectId;
   }
 
-  public SyncError(@NotNull Exception e, SyncType syncType, long syncObjectId) {
+  public SyncError(@NonNull Exception e, SyncType syncType, long syncObjectId) {
     this.syncType = syncType;
     this.syncObjectId = syncObjectId;
     if (e instanceof SyncServerException) {

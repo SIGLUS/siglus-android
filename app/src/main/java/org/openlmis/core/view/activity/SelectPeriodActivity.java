@@ -26,7 +26,6 @@ import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -34,19 +33,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.google.inject.Inject;
 import java.util.List;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.Period;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.service.DirtyDataManager;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ProgramUtil;
@@ -59,7 +58,7 @@ import roboguice.inject.InjectView;
 import rx.Observer;
 import rx.Subscription;
 
-
+@BindEventBus
 @ContentView(R.layout.activity_select_period)
 public class SelectPeriodActivity extends BaseActivity implements
     SelectPeriodPresenter.SelectPeriodView {
@@ -87,7 +86,6 @@ public class SelectPeriodActivity extends BaseActivity implements
   private SelectInventoryViewModel selectedInventory;
   private String programCode;
   private boolean isMissedPeriod;
-  private Period period;
   private DateTime periodEndMonth;
 
   @Inject
@@ -110,20 +108,12 @@ public class SelectPeriodActivity extends BaseActivity implements
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    EventBus.getDefault().register(this);
     this.programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
     isMissedPeriod = getIntent().getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
-    period = (Period) getIntent().getSerializableExtra(Constants.PARAM_PERIOD);
     periodEndMonth = (DateTime) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_END_MONTH);
     super.onCreate(savedInstanceState);
 
     init();
-  }
-
-  @Override
-  protected void onDestroy() {
-    EventBus.getDefault().unregister(this);
-    super.onDestroy();
   }
 
   @Override
@@ -136,15 +126,15 @@ public class SelectPeriodActivity extends BaseActivity implements
 
     DateTime date = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-      tvInstruction.setText(Html.fromHtml(
+      tvInstruction.setText(CompatUtil.fromHtml(
           this.getString(R.string.label_training_select_close_of_period, date.toString("dd MMM"))));
     } else {
-      tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_select_close_of_period,
+      tvInstruction.setText(CompatUtil.fromHtml(this.getString(R.string.label_select_close_of_period,
           getPreviousPeriodEndMonth(periodEndMonth, date),
           date.toString("dd MMM"))));
     }
 
-    presenter.loadData(programCode, period);
+    presenter.loadData(programCode);
     adapter = new SelectPeriodAdapter();
     vgContainer.setAdapter(adapter);
 
@@ -163,7 +153,7 @@ public class SelectPeriodActivity extends BaseActivity implements
       invalidateNextBtn();
     });
 
-    nextBtn.setOnClickListener((v) -> {
+    nextBtn.setOnClickListener(v -> {
       if (selectedInventory == null) {
         tvSelectPeriodWarning.setVisibility(View.VISIBLE);
         return;
@@ -251,12 +241,6 @@ public class SelectPeriodActivity extends BaseActivity implements
 
   public static Intent getIntentToMe(Context context, String programCode) {
     return getIntentToMe(context, programCode, false);
-  }
-
-  public static Intent getIntentToMe(Context context, String programCode, Period period) {
-    Intent intent = getIntentToMe(context, programCode, false);
-    intent.putExtra(Constants.PARAM_PERIOD, period);
-    return intent;
   }
 
   public static Intent getIntentToMe(Context context, String programCode, boolean isMissedPeriod) {

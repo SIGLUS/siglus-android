@@ -121,7 +121,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .getInstance(RnrFormRepository.class);
 
     Program programMMIA = createProgram(MMIA_PROGRAM_CODE);
-    programMMIA.setId(1l);
+    programMMIA.setId(1L);
 
     when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
     ReportTypeForm reportTypeForm = new ReportTypeBuilder()

@@ -22,7 +22,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
@@ -41,8 +41,7 @@ public class RapidTestFormItemViewModel {
 
   MovementReasonManager.MovementReason issueReason;
 
-  RapidTestFormGridViewModel gridHIVDetermine = new RapidTestFormGridViewModel(
-      ColumnCode.HIVDETERMINE);
+  RapidTestFormGridViewModel gridHIVDetermine = new RapidTestFormGridViewModel(ColumnCode.HIVDETERMINE);
   RapidTestFormGridViewModel gridHIVUnigold = new RapidTestFormGridViewModel(ColumnCode.HIVUNIGOLD);
   RapidTestFormGridViewModel gridSyphillis = new RapidTestFormGridViewModel(ColumnCode.SYPHILLIS);
   RapidTestFormGridViewModel gridMalaria = new RapidTestFormGridViewModel(ColumnCode.MALARIA);
@@ -50,7 +49,7 @@ public class RapidTestFormItemViewModel {
   List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = Arrays
       .asList(gridHIVDetermine, gridHIVUnigold, gridSyphillis, gridMalaria);
 
-  Map<ColumnCode, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
+  Map<ColumnCode, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new EnumMap<>(ColumnCode.class);
 
   public RapidTestFormItemViewModel(MovementReasonManager.MovementReason issueReason) {
     this.issueReason = issueReason;
@@ -97,24 +96,6 @@ public class RapidTestFormItemViewModel {
       programDataFormItems.addAll(gridViewModel.convertFormGridViewModelToDataModel(issueReason));
     }
     return programDataFormItems;
-  }
-
-  public boolean validatePositive() {
-    for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
-      if (!gridViewModel.validatePositive()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public boolean validateUnjustified() {
-    for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
-      if (!gridViewModel.validateUnjustified()) {
-        return false;
-      }
-    }
-    return true;
   }
 
   public boolean isEmpty() {

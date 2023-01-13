@@ -118,14 +118,6 @@ public class SharedPreferenceMgr {
     return sharedPreferences;
   }
 
-  public boolean hasSyncedVersion() {
-    return sharedPreferences.getBoolean(UserInfoMgr.getInstance().getVersion(), false);
-  }
-
-  public void setSyncedVersion(boolean hasUpdated) {
-    sharedPreferences.edit().putBoolean(UserInfoMgr.getInstance().getVersion(), hasUpdated).apply();
-  }
-
   public boolean isLastMonthStockDataSynced() {
     return sharedPreferences
         .getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS,

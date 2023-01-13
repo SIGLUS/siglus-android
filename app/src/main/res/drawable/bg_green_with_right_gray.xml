@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape>
+      <padding
+        android:bottom="@dimen/px_0"
+        android:left="@dimen/px_0"
+        android:right="@dimen/px_1"
+        android:top="@dimen/px_0" />
+      <solid android:color="@color/color_divider" />
+    </shape>
+  </item>
+  <item>
+    <shape>
+      <solid android:color="@color/color_mmtb_green" />
+    </shape>
+  </item>
+
+</layer-list>

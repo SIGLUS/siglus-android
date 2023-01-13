@@ -33,13 +33,18 @@
   <color name="color_gray">#616161</color>
   <color name="color_green_light">#C2FFC1</color>
   <color name="color_white_alpha">#90FFFFFF</color>
+  <color name="color_mmtb_product_item">#ccd7a5</color>
 
   <color name="color_mmia_speed_list_header">#EFEFEF</color>
+  <color name="color_mmtb_green">#C9D5A0</color>
+  <color name="color_mmtb_light_green">#A1C664</color>
   <color name="color_item_bg">#30B6B6B6</color>
   <color name="color_accent_light">#80536DFE</color>
   <color name="color_mmia_info_name">#D0D0D0</color>
   <color name="color_regime_baby">#FFFF81</color>
   <color name="color_regime_other">#DAEEF3</color>
+  <color name="color_total_patient">#3c3d3e</color>
+  <color name="color_total_month">#77787b</color>
 
   <color name="color_draft_title">#889E9E9E</color>
   <color name="color_select_title">#9E9E9E</color>
@@ -111,5 +116,9 @@
   <color name="color_d4d4d4">#d4d4d4</color>
   <color name="color_ffa000">#ffa000</color>
   <color name="color_fbdd6d">#fbdd6d</color>
+  <color name="color_a5a8a7">#a5a8a7</color>
+  <color name="color_f6d5b7">#f6d5b7</color>
+  <color name="color_e5f2ff">#e5f2ff</color>
+  <color name="color_cce5ff">#cce5ff</color>
 
 </resources>

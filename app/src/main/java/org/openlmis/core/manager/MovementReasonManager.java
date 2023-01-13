@@ -40,6 +40,7 @@ import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+@SuppressWarnings("squid:S1874")
 @Singleton
 public final class MovementReasonManager {
 
@@ -47,8 +48,8 @@ public final class MovementReasonManager {
   public static final String INVENTORY_NEGATIVE = "INVENTORY_NEGATIVE";
   public static final String INVENTORY = "INVENTORY";
   public static final String UNPACK_KIT = "UNPACK_KIT";
+  public static final String UNPACK_FROM_KIT = "UNPACK_FROM_KIT";
   public static final String DONATION = "DONATION";
-  public static final String DDM = "DISTRICT_DDM";
 
   Context context;
   public static final String RES_DIVIDER = "[|]";
@@ -270,7 +271,8 @@ public final class MovementReasonManager {
     protected boolean canBeDisplayOnMovementMenu() {
       return !(code.startsWith(ChangeMovementReasonToCode.DEFAULT_PREFIX)
           || code.equalsIgnoreCase(INVENTORY)
-          || MovementReasonManager.UNPACK_KIT.equals(code));
+          || MovementReasonManager.UNPACK_KIT.equals(code)
+          || MovementReasonManager.UNPACK_FROM_KIT.equals(code));
     }
   }
 }

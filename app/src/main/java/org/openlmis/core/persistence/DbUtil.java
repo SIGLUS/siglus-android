@@ -83,8 +83,6 @@ public class DbUtil {
     try {
       final Dao<T, String> dao = initialiseDao(openHelper, domainClass);
       return dao.callBatchTasks(() -> operation.operate(dao));
-    } catch (SQLException e) {
-      throw new LMISException(e);
     } catch (Exception e) {
       throw new LMISException(e);
     }
@@ -96,8 +94,6 @@ public class DbUtil {
     try {
       final Dao<T, String> dao = initialiseDao(openHelper, domainClass);
       return dao.callBatchTasks(() -> operation.operate(dao));
-    } catch (SQLException e) {
-      throw new LMISException(e);
     } catch (Exception e) {
       throw new LMISException(e);
     }

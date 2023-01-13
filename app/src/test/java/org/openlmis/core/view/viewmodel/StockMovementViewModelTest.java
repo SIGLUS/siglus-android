@@ -257,7 +257,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   public void shouldValidateEarlyExpiredLotIssued() {
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
         .setLotSOH(NUMBER_100)
-        .setExpiryDate(DateUtil.formatDateWithoutDay(oldCalendar.getTime()))
+        .setExpiryDate(DateUtil.formatDate(oldCalendar.getTime(), DateUtil.DB_DATE_FORMAT))
         .setQuantity(null).build());
     assertEquals(NewMovementLotListView.LotStatus.CONTAIN_EXPIRED_LOTS,
         stockMovementViewModel.getSoonestToExpireLotsIssued());
@@ -265,7 +265,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
     stockMovementViewModel.existingLotMovementViewModelList.clear();
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
         .setLotSOH(NUMBER_100)
-        .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+        .setExpiryDate(DateUtil.formatDate(featureCalendar.getTime(), DateUtil.DB_DATE_FORMAT))
         .setQuantity("50").build());
     assertEquals(NewMovementLotListView.LotStatus.DEFAULT_STATUS,
         stockMovementViewModel.getSoonestToExpireLotsIssued());
@@ -279,7 +279,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
         .add(new LotMovementViewModelBuilder().build());
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
         .setLotSOH(NUMBER_100)
-        .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+        .setExpiryDate(DateUtil.formatDate(featureCalendar.getTime(), DateUtil.DB_DATE_FORMAT))
         .setQuantity("50").build());
     // LotMovementViewModelBuilder().build() : expireDate == null
     assertEquals(NewMovementLotListView.LotStatus.CONTAIN_EXPIRED_LOTS,
@@ -288,7 +288,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
     stockMovementViewModel.existingLotMovementViewModelList.clear();
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
         .setLotSOH(NUMBER_100)
-        .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+        .setExpiryDate(DateUtil.formatDate(featureCalendar.getTime(), DateUtil.DB_DATE_FORMAT))
         .setQuantity(NUMBER_100).build());
     stockMovementViewModel.existingLotMovementViewModelList
         .add(new LotMovementViewModelBuilder().build());
@@ -298,7 +298,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
         .add(new LotMovementViewModelBuilder().build());
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
         .setLotSOH(NUMBER_100)
-        .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+        .setExpiryDate(DateUtil.formatDate(featureCalendar.getTime(), DateUtil.DB_DATE_FORMAT))
         .setQuantity("50").build());
     assertEquals(NewMovementLotListView.LotStatus.CONTAIN_EXPIRED_LOTS,
         stockMovementViewModel.getSoonestToExpireLotsIssued());
@@ -308,7 +308,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
         .add(new LotMovementViewModelBuilder().build());
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
         .setLotSOH(NUMBER_100)
-        .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+        .setExpiryDate(DateUtil.formatDate(featureCalendar.getTime(), DateUtil.DB_DATE_FORMAT))
         .setQuantity("50")
         .build());
     assertEquals(NewMovementLotListView.LotStatus.CONTAIN_EXPIRED_LOTS,
@@ -317,12 +317,12 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
     stockMovementViewModel.existingLotMovementViewModelList.clear();
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
         .setLotSOH(NUMBER_100)
-        .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+        .setExpiryDate(DateUtil.formatDate(featureCalendar.getTime(), DateUtil.DB_DATE_FORMAT))
         .setQuantity(null)
         .build());
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
         .setLotSOH(NUMBER_100)
-        .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar1.getTime()))
+        .setExpiryDate(DateUtil.formatDate(featureCalendar1.getTime(), DateUtil.DB_DATE_FORMAT))
         .setQuantity("10")
         .build());
     assertEquals(NewMovementLotListView.LotStatus.NOT_SOONEST_TO_EXPIRE_LOTS_ISSUED,

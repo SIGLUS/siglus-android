@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.StockCard;
@@ -65,14 +66,13 @@ public class VIARequisitionActivity extends BaseActivity {
   }
 
   //For emergency requisition
-  public static Intent getIntentToMe(Context context, ArrayList<StockCard> stockCards) {
+  public static Intent getIntentToMe(Context context, List<StockCard> stockCards) {
     Intent intent = new Intent(context, VIARequisitionActivity.class);
-    intent.putExtra(Constants.PARAM_SELECTED_EMERGENCY, stockCards);
+    intent.putExtra(Constants.PARAM_SELECTED_EMERGENCY, (ArrayList) stockCards);
     return intent;
   }
 
   public static Intent getIntentToMe(Context context) {
-    Intent intent = new Intent(context, VIARequisitionActivity.class);
-    return intent;
+    return new Intent(context, VIARequisitionActivity.class);
   }
 }

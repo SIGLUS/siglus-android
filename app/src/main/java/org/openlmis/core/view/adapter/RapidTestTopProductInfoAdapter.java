@@ -189,4 +189,5 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
   public int getItemCount() {
     return productInfos == null ? 0 : productInfos.size();
   }
+
 }

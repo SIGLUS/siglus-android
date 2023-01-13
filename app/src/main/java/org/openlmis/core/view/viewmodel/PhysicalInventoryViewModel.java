@@ -57,7 +57,7 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
   @Override
   public boolean isDataChanged() {
     if (draftInventory == null) {
-      return hasLotInInventoryModelChanged();
+      return hasLotInventoryModelChanged();
     }
     return !draftInventory.getDraftLotItemListWrapper().isEmpty() && isDifferentFromDraft();
   }
@@ -91,23 +91,6 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
         if (isLotNumberSame && isLotQuantitySame) {
           return true;
         }
-      }
-    }
-    return false;
-  }
-
-  private boolean hasLotInInventoryModelChanged() {
-    for (LotMovementViewModel viewModel : getExistingLotMovementViewModelList()) {
-      if (viewModel.getQuantity() != null && !viewModel.getQuantity().isEmpty()) {
-        return true;
-      }
-    }
-    if (!newLotMovementViewModelList.isEmpty()) {
-      return true;
-    }
-    for (LotMovementViewModel viewModel : getNewLotMovementViewModelList()) {
-      if (viewModel.getQuantity() != null && !viewModel.getQuantity().isEmpty()) {
-        return true;
       }
     }
     return false;
@@ -156,7 +139,7 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
           newLotMovementViewModel.setLotNumber(draftLotItem.getLotNumber());
           newLotMovementViewModel.setExpiryDate(DateUtil
               .formatDate(draftLotItem.getExpirationDate(),
-                  DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                  DateUtil.DB_DATE_FORMAT));
           getNewLotMovementViewModelList().add(newLotMovementViewModel);
         }
       } else {

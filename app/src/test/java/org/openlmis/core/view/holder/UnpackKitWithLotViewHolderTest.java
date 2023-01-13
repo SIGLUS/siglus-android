@@ -51,7 +51,7 @@ public class UnpackKitWithLotViewHolderTest {
 
     viewHolder.populate(inventoryViewModel, action1);
 
-    assertThat(viewHolder.tvKitExpectedQuantity.getText().toString()).isEqualTo("20 expected");
+    assertThat(viewHolder.tvKitExpectedQuantity.getText().toString()).hasToString("20 expected");
   }
 
   @Test

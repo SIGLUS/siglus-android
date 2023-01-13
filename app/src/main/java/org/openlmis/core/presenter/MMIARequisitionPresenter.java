@@ -18,7 +18,6 @@
 
 package org.openlmis.core.presenter;
 
-import android.util.Log;
 import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.Date;
@@ -40,7 +39,6 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
 import roboguice.RoboGuice;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -71,33 +69,12 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
   public void loadData(final long formId, Date periodEndDate) {
     this.periodEndDate = periodEndDate;
     view.loading();
-    Subscription subscription = getRnrFormObservable(formId)
-        .subscribe(loadDataOnNextAction, loadDataOnErrorAction);
-    subscriptions.add(subscription);
+    subscriptions.add(getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction));
   }
 
   @Override
   public void updateUIAfterSubmit() {
     view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
-  }
-
-  @Override
-  protected Observable<RnRForm> getRnrFormObservable(final long formId) {
-    return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
-      try {
-        rnRForm = getRnrForm(formId);
-        subscriber.onNext(rnRForm);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "MMIARequisitionPresenter.getRnrFormObservable").reportToFabric();
-        subscriber.onError(e);
-      }
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-  }
-
-  @Override
-  protected int getCompleteErrorMessage() {
-    return R.string.hint_mmia_complete_failed;
   }
 
   @Override
@@ -111,18 +88,13 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
   }
 
   public RnRForm getLastRnrForm() {
-    try {
-      List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, Constants.MMIA_PROGRAM_CODE);
-      if (rnRForms == null || rnRForms.size() == 1) {
-        return null;
-      }
-      Collections
-          .sort(rnRForms, (lhs, rhs) -> rhs.getPeriodBegin().compareTo(lhs.getPeriodBegin()));
-      return rnRForms.get(1);
-    } catch (LMISException e) {
-      Log.w("MMIAPresenter", e);
+    List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, Constants.MMIA_PROGRAM_CODE);
+    if (rnRForms == null || rnRForms.size() == 1) {
+      return null;
     }
-    return null;
+    Collections
+        .sort(rnRForms, (lhs, rhs) -> rhs.getPeriodBegin().compareTo(lhs.getPeriodBegin()));
+    return rnRForms.get(1);
   }
 
   public void setViewModels(List<RnrFormItem> formItems,
@@ -178,18 +150,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     return false;
   }
 
-  private boolean equalRegimen(Regimen regimen, Regimen regimenExist) {
-    return regimen.getName().equals(regimenExist.getName()) && regimen.getType()
-        .equals(regimenExist.getType());
-  }
-
-  private RegimenItem createRegimenItem(Regimen regimen) {
-    RegimenItem regimenItem = new RegimenItem();
-    regimenItem.setRegimen(regimen);
-    regimenItem.setForm(rnRForm);
-    return regimenItem;
-  }
-
   public Observable<Void> deleteRegimeItem(final RegimenItem item) {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {
@@ -218,6 +178,37 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         subscriber.onError(e);
       }
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  protected Observable<RnRForm> getRnrFormObservable(final long formId) {
+    return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
+      try {
+        rnRForm = getRnrForm(formId);
+        subscriber.onNext(rnRForm);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "MMIARequisitionPresenter.getRnrFormObservable").reportToFabric();
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  protected int getCompleteErrorMessage() {
+    return R.string.hint_mmia_complete_failed;
+  }
+
+  private boolean equalRegimen(Regimen regimen, Regimen regimenExist) {
+    return regimen.getName().equals(regimenExist.getName()) && regimen.getType()
+        .equals(regimenExist.getType());
+  }
+
+  private RegimenItem createRegimenItem(Regimen regimen) {
+    RegimenItem regimenItem = new RegimenItem();
+    regimenItem.setRegimen(regimen);
+    regimenItem.setForm(rnRForm);
+    return regimenItem;
   }
 
   public interface MMIARequisitionView extends BaseRequisitionView {

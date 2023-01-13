@@ -18,12 +18,14 @@
 
 package org.openlmis.core.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import java.util.ArrayList;
 import org.openlmis.core.R;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.StockMovementsWithLotActivity;
 import org.openlmis.core.view.adapter.KitStockCardListAdapter;
 import org.openlmis.core.view.holder.StockCardViewHolder;
@@ -36,10 +38,18 @@ public class KitStockCardListFragment extends StockCardListFragment {
   @InjectView(R.id.product_update_banner)
   ProductsUpdateBanner kitProductsUpdateBanner;
 
+  private final ActivityResultLauncher<Intent> toStockMovementWithLotLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          KitStockCardListFragment.super.presenter.loadKits();
+          kitProductsUpdateBanner.setVisibility(View.GONE);
+        }
+      });
+
   protected StockCardViewHolder.OnItemViewClickListener viewClickListener =
       inventoryViewModel -> {
         Intent intent = getStockMovementIntent(inventoryViewModel);
-        startActivityForResult(intent, Constants.REQUEST_UNPACK_KIT);
+        toStockMovementWithLotLauncher.launch(intent);
       };
 
   @Override
@@ -54,13 +64,7 @@ public class KitStockCardListFragment extends StockCardListFragment {
   }
 
   @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    kitProductsUpdateBanner.setVisibility(View.GONE);
-  }
-
-  @Override
-  protected void loadStockCards() {
+  public void loadStockCards() {
     presenter.loadKits();
   }
 

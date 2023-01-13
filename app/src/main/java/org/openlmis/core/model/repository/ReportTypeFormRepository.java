@@ -19,6 +19,7 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.util.Log;
 import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.List;
@@ -71,8 +72,14 @@ public class ReportTypeFormRepository {
     return genericDao.queryForAll();
   }
 
-  public ReportTypeForm getReportType(final String programCode) throws LMISException {
-    return queryByCode(programCode);
+  public ReportTypeForm getReportType(final String programCode) {
+    try {
+      return queryByCode(programCode);
+    } catch (LMISException e) {
+      new LMISException(e, "Fail to queryByCode in getReportType").reportToFabric();
+      Log.e("ReportTypeFormRepo", "getReportType: ", e);
+      return null;
+    }
   }
 
   public List<ReportTypeForm> listAllWithActive() {

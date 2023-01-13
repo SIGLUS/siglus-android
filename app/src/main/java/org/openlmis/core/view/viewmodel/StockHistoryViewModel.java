@@ -46,7 +46,7 @@ public class StockHistoryViewModel {
     allMovementItemViewModelList
         .addAll(FluentIterable.from(stockCard.getStockMovementItemsWrapper())
             .transform(
-                stockMovementItem -> new StockHistoryMovementItemViewModel(stockMovementItem))
+                StockHistoryMovementItemViewModel::new)
             .toSortedList((lhs, rhs) -> {
               int compareResult = lhs.getStockMovementItem().getMovementDate()
                   .compareTo(rhs.getStockMovementItem().getMovementDate());

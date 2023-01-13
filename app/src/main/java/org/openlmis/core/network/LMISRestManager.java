@@ -26,6 +26,7 @@ import static org.openlmis.core.utils.Constants.FACILITY_CODE;
 import static org.openlmis.core.utils.Constants.FACILITY_NAME;
 import static org.openlmis.core.utils.Constants.GRANT_TYPE;
 import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_ANDROID;
+import static org.openlmis.core.utils.Constants.SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE;
 import static org.openlmis.core.utils.Constants.UNIQUE_ID;
 import static org.openlmis.core.utils.Constants.USER_NAME;
 import static org.openlmis.core.utils.Constants.VERSION_CODE;
@@ -38,7 +39,6 @@ import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
@@ -48,7 +48,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.exceptions.SyncServerException;
 import org.openlmis.core.exceptions.UnauthorizedException;
-import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
@@ -186,34 +185,51 @@ public class LMISRestManager {
     @Override
     public Throwable handleError(RetrofitError cause) {
       Response r = cause.getResponse();
-      if (r != null && (r.getStatus() == 400 || r.getStatus() == 404)) {
-        ErrorHandlingResponse errorResponse = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
-        if (errorResponse.isAndroid()) {
-          return new SyncServerException(errorResponse.getMessageInEnglish(), errorResponse.getMessageInPortuguese());
-        } else {
-          return new SyncServerException();
+      if (r != null) {
+        switch (r.getStatus()) {
+          case 400:
+          case 404:
+            ErrorHandlingResponse errorResponse1 = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
+            if (errorResponse1.isAndroid()) {
+              return new SyncServerException(errorResponse1.getMessageInEnglish(),
+                  errorResponse1.getMessageInPortuguese());
+            } else {
+              return new SyncServerException();
+            }
+          case 401:
+            UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
+            refreshAccessToken(UserInfoMgr.getInstance().getUser(), cause);
+            break;
+          case 403:
+            ErrorHandlingResponse errorResponse2 = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
+            if (SIGLUS_API_ERROR_NOT_ANDROID.equals(errorResponse2.getMessageKey())) {
+              return forbidNotAndroidUser();
+            }
+            if (SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE.equals(errorResponse2.getMessageKey())) {
+              return forbidNotSameDevice();
+            }
+            break;
+          case 500:
+            return new SyncServerException();
+          default:
+            break;
         }
-      }
-      if (r != null && r.getStatus() == 401) {
-        UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
-        refreshAccessToken(UserInfoMgr.getInstance().getUser(), cause);
-      }
-      if (r != null && r.getStatus() == 403) {
-        ErrorHandlingResponse errorResponse = (ErrorHandlingResponse) cause.getBodyAs(ErrorHandlingResponse.class);
-        if (SIGLUS_API_ERROR_NOT_ANDROID.equals(errorResponse.getMessageKey())) {
-          EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
-          userRepository.deleteLocalUser();
-          SharedPreferenceMgr.getInstance().setLastLoginUser(StringUtils.EMPTY);
-          return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
-        }
-      }
-      if (r != null && r.getStatus() == 500) {
-        return new SyncServerException();
       }
       if (cause.getKind() == RetrofitError.Kind.NETWORK) {
         return new NetWorkException(cause);
       }
       return new LMISException(cause);
+    }
+
+    private LMISException forbidNotAndroidUser() {
+      EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
+      userRepository.deleteLocalUser();
+      return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
+    }
+
+    private LMISException forbidNotSameDevice() {
+      EventBus.getDefault().post(SIGLUS_API_ERROR_NOT_REGISTERED_DEVICE);
+      return new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_is_same_device_false));
     }
   }
 

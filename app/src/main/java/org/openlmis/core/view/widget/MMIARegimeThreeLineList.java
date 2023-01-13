@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,11 +54,6 @@ public class MMIARegimeThreeLineList extends LinearLayout {
   private String attrSecondLineKey;
   private String attrThirdLine;
   private String attrThirdLineKey;
-
-  public enum CountType {
-    PATIENTSAMOUNT,
-    PHARMACYAMOUNT,
-  }
 
   public MMIARegimeThreeLineList(Context context) {
     super(context);
@@ -100,8 +96,8 @@ public class MMIARegimeThreeLineList extends LinearLayout {
     addViewItem(dataMap.get(attrFirstLineKey));
     addViewItem(dataMap.get(attrSecondLineKey));
     addViewItem(dataMap.get(attrThirdLineKey));
-    mmiaThreeLinePatientsTotal.setText(String.valueOf(getTotal(CountType.PATIENTSAMOUNT)));
-    mmiaThreeLinePharmacyTotal.setText(String.valueOf(getTotal(CountType.PHARMACYAMOUNT)));
+    mmiaThreeLinePatientsTotal.setText(String.valueOf(getTotal(RegimenItemThreeLines.CountType.PATIENTS_AMOUNT)));
+    mmiaThreeLinePharmacyTotal.setText(String.valueOf(getTotal(RegimenItemThreeLines.CountType.PHARMACY_AMOUNT)));
   }
 
   private void initCategoryList() {
@@ -132,7 +128,7 @@ public class MMIARegimeThreeLineList extends LinearLayout {
       patientsTotalEdit.setText(String.valueOf(patientsAmount));
     }
     patientsTotalEdit
-        .addTextChangedListener(new EditTextWatcher(itemThreeLines, CountType.PATIENTSAMOUNT));
+        .addTextChangedListener(new EditTextWatcher(itemThreeLines, RegimenItemThreeLines.CountType.PATIENTS_AMOUNT));
     patientsTotalEdits.add(patientsTotalEdit);
 
     Long pharmacyAmount = itemThreeLines.getPharmacyAmount();
@@ -140,7 +136,7 @@ public class MMIARegimeThreeLineList extends LinearLayout {
       patientsPharmacyEdit.setText(String.valueOf(pharmacyAmount));
     }
     patientsPharmacyEdit
-        .addTextChangedListener(new EditTextWatcher(itemThreeLines, CountType.PHARMACYAMOUNT));
+        .addTextChangedListener(new EditTextWatcher(itemThreeLines, RegimenItemThreeLines.CountType.PHARMACY_AMOUNT));
     patientsPharmacyEdits.add(patientsPharmacyEdit);
 
     addView(viewItem);
@@ -163,7 +159,7 @@ public class MMIARegimeThreeLineList extends LinearLayout {
         patientTotalText.requestFocus();
         return false;
       }
-      if (patientsPharmacyEdits.size() > 0) {
+      if (!patientsPharmacyEdits.isEmpty()) {
         EditText editPharmacyText = patientsPharmacyEdits.get(i);
         if (TextUtils.isEmpty(editPharmacyText.getText().toString())) {
           editPharmacyText.setError(getContext().getString(R.string.hint_error_input));
@@ -176,8 +172,8 @@ public class MMIARegimeThreeLineList extends LinearLayout {
   }
 
   public void deHighLightTotal() {
-    mmiaThreeLinePatientsTotal.setBackground(getResources().getDrawable(R.color.color_page_gray));
-    mmiaThreeLinePharmacyTotal.setBackground(getResources().getDrawable(R.color.color_page_gray));
+    mmiaThreeLinePatientsTotal.setBackground(ContextCompat.getDrawable(getContext(), R.color.color_page_gray));
+    mmiaThreeLinePharmacyTotal.setBackground(ContextCompat.getDrawable(getContext(), R.color.color_page_gray));
   }
 
   public List<RegimenItemThreeLines> getDataList() {
@@ -187,9 +183,9 @@ public class MMIARegimeThreeLineList extends LinearLayout {
   class EditTextWatcher implements TextWatcher {
 
     private final RegimenItemThreeLines item;
-    private final CountType type;
+    private final RegimenItemThreeLines.CountType type;
 
-    public EditTextWatcher(RegimenItemThreeLines item, CountType counttype) {
+    public EditTextWatcher(RegimenItemThreeLines item, RegimenItemThreeLines.CountType counttype) {
       this.item = item;
       this.type = counttype;
     }
@@ -212,17 +208,30 @@ public class MMIARegimeThreeLineList extends LinearLayout {
       } catch (NumberFormatException ignored) {
         // do nothing
       }
-      if (CountType.PATIENTSAMOUNT == type) {
+      if (RegimenItemThreeLines.CountType.PATIENTS_AMOUNT == type) {
         item.setPatientsAmount(count);
         mmiaThreeLinePatientsTotal.setText(String.valueOf(getTotal(type)));
-      } else if (CountType.PHARMACYAMOUNT == type) {
+      } else if (RegimenItemThreeLines.CountType.PHARMACY_AMOUNT == type) {
         item.setPharmacyAmount(count);
         mmiaThreeLinePharmacyTotal.setText(String.valueOf(getTotal(type)));
       }
     }
   }
 
-  public long getTotal(CountType counttype) {
-    return RnRForm.caculateTotalRegimenTypeAmount(dataList, counttype);
+  public long getTotal(RegimenItemThreeLines.CountType countType) {
+    return RnRForm.calculateTotalRegimenTypeAmount(dataList, countType);
+  }
+
+  public void removeOriginalTable() {
+    removeAllViewsIfHasAny();
+    patientsTotalEdits.clear();
+    patientsPharmacyEdits.clear();
+    dataMap.clear();
+  }
+
+  private void removeAllViewsIfHasAny() {
+    if (getChildCount() > 0) {
+      removeAllViews();
+    }
   }
 }

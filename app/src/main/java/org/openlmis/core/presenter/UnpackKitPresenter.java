@@ -138,10 +138,6 @@ public class UnpackKitPresenter extends Presenter {
 
     kitStockCard.setStockOnHand(kitStockCard.getStockOnHand() - kitUnpackQuantity);
 
-    if (0 == kitStockCard.getStockOnHand()) {
-      kitStockCard.setExpireDates("");
-    }
-
     StockMovementItem kitMovementItem = new StockMovementItem(kitStockCard);
     kitMovementItem.setReason(MovementReasonManager.UNPACK_KIT);
     kitMovementItem.setMovementType(MovementReasonManager.MovementType.ISSUE);
@@ -158,12 +154,12 @@ public class UnpackKitPresenter extends Presenter {
   private StockMovementItem createUnpackMovementItemAndLotMovement(StockCard stockCard,
       String documentNumber, String signature, List<LotMovementViewModel> lotMovementViewModelList) {
     StockMovementItem unpackMovementItem = new StockMovementItem(stockCard);
-    unpackMovementItem.setReason(MovementReasonManager.DDM);
+    unpackMovementItem.setReason(MovementReasonManager.UNPACK_FROM_KIT);
     unpackMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
     unpackMovementItem.setDocumentNumber(documentNumber);
     unpackMovementItem.setSignature(signature);
     for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
-      lotMovementViewModel.setMovementReason(MovementReasonManager.DDM);
+      lotMovementViewModel.setMovementReason(MovementReasonManager.UNPACK_FROM_KIT);
       lotMovementViewModel.setDocumentNumber(documentNumber);
     }
     unpackMovementItem.populateLotQuantitiesAndCalculateNewSOH(lotMovementViewModelList);
@@ -179,14 +175,14 @@ public class UnpackKitPresenter extends Presenter {
           .from(stockCard.getNonEmptyLotOnHandList())
           .transform(lotOnHand -> new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
               DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(),
-                  DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+                  DateUtil.DB_DATE_FORMAT),
               lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE))
           .toSortedList((lot1, lot2) -> {
             Date localDate = DateUtil
-                .parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+                .parseString(lot1.getExpiryDate(), DateUtil.DB_DATE_FORMAT);
             if (localDate != null) {
               return localDate.compareTo(DateUtil
-                  .parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                  .parseString(lot2.getExpiryDate(), DateUtil.DB_DATE_FORMAT));
             } else {
               return 0;
             }

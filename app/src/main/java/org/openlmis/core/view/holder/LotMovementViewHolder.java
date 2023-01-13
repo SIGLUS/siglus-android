@@ -20,7 +20,6 @@ package org.openlmis.core.view.holder;
 
 import android.content.Context;
 import android.text.Editable;
-import android.text.Html;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
@@ -35,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.BulkInitialInventoryActivity;
@@ -109,7 +109,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
   }
 
   private void populateLotInfo() {
-    etLotInfo.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
+    etLotInfo.setText(viewModel.getLotNumber());
     etLotInfo.setKeyListener(null);
     etLotInfo.setOnKeyListener(null);
     etLotInfo.setBackground(null);
@@ -197,8 +197,8 @@ public class LotMovementViewHolder extends BaseViewHolder {
       @Override
       public void onSingleClick(View v) {
         final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-            Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
-            Html.fromHtml(context.getResources()
+            CompatUtil.fromHtml(getString(R.string.msg_remove_new_lot_title)),
+            CompatUtil.fromHtml(context.getResources()
                 .getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(),
                     viewModel.getExpiryDate(), lotMovementAdapter.getProductName())),
             getString(R.string.btn_remove_lot),
@@ -253,6 +253,16 @@ public class LotMovementViewHolder extends BaseViewHolder {
           && movementChangedListenerWithStatus != null) {
         movementChangedListenerWithStatus.movementChange(editable.toString());
       }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+      return super.hashCode();
     }
 
     @SuppressWarnings("squid:S3776")

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".view.fragment.MMTBRequisitionFragment">
+
+  <ScrollView
+    android:id="@+id/scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_page_gray"
+    android:fillViewport="true">
+
+    <LinearLayout
+      style="@style/MMIA.FormContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <org.openlmis.core.view.widget.MMTBRnrFormProductList
+        android:id="@+id/rnr_form_list"
+        style="@style/MMIA.RnrTable.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nextFocusForward="@id/treatment_phase_info"
+        tools:layout_height="@dimen/px_220" />
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_small"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        tools:layout_height="@dimen/px_320">
+
+        <!-- left part -->
+        <LinearLayout
+          android:layout_width="@dimen/px_0"
+          android:layout_height="match_parent"
+          android:layout_weight="3"
+          android:orientation="vertical"
+          tools:layout_width="match_parent">
+
+          <org.openlmis.core.view.widget.MMTBTreatmentPhaseInfoList
+            android:id="@+id/treatment_phase_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nextFocusForward="@id/drug_consumption_info"
+            tools:layout_height="@dimen/px_100" />
+
+          <org.openlmis.core.view.widget.MMTBDrugConsumptionInfoList
+            android:id="@+id/drug_consumption_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nextFocusForward="@id/three_line_form"
+            android:layout_marginTop="@dimen/margin_small" />
+
+          <!-- patients age form -->
+          <org.openlmis.core.view.widget.MMTBPatientThreeLineList
+            android:id="@+id/three_line_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nextFocusForward="@id/mmtb_patient_info"
+            tools:layout_height="@dimen/px_100"
+            android:layout_marginTop="@dimen/margin_small" />
+        </LinearLayout>
+
+
+        <!-- right part -->
+        <LinearLayout
+          android:layout_width="@dimen/px_0"
+          android:layout_height="match_parent"
+          android:layout_marginStart="@dimen/margin_small"
+          android:layout_weight="2"
+          android:orientation="vertical"
+          tools:layout_width="match_parent">
+          <org.openlmis.core.view.widget.MMTBPatientInfoList
+            android:id="@+id/mmtb_patient_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+          <com.google.android.material.textfield.TextInputLayout
+            style="@style/MMIA.CommentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small">
+
+            <EditText
+              android:id="@+id/et_comment"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/hint_mmia_comment"
+              android:inputType="textMultiLine"
+              tools:text="This is a Long text for test the EditText MultiLine char, anybody can edit anything in this line, ^_^, Good Luck!!" />
+
+            <TextView
+              android:id="@+id/tv_total_mismatch"
+              style="@style/MMIA.MismatchText"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/msg_reason_for_total_not_match"
+              android:visibility="invisible" />
+          </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+      </LinearLayout>
+
+      <org.openlmis.core.view.widget.ActionPanelView
+        android:id="@+id/action_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+  </ScrollView>
+
+  <LinearLayout
+    android:id="@+id/mmtb_rnr_items_header_freeze"
+    style="@style/MMIA.RnrTable.Header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+      android:id="@+id/mmtb_rnr_items_header_freeze_left"
+      android:layout_width="@dimen/px_0"
+      android:layout_height="wrap_content"
+      android:layout_weight="2"
+      android:orientation="vertical"
+      android:showDividers="middle" />
+
+    <HorizontalScrollView
+      android:id="@+id/mmtb_rnr_items_header_freeze_right"
+      android:layout_width="@dimen/px_0"
+      android:layout_height="wrap_content"
+      android:layout_weight="3"
+      android:scrollbars="none"
+      tools:layout_height="@dimen/px_40" />
+  </LinearLayout>
+</FrameLayout>

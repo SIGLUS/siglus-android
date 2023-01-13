@@ -57,7 +57,7 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
   @Override
   public boolean isDataChanged() {
     if (draftInventory == null) {
-      return hasLotInInventoryModelChanged();
+      return hasLotInventoryModelChanged();
     }
     return isDifferentFromDraft();
   }
@@ -76,24 +76,7 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
         }
       }
     }
-    return newLotMovementViewModelList.size() != 0;
-  }
-
-  private boolean hasLotInInventoryModelChanged() {
-    for (LotMovementViewModel viewModel : getExistingLotMovementViewModelList()) {
-      if (viewModel.getQuantity() != null && !viewModel.getQuantity().isEmpty()) {
-        return true;
-      }
-    }
-    if (newLotMovementViewModelList.size() > 0) {
-      return true;
-    }
-    for (LotMovementViewModel viewModel : getNewLotMovementViewModelList()) {
-      if (viewModel.getQuantity() != null && !viewModel.getQuantity().isEmpty()) {
-        return true;
-      }
-    }
-    return false;
+    return !newLotMovementViewModelList.isEmpty();
   }
 
   public SpannableStringBuilder getGreenName() {
@@ -128,7 +111,7 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
       existLotMovementViewModel.setQuantity(formatQuantity(draftLotItem.getQuantity()));
       existLotMovementViewModel.setLotNumber(draftLotItem.getLotNumber());
       existLotMovementViewModel.setExpiryDate(DateUtil
-          .formatDate(draftLotItem.getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+          .formatDate(draftLotItem.getExpirationDate(), DateUtil.DB_DATE_FORMAT));
       getExistingLotMovementViewModelList().add(existLotMovementViewModel);
     }
   }

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -46,9 +47,10 @@ import rx.schedulers.Schedulers;
 
 public class ALRequisitionPresenter extends BaseRequisitionPresenter {
 
-  ALRequisitionView view;
+  protected ALRequisitionView view;
   private ALRepository alRepository;
-  public ALReportViewModel alReportViewModel;
+  @Getter
+  private ALReportViewModel alReportViewModel;
 
   @Override
   protected RnrFormRepository initRnrFormRepository() {

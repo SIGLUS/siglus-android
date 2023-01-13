@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
@@ -116,7 +117,7 @@ public class StockService {
       period = period.previous();
       Long totalIssuesEachMonth = calculateTotalIssuesPerPeriod(stockCard, period);
 
-      if (hasStockOutTotalIssue(totalIssuesEachMonth)) {
+      if (totalIssuesEachMonth == null) {
         continue;
       }
 
@@ -125,16 +126,11 @@ public class StockService {
         break;
       }
     }
-    // TODO: need check
     if (issuePerMonths.isEmpty()) {
       return -1;
     }
 
     return getTotalIssues(issuePerMonths) * 1f / issuePerMonths.size();
-  }
-
-  private boolean hasStockOutTotalIssue(Long totalIssuesEachMonth) {
-    return totalIssuesEachMonth == null;
   }
 
   private long getTotalIssues(List<Long> issuePerMonths) {
@@ -179,14 +175,29 @@ public class StockService {
   }
 
   private boolean hasStockOutInThisPeriod(List<StockMovementItem> stockMovementItems) {
-    return from(stockMovementItems)
-        .anyMatch(stockMovementItem -> stockMovementItem.getStockOnHand() == 0);
+    HashMap<String, ArrayList<StockMovementItem>> dateToMovementMap = new HashMap<>();
+    for (StockMovementItem item : stockMovementItems) {
+      String formatDate = DateUtil.formatDate(item.getMovementDate(), DateUtil.DB_DATE_FORMAT);
+      ArrayList<StockMovementItem> movementsInOneDay = dateToMovementMap.get(formatDate);
+      if (movementsInOneDay == null) {
+        movementsInOneDay = new ArrayList<>();
+        dateToMovementMap.put(formatDate, movementsInOneDay);
+      }
+      movementsInOneDay.add(item);
+    }
+    return from(dateToMovementMap.values())
+        .transform(movementList ->
+            from(movementList)
+                .toSortedList((o1, o2) -> Long.compare(o1.getCreatedTime().getTime(), o2.getCreatedTime().getTime()))
+                .get(movementList.size() - 1)
+                .getStockOnHand() == 0)
+        .anyMatch(stockOut -> stockOut != null && stockOut);
   }
 
   @SuppressWarnings("squid:S1905")
   private boolean isStockOutStatusInherited(StockCard stockCard, final Period period) {
     List<StockMovementItem> orderedMovements = Ordering.from(
-        (Comparator<StockMovementItem>) (lhs, rhs) -> lhs.getMovementDate().compareTo(rhs.getMovementDate()))
+            (Comparator<StockMovementItem>) (lhs, rhs) -> lhs.getMovementDate().compareTo(rhs.getMovementDate()))
         .sortedCopy(stockCard.getStockMovementItemsWrapper());
 
     Optional<StockMovementItem> lastMovementBeforePeriod = from(orderedMovements)

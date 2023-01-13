@@ -13,12 +13,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.CONSUMPTION;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.enumeration.MMITGridErrorType;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
@@ -56,8 +56,7 @@ public class RapidTestReportViewModelTest {
     assertTrue(this.viewModel.isDraft());
     assertNull(this.viewModel.getSyncedTime());
     assertEquals(0, this.viewModel.getStatus().getViewType());
-    assertTrue(this.viewModel.validateAPES());
-    assertTrue(this.viewModel.validateUnjustified());
+    assertTrue(this.viewModel.validate());
     assertFalse(this.viewModel.validateOnlyAPES());
     assertTrue(this.viewModel.isFormEmpty());
     assertEquals(DateUtil.parseString("2016-08-21", DateUtil.DB_DATE_FORMAT),
@@ -165,24 +164,6 @@ public class RapidTestReportViewModelTest {
   }
 
   @Test
-  public void shouldValidateItemList() throws Exception {
-    viewModel = new RapidTestReportViewModel(
-        Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
-    RapidTestFormItemViewModel itemViewModel1 = mock(RapidTestFormItemViewModel.class);
-    RapidTestFormItemViewModel itemViewModel2 = mock(RapidTestFormItemViewModel.class);
-
-    when(itemViewModel1.validatePositive()).thenReturn(true);
-    when(itemViewModel2.validatePositive()).thenReturn(false);
-
-    viewModel.setItemViewModelList(new ArrayList<RapidTestFormItemViewModel>());
-    viewModel.getItemViewModelList().add(itemViewModel1);
-    assertTrue(viewModel.validatePositive());
-
-    viewModel.getItemViewModelList().add(itemViewModel2);
-    assertFalse(viewModel.validatePositive());
-  }
-
-  @Test
   public void shouldReturnIsAuthorized() throws Exception {
     viewModel = new RapidTestReportViewModel(
         Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
@@ -223,5 +204,25 @@ public class RapidTestReportViewModelTest {
     viewModel.getItemViewModelList().get(1).getGridHIVDetermine().setConsumptionValue("2333");
     viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDETERMINE, CONSUMPTION);
     assertEquals("2433", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
+  }
+
+  @Test
+  public void shouldNotReturnErrorWhenThreeGridValidated() throws Exception {
+    //given
+    MovementReasonManager.MovementReason reason = new MovementReasonManager.MovementReason(
+        MovementReasonManager.MovementType.ISSUE, "ACC_EMERGENCY", "Acc emergency");
+    RapidTestFormItemViewModel itemViewModel = new RapidTestFormItemViewModel(reason);
+    RapidTestFormGridViewModel gridViewModel = mock(RapidTestFormGridViewModel.class);
+    itemViewModel.setRapidTestFormGridViewModelList(Arrays.asList(gridViewModel));
+
+    viewModel = new RapidTestReportViewModel(
+        Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
+    viewModel.setItemViewModelList(Arrays.asList(itemViewModel));
+
+    //when
+    when(gridViewModel.validateThreeGrid()).thenReturn(MMITGridErrorType.NO_ERROR);
+
+    //then
+    assertTrue(viewModel.validate());
   }
 }

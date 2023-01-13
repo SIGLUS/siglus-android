@@ -18,9 +18,12 @@
 
 package org.openlmis.core.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 import java.util.List;
@@ -34,12 +37,11 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.presenter.ReportListPresenter;
 import org.openlmis.core.presenter.ReportListPresenter.ReportListView;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.ReportListNavigatorAdapter;
 import org.openlmis.core.view.adapter.ReportListPageAdapter;
-import org.openlmis.core.view.widget.SingleClickMenuListener;
+import org.openlmis.core.view.fragment.ReportListFragment;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -60,6 +62,15 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
 
   ReportListPageAdapter pageAdapter;
 
+  Menu emergencyMenu;
+
+  private final ActivityResultLauncher<Intent> toSelectEmergencyProductsLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        ReportListFragment viaRequisitionFragment =
+            (ReportListFragment) getSupportFragmentManager().findFragmentById(0);
+        viaRequisitionFragment.getCreateRequisitionCallback().onActivityResult(result);
+      });
+
   private final OnPageChangeCallback pageChangeCallback = new OnPageChangeCallback() {
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -68,6 +79,7 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
 
     @Override
     public void onPageSelected(int position) {
+      setMenuVisible(position);
       magicIndicator.onPageSelected(position);
     }
 
@@ -92,15 +104,25 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
+    emergencyMenu = menu;
     getMenuInflater().inflate(R.menu.menu_rnr_list, menu);
-    MenuItem item = menu.findItem(R.id.action_create_emergency_rnr);
-    item.setOnMenuItemClickListener(new SingleClickMenuListener() {
-      @Override
-      public void onSingleClick(MenuItem item) {
-        checkAndGotoEmergencyPage();
-      }
-    });
     return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    super.onOptionsItemSelected(item);
+    if (item.getItemId() == R.id.action_create_emergency_rnr) {
+      checkAndGotoEmergencyPage();
+      return true;
+    }
+    return false;
+  }
+
+  public void setMenuVisible(int position) {
+    if (emergencyMenu != null) {
+      emergencyMenu.findItem(R.id.action_create_emergency_rnr).setVisible(position == 0);
+    }
   }
 
   protected void checkAndGotoEmergencyPage() {
@@ -133,9 +155,8 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
           ToastUtil.show(R.string.msg_create_emergency_has_missed);
         } else {
           reportListViewpager.setCurrentItem(0);
-          startActivityForResult(
-              SelectEmergencyProductsActivity.getIntentToMe(ReportListActivity.this),
-              Constants.REQUEST_FROM_RNR_LIST_PAGE);
+          toSelectEmergencyProductsLauncher.launch(
+              SelectEmergencyProductsActivity.getIntentToMe(ReportListActivity.this));
         }
       }
     });

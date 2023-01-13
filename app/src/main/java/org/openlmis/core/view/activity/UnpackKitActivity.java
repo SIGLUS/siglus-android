@@ -145,6 +145,10 @@ public class UnpackKitActivity extends BaseActivity {
       setTotal(inventoryViewModels.size());
       loaded();
     }
+
+    private void setTotal(int total) {
+      tvTotal.setText(getString(R.string.label_total, total));
+    }
   };
 
 
@@ -155,28 +159,17 @@ public class UnpackKitActivity extends BaseActivity {
         showSignDialog();
       }
     }
-  };
 
-  private void showSignDialog() {
-    SignatureDialog signatureDialog = new SignatureDialog();
-    signatureDialog.setArguments(
-        SignatureDialog.getBundleToMe(getString(R.string.dialog_unpack_kit_signature)));
-    signatureDialog.setDelegate(signatureDialogDelegate);
-    signatureDialog.show(getSupportFragmentManager(), "signature_dialog_for_unpack_kit");
-  }
-
-  protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-    @Override
-    public void onSign(String sign) {
-      loading();
-      Subscription subscription = presenter
-          .saveUnpackProductsObservable(kitNum, etDocumentNumber.getText().toString(), sign)
-          .subscribe(saveKitSubscriber);
-      subscriptions.add(subscription);
+    private void showSignDialog() {
+      SignatureDialog signatureDialog = new SignatureDialog();
+      signatureDialog.setArguments(
+          SignatureDialog.getBundleToMe(getString(R.string.dialog_unpack_kit_signature)));
+      signatureDialog.setDelegate(signatureDialogDelegate);
+      signatureDialog.show(getSupportFragmentManager(), "signature_dialog_for_unpack_kit");
     }
   };
 
-  Subscriber<Void> saveKitSubscriber = new Subscriber<Void>() {
+  protected Subscriber<Void> saveKitSubscriber = new Subscriber<Void>() {
     @Override
     public void onCompleted() {
       // do nothing
@@ -191,13 +184,18 @@ public class UnpackKitActivity extends BaseActivity {
     @Override
     public void onNext(Void object) {
       loaded();
-      saveSuccess();
+      setResult(Activity.RESULT_OK);
+      finish();
     }
   };
 
-  private void setTotal(int total) {
-    tvTotal.setText(getString(R.string.label_total, total));
-  }
+  protected SignatureDialog.DialogDelegate signatureDialogDelegate = sign -> {
+    loading();
+    Subscription subscription = presenter
+        .saveUnpackProductsObservable(kitNum, etDocumentNumber.getText().toString(), sign)
+        .subscribe(saveKitSubscriber);
+    subscriptions.add(subscription);
+  };
 
   public static Intent getIntentToMe(Context context, String code, int num, String kitName) {
     Intent intent = new Intent(context, UnpackKitActivity.class);
@@ -205,11 +203,6 @@ public class UnpackKitActivity extends BaseActivity {
     intent.putExtra(Constants.PARAM_KIT_NUM, num);
     intent.putExtra(Constants.PARAM_KIT_NAME, kitName);
     return intent;
-  }
-
-  private void saveSuccess() {
-    setResult(Activity.RESULT_OK);
-    finish();
   }
 
   public boolean validateAll() {

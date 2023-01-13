@@ -101,7 +101,7 @@ public class AllDrugsMovementPresenter extends Presenter {
   protected void loadAllMovementHistory() {
     if (viewModelList.isEmpty()) {
       viewModelList.addAll(FluentIterable.from(stockRepository.list())
-          .transform(stockCard -> new StockHistoryViewModel(stockCard)).toList());
+          .transform(StockHistoryViewModel::new).toList());
     }
   }
 

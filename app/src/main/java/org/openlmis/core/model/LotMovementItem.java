@@ -22,6 +22,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,6 +31,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @DatabaseTable(tableName = "lot_movement_items")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class LotMovementItem extends BaseModel {
 
   @DatabaseField(foreign = true, foreignAutoRefresh = true)

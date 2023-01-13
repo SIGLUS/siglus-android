@@ -23,6 +23,7 @@ import android.util.Log;
 import com.google.inject.Inject;
 import java.util.Date;
 import lombok.Getter;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -100,7 +101,6 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
   }
 
   public RnRForm getRnrForm(long formId) throws LMISException {
-    Log.d("info", "get rnr start");
     if (formId != 0) {
       isHistoryForm = true;
     }
@@ -115,9 +115,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     if (draftRequisition != null) {
       return draftRequisition;
     }
-    RnRForm form = rnrFormRepository.initNormalRnrForm(periodEndDate);
-    Log.d("info", "get rnr end");
-    return form;
+    return rnrFormRepository.initNormalRnrForm(periodEndDate);
   }
 
   public void submitRequisition() {
@@ -178,7 +176,11 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
         view.completeSuccess();
         Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.AUTHORISE_RNR, rnRForm.getProgram().getProgramCode());
-        internetCheck.check(checkInternetListener());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+          syncService.requestSyncImmediatelyByTask();
+        } else {
+          internetCheck.check(checkInternetListener());
+        }
       }
     };
   }
@@ -263,6 +265,11 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
   public boolean isDraft() {
     return getRnrFormStatus() == Status.DRAFT
         || getRnrFormStatus() == Status.DRAFT_MISSED;
+  }
+
+  public boolean isSubmit() {
+    return getRnrFormStatus() == Status.SUBMITTED
+        || getRnrFormStatus() == Status.SUBMITTED_MISSED;
   }
 
   public boolean isDraftOrDraftMissed() {

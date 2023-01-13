@@ -78,9 +78,9 @@ public class BulkInitialInventoryViewModelTest {
   @Test
   public void shouldCompareWithDraft() {
     LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModelBuilder()
-        .setLotNumber("lot1").setQuantity("100").setExpiryDate("Feb 2015").build();
+        .setLotNumber("lot1").setQuantity("100").setExpiryDate("2015-02-28").build();
     LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModelBuilder()
-        .setLotNumber("lot2").setExpiryDate("Feb 2015").build();
+        .setLotNumber("lot2").setExpiryDate("2015-02-28").build();
 
     viewModel.setExistingLotMovementViewModelList(newArrayList(lotMovementViewModel1));
     viewModel.setNewLotMovementViewModelList(newArrayList(lotMovementViewModel2));
@@ -89,7 +89,7 @@ public class BulkInitialInventoryViewModelTest {
     BulkInitialInventoryViewModel newViewModel = new BulkInitialInventoryViewModel(
         viewModel.getStockCard());
     newViewModel.getExistingLotMovementViewModelList().add(
-        new LotMovementViewModelBuilder().setLotNumber("lot3").setExpiryDate("Feb 2020").build());
+        new LotMovementViewModelBuilder().setLotNumber("lot3").setExpiryDate("2020-02-28").build());
     newViewModel.setInitialDraftInventory(new DraftInitialInventory(viewModel));
 
     assertThat(viewModel.getFormattedProductName(), is("Primary product name [productCode]"));

@@ -157,6 +157,9 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
 
       ivTrashcan.setImageResource(viewModel.shouldShowError() ? R.drawable.ic_trashcan_red : R.drawable.ic_trashcan);
       tvErrorBanner.setVisibility(viewModel.shouldShowError() ? View.VISIBLE : View.GONE);
+      if (viewModel.isAllLotsExpired()) {
+        tvErrorBanner.setText(R.string.alert_issue_all_lot_expired);
+      }
     }
 
     private SingleClickButtonListener getEditClickListener() {

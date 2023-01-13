@@ -183,7 +183,6 @@ public class BulkEntriesPresenter extends Presenter {
     stockMovementItem.setMovementDate(DateUtil.getCurrentDate());
     stockMovementItem.setStockCard(stockCard);
     stockMovementItem.setMovementType(MovementType.RECEIVE);
-    // TODO set reason on lot movement item later
     stockMovementItem.setReason("DISTRICT_DDM");
     stockMovementItem.setMovementQuantity(bulkEntriesViewModel.getLotListQuantityTotalAmount());
     stockMovementItem.setStockOnHand(stockCard.getStockOnHand());

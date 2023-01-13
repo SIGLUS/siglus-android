@@ -18,10 +18,10 @@
 
 package org.openlmis.core.view.holder;
 
-import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import roboguice.inject.InjectView;
@@ -41,12 +41,12 @@ public class BulkLotInfoReviewViewHolder extends BaseViewHolder {
   public void populate(LotMovementViewModel viewModel) {
     long adjustmentQuantity = Long.parseLong(viewModel.getQuantity());
     if (fromWhichPage.equals(Constants.FROM_BULK_ENTRIES_PAGE)) {
-      tvLotInfoReview.setText(Html.fromHtml(context
+      tvLotInfoReview.setText(CompatUtil.fromHtml(context
           .getString(R.string.msg_bulk_entries_lot_review, viewModel.getLotNumber(),
               adjustmentQuantity)));
     }
     if (fromWhichPage.equals(Constants.FROM_BULK_INITIAL_PAGE)) {
-      tvLotInfoReview.setText(Html.fromHtml(context
+      tvLotInfoReview.setText(CompatUtil.fromHtml(context
           .getString(R.string.msg_initial_inventory_lot_review_add, viewModel.getLotNumber(),
               adjustmentQuantity)));
     }

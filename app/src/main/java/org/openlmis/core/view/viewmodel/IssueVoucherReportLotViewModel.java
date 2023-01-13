@@ -112,7 +112,7 @@ public class IssueVoucherReportLotViewModel {
       return Lot.builder()
           .lotNumber(Constants.VIRTUAL_LOT_NUMBER)
           .expirationDate(DateUtil.parseString(DateUtil.getVirtualLotExpireDate(),
-              DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR))
+              DateUtil.DB_DATE_FORMAT))
           .product(podProductItem.getProduct())
           .build();
     } else {

@@ -68,6 +68,11 @@ public class ALGridViewModel {
     }
   }
 
+  public void autoFillValue(Long value) {
+    setTreatmentsValue(value);
+    setExistentStockValue(value);
+  }
+
   public boolean validate() {
     try {
       return isEmpty();

@@ -53,7 +53,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.LotRepository;
-import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -87,8 +86,6 @@ public class DirtyDataManager {
   DirtyDataRepository dirtyDataRepository;
   @Inject
   RnrFormRepository rnrFormRepository;
-  @Inject
-  ProgramDataFormRepository programDataFormRepository;
   @Inject
   CmmRepository cmmRepository;
   @Inject

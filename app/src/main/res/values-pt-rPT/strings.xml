@@ -58,12 +58,11 @@
   <string name="msg_back_twice_to_exit">Pressione o botão \"voltar\" duas vezes para sair</string>
   <string name="action_sign_out">Sair</string>
   <string name="initial_rnr_sync_failed">Sincronização inicial da requisição falhou, por favor tente novamente.</string>
-  <string name="initial_stock_movement_sync_failed">Sincronização Inicial  das fichas de stock falhou, por favor tente novamente.</string>
+  <string name="initial_stock_movement_sync_failed">Sincronização Inicial das fichas de stock falhou, por favor tente novamente.</string>
   <string name="initial_sync_failed">Sincronização inicial falhou</string>
 
   <!--MMIA-->
   <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
-  <string name="label_AL_title">Malaria - %1$s à %2$s</string>
   <string name="label_rnrfrom_left_header">PRODUCT</string>
   <string name="label_rnrfrom_left_header_old">MEDICAMENTO</string>
   <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
@@ -100,6 +99,7 @@
   <string name="btn_positive">Sim</string>
   <string name="btn_negative">Não</string>
   <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,\e será submetido automaticamente quando tiver conexão a internet.</string>
+  <string name="msg_mmtb_submit_tip">O seu MMTB foi gravado com sucesso,\e será submetido automaticamente quando tiver conexão a internet.</string>
   <string name="msg_reason_for_total_not_match"><![CDATA[Adicionar razão para a diferença entre totais de regimes e total de pacientes]]></string>
   <string name="btn_ok">OK</string>
   <string name="label_add_adult_regime">+ Regimes de adultos</string>
@@ -109,6 +109,46 @@
   <string name="mmia_1stline">1ª Linha</string>
   <string name="mmia_2ndline">2ª Linha</string>
   <string name="mmia_3rdline">3ª Linha</string>
+
+  <!-- MMTB -->
+  <string name="label_mmtb_title">MMTB - %1$s to %2$s</string>
+  <string name="mmtb_age_group_form_title">Quantificação de Usuários por Faixas Etárias</string>
+  <string name="mmtb_three_line_1_title">Faixas Etarias</string>
+  <string name="mmtb_three_line_1">Adultos</string>
+  <string name="mmtb_three_line_2_title">Tratamento</string>
+  <string name="mmtb_three_line_2">Criança &lt; 25 Kg</string>
+  <string name="mmtb_three_line_3_title">Profilaxia</string>
+  <string name="mmtb_three_line_3">Criança &gt; 25 Kg</string>
+  <string name="mmtb_patient_info_form_title">Quantificação dos doentes</string>
+  <string name="mmtb_new_patient_form_title">Pacientes Novos no Sector da TB</string>
+  <string name="mmtb_follow_up_prophylaxis_form_title">Seguimento Profilaxias\n(PUs e Farmácia Pública)</string>
+  <string name="mmtb_dispensation_type_form_title">Tipo de Dispensa dos Profilaticos</string>
+  <string name="mmtb_patient_type_field">Pacinte/Tipo</string>
+  <string name="mmtb_prophylaxis_phases_field">Fases Profilaxia</string>
+  <string name="mmtb_dispensation_type_field">Periodicidade de Dispensa</string>
+
+  <string name="mmtb_treatment_phase_form_title">Número de dias dispensados nas diferentes fases do Tratamento</string>
+  <string name="mmtb_title_treatment_phase">Fases de Tratamento</string>
+  <string name="mmtb_title_number_of_day_off">N° Dias Dispensados</string>
+  <string name="mmtb_title_adult">Adulto</string>
+  <string name="mmtb_title_pediatric">Pediátrico</string>
+
+  <string name="mmtb_drug_consumption_form_title">Consumos dos Medicamentos Profilácticos</string>
+  <string name="mmtb_title_product">Produto</string>
+  <string name="mmtb_title_number_of_pills">N° Comprimidos</string>
+  <string name="mmtb_title_pharmacy_outpatient">PUs e Farmácia Ambulatório</string>
+
+  <string name="mmtb_new_adult_sensitive">Novo Adulto Sensível</string>
+  <string name="mmtb_new_adult_mr">Novo Adulto MR</string>
+  <string name="mmtb_new_adult_xr">Novo Adulto XR</string>
+  <string name="mmtb_new_child_sensitive">Novo Criança Sensível</string>
+  <string name="mmtb_new_child_mr">Novo Criança MR</string>
+  <string name="mmtb_new_child_xr">Novo Criança XR</string>
+  <string name="mmtb_start_phase">início</string>
+  <string name="mmtb_continue_phase">Continua/Manutenção</string>
+  <string name="mmtb_final_phase">Final/última Dispensa</string>
+  <string name="mmtb_frequency_monthly">Mensal</string>
+  <string name="mmtb_frequency_quarterly">Trimestral</string>
 
   <!--VIA Form-->
   <string name="label_via_kit_received">No. de Kits recebidos</string>
@@ -139,11 +179,14 @@
   <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
   <string name="msg_rapid_test_submit_signature">Digite suas iniciais e em seguida, aprove as quantidades de MMIT.</string>
   <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMIA</string>
+  <string name="msg_mmtb_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMTB</string>
   <string name="msg_approve_signature_rapid_test">Digite suas iniciais e em seguida, aprove o teste rápido</string>
   <string name="msg_approve_signature_via">Insira as iniciais do seu nome e aprove a Requisição Balancete</string>
   <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
+  <string name="msg_approve_signature_mmtb">Insira as iniciais do seu nome e aprove o MMTB</string>
   <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
   <string name="msg_requisition_signature_message_notify_mmia">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMIA</string>
+  <string name="msg_requisition_signature_message_notify_mmtb">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMTB</string>
   <string name="msg_requisition_signature_message_notify_rapid_test">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de testes rápidos.</string>
   <string name="btn_continue">Continuar</string>
   <string name="label_adjustment_dialog_header"><![CDATA[A quantidade a requisitar foi ajustada com base em: <br/>]]></string>
@@ -156,6 +199,7 @@
   <string name="msg_stock_movement_is_not_ready">Aplicativo está a sincronizar os movimentos de stock, por favor aguarde até que este processo seja concluído para continuar.</string>
 
   <!-- AL -->
+  <string name="label_al_title">Malaria - %1$s à %2$s</string>
   <string name="msg_al_submit_tip">O seu Relatório de AL foi gravado com sucesso,\ne será submetido automaticamente quando tiver conexão a internet.</string>
   <string name="msg_uncomplete_hint">Por favor, complete toda a informação para o relatório de AL.</string>
   <string name="hint_al_complete_failed">Não foi possível completar o Malaria, por favor, contacte o administrador.</string>
@@ -166,6 +210,7 @@
   <string name="month_year">Mês/Ano:   </string>
 
   <!-- MMIT -->
+  <string name="label_mmit_title">MMIT - %1$s to %2$s</string>
   <string name="balance_test_report">Balancete dos MMIT na Unidade Sanitária</string>
   <string name="attention_report_in_kit">(Atenção: Reportados em Kits)</string>
   <string name="unjustified">Injustificados</string>
@@ -241,9 +286,9 @@
   <string name="table_patients_10to14">Pediátricos 10 aos 14 anos</string>
   <string name="table_prophylaxis">Profilaxia</string>
   <string name="table_prophylaxis_ppe">PPE</string>
-  <string name="table_prophylaxis_prep">PrEP</string>
   <string name="table_prophylaxis_child">Criança Exposta</string>
-  <string name="table_prophylaxis_total">Total de pacientes em TARV na US</string>
+  <string name="table_total_patient">Total de pacientes em TARV na US</string>
+  <string name="table_total_month">Total de Meses de Terapêutica</string>
   <string name="hint_has_not_new_data">Estás no fim da lista</string>
   <string name="label_mmia_regime_adult"><![CDATA[Adultos & Adolescentes]]></string>
   <string name="label_mmia_regime_children">Pediátricos</string>
@@ -257,8 +302,10 @@
   <string name="search_hint">Procurar…</string>
   <string name="action_navigate_archive">Produtos Arquivados</string>
   <string name="hint_save_mmia_failed">Não foi possível gravar o MMIA, por favor contacte o administrador.</string>
+  <string name="hint_save_mmtb_failed">Não foi possível gravar o MMTB, por favor contacte o administrador.</string>
   <string name="hint_save_requisition_failed">Não foi possível gravar Requisição Balancete, por favor contacte o administrador.</string>
   <string name="hint_mmia_complete_failed">Não foi possível completar o MMIA, por favor contacte o administrador.</string>
+  <string name="hint_mmtb_complete_failed">Não foi possível completar o MMTB, por favor contacte o administrador.</string>
   <string name="hint_requisition_complete_failed">Não foi possível completar Requisição Balancete, por favor contacte o administrador.</string>
   <string name="hint_update_banner_tips">%1$s Foi desactivado e removido para a lista de <![CDATA[<b>produtos arquivados</b>]]> lista</string>
   <string name="msg_expiring_date">A Expirar %1$s</string>
@@ -329,6 +376,7 @@
   <string name="label_total">Total:%1$d</string>
   <string name="requisition_delete_failed">Falha ao apagar</string>
   <string name="delete_rnr_form_failed_warning">Falha ao apagar</string>
+  <string name="label_program_no_movement">Nenhum do produto associado a este programa possui ficha de stock, por isso a requisição/relatótio não pode ser processada.</string>
 
   <!--Signature-->
   <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>
@@ -393,8 +441,8 @@
   <string name="via_and_ptv_requisition_alert">Suas Requisições Balancete e seus PTV não foram concluídos</string>
   <string name="ptv_requisition_alert">Seu PTV não foi concluído</string>
   <string name="missed_requisition_time_range">%1$s para %2$s</string>
-  <string name="incomplete_alert_message">"Suas %s não foram concluídos"</string>
-  <string name="incomplete_alert_message_for_single_report">"Seu %s não foi concluído"</string>
+  <string name="incomplete_alert_message">"Seus relatórios: %s não foram concluídos"</string>
+  <string name="incomplete_alert_message_for_single_report">"Seu relatórios: %s não foi concluído"</string>
 
   <!--Add products to requisition form-->
   <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
@@ -454,6 +502,7 @@
   <string name="title_generate_lot_number">Gerar automaticamente o número de lote para o lote novo?</string>
   <string name="btn_confirm_generate_lot_number">GERAR AUTOMATICAMENTE UM NÚMERO DE LOTE</string>
   <string name="title_rapid_test_reports">MMIT</string>
+  <string name="title_mmtb_reports">MMTB</string>
   <string name="btn_create_rapid_test_period">CRIAR RELATÓRIO DE MMIT</string>
   <string name="title_rapid_test_form">Relatório de MMIT</string>
   <string name="msg_sync_rapid_tests_failed">Falha na sincronização de MMIT.</string>
@@ -562,6 +611,7 @@
   <string name="ml_program_name">um Relatório de AL</string>
   <string name="tarv_program_name">um MMIA</string>
   <string name="tr_program_name">um MMIT</string>
+  <string name="tb_program_name">um MMTB</string>
   <string name="msg_cannot_create_emergency_requisition">Não é possível criar requisição de emergência</string>
   <string name="label_stockcard_lot_code">Código de lote</string>
   <string name="label_stockcard_lot_expire_date">Data de validade</string>
@@ -651,9 +701,6 @@
 
   <string name="supplied_quantity">Quantidade Fornecida</string>
   <string name="quantity_received">Quantidade Recebida</string>
-  <string name="label_destination_product">Designação</string>
-  <string name="label_dosage">Dosagem</string>
-  <string name="label_designation">Forma Farmacêutica</string>
   <string name="label_header_lot_number">N° de Lote</string>
   <string name="label_expiring_date">Prazo de Validade</string>
   <string name="label_qf">QF</string>
@@ -668,7 +715,7 @@
   <string name="label_issue_prepared_by">Elaborado por:</string>
   <string name="label_issue_conferred_by">Conferido por:</string>
   <string name="label_issue_delivered_by">Entregue por: </string>
-  <string name="label_issue_received_by">recebido por: </string>
+  <string name="label_issue_received_by">Recebido por: </string>
   <string name="error_sync_previous_period">A sincronização falhou. A requisição anterior teve erro de sincronização. Por favor contacte o administrador.</string>
   <string name="msg_quantity_can_not_be_zero">Quantidade não pode estar em 0</string>
   <string name="label_issued_amount">Montante emitido:&#160;</string>
@@ -684,6 +731,16 @@
   <string name="msg_initial_dirty_data_check">O aplicativo está verificando dados sujos, esse processo levará um tempo. \n Por favor aguardar...</string>
   <string name="msg_logging_in">logando...</string>
   <string name="TR_program_name_for_issue_voucher_title">Testes Rápidos</string>
+  <string name="alert_issue_all_lot_expired">Por favor remova o produto</string>
+  <string name="error_rapid_test_consumption">O número de consumo não pode estar vazio.</string>
+  <string name="error_rapid_test_positive">O número de positiva não pode estar vazio.</string>
+  <string name="requisition_tab">Requisição</string>
+  <string name="Malaria_tab">Malária</string>
+  <string name="emergency">-EMERGÊNCIA-</string>
+  <string name="msg_is_same_device_false">Falha no login, a US já está cadastrada em outro dispositivo, entre em contato com o administrador.</string>
+  <string name="error_msg_sync_failed">A sincronização falhou</string>
+  <string name="msg_sync_not_android_user">O administrador actualizou as suas instalações para uma instalação Web, por favor utilize o portal Web para iniciar sessão para a sua posterior gestão.</string>
+  <string name="msg_sync_not_same_device_user">A US já está cadastrada em outro dispositivo, entre em contato com o administrador.</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>

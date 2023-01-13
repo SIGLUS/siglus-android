@@ -76,8 +76,7 @@ public class ProductProgramRepository {
     }
   }
 
-  public List<ProductProgram> listActiveProductProgramsByProgramCodes(
-      final List<String> programCodes) throws LMISException {
+  public List<ProductProgram> listActiveProductProgramsByProgramCodes(List<String> programCodes) throws LMISException {
     return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder()
         .where().eq(IS_ACTIVE, true)
         .and().in(PROGRAM_CODE, programCodes)

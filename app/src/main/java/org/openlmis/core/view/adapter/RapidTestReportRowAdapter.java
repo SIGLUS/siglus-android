@@ -119,4 +119,5 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RecyclerView
       apeViewHolder.updateRowValue();
     }
   }
+
 }

@@ -37,6 +37,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.activity.result.ActivityResult;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import com.google.inject.AbstractModule;
@@ -62,7 +63,6 @@ import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.widget.MMIAPatientInfoList;
 import org.openlmis.core.view.widget.MMIARegimeListWrap;
-import org.openlmis.core.view.widget.MMIARegimeThreeLineList.CountType;
 import org.openlmis.core.view.widget.MMIARnrFormProductList;
 import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.robolectric.Robolectric;
@@ -235,7 +235,6 @@ public class MMIARequisitionFragmentTest {
 
   @Test
   public void shouldDeHighLightWhenTotalMatches() {
-    when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
 
     mmiaRequisitionFragment.regimeWrap = regimeListWrap;
     mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
@@ -265,7 +264,7 @@ public class MMIARequisitionFragmentTest {
     assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.getDataList().size())
         .isEqualTo(3);
     assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView
-        .getTotal(CountType.PATIENTSAMOUNT)).isEqualTo(0);
+        .getTotal(RegimenItemThreeLines.CountType.PATIENTS_AMOUNT)).isZero();
   }
 
   private String getString(int id) {
@@ -274,7 +273,6 @@ public class MMIARequisitionFragmentTest {
 
   @Test
   public void shouldDeHighlightWhenTotalNotMatchesAndLessThanFiveWithEmptyField() {
-    when(mmiaPatientInfoListView.getTotal()).thenReturn(40L);
     when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(true);
 
     form.setComments("ab");
@@ -289,7 +287,6 @@ public class MMIARequisitionFragmentTest {
 
   @Test
   public void shouldDeHighlightWhenTotalNotMatchesAndMoreThanFive() {
-    when(mmiaPatientInfoListView.getTotal()).thenReturn(40L);
     when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
     form.setComments("abdasdsa");
@@ -304,7 +301,6 @@ public class MMIARequisitionFragmentTest {
 
   @Test
   public void shouldDeHighlightWhenTotalMatchesAndCommentLengthLessThanFiveAndWithoutEmptyField() {
-    when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
     when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
     mmiaRequisitionFragment.etComment.setText("ab");
@@ -319,7 +315,6 @@ public class MMIARequisitionFragmentTest {
 
   @Test
   public void shouldDeHighlightWhenTotalMatchesWithoutEmptyField() {
-    when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
     when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
     mmiaRequisitionFragment.etComment.setText("abcde");
@@ -453,9 +448,9 @@ public class MMIARequisitionFragmentTest {
 
     Intent data = new Intent();
     data.putExtra(Constants.PARAM_CUSTOM_REGIMEN, regimen);
-    mmiaRequisitionFragmentSpy
-        .onActivityResult(MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME, Activity.RESULT_OK,
-            data);
+    ActivityResult mockResult = new ActivityResult(Activity.RESULT_OK, data);
+
+    mmiaRequisitionFragmentSpy.getAddRegimenProductCallback().onActivityResult(mockResult);
 
     verify(mmiaRequisitionFragmentSpy.regimeWrap).addCustomRegimenItem(regimen);
   }

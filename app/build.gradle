@@ -59,6 +59,9 @@ android {
         qa {
             applicationId 'org.openlmis.core.qa'
         }
+        mgt {
+            applicationId 'org.openlmis.core.mgt'
+        }
         integ {
             applicationId 'org.openlmis.core.integ'
         }
@@ -191,14 +194,9 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
 
-    implementation 'com.facebook.flipper:flipper:0.121.1'
-    implementation 'com.facebook.soloader:soloader:0.10.1'
+    implementation 'com.facebook.flipper:flipper:0.127.0'
+    implementation 'com.facebook.soloader:soloader:0.10.3'
 
-}
-
-repositories {
-    jcenter()
-    google()
 }
 
 configurations.all {

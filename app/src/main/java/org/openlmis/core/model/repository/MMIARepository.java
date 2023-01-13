@@ -40,7 +40,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
@@ -93,17 +92,17 @@ public class MMIARepository extends RnrFormRepository {
   @InjectResource(R.string.table_prophylaxis_ppe_key)
   public String attrTableProphylaxisPpeKey;
 
-  @InjectResource(R.string.table_prophylaxis_prep_key)
-  public String attrTableProphylaxisPrepKey;
-
   @InjectResource(R.string.table_prophylaxis_child_key)
   public String attrTableProphylaxisChildKey;
 
-  @InjectResource(R.string.table_prophylaxis_total)
-  public String attrTableProphylaxisTotal;
+  @InjectResource(R.string.table_total_key)
+  public String attrTableTotalKey;
 
-  @InjectResource(R.string.table_prophylaxis_total_key)
-  public String attrTableProphylaxisTotalKey;
+  @InjectResource(R.string.table_total_patient_key)
+  public String attrTableTotalPatientKey;
+
+  @InjectResource(R.string.table_total_month_key)
+  public String attrTableTotalMonthKey;
 
   @InjectResource(R.string.table_dispensed_key)
   public String attrTableDispensedKey;
@@ -164,9 +163,9 @@ public class MMIARepository extends RnrFormRepository {
     displayOrderHashMap.put(attrTablePatients10To14Key, 15);
     displayOrderHashMap.put(attrTableProphylaxisKey, 16);
     displayOrderHashMap.put(attrTableProphylaxisPpeKey, 17);
-    displayOrderHashMap.put(attrTableProphylaxisPrepKey, 18);
-    displayOrderHashMap.put(attrTableProphylaxisChildKey, 19);
-    displayOrderHashMap.put(attrTableProphylaxisTotalKey, 20);
+    displayOrderHashMap.put(attrTableProphylaxisChildKey, 18);
+    displayOrderHashMap.put(attrTableTotalPatientKey, 19);
+    displayOrderHashMap.put(attrTableTotalMonthKey, 20);
     displayOrderHashMap.put(attrTableDispensedKey, 21);
     displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS5, 22);
     displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS4, 23);
@@ -182,15 +181,16 @@ public class MMIARepository extends RnrFormRepository {
   }
 
   @Override
-  protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
-    List<RegimenItem> regimenItems = new ArrayList<>();
-    for (Regimen regimen : regimenRepository.listDefaultRegime()) {
-      RegimenItem item = new RegimenItem();
-      item.setForm(form);
-      item.setRegimen(regimen);
-      regimenItems.add(item);
-    }
-    return regimenItems;
+  protected List<RegimenItem> generateRegimeItems(RnRForm form) {
+    return FluentIterable
+        .from(regimenRepository.listDefaultRegime(programCode))
+        .transform(regimen -> {
+          RegimenItem item = new RegimenItem();
+          item.setForm(form);
+          item.setRegimen(regimen);
+          return item;
+        })
+        .toList();
   }
 
   @Override
@@ -251,9 +251,9 @@ public class MMIARepository extends RnrFormRepository {
     mAttrs.put(attrTablePatients5To9Key, attrTablePatientsKey);
     mAttrs.put(attrTablePatients10To14Key, attrTablePatientsKey);
     mAttrs.put(attrTableProphylaxisPpeKey, attrTableProphylaxisKey);
-    mAttrs.put(attrTableProphylaxisPrepKey, attrTableProphylaxisKey);
     mAttrs.put(attrTableProphylaxisChildKey, attrTableProphylaxisKey);
-    mAttrs.put(attrTableProphylaxisTotalKey, attrTableProphylaxisKey);
+    mAttrs.put(attrTableTotalPatientKey, attrTableTotalKey);
+    mAttrs.put(attrTableTotalMonthKey, attrTableTotalKey);
     mAttrs.put(ATTR_TABLE_DISPENSED_DS5, attrTableDispensedKey);
     mAttrs.put(ATTR_TABLE_DISPENSED_DS4, attrTableDispensedKey);
     mAttrs.put(ATTR_TABLE_DISPENSED_DS3, attrTableDispensedKey);
@@ -274,14 +274,6 @@ public class MMIARepository extends RnrFormRepository {
     return displayOrderMap.get(attrName);
   }
 
-  public long getTotalPatients(RnRForm form) {
-    for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
-      if (attrTableProphylaxisTotal.equals(item.getName())) {
-        return Long.parseLong(item.getValue());
-      }
-    }
-    return 0L;
-  }
 
   @Override
   public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards)
@@ -290,23 +282,22 @@ public class MMIARepository extends RnrFormRepository {
     return fillAllProducts(form, rnrFormItems);
   }
 
+  @SuppressWarnings("squid:S1130")
   @Override
   protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
-      List<StockMovementItem> notFullStockItemsByCreatedData) throws LMISException {
+      List<StockMovementItem> notFullStockItemsByCreatedData) {
     RnrFormItem rnrFormItem = this.createMMIARnrFormItemByPeriod(stockCard, notFullStockItemsByCreatedData);
 
     rnrFormItem.setProduct(stockCard.getProduct());
     Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
     if (earliestLotExpiryDate != null) {
-      rnrFormItem
-          .setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
+      rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
     }
 
     return rnrFormItem;
   }
 
-  protected RnrFormItem createMMIARnrFormItemByPeriod(StockCard stockCard, List<StockMovementItem> stockMovementItems)
-      throws LMISException {
+  protected RnrFormItem createMMIARnrFormItemByPeriod(StockCard stockCard, List<StockMovementItem> stockMovementItems) {
     RnrFormItem rnrFormItem = new RnrFormItem();
 
     if (stockMovementItems.isEmpty()) {
@@ -321,7 +312,7 @@ public class MMIARepository extends RnrFormRepository {
   }
 
   protected long getMMiAInitialAmount(StockCard stockCard,
-      List<StockMovementItem> stockMovementItems) throws LMISException {
+      List<StockMovementItem> stockMovementItems) {
     List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.NO, programCode);
     if (rnRForms.size() == 1) {
       return stockMovementItems.get(0).calculatePreviousSOH();

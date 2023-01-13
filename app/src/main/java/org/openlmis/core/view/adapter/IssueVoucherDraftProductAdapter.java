@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.IssueVoucherValidationType;
@@ -82,7 +81,7 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
   }
 
   @Override
-  protected void convert(@NotNull IssueVoucherProductViewHolder holder, IssueVoucherProductViewModel viewModel) {
+  protected void convert(@NonNull IssueVoucherProductViewHolder holder, IssueVoucherProductViewModel viewModel) {
     holder.populate(viewModel);
   }
 
@@ -100,7 +99,7 @@ public class IssueVoucherDraftProductAdapter extends BaseMultiItemQuickAdapter<I
 
     private RecyclerView rvLots;
 
-    public IssueVoucherProductViewHolder(@NotNull View view) {
+    public IssueVoucherProductViewHolder(@NonNull View view) {
       super(view);
     }
 

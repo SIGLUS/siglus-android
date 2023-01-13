@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.enumeration.MMITGridErrorType;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.UsageColumnsMap;
@@ -57,6 +58,7 @@ public class RapidTestFormGridViewModel {
   UsageColumnsMap unjustifiedColumn;
   Boolean isNeedAllAPEValue = false;
   Boolean isAPE = false;
+  RapidTestGridColumnCode invalidColumn;
 
   private static final String COLUMN_CODE_PREFIX_CONSUME = "CONSUME_";
   private static final String COLUMN_CODE_PREFIX_POSITIVE = "POSITIVE_";
@@ -76,22 +78,57 @@ public class RapidTestFormGridViewModel {
     }
   }
 
-  public boolean validatePositive() {
+  public MMITGridErrorType validateThreeGrid() {
+    if (!validateConsumption()) {
+      this.setInvalidColumn(RapidTestGridColumnCode.CONSUMPTION);
+      return MMITGridErrorType.EMPTY_CONSUMPTION;
+    } else if (!validatePositiveIsEmpty()) {
+      this.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
+      return MMITGridErrorType.EMPTY_POSITIVE;
+    } else if (!validateUnjustified()) {
+      this.setInvalidColumn(RapidTestGridColumnCode.UNJUSTIFIED);
+      return MMITGridErrorType.EMPTY_UNJUSTIFIED;
+    } else if (!validatePositiveMoreThanCon()) {
+      this.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
+      return MMITGridErrorType.POSITIVE_MORE_THAN_CONSUMPTION;
+    } else if (isNeedAddGridViewWarning()) {
+      this.setInvalidColumn(RapidTestGridColumnCode.CONSUMPTION);
+      return MMITGridErrorType.APE_ALL_EMPTY;
+    } else {
+      return MMITGridErrorType.NO_ERROR;
+    }
+  }
+
+  private boolean validateConsumption() {
     try {
-      return (StringUtils.isEmpty(consumptionValue)
-          && StringUtils.isEmpty(positiveValue)
-          && StringUtils.isEmpty(unjustifiedValue))
-          || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue));
+      return !((StringUtils.isNotEmpty(positiveValue) || StringUtils.isNotEmpty(unjustifiedValue))
+          && StringUtils.isEmpty(consumptionValue));
     } catch (NumberFormatException e) {
       return false;
     }
   }
 
-  public boolean validateUnjustified() {
+  private boolean validatePositiveIsEmpty() {
     try {
-      return isEmpty()
-          || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue)
-          && Long.parseLong(unjustifiedValue) >= 0);
+      return !(StringUtils.isNotEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue));
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
+
+  private boolean validatePositiveMoreThanCon() {
+    try {
+      return !positiveGreaterThanConsumption();
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
+
+  private boolean validateUnjustified() {
+    try {
+      return !(StringUtils.isNotEmpty(consumptionValue)
+          && StringUtils.isNotEmpty(positiveValue)
+          && StringUtils.isEmpty(unjustifiedValue));
     } catch (NumberFormatException e) {
       return false;
     }
@@ -153,6 +190,14 @@ public class RapidTestFormGridViewModel {
 
   public boolean isNeedAddGridViewWarning() {
     return isAPE && isNeedAllAPEValue && !isAllNotEmpty();
+  }
+
+  private boolean positiveGreaterThanConsumption() {
+    if (StringUtils.isNotEmpty(consumptionValue) && StringUtils.isNotEmpty(positiveValue)) {
+      return Long.parseLong(consumptionValue) < Long.parseLong(positiveValue);
+    } else {
+      return false;
+    }
   }
 
   private boolean isAllNotEmpty() {
@@ -230,5 +275,4 @@ public class RapidTestFormGridViewModel {
       programDataFormItems.add(consumeDataFormItem);
     }
   }
-
 }

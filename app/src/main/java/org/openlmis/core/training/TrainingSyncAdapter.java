@@ -66,9 +66,6 @@ public class TrainingSyncAdapter {
     }
 
     syncUpManager.fakeSyncUpUnSyncedStockCardCodes();
-    if (!sharedPreferenceMgr.hasSyncedVersion()) {
-      sharedPreferenceMgr.setSyncedVersion(true);
-    }
     syncUpManager.fakeSyncUpCmms();
     sendSyncFinishedBroadcast();
   }

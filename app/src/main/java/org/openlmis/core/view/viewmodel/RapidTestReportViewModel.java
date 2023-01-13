@@ -34,6 +34,7 @@ import lombok.Getter;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.enumeration.MMITGridErrorType;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
@@ -61,6 +62,7 @@ public class RapidTestReportViewModel {
   private Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
   private List<RnrFormItem> productItems = new ArrayList<>();
   private RnRForm rapidTestForm = new RnRForm();
+  private String errorMessage;
 
   public static final long DEFAULT_FORM_ID = 0;
   private static final String PUB_PHARMACY = "PUB_PHARMACY";
@@ -85,7 +87,7 @@ public class RapidTestReportViewModel {
   private void setupCategories() {
     movementReasonManager = MovementReasonManager.getInstance();
     List<MovementReasonManager.MovementReason> issueReasons = FluentIterable.from(
-        movementReasonManager.buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE))
+            movementReasonManager.buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE))
         .filter(movementReason -> !PUB_PHARMACY.equals(movementReason.getCode())
             && !APE.equals(movementReason.getCode())).toList();
 
@@ -155,7 +157,7 @@ public class RapidTestReportViewModel {
 
   private void addCompatibleWithNotSubmitAPE() {
     for (ColumnCode columnName : ColumnCode.values()) {
-      if (isNeedAPE(columnName)) {
+      if (Boolean.TRUE.equals(isNeedAPE(columnName))) {
         RapidTestFormGridViewModel viewModel = itemAPEs.rapidTestFormGridViewModelMap
             .get(columnName);
         itemAPEs.updateNoValueGridRowToZero(viewModel);
@@ -231,28 +233,15 @@ public class RapidTestReportViewModel {
         || rapidTestForm.getStatus() == RnRForm.Status.SUBMITTED;
   }
 
-  public boolean validatePositive() {
+  public boolean validate() {
+    clearError();
     for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-      if (!itemViewModel.validatePositive()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public boolean validateUnjustified() {
-    for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-      if (!itemViewModel.validateUnjustified()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public boolean validateAPES() {
-    for (RapidTestFormGridViewModel itemViewModel : itemAPEs.rapidTestFormGridViewModelList) {
-      if (itemViewModel.isNeedAddGridViewWarning()) {
-        return false;
+      for (RapidTestFormGridViewModel gridViewModel : itemViewModel.getRapidTestFormGridViewModelList()) {
+        MMITGridErrorType errorType = gridViewModel.validateThreeGrid();
+        if (errorType.isError()) {
+          errorMessage = errorType.getErrorString();
+          return false;
+        }
       }
     }
     return true;
@@ -263,7 +252,7 @@ public class RapidTestReportViewModel {
   }
 
   public void addSignature(String signature) {
-    if (rapidTestForm.getSignaturesWrapper().size() == 0) {
+    if (rapidTestForm.getSignaturesWrapper().isEmpty()) {
       rapidTestForm.getSignaturesWrapper()
           .add(new RnRFormSignature(rapidTestForm, signature, Signature.TYPE.SUBMITTER));
       rapidTestForm.setStatus(RnRForm.Status.SUBMITTED);
@@ -361,6 +350,14 @@ public class RapidTestReportViewModel {
         break;
       default:
         // do nothing
+    }
+  }
+
+  private void clearError() {
+    for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
+      for (RapidTestFormGridViewModel gridViewModel : itemViewModel.rapidTestFormGridViewModelList) {
+        gridViewModel.setInvalidColumn(null);
+      }
     }
   }
 

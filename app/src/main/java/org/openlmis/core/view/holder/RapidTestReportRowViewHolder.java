@@ -22,6 +22,7 @@ import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
+import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.view.adapter.RapidTestReportGridAdapter;
@@ -35,6 +36,8 @@ public class RapidTestReportRowViewHolder extends BaseViewHolder {
   RecyclerView rvRapidReportGridListView;
 
   RapidTestReportGridAdapter adapter;
+
+  @Getter
   List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList;
 
   public RapidTestReportRowViewHolder(View itemView) {

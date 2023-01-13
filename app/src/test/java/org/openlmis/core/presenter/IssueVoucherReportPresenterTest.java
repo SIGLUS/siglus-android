@@ -24,7 +24,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,7 +90,7 @@ public class IssueVoucherReportPresenterTest {
     verify(issueVoucherView, times(1)).loaded();
   }
 
-  @NotNull
+  @NonNull
   private Program buildProgram() {
     String programName = "Program Name";
     Program program = new Program();

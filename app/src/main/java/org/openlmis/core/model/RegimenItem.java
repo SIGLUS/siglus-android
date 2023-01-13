@@ -35,7 +35,7 @@ import org.openlmis.core.utils.Constants;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @DatabaseTable(tableName = "regime_items")
 public class RegimenItem extends BaseModel {
 

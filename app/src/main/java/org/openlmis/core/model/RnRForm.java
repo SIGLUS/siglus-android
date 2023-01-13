@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Include;
 import lombok.Getter;
 import lombok.Setter;
 import org.joda.time.DateTime;
@@ -41,11 +42,10 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.openlmis.core.view.widget.MMIARegimeList;
-import org.openlmis.core.view.widget.MMIARegimeThreeLineList.CountType;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @DatabaseTable(tableName = "rnr_forms")
 public class RnRForm extends BaseModel {
 
@@ -99,26 +99,33 @@ public class RnRForm extends BaseModel {
   @Expose
   @SerializedName("comments")
   @DatabaseField
+  @Include
   private String comments;
 
   @DatabaseField(defaultValue = "DRAFT")
+  @Include
   private Status status;
 
+  @Include
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private Program program;
 
   @DatabaseField
   private boolean synced = false;
 
+  @Include
   @DatabaseField(dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
   private Date periodBegin;
 
+  @Include
   @DatabaseField(dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
   private Date periodEnd;
 
+  @Include
   @DatabaseField
   private Date submittedTime;
 
+  @Include
   @Expose
   @DatabaseField
   private boolean emergency;
@@ -169,15 +176,15 @@ public class RnRForm extends BaseModel {
   }
 
   public static long calculateTotalRegimenAmount(Collection<RegimenItem> list,
-      MMIARegimeList.COUNTTYPE counttype) {
+      MMIARegimeList.COUNTTYPE countType) {
     long totalRegimenNumber = 0;
-    if (MMIARegimeList.COUNTTYPE.PHARMACY == counttype) {
+    if (MMIARegimeList.COUNTTYPE.PHARMACY == countType) {
       for (RegimenItem item : list) {
         if (item.getPharmacy() != null) {
           totalRegimenNumber += item.getPharmacy();
         }
       }
-    } else if (MMIARegimeList.COUNTTYPE.AMOUNT == counttype) {
+    } else if (MMIARegimeList.COUNTTYPE.AMOUNT == countType) {
       for (RegimenItem item : list) {
         if (item.getAmount() != null) {
           totalRegimenNumber += item.getAmount();
@@ -187,16 +194,16 @@ public class RnRForm extends BaseModel {
     return totalRegimenNumber;
   }
 
-  public static long caculateTotalRegimenTypeAmount(Collection<RegimenItemThreeLines> list,
-      CountType counttype) {
+  public static long calculateTotalRegimenTypeAmount(Collection<RegimenItemThreeLines> list,
+      RegimenItemThreeLines.CountType countType) {
     long totalNumber = 0;
-    if (CountType.PATIENTSAMOUNT == counttype) {
+    if (RegimenItemThreeLines.CountType.PATIENTS_AMOUNT == countType) {
       for (RegimenItemThreeLines item : list) {
         if (item.getPatientsAmount() != null) {
           totalNumber += item.getPatientsAmount();
         }
       }
-    } else if (CountType.PHARMACYAMOUNT == counttype) {
+    } else if (RegimenItemThreeLines.CountType.PHARMACY_AMOUNT == countType) {
       for (RegimenItemThreeLines item : list) {
         if (item.getPharmacyAmount() != null) {
           totalNumber += item.getPharmacyAmount();
@@ -260,12 +267,11 @@ public class RnRForm extends BaseModel {
     }
   }
 
-  public List<RnrFormItem> getDeactivatedAndUnsupportedProductItems(
-      final List<String> supportedProductCodes) {
-
-    return from(getRnrFormItemListWrapper()).filter(
-        rnrFormItem -> !(rnrFormItem.getProduct().isActive() && supportedProductCodes
-            .contains(rnrFormItem.getProduct().getCode()))).toList();
+  public List<RnrFormItem> getDeactivatedAndUnsupportedProductItems(List<String> supportedProductCodes) {
+    return from(getRnrFormItemListWrapper())
+        .filter(rnrFormItem -> !(rnrFormItem.getProduct().isActive()
+            && supportedProductCodes.contains(rnrFormItem.getProduct().getCode())))
+        .toList();
   }
 
   public List<RnrFormItem> getRnrItems(final Product.IsKit isKit) {
@@ -282,6 +288,15 @@ public class RnRForm extends BaseModel {
       status = Status.AUTHORIZED;
       submittedTime = DateUtil.today();
     }
+  }
+
+  public String getTotalValueItemByName(String name) {
+    for (BaseInfoItem baseInfoItem : baseInfoItemListWrapper) {
+      if (name.equals(baseInfoItem.getName())) {
+        return baseInfoItem.getValue();
+      }
+    }
+    return null;
   }
 
   public boolean isOldMMIALayout() {

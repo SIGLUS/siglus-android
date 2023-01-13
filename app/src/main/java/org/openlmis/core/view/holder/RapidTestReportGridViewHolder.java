@@ -20,10 +20,13 @@ package org.openlmis.core.view.holder;
 
 import android.text.Editable;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
+import lombok.EqualsAndHashCode;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
@@ -71,6 +74,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     setTextWatcher();
     updateAlert();
     updateGridViewHaveValueAlert();
+    setInvalidInput();
   }
 
   private void updateGridViewHaveValueAlert() {
@@ -82,8 +86,11 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
   public void setEditable(Boolean editable) {
     if (Boolean.TRUE.equals(editable)) {
       etConsume.setFocusable(true);
+      etConsume.setOnFocusChangeListener(getOnFocusChangeListener());
       etPositive.setFocusable(true);
+      etPositive.setOnFocusChangeListener(getOnFocusChangeListener());
       etUnjustified.setFocusable(true);
+      etUnjustified.setOnFocusChangeListener(getOnFocusChangeListener());
     }
   }
 
@@ -106,19 +113,72 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
   private void updateAlert() {
     if (editable && !viewModel.validate()) {
-      etPositive.setTextColor(context.getResources().getColor(R.color.color_red));
-      etConsume.setTextColor(context.getResources().getColor(R.color.color_red));
-      etUnjustified.setTextColor(context.getResources().getColor(R.color.color_red));
+      etPositive.setTextColor(ContextCompat.getColor(context, R.color.color_red));
+      etConsume.setTextColor(ContextCompat.getColor(context, R.color.color_red));
+      etUnjustified.setTextColor(ContextCompat.getColor(context, R.color.color_red));
     } else {
       (editable ? etPositive : etPositiveTotal)
-          .setTextColor(context.getResources().getColor(R.color.color_black));
+          .setTextColor(ContextCompat.getColor(context, R.color.color_black));
       (editable ? etConsume : etConsumeTotal)
-          .setTextColor(context.getResources().getColor(R.color.color_black));
+          .setTextColor(ContextCompat.getColor(context, R.color.color_black));
       (editable ? etUnjustified : etUnjustifiedTotal)
-          .setTextColor(context.getResources().getColor(R.color.color_black));
+          .setTextColor(ContextCompat.getColor(context, R.color.color_black));
     }
   }
 
+  private void setInvalidInput() {
+    if (viewModel.getInvalidColumn() != null) {
+      switch (viewModel.getInvalidColumn()) {
+        case CONSUMPTION:
+          etConsume.setError(getString(R.string.hint_error_input));
+          break;
+        case POSITIVE:
+          etPositive.setError(getString(R.string.hint_error_input));
+          break;
+        case UNJUSTIFIED:
+          etUnjustified.setError(getString(R.string.hint_error_input));
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  private OnFocusChangeListener getOnFocusChangeListener() {
+    return (v, hasFocus) -> {
+      if (hasFocus) {
+        clearError();
+      }
+    };
+  }
+
+  private void clearError() {
+    etConsume.setError(null);
+    etPositive.setError(null);
+    etUnjustified.setError(null);
+  }
+
+  private String getString(int id) {
+    return LMISApp.getContext().getString(id);
+  }
+
+  public void updateTotal(RapidTestGridColumnCode gridColumnCode) {
+    if (!isInTotalRow()) {
+      quantityChangeListener.updateTotal(viewModel.getColumnCode(), gridColumnCode);
+    }
+  }
+
+  public boolean isInTotalRow() {
+    return quantityChangeListener == null;
+  }
+
+  public interface QuantityChangeListener {
+
+    void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode,
+        RapidTestGridColumnCode gridColumnCode);
+  }
+
+  @EqualsAndHashCode(callSuper = false)
   class TextWatcher extends SingleTextWatcher {
 
     private final EditText editText;
@@ -131,7 +191,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     public void afterTextChanged(Editable s) {
       RapidTestGridColumnCode gridColumnCode = switchEditIdToGridColumn(editText);
       viewModel.setValue(gridColumnCode, s.toString());
-      if (!viewModel.getIsAPE()) {
+      if (Boolean.FALSE.equals(viewModel.getIsAPE())) {
         updateTotal(gridColumnCode);
       }
       updateAlert();
@@ -152,21 +212,5 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
       return column;
     }
 
-  }
-
-  public void updateTotal(RapidTestGridColumnCode gridColumnCode) {
-    if (!isInTotalRow()) {
-      quantityChangeListener.updateTotal(viewModel.getColumnCode(), gridColumnCode);
-    }
-  }
-
-  public boolean isInTotalRow() {
-    return quantityChangeListener == null;
-  }
-
-  public interface QuantityChangeListener {
-
-    void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode,
-        RapidTestGridColumnCode gridColumnCode);
   }
 }

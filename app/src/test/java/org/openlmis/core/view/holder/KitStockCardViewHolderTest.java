@@ -19,16 +19,13 @@ import org.robolectric.RuntimeEnvironment;
 @RunWith(LMISTestRunner.class)
 public class KitStockCardViewHolderTest {
 
-  private OnItemViewClickListener listener;
   private KitStockCardViewHolder viewHolder;
 
   @Before
   public void setUp() throws Exception {
-    listener = mock(OnItemViewClickListener.class);
-
     View view = LayoutInflater.from(RuntimeEnvironment.application)
         .inflate(R.layout.item_stockcard, null, false);
-    viewHolder = new KitStockCardViewHolder(view, listener);
+    viewHolder = new KitStockCardViewHolder(view, mock(OnItemViewClickListener.class));
   }
 
   @Test
@@ -41,8 +38,8 @@ public class KitStockCardViewHolderTest {
 
     viewHolder.populate(new InventoryViewModel(stockCard), "");
 
-    assertThat(viewHolder.kitTvProductName.getText().toString()).isEqualTo("product");
-    assertThat(viewHolder.kitTvStockOnHand.getText().toString()).isEqualTo("200");
+    assertThat(viewHolder.kitTvProductName.getText().toString()).hasToString("product");
+    assertThat(viewHolder.kitTvStockOnHand.getText().toString()).hasToString("200");
 
   }
 }

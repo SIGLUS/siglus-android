@@ -28,6 +28,8 @@ import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.provider.Settings.Secure;
 import android.util.Log;
 import androidx.core.app.NotificationCompat;
@@ -73,7 +75,7 @@ public class AutoUpdateApk {
   // and polling server every few minutes might be a reason for suspension)
   //
   public void checkUpdatesManually() {
-    checkUpdates(true); // force update check
+    checkUpdates(); // force update check
   }
 
   //
@@ -99,10 +101,8 @@ public class AutoUpdateApk {
   private int versionCode = 0; // as low as it gets
   private String packageName;
   private int deviceId;
+  private int facilityCode;
   private String mDownloadApkDirectory;
-
-  private static final long MINUTES = 60 * 1000L;
-  private static final long HOURS = 60 * MINUTES;
 
   private int notificationId = 12;
   private static final String CHANNEL_ID = "upgrade_channel_id";
@@ -116,6 +116,7 @@ public class AutoUpdateApk {
     packageName = context.getPackageName();
     preferences = SharedPreferenceMgr.getInstance();
     deviceId = crc32(Secure.getString(context.getContentResolver(), Secure.ANDROID_ID));
+    facilityCode = crc32(SharedPreferenceMgr.getInstance().getUserFacilityCode());
     lastUpdate = preferences.getLastUpdate();
     notificationId += crc32(packageName);
     mDownloadApkDirectory = context.getFilesDir().getAbsolutePath();
@@ -166,6 +167,7 @@ public class AutoUpdateApk {
         postdata.put("version", versionCode);
         postdata.put("md5", preferences.getMd5Key());
         postdata.put("id", String.format("%08x", deviceId));
+        postdata.put("facilityCode", String.format("%08x", facilityCode));
       } catch (JSONException e) {
         Log.w(TAG, e);
       }
@@ -232,6 +234,10 @@ public class AutoUpdateApk {
           isNOrHigher() ? Context.MODE_PRIVATE : Context.MODE_WORLD_READABLE);
     }
 
+    private boolean isNOrHigher() {
+      return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+    }
+
     private String[] writeToStorage(Response response, String[] resultGetApkInfo)
         throws IOException {
       if (response.code() == 200) {
@@ -294,7 +300,7 @@ public class AutoUpdateApk {
             .setContentText(getString(R.string.upgrade_download_msg, progressAmount));
         notificationManager
             .notify(notificationId, mNotificationBetweenLOLLIPOPAndroidOBuilder.build());
-      } else if (isBetweenJellyBeanAndLollipop()) {
+      } else if (isLowerThanLollipop()) {
         mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder
             .setProgress(maxAmount, progressAmount, false);
         mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder
@@ -354,37 +360,41 @@ public class AutoUpdateApk {
 
       }
     }
-  }
 
-  private boolean isNotificationBuilderNull() {
-    if (isBetweenLollipopAndO()) {
-      return mNotificationBetweenLOLLIPOPAndroidOBuilder == null;
-    } else if (isBetweenJellyBeanAndLollipop()) {
-      return mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder == null;
-    } else if (isOAndHigher()) {
-      return mNotificationOAndHigherBuilder == null;
+    private boolean isNotificationBuilderNull() {
+      if (isBetweenLollipopAndO()) {
+        return mNotificationBetweenLOLLIPOPAndroidOBuilder == null;
+      } else if (isLowerThanLollipop()) {
+        return mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder == null;
+      } else if (isOAndHigher()) {
+        return mNotificationOAndHigherBuilder == null;
+      }
+      return true;
     }
-    return true;
-  }
 
-  private void updateNotificationToCompeted() {
-    if (isBetweenLollipopAndO()) {
-      mNotificationBetweenLOLLIPOPAndroidOBuilder.setContentIntent(mPendingIntent)
-          .setContentText(getString(R.string.upgrade_download_click_install))
-          .setContentTitle(getString(R.string.upgrade_download_complete));
-      notificationManager
-          .notify(notificationId, mNotificationBetweenLOLLIPOPAndroidOBuilder.build());
-    } else if (isBetweenJellyBeanAndLollipop()) {
-      mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.setContentIntent(mPendingIntent)
-          .setContentText(getString(R.string.upgrade_download_click_install))
-          .setContentTitle(getString(R.string.upgrade_download_complete));
-      notificationManager
-          .notify(notificationId, mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.build());
-    } else if (isOAndHigher()) {
-      mNotificationOAndHigherBuilder.setContentIntent(mPendingIntent)
-          .setContentText(getString(R.string.upgrade_download_click_install))
-          .setContentTitle(getString(R.string.upgrade_download_complete));
-      notificationManager.notify(notificationId, mNotificationOAndHigherBuilder.build());
+    private void updateNotificationToCompeted() {
+      if (isBetweenLollipopAndO()) {
+        mNotificationBetweenLOLLIPOPAndroidOBuilder.setContentIntent(mPendingIntent)
+            .setContentText(getString(R.string.upgrade_download_click_install))
+            .setContentTitle(getString(R.string.upgrade_download_complete));
+        notificationManager
+            .notify(notificationId, mNotificationBetweenLOLLIPOPAndroidOBuilder.build());
+      } else if (isLowerThanLollipop()) {
+        mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.setContentIntent(mPendingIntent)
+            .setContentText(getString(R.string.upgrade_download_click_install))
+            .setContentTitle(getString(R.string.upgrade_download_complete));
+        notificationManager
+            .notify(notificationId, mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.build());
+      } else if (isOAndHigher()) {
+        mNotificationOAndHigherBuilder.setContentIntent(mPendingIntent)
+            .setContentText(getString(R.string.upgrade_download_click_install))
+            .setContentTitle(getString(R.string.upgrade_download_complete));
+        notificationManager.notify(notificationId, mNotificationOAndHigherBuilder.build());
+      }
+    }
+
+    private String getString(int resId, Object... formatArgs) {
+      return context.getResources().getString(resId, formatArgs);
     }
   }
 
@@ -392,27 +402,18 @@ public class AutoUpdateApk {
     return context.getString(id);
   }
 
-  private String getString(int resId, Object... formatArgs) {
-    return context.getResources().getString(resId, formatArgs);
-  }
-
-  private void checkUpdates(boolean forced) {
-    long now = LMISApp.getInstance().getCurrentTimeMillis();
-    // 3-4 hours in dev.mode, 1-2 days for stable releases
-    // how often to check
-    long updateInterval = 3 * HOURS;
-    if (forced || (lastUpdate + updateInterval) < now) {
-      try {
-        PackageInfo packageInfo = context.getPackageManager()
-            .getPackageInfo(context.getPackageName(), 0);
-        versionCode = packageInfo.versionCode;
-      } catch (Exception e) {
-        Log.w(TAG, e);
-      }
-      new CheckUpdateTask().execute();
-      lastUpdate = LMISApp.getInstance().getCurrentTimeMillis();
-      preferences.setLastUpdate(lastUpdate);
+  private void checkUpdates() {
+    try {
+      PackageInfo packageInfo = context.getPackageManager()
+          .getPackageInfo(context.getPackageName(), 0);
+      versionCode =
+          (VERSION.SDK_INT < VERSION_CODES.P) ? packageInfo.versionCode : (int) packageInfo.getLongVersionCode();
+    } catch (Exception e) {
+      Log.w(TAG, e);
     }
+    new CheckUpdateTask().execute();
+    lastUpdate = LMISApp.getInstance().getCurrentTimeMillis();
+    preferences.setLastUpdate(lastUpdate);
   }
 
   private boolean isBetweenLollipopAndO() {
@@ -420,17 +421,12 @@ public class AutoUpdateApk {
         && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
   }
 
-  private boolean isBetweenJellyBeanAndLollipop() {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-        && Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1;
+  private boolean isLowerThanLollipop() {
+    return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1;
   }
 
   private boolean isOAndHigher() {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
-  }
-
-  private boolean isNOrHigher() {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
   }
 
   public void showInitialNotification() {
@@ -438,21 +434,9 @@ public class AutoUpdateApk {
         .getSystemService(Context.NOTIFICATION_SERVICE);
 
     if (isBetweenLollipopAndO()) {
-      mNotificationBetweenLOLLIPOPAndroidOBuilder = new NotificationCompat.Builder(context)
-          .setContentTitle(getString(R.string.upgrade_download_title))
-          .setSmallIcon(R.mipmap.ic_launcher)
-          .setPriority(NotificationCompat.DEFAULT_ALL)
-          .setProgress(0, 0, false)
-          .setOngoing(false)
-          .setAutoCancel(true);
-    } else if (isBetweenJellyBeanAndLollipop()) {
-      mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder = new NotificationCompat.Builder(context)
-          .setContentTitle(getString(R.string.upgrade_download_title))
-          .setSmallIcon(R.mipmap.ic_launcher)
-          .setPriority(NotificationCompat.DEFAULT_ALL)
-          .setProgress(0, 0, false)
-          .setOngoing(false)
-          .setAutoCancel(true);
+      mNotificationBetweenLOLLIPOPAndroidOBuilder = initNotificationBuilderForLowerO();
+    } else if (isLowerThanLollipop()) {
+      mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder = initNotificationBuilderForLowerO();
     } else if (isOAndHigher()) {
       NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID,
           CHANNEL_NAME,
@@ -476,6 +460,16 @@ public class AutoUpdateApk {
 
   }
 
+  private NotificationCompat.Builder initNotificationBuilderForLowerO() {
+    return new NotificationCompat.Builder(context)
+        .setContentTitle(getString(R.string.upgrade_download_title))
+        .setSmallIcon(R.mipmap.ic_launcher)
+        .setPriority(NotificationCompat.DEFAULT_ALL)
+        .setProgress(0, 0, false)
+        .setOngoing(false)
+        .setAutoCancel(true);
+  }
+
   private String md5Hex(String filename) {
     final int size = 8192;
     byte[] buf = new byte[size];
@@ -492,7 +486,7 @@ public class AutoUpdateApk {
         sb.append(Integer.toHexString((b & 0xFF) | 0x100)
             .substring(1, 3));
       }
-      Log.v(TAG, "md5sum: " + sb.toString());
+      Log.v(TAG, "md5sum: " + sb);
       return sb.toString();
     } catch (Exception e) {
       Log.v(TAG, e.getMessage());

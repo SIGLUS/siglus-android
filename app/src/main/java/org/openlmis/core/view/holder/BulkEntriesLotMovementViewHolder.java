@@ -21,7 +21,6 @@ package org.openlmis.core.view.holder;
 import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,13 +29,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputLayout;
-import java.text.MessageFormat;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.BulkEntriesActivity;
@@ -93,7 +92,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   public void populate(final LotMovementViewModel viewModel,
       BulkEntriesLotMovementAdapter bulkEntriesLotMovementAdapter) {
     this.lotMovementViewModel = viewModel;
-    lotNumber.setText(MessageFormat.format("{0} - {1}", viewModel.getLotNumber(), viewModel.getExpiryDate()));
+    lotNumber.setText(viewModel.getLotNumber());
     etLotAmount.setText(viewModel.getQuantity());
     lotStockOnHand.setText(viewModel.getLotSoh());
     movementReason.setText(getReasonDescriptionByReasonCode(viewModel));
@@ -198,8 +197,8 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
       @Override
       public void onSingleClick(View v) {
         final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-            Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
-            Html.fromHtml(context.getResources()
+            CompatUtil.fromHtml(getString(R.string.msg_remove_new_lot_title)),
+            CompatUtil.fromHtml(context.getResources()
                 .getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(),
                     viewModel.getExpiryDate(), bulkEntriesLotMovementAdapter.getProductName())),
             getString(R.string.btn_remove_lot),
@@ -284,6 +283,16 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
           setLyLotAmountError();
         }
       }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+      return super.hashCode();
     }
   }
 }

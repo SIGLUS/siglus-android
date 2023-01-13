@@ -34,7 +34,6 @@ import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
@@ -44,6 +43,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManagerMock;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
 import org.robolectric.RuntimeEnvironment;
@@ -67,7 +67,6 @@ public class SyncDownManagerIT {
   private PodRepository podRepository;
   private User defaultUser1;
   private SharedPreferenceMgr sharedPreferenceMgr;
-  private ProgramDataFormRepository programDataFormRepository;
   private StockMovementRepository stockMovementRepository;
   private RnrFormRepository rnrFormRepository;
   private LMISTestApp appInject;
@@ -94,8 +93,6 @@ public class SyncDownManagerIT {
         .getInstance(RegimenRepository.class);
     podRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(PodRepository.class);
-    programDataFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(ProgramDataFormRepository.class);
     stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(StockMovementRepository.class);
     rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
@@ -220,10 +217,10 @@ public class SyncDownManagerIT {
     SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
     syncDownManager.syncDownServerData(subscriber);
     subscriber.awaitTerminalEvent();
-    List<Regimen> regimenList = regimenRepository.listDefaultRegime();
+    List<Regimen> regimenList = regimenRepository.listDefaultRegime(Constants.VIA_PROGRAM_CODE);
 
     // then
-    assertEquals(93, regimenList.size());
+    assertEquals(26, regimenList.size());
   }
 
   @Test

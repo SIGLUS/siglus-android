@@ -10,10 +10,6 @@
     android:showDividers="middle"
     android:divider="@drawable/divider_vertical">
     <TextView style="@style/Pod.list.product"
-      android:id="@+id/tv_product_dosage" />
-    <TextView style="@style/Pod.list.product"
-      android:id="@+id/tv_disiganation" />
-    <TextView style="@style/Pod.list.product"
       android:layout_width="@dimen/px_230"/>
     <TextView style="@style/Pod.list.product"
       android:layout_width="@dimen/px_80"

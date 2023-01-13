@@ -29,11 +29,14 @@ import static org.openlmis.core.constant.FieldConstants.SUBMITTED_TIME;
 import static org.openlmis.core.constant.FieldConstants.SYNCED;
 import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.MMTB_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
@@ -41,6 +44,7 @@ import com.j256.ormlite.stmt.Where;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,7 +53,6 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -210,14 +213,20 @@ public class RnrFormRepository {
     return genericDao.queryForAll();
   }
 
-  public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode) throws LMISException {
+  public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode) {
     ReportTypeForm reportTypeForm = reportTypeFormRepository.getReportType(programCode);
     return listInclude(includeEmergency, programCode, reportTypeForm);
   }
 
   public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode,
-      ReportTypeForm reportTypeForm) throws LMISException {
-    return listForm(programCode, includeEmergency.isEmergency(), reportTypeForm);
+      ReportTypeForm reportTypeForm) {
+    try {
+      return listForm(programCode, includeEmergency.isEmergency(), reportTypeForm);
+    } catch (LMISException e) {
+      new LMISException(e, "Fail to listForm in listInclude").reportToFabric();
+      Log.e("RnrFormRepo", "listInclude: ", e);
+      return Collections.emptyList();
+    }
   }
 
   public List<RnRForm> queryAllUnsyncedForms() throws LMISException {
@@ -283,7 +292,7 @@ public class RnrFormRepository {
     return rnrFormItems;
   }
 
-  @NotNull
+  @NonNull
   private HashMap<String, String> getProductCodeToCategory() throws LMISException {
     List<ProductProgram> productPrograms = productProgramRepository
         .listActiveProductProgramsByProgramCodes(Arrays.asList(programCode));
@@ -356,7 +365,7 @@ public class RnrFormRepository {
   }
 
   protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
-      List<StockMovementItem> notFullStockItemsByCreatedData) throws LMISException {
+      List<StockMovementItem> notFullStockItemsByCreatedData) {
     RnrFormItem rnrFormItem = new RnrFormItem();
     if (notFullStockItemsByCreatedData.isEmpty()) {
       rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
@@ -375,8 +384,7 @@ public class RnrFormRepository {
     if (formProgramCode.equals(MMIA_PROGRAM_CODE)) {
       productIds = productProgramRepository.queryActiveProductIdsForMMIA(formProgramCode);
     } else {
-      productIds = productProgramRepository.queryActiveProductIdsByProgramWithKits(
-          formProgramCode, false);
+      productIds = productProgramRepository.queryActiveProductIdsByProgramWithKits(formProgramCode, false);
     }
     List<Product> products = productRepository.queryProductsByProductIds(productIds);
     ArrayList<RnrFormItem> result = new ArrayList<>();
@@ -409,12 +417,11 @@ public class RnrFormRepository {
     // do nothing
   }
 
-  protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
+  protected List<RegimenItem> generateRegimeItems(RnRForm form) {
     return new ArrayList<>();
   }
 
-  protected List<RegimenItemThreeLines> generateRegimeThreeLineItems(RnRForm form)
-      throws LMISException {
+  protected List<RegimenItemThreeLines> generateRegimeThreeLineItems(RnRForm form) {
     return new ArrayList<>();
   }
 
@@ -625,7 +632,8 @@ public class RnrFormRepository {
   }
 
   private void saveRegimenThreeLine(RnRForm form) throws LMISException {
-    if (MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+    if (MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
+        || MMTB_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
       baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
       regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
     }
@@ -633,7 +641,8 @@ public class RnrFormRepository {
 
   private void saveBaseInfo(RnRForm form) throws LMISException {
     if (VIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
-        || MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+        || MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
+        || MMTB_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
       baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
       regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
     }
@@ -641,6 +650,7 @@ public class RnrFormRepository {
 
   private void saveRegimens(RnRForm form) throws LMISException {
     if (MMIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
+        || MMTB_PROGRAM_CODE.equals(form.getProgram().getProgramCode())
         || AL_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
       regimenItemRepository.batchCreateOrUpdate(form.getRegimenItemListWrapper());
     }

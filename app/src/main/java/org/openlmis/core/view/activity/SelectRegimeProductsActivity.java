@@ -18,7 +18,8 @@
 
 package org.openlmis.core.view.activity;
 
-import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+import static org.openlmis.core.constant.IntentConstants.PARAM_PROGRAM_CODE;
+import static org.openlmis.core.constant.IntentConstants.PARAM_REGIME_TYPE;
 
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +38,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.SelectRegimeProductAdapter;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -44,8 +46,6 @@ import rx.Subscription;
 
 @ContentView(R.layout.activity_select_drugs)
 public class SelectRegimeProductsActivity extends BaseActivity {
-
-  public static final String PARAM_REGIME_TYPE = "regime_type";
 
   @InjectView(R.id.btn_next)
   public View btnNext;
@@ -71,25 +71,30 @@ public class SelectRegimeProductsActivity extends BaseActivity {
   }
 
   public static Intent getIntentToMe(Context context, Regimen.RegimeType type) {
+    return getIntentToMe(context, Constants.MMIA_PROGRAM_CODE, type);
+  }
+
+  public static Intent getIntentToMe(Context context, String programCode, Regimen.RegimeType type) {
     Intent intent = new Intent(context, SelectRegimeProductsActivity.class);
     intent.putExtra(PARAM_REGIME_TYPE, type);
+    intent.putExtra(PARAM_PROGRAM_CODE, programCode);
     return intent;
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    final Regimen.RegimeType regimeType = (Regimen.RegimeType) getIntent().getSerializableExtra(PARAM_REGIME_TYPE);
-
     productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
     viewModels = new ArrayList<>();
     mAdapter = new SelectRegimeProductAdapter(viewModels);
     productListRecycleView.setAdapter(mAdapter);
     loading();
-    Subscription subscription = presenter.loadRegimeProducts(regimeType).subscribe(subscriber);
+    Regimen.RegimeType regimeType = (Regimen.RegimeType) getIntent().getSerializableExtra(PARAM_REGIME_TYPE);
+    String programCode = getIntent().getStringExtra(PARAM_PROGRAM_CODE);
+    Subscription subscription = presenter.loadRegimeProducts(programCode, regimeType).subscribe(subscriber);
     subscriptions.add(subscription);
 
-    btnNext.setOnClickListener((v) -> validateAndSaveRegime(regimeType));
+    btnNext.setOnClickListener(v -> validateAndSaveRegime(regimeType));
   }
 
   private void validateAndSaveRegime(Regimen.RegimeType regimeType) {
@@ -112,7 +117,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
 
 
   private List<RegimeProductViewModel> getCheckedProducts() {
-    return from(viewModels).filter(viewModel -> viewModel.isChecked()).toList();
+    return FluentIterable.from(viewModels).filter(RegimeProductViewModel::isChecked).toList();
   }
 
   Subscriber<List<RegimeProductViewModel>> subscriber =

@@ -131,7 +131,7 @@ public class ProgramRepository {
     }
   }
 
-  public Program queryByCode(final String programCode) throws LMISException {
+  public Program queryByCode(String programCode) throws LMISException {
     return dbUtil
         .withDao(Program.class, dao -> dao.queryBuilder().where().eq(PROGRAM_CODE, programCode).queryForFirst());
   }

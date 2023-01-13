@@ -20,8 +20,8 @@ package org.openlmis.core.view.fragment;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import lombok.Getter;
 import org.openlmis.core.LMISApp;
@@ -50,6 +51,8 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
   private String positiveText;
   private String negativeText;
   private String tag;
+
+  private boolean enableDialogShowTrigger = true;
 
   @Getter
   private MsgDialogCallBack mListener;
@@ -89,18 +92,24 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
   @Override
   public void show(@NonNull FragmentManager manager, String tag) {
     //avoid the duplicate Dialog
-    if (manager.findFragmentByTag(tag) != null) {
-      return;
+    if (manager.findFragmentByTag(tag) == null) {
+      super.show(manager, tag);
     }
-    super.show(manager, tag);
+  }
+
+  public void showOnlyOnce(@NonNull FragmentManager manager, String tag) {
+    if (enableDialogShowTrigger) {
+      enableDialogShowTrigger = false;
+      this.show(manager, tag);
+    }
   }
 
   @Override
-  public void onAttach(Activity activity) {
-    if ((activity instanceof MsgDialogCallBack) && mListener == null) {
-      mListener = (MsgDialogCallBack) activity;
+  public void onAttach(@NonNull Context context) {
+    if ((requireActivity() instanceof MsgDialogCallBack) && mListener == null) {
+      mListener = (MsgDialogCallBack) requireActivity();
     }
-    super.onAttach(activity);
+    super.onAttach(context);
   }
 
   @Override
@@ -145,13 +154,13 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
       LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(WRAP_CONTENT,
           (int) getResources().getDimension(R.dimen.button_height_default));
       positiveButton.setLayoutParams(layoutParams);
-      positiveButton.setTextColor(getResources().getColor(R.color.color_accent));
+      positiveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_accent));
 
       if (hasNegativeButton()) {
         final Button negativeButton = ((AlertDialog) dialog)
             .getButton(DialogInterface.BUTTON_NEGATIVE);
         negativeButton.setTypeface(null, Typeface.BOLD);
-        negativeButton.setTextColor(getResources().getColor(R.color.color_accent));
+        negativeButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_accent));
       }
 
       TextView textView = ((AlertDialog) dialog).findViewById(android.R.id.message);

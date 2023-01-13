@@ -13,6 +13,7 @@
   <string name="table_arvt_key">table_arvt_key</string>
   <string name="table_patients_key">table_patients_key</string>
   <string name="table_prophylaxy_key">table_prophylaxy_key</string>
+  <string name="table_total_key">table_total_key</string>
 
   <!--item key-->
   <string name="table_trav_label_new_key">table_trav_label_new_key</string>
@@ -25,9 +26,9 @@
   <string name="table_patients_5to9_key">table_patients_5to9_key</string>
   <string name="table_patients_10to14_key">table_patients_10to14_key</string>
   <string name="table_prophylaxis_ppe_key">table_prophylaxis_ppe_key</string>
-  <string name="table_prophylaxis_prep_key">table_prophylaxis_prep_key</string>
   <string name="table_prophylaxis_child_key">table_prophylaxis_child_key</string>
-  <string name="table_prophylaxis_total_key">table_prophylaxis_total_key</string>
+  <string name="table_total_patient_key">table_total_patient_key</string>
+  <string name="table_total_month_key">table_total_month_key</string>
 
   <!--three lines key-->
   <string name="key_regime_3lines_1">key_regime_3lines_1</string>

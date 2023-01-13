@@ -60,7 +60,7 @@ public class IssueVoucherListViewModelTest {
     IssueVoucherListViewModel viewModel = IssueVoucherListViewModel.builder().pod(pod).build();
 
     // then
-    Assert.assertEquals("EMERGENCY " + pod.getOrderCode(), viewModel.getOrderNumber());
+    Assert.assertEquals(pod.getOrderCode().replaceFirst("-", "-EMERGENCY-"), viewModel.getOrderNumber());
   }
 
   @Test

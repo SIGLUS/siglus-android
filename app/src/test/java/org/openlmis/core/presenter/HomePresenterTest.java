@@ -20,8 +20,6 @@
 
 package org.openlmis.core.presenter;
 
-import static org.mockito.Matchers.eq;
-
 import java.util.HashMap;
 import java.util.Map;
 import org.hamcrest.MatcherAssert;
@@ -78,7 +76,7 @@ public class HomePresenterTest {
 
     // then
     testSubscriber.assertNoErrors();
-    Mockito.verify(view, Mockito.times(1)).updateDashboard(eq(1), eq(1), eq(1), eq(1));
+    Mockito.verify(view, Mockito.times(1)).updateDashboard(1, 1, 1, 1);
   }
 
   @Test

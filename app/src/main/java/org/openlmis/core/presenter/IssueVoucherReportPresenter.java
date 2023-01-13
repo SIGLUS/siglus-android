@@ -48,6 +48,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableMap;
@@ -71,7 +72,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   @Inject
   private ProductRepository productRepository;
 
-  public String reasonCode;
+  private String reasonCode;
 
   IssueVoucherView issueVoucherView;
 
@@ -107,6 +108,11 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
   @Override
   public boolean isDraft() {
+    return false;
+  }
+
+  @Override
+  public boolean isSubmit() {
     return false;
   }
 
@@ -151,7 +157,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     try {
       if (!pod.isLocal()) {
         pod.setPodProductItemsWrapper(FluentIterable.from(issueVoucherReportViewModel.getProductViewModels())
-            .transform(productViewModel -> productViewModel.restoreToPodProductModelForRemote()).toList());
+            .transform(IssueVoucherReportProductViewModel::restoreToPodProductModelForRemote).toList());
         podRepository.createOrUpdateWithItems(pod);
       }
     } catch (Exception e) {
@@ -204,7 +210,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   public void setPodItems() {
     pod.setPodProductItemsWrapper(FluentIterable.from(
         issueVoucherReportViewModel.getProductViewModels())
-        .transform(productViewModel -> productViewModel.convertToPodProductModel()).toList());
+        .transform(IssueVoucherReportProductViewModel::convertToPodProductModel).toList());
   }
 
   public List<String> getAddedProductCodeList() {
@@ -223,9 +229,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     void refreshIssueVoucherForm(Pod pod);
   }
 
-  protected Action1<Pod> loadDataOnNextAction = podContent -> {
-    loadViewModelByPod(podContent, false);
-  };
+  protected Action1<Pod> loadDataOnNextAction = podContent -> loadViewModelByPod(podContent, false);
 
   private void saveStockManagement(Pod pod) throws LMISException {
     List<StockCard> stockCards = stockRepository.getStockCardsAndLotsOnHandForProgram(pod.getRequisitionProgramCode());

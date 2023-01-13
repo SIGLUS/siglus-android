@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="@dimen/px_1892"
+  android:layout_width="@dimen/px_1692"
   android:layout_height="wrap_content"
   android:orientation="vertical">
   <LinearLayout
@@ -10,7 +10,7 @@
     android:showDividers="middle"
     android:divider="@drawable/divider_vertical">
     <TextView android:layout_height="match_parent"
-      android:layout_width="@dimen/px_838"/>
+      android:layout_width="@dimen/px_635"/>
     <TextView style="@style/Pod.list.product"
       android:layout_width="@dimen/px_80"
       android:layout_height="match_parent"

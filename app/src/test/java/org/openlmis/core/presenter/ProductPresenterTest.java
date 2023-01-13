@@ -25,6 +25,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -67,13 +68,12 @@ public class ProductPresenterTest {
     Regimen regimen = new Regimen();
     regimen.setCode("code");
     regimen.setName("3TC 150mg");
-    when(regimenRepository.listNonCustomRegimen(Regimen.RegimeType.Adults))
-        .thenReturn(newArrayList(regimen));
+    when(regimenRepository.listNonCustomRegimen(anyString(), any())).thenReturn(newArrayList(regimen));
     Product product = new Product();
     product.setPrimaryName("PrimaryName");
     when(productRepository.getByCode("code")).thenReturn(product);
     TestSubscriber<List<RegimeProductViewModel>> subscriber = new TestSubscriber<>();
-    presenter.loadRegimeProducts(Regimen.RegimeType.Adults).subscribe(subscriber);
+    presenter.loadRegimeProducts(Constants.VIA_PROGRAM_CODE, Regimen.RegimeType.Adults).subscribe(subscriber);
 
     subscriber.awaitTerminalEvent();
 

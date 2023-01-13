@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/mmia_therapeutic_layout"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@drawable/mmia_spread_list_bg"
+  android:divider="@drawable/divider_horizontal"
+  android:orientation="vertical"
+  android:padding="@dimen/px_1">
+
+  <TextView
+    style="@style/MMIA.SpreadHeader"
+    android:text="@string/mmtb_age_group_form_title"
+    android:background="@color/color_a5a8a7" />
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_gravity="center_vertical"
+    android:divider="@drawable/divider_vertical"
+    android:showDividers="middle"
+    android:background="@color/color_mmtb_green">
+
+    <TextView
+      android:gravity="end"
+      android:paddingEnd="@dimen/px_6"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/px_14"
+      android:text="@string/mmtb_three_line_1_title" />
+
+    <TextView
+      android:layout_height="wrap_content"
+      android:layout_width="@dimen/mmtb_spread_item_common_width"
+      android:gravity="center"
+      android:textSize="@dimen/px_14"
+      android:text="@string/mmtb_three_line_2_title" />
+
+    <TextView
+      android:layout_height="wrap_content"
+      android:layout_width="@dimen/mmtb_spread_item_common_width"
+      android:gravity="center"
+      android:textSize="@dimen/px_14"
+      android:text="@string/mmtb_three_line_3_title" />
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/mmtb_requisition_age_range_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@drawable/divider_horizontal"
+    android:showDividers="middle"
+    android:orientation="vertical"
+    tools:layout_height="@dimen/px_120" />
+</LinearLayout>

@@ -275,7 +275,7 @@ public final class DateUtil {
   }
 
   public static String getVirtualLotExpireDate() {
-    return new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR, Locale.getDefault()).format(DateUtil.getCurrentDate());
+    return new SimpleDateFormat(DB_DATE_FORMAT, Locale.getDefault()).format(DateUtil.getCurrentDate());
   }
 
   private static boolean isTraining() {
@@ -284,7 +284,7 @@ public final class DateUtil {
 
   private static Calendar getCurrentCalendarForTraining() {
     Calendar calendar = Calendar.getInstance();
-    calendar.set(2021, 10, 18);
+    calendar.set(2022, 9, 18);
     String firstLoginTrainingTime = SharedPreferenceMgr.getInstance().getLastLoginTrainingTime();
     if (firstLoginTrainingTime != null) {
       String currentDate = DateUtil.formatDate(new Date(), DateUtil.SIMPLE_DATE_FORMAT);

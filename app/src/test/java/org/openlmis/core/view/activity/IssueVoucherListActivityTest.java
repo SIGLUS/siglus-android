@@ -19,6 +19,7 @@
 package org.openlmis.core.view.activity;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.openlmis.core.view.activity.IssueVoucherListActivity.TITLE_RES;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -34,7 +35,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorT
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -47,8 +47,6 @@ import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.fakes.RoboMenu;
-import org.robolectric.fakes.RoboMenuItem;
-import org.robolectric.shadows.ShadowActivity;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -99,17 +97,18 @@ public class IssueVoucherListActivityTest {
         roboMenu.getItem(0).getTitle());
   }
 
-  @Ignore
+  @Test
   public void shouldGotoIssueVoucherInputOrderNumberActivity() {
     // given
-    MenuItem menuItem = new RoboMenuItem(R.id.action_create_issue_voucher);
+    MenuItem menuItem = mock(MenuItem.class);
+    when(menuItem.getItemId()).thenReturn(R.id.action_create_issue_voucher);
 
     // when
     listActivity.onOptionsItemSelected(menuItem);
-    ShadowActivity shadowActivity = shadowOf(listActivity);
-    Intent startedIntent = shadowActivity.getNextStartedActivity();
+    Intent startedIntent = shadowOf(listActivity).getNextStartedActivity();
 
     // then
+    Assert.assertNotNull(startedIntent);
     Assert.assertEquals(IssueVoucherInputOrderNumberActivity.class.getName(),
         startedIntent.getComponent().getClassName());
   }

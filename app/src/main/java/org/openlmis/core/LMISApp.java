@@ -29,6 +29,10 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Build;
+import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.multidex.MultiDex;
 import com.facebook.flipper.android.AndroidFlipperClient;
 import com.facebook.flipper.android.utils.FlipperUtils;
@@ -65,6 +69,8 @@ public class LMISApp extends Application {
 
   private static final int JOB_ID_NETWORK_CHANGE = 123;
 
+  private FragmentActivity topActivity = null;
+
   @Override
   public void onCreate() {
     super.onCreate();
@@ -84,6 +90,7 @@ public class LMISApp extends Application {
     configAutoSize();
     integrateFlipper();
     LmisSqliteOpenHelper.getInstance(this).checkDatabaseVersion();
+    getCurrentActivity();
   }
 
   public boolean isRoboUniTest() {
@@ -106,6 +113,10 @@ public class LMISApp extends Application {
   public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
     MovementReasonManager.getInstance().refresh();
+  }
+
+  public FragmentActivity getTopActivity() {
+    return topActivity;
   }
 
   public boolean getFeatureToggleFor(int id) {
@@ -157,6 +168,7 @@ public class LMISApp extends Application {
     jobScheduler.schedule(myJob);
   }
 
+  @SuppressWarnings("squid:S1874")
   private void registerNetWorkListener() {
     IntentFilter filter = new IntentFilter();
     filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -188,5 +200,45 @@ public class LMISApp extends Application {
       client.start();
     }
   }
+
+  private void getCurrentActivity() {
+    registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+      @Override
+      public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+        //do nothing
+      }
+
+      @Override
+      public void onActivityStarted(@NonNull Activity activity) {
+        //do nothing
+      }
+
+      @Override
+      public void onActivityResumed(@NonNull Activity activity) {
+        topActivity = (FragmentActivity) activity;
+      }
+
+      @Override
+      public void onActivityPaused(@NonNull Activity activity) {
+        //do nothing
+      }
+
+      @Override
+      public void onActivityStopped(@NonNull Activity activity) {
+        //do nothing
+      }
+
+      @Override
+      public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+        //do nothing
+      }
+
+      @Override
+      public void onActivityDestroyed(@NonNull Activity activity) {
+        //do nothing
+      }
+    });
+  }
+
 
 }

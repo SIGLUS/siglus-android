@@ -19,7 +19,6 @@
 package org.openlmis.core.view.holder;
 
 import android.text.Editable;
-import android.text.Html;
 import android.text.InputFilter;
 import android.view.View;
 import android.widget.EditText;
@@ -28,10 +27,12 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm.Status;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -111,7 +112,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
 
   private void populateAdjustmentTheoreticalIcon(final RequisitionFormItemViewModel itemViewModel) {
     if (itemViewModel.getAdjustmentViewModels() == null
-        || itemViewModel.getAdjustmentViewModels().size() == 0) {
+        || itemViewModel.getAdjustmentViewModels().isEmpty()) {
       adjustTheoreticalIcon.setVisibility(View.GONE);
     } else {
       adjustTheoreticalIcon.setVisibility(View.VISIBLE);
@@ -119,7 +120,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
         @Override
         public void onSingleClick(View v) {
           DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-              Html.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()),
+              CompatUtil.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()),
               context.getString(R.string.btn_ok));
           dialogFragment
               .show(((FragmentActivity) context).getSupportFragmentManager(), "adjustmentTheoreticalDialog");
@@ -179,7 +180,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
   }
 
   private void showDisabledAmount(View view) {
-    view.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+    view.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
     view.setEnabled(false);
   }
 
@@ -187,6 +188,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     view.setEnabled(true);
   }
 
+  @EqualsAndHashCode(callSuper = false)
   class MyTextWatcher extends SingleTextWatcher {
 
     private final RequisitionFormItemViewModel entry;

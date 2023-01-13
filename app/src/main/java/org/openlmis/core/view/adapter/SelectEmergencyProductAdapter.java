@@ -37,7 +37,7 @@ public class SelectEmergencyProductAdapter extends
   }
 
   public List<InventoryViewModel> getCheckedProducts() {
-    return from(data).filter(viewModel -> viewModel.isChecked()).toList();
+    return from(data).filter(InventoryViewModel::isChecked).toList();
   }
 
   @Override

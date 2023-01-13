@@ -27,6 +27,7 @@ import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 import org.openlmis.core.utils.DateUtil;
@@ -35,6 +36,7 @@ import org.openlmis.core.utils.DateUtil;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @DatabaseTable(tableName = "lots")
 public class Lot extends BaseModel {
 

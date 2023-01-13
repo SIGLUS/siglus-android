@@ -27,12 +27,10 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import java.text.MessageFormat;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -59,7 +57,7 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
 
 
   @Override
-  protected void convert(@NotNull IssueVoucherLotViewHolder holder, IssueVoucherLotViewModel viewModel) {
+  protected void convert(@NonNull IssueVoucherLotViewHolder holder, IssueVoucherLotViewModel viewModel) {
     holder.populate(viewModel);
   }
 
@@ -77,7 +75,7 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
       this.viewModel = viewModel;
       if (viewModel.isDone()) {
         if (!viewModel.isVirtualLot()) {
-          setText(R.id.tv_lot_number_and_date, viewModel.getLotNumber());
+          setText(R.id.tv_lot_number, viewModel.getLotNumber());
         }
 
         setText(R.id.tv_quantity_shipped,  LMISApp.getContext().getResources()
@@ -86,8 +84,7 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
             .getString(R.string.quantity_received)  + ": " + viewModel.getAcceptedQuantity());
       } else {
         if (!viewModel.isVirtualLot()) {
-          setText(R.id.tv_lot_number_and_date, MessageFormat.format("{0} - {1}",
-              viewModel.getLotNumber(), viewModel.getExpiryDate()));
+          setText(R.id.tv_lot_number, viewModel.getLotNumber());
           ImageView ivDel = getView(R.id.iv_del);
           ivDel.setOnClickListener(getOnClickListenerForDeleteIcon());
           if (viewModel.isNewAdd()) {

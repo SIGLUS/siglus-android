@@ -101,13 +101,11 @@ public class MMIARnrFormProductList extends LinearLayout {
     leftHeaderView = addLeftHeaderView();
     rightHeaderView = addRightHeaderView();
     setItemSize(leftHeaderView, rightHeaderView);
-
-    setMarginForFreezeHeader();
   }
 
-  private void setMarginForFreezeHeader() {
+  public void setMarginForFreezeHeader() {
     post(() -> {
-      final MarginLayoutParams marginLayoutParams = (MarginLayoutParams) getLayoutParams();
+      MarginLayoutParams marginLayoutParams = (MarginLayoutParams) getLayoutParams();
       marginLayoutParams.topMargin = rightHeaderView.getLayoutParams().height;
       setLayoutParams(marginLayoutParams);
     });
@@ -168,10 +166,8 @@ public class MMIARnrFormProductList extends LinearLayout {
   }
 
 
-  private List<RnrFormItem> filterRnrFormItem(List<RnrFormItem> rnrFormItemList,
-      final String category) {
-    return from(rnrFormItemList).filter(rnrFormItem -> category.equals(rnrFormItem.getCategory()))
-        .toList();
+  private List<RnrFormItem> filterRnrFormItem(List<RnrFormItem> rnrFormItemList, String category) {
+    return from(rnrFormItemList).filter(rnrFormItem -> category.equals(rnrFormItem.getCategory())).toList();
   }
 
   private void addViewByMedicineType(List<RnrFormItem> categoryFormItems) {
@@ -220,12 +216,12 @@ public class MMIARnrFormProductList extends LinearLayout {
 
     if (rightViewGroupWidth < rightWidth) {
       int childCount = rightView.getChildCount();
+      int rightViewWidth = getRightViewWidth(rightWidth, childCount);
       for (int i = 0; i < childCount; i++) {
-        rightView.getChildAt(i).getLayoutParams().width = getRightViewWidth(rightWidth, childCount);
+        rightView.getChildAt(i).getLayoutParams().width = rightViewWidth;
       }
       rightView.getChildAt(0).getLayoutParams().width =
-          getRightViewWidth(rightWidth, childCount) + getRightViewRemainderWidth(rightWidth,
-              childCount);
+          rightViewWidth + getRightViewRemainderWidth(rightWidth, childCount);
     }
   }
 
@@ -304,7 +300,7 @@ public class MMIARnrFormProductList extends LinearLayout {
       try {
         if (!(TextUtils.isEmpty(item.getValidate()) || isArchived)) {
           tvValidate.setText(DateUtil.convertDate(item.getValidate(), DateUtil.SIMPLE_DATE_FORMAT,
-              DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+              DateUtil.DB_DATE_FORMAT));
         }
       } catch (Exception e) {
         new LMISException(e, "MMIARnrForm.addRightView").reportToFabric();
@@ -334,8 +330,7 @@ public class MMIARnrFormProductList extends LinearLayout {
     inflate.setBackgroundResource(R.color.color_mmia_info_name);
   }
 
-  private Pair<EditText, EditTextWatcher> configEditText(RnrFormItem item, EditText text,
-      String value) {
+  private Pair<EditText, EditTextWatcher> configEditText(RnrFormItem item, EditText text, String value) {
     text.setText(value);
     text.setEnabled(true);
     EditTextWatcher textWatcher = new EditTextWatcher(item, text);
@@ -343,8 +338,7 @@ public class MMIARnrFormProductList extends LinearLayout {
     return new Pair<>(text, textWatcher);
   }
 
-  private void enableEditText(Boolean enable, EditText etIssued, EditText etAdjustment,
-      EditText etInventory) {
+  private void enableEditText(Boolean enable, EditText etIssued, EditText etAdjustment, EditText etInventory) {
     etIssued.setEnabled(enable);
     etAdjustment.setEnabled(enable);
     etAdjustment.setSingleLine(false);
@@ -422,6 +416,14 @@ public class MMIARnrFormProductList extends LinearLayout {
       }
       return editTextValue;
     }
+  }
+
+  public void removeOriginalTable() {
+    rightViewGroup.removeAllViews();
+    leftViewGroup.removeAllViews();
+    editTexts.clear();
+    leftHeaderView = null;
+    rightHeaderView = null;
   }
 
 }

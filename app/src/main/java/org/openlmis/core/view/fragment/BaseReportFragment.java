@@ -49,11 +49,11 @@ public abstract class BaseReportFragment extends BaseFragment {
   }
 
   protected void finish() {
-    getActivity().finish();
+    requireActivity().finish();
   }
 
   public void onBackPressed() {
-    if (baseReportFragmentPresenter.isDraft()) {
+    if (baseReportFragmentPresenter.isDraft() || baseReportFragmentPresenter.isSubmit()) {
       showConfirmDialog();
     } else {
       finish();
@@ -71,7 +71,9 @@ public abstract class BaseReportFragment extends BaseFragment {
     dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
       @Override
       public void positiveClick(String tag) {
-        baseReportFragmentPresenter.deleteDraft();
+        if (baseReportFragmentPresenter.isDraft()) {
+          baseReportFragmentPresenter.deleteDraft();
+        }
         finish();
       }
 
@@ -87,17 +89,14 @@ public abstract class BaseReportFragment extends BaseFragment {
     String signatureDialogTitle = getSignatureDialogTitle();
     signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
     signatureDialog.setDelegate(signatureDialogDelegate);
-
     signatureDialog.show(this.getParentFragmentManager());
   }
 
   protected abstract String getSignatureDialogTitle();
 
-  protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-    public void onSign(String sign) {
-      Subscription subscription = baseReportFragmentPresenter.getOnSignObservable(sign).subscribe(getOnSignedAction());
-      subscriptions.add(subscription);
-    }
+  protected SignatureDialog.DialogDelegate signatureDialogDelegate = sign -> {
+    Subscription subscription = baseReportFragmentPresenter.getOnSignObservable(sign).subscribe(getOnSignedAction());
+    subscriptions.add(subscription);
   };
 
   protected abstract Action1<Void> getOnSignedAction();

@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 import android.app.Activity;
 import android.content.Intent;
+import androidx.activity.result.ActivityResult;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
@@ -120,8 +121,10 @@ public class StockCardListFragmentTest {
     final Intent data = new Intent();
     data.putExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY, stockcardIds);
 
+    ActivityResult mockResult = new ActivityResult(Activity.RESULT_OK, data);
+
     // when
-    fragment.onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, data);
+    fragment.getStockListCallback().onActivityResult(mockResult);
 
     // then
     verify(fragment.presenter).refreshStockCardsObservable(stockcardIds);

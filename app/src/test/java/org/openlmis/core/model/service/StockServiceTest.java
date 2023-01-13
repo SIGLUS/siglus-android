@@ -177,6 +177,31 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     assertThat(averageMonthlyConsumption, is(100F));
   }
 
+  @Test
+  public void shouldCalculateAverageMonthlyConsumptionWithStockOutInTheMiddleOfPeriodCorrectly() throws LMISException {
+    //given
+    StockCard stockCard = new StockCard();
+    stockCard.setProduct(getRandomProduct());
+    stockCard.setStockOnHand(100);
+    stockService.stockRepository.createOrUpdate(stockCard);
+
+    createMovementItem(RECEIVE, 100, stockCard, new Date(), lastSecondMonthDate,
+        false);//2 month ago soh:100
+    createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate,
+        false);//2 month ago soh:0
+    createMovementItem(RECEIVE, 200, stockCard, new Date(), lastSecondMonthDate,
+        false);//2 month ago soh:200
+
+    createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate,
+        false);//1 month ago soh:100
+
+    //when
+    float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
+
+    //then
+    assertThat(averageMonthlyConsumption, is(100F));
+  }
+
   private StockMovementItem createMovementItem(MovementReasonManager.MovementType type,
       long quantity, StockCard stockCard, Date createdTime, Date movementDate, boolean synced)
       throws LMISException {

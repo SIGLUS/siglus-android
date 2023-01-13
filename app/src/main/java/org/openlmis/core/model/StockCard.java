@@ -52,7 +52,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
    */
   @Deprecated
   @DatabaseField
-  String expireDates;
+  String expireDates = "";
 
   @Expose
   @SerializedName("product")

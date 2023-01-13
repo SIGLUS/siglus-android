@@ -147,4 +147,5 @@ public class RapidTestRnrForm extends LinearLayout {
     }
     return true;
   }
+
 }

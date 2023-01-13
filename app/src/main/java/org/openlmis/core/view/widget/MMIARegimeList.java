@@ -29,10 +29,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Regimen;
@@ -60,11 +61,13 @@ public class MMIARegimeList extends LinearLayout {
   private ArrayList<RegimenItem> paediatrics;
   protected MMIARequisitionPresenter presenter;
 
-  public int adultHeight = 0;
-  public int childrenHeight = 0;
+  @Getter
+  private int adultHeight = 0;
+  @Getter
+  private int childrenHeight = 0;
   private MMIARegimeListener regimeListener;
-
-  public boolean isPharmacyEmpty = false;
+  @Getter
+  private boolean isPharmacyEmpty = false;
 
   public enum COUNTTYPE {
     AMOUNT,
@@ -154,9 +157,8 @@ public class MMIARegimeList extends LinearLayout {
     view.setOnClickListener(new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        getFragment().startActivityForResult(
-            SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults),
-            MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
+        getFragment().getAddRegimenProductLauncher().launch(
+            SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults));
       }
     });
     addView(view);
@@ -170,16 +172,16 @@ public class MMIARegimeList extends LinearLayout {
     view.setOnClickListener(new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        getFragment().startActivityForResult(SelectRegimeProductsActivity
-                .getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics),
-            MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
+        getFragment().getAddRegimenProductLauncher().launch(SelectRegimeProductsActivity
+            .getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics));
       }
     });
     addView(view);
   }
 
-  private Fragment getFragment() {
-    return ((FragmentActivity) getContext()).getSupportFragmentManager().findFragmentById(R.id.fragment_requisition);
+  private MMIARequisitionFragment getFragment() {
+    return (MMIARequisitionFragment) ((FragmentActivity) getContext())
+        .getSupportFragmentManager().findFragmentById(R.id.fragment_requisition);
   }
 
   private void initCategoryList(List<RegimenItem> regimenItems) {
@@ -322,12 +324,12 @@ public class MMIARegimeList extends LinearLayout {
   }
 
   public void deHighLightTotal() {
-    totalView.setBackground(getResources().getDrawable(R.color.color_page_gray));
+    totalView.setBackground(ContextCompat.getDrawable(getContext(), R.color.color_page_gray));
     if (isPharmacyEmpty) {
       totalPharmacy.setVisibility(GONE);
       totalPharmacyTitle.setVisibility(GONE);
     } else {
-      totalPharmacy.setBackground(getResources().getDrawable(R.color.color_page_gray));
+      totalPharmacy.setBackground(ContextCompat.getDrawable(getContext(), R.color.color_page_gray));
     }
   }
 
@@ -427,7 +429,7 @@ public class MMIARegimeList extends LinearLayout {
         editTotalText.requestFocus();
         return false;
       }
-      if (editPharmacyTexts.size() > 0) {
+      if (!editPharmacyTexts.isEmpty()) {
         EditText editPharmacyText = editPharmacyTexts.get(i);
         if (TextUtils.isEmpty(editPharmacyText.getText().toString())) {
           editPharmacyText.setError(context.getString(R.string.hint_error_input));

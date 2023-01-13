@@ -30,6 +30,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,11 +41,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -58,6 +62,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
 import roboguice.inject.InjectView;
 
+@BindEventBus
 public class StockCardListFragment extends BaseFragment implements
     StockCardPresenter.StockCardListView, AdapterView.OnItemSelectedListener {
 
@@ -86,6 +91,15 @@ public class StockCardListFragment extends BaseFragment implements
 
   private int currentPosition;
 
+  private ActivityResultCallback<ActivityResult> stockListCallback = result -> {
+    if (result.getResultCode() == Activity.RESULT_OK) {
+      refreshPresenterIfHasIssuesOrEntries(result.getData());
+    }
+  };
+
+  private final ActivityResultLauncher<Intent> toStockMovementWithLotLauncher = registerForActivityResult(
+      new StartActivityForResult(), stockListCallback);
+
   @Override
   public Presenter initPresenter() {
     return presenter;
@@ -103,13 +117,6 @@ public class StockCardListFragment extends BaseFragment implements
     initRecycleView();
     initSortSpinner();
     loadStockCards();
-    EventBus.getDefault().register(this);
-  }
-
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    EventBus.getDefault().unregister(this);
   }
 
   @Override
@@ -135,23 +142,6 @@ public class StockCardListFragment extends BaseFragment implements
   @Override
   public void onNothingSelected(AdapterView<?> parent) {
     // do nothing
-  }
-
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (resultCode == Activity.RESULT_OK) {
-      if (requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE) {
-        long[] stockCardIds = data.getLongArrayExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY);
-        if (stockCardIds == null) {
-          return;
-        }
-        presenter.refreshStockCardsObservable(stockCardIds);
-      } else if (requestCode == Constants.REQUEST_UNPACK_KIT) {
-        presenter.loadKits();
-      } else if (requestCode == Constants.REQUEST_ARCHIVED_LIST_PAGE) {
-        loadStockCards();
-      }
-    }
   }
 
   @Override
@@ -198,13 +188,13 @@ public class StockCardListFragment extends BaseFragment implements
     mAdapter = new StockCardListAdapter(new ArrayList<>(), onItemViewClickListener);
   }
 
-  protected void loadStockCards() {
+  public void loadStockCards() {
     presenter.loadStockCards(ACTIVE);
   }
 
   protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = inventoryViewModel -> {
     Intent intent = getStockMovementIntent(inventoryViewModel);
-    startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
+    toStockMovementWithLotLauncher.launch(intent);
   };
 
   protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
@@ -234,5 +224,17 @@ public class StockCardListFragment extends BaseFragment implements
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     sortSpinner.setAdapter(adapter);
     sortSpinner.setOnItemSelectedListener(this);
+  }
+
+  public void refreshPresenterIfHasIssuesOrEntries(Intent data) {
+    long[] stockCardIds = data.getLongArrayExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY);
+    if (stockCardIds == null) {
+      return;
+    }
+    presenter.refreshStockCardsObservable(stockCardIds);
+  }
+
+  public ActivityResultCallback<ActivityResult> getStockListCallback() {
+    return stockListCallback;
   }
 }

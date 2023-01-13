@@ -28,20 +28,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.DialogFragment;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
+import org.openlmis.core.annotation.BindEventBus;
+import org.openlmis.core.event.DebugMMIARequisitionEvent;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Regimen;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
@@ -63,6 +74,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 
+@BindEventBus
 public class MMIARequisitionFragment extends BaseReportFragment implements
     MMIARequisitionPresenter.MMIARequisitionView {
 
@@ -100,6 +112,12 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
   @InjectView(R.id.type_dispensed_total_within)
   protected TextView mmiaTotalDispensedWithMonth;
 
+  @InjectView(R.id.et_total_patient)
+  protected EditText etTotalPatient;
+
+  @InjectView(R.id.et_total_month)
+  protected EditText etTotalMonth;
+
   @InjectView(R.id.et_comment)
   protected TextView etComment;
 
@@ -129,18 +147,31 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
   protected int actionBarHeight;
 
+  private final ActivityResultCallback<ActivityResult> addRegimenProductCallback = result -> {
+    if (result.getResultCode() == Activity.RESULT_OK) {
+      Intent data = result.getData();
+      regimeWrap.addCustomRegimenItem((Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN));
+    }
+  };
+
+  private final ActivityResultLauncher<Intent> addRegimenProductLauncher = registerForActivityResult(
+      new StartActivityForResult(), addRegimenProductCallback);
+
+  public ActivityResultCallback<ActivityResult> getAddRegimenProductCallback() {
+    return addRegimenProductCallback;
+  }
+
+  public ActivityResultLauncher<Intent> getAddRegimenProductLauncher() {
+    return addRegimenProductLauncher;
+  }
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
-    periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
-  }
-
-  @Override
-  protected BaseReportPresenter injectPresenter() {
-    presenter = RoboGuice.getInjector(getActivity()).getInstance(MMIARequisitionPresenter.class);
-    return presenter;
+    formId = requireActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
+    periodEndDate = ((Date) requireActivity().getIntent()
+        .getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
   }
 
   @Override
@@ -171,6 +202,12 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
   public void onDestroyView() {
     rnrFormList.removeListenerOnDestroyView();
     super.onDestroyView();
+  }
+
+  @Override
+  protected BaseReportPresenter injectPresenter() {
+    presenter = RoboGuice.getInjector(requireActivity()).getInstance(MMIARequisitionPresenter.class);
+    return presenter;
   }
 
   protected void initUI() {
@@ -235,18 +272,25 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
         getString(R.string.label_mmia_title, DateUtil.formatDateWithoutYear(form.getPeriodBegin()),
             DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
     etComment.setText(form.getComments());
+    etTotalPatient.setText(form.getTotalValueItemByName(getString(R.string.table_total_patient_key)));
+    etTotalMonth.setText(form.getTotalValueItemByName(getString(R.string.table_total_month_key)));
     highlightTotalDifference();
     bindListeners();
   }
 
   private void inflateFreezeHeaderView() {
-    final View leftHeaderView = rnrFormList.getLeftHeaderView();
+    View leftHeaderView = rnrFormList.getLeftHeaderView();
+    rnrItemsHeaderFreezeLeft.removeAllViews();
     rnrItemsHeaderFreezeLeft.addView(leftHeaderView);
 
-    final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
+    ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
+    rnrItemsHeaderFreezeRight.removeAllViews();
     rnrItemsHeaderFreezeRight.addView(rightHeaderView);
 
-    rnrFormList.post(() -> ViewUtil.syncViewHeight(leftHeaderView, rightHeaderView));
+    rnrFormList.post(() -> {
+      ViewUtil.syncViewHeight(leftHeaderView, rightHeaderView);
+      rnrFormList.setMarginForFreezeHeader();
+    });
   }
 
 
@@ -270,7 +314,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
         loading();
         Subscription subscription = presenter
             .getSaveFormObservable(rnrFormList.getItemFormList(), regimeWrap.getDataList(),
-                combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(), mmiaDispensedInfoList.getDataList()),
+                setTotalItemValues(mmiaPatientInfoListView.getDataList()),
                 mmiaRegimeThreeLineListView.getDataList(), etComment.getText().toString())
             .subscribe(getOnSavedSubscriber());
         subscriptions.add(subscription);
@@ -311,12 +355,18 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
             && mmiaRegimeThreeLineListView.isCompleted()
             && mmiaDispensedInfoList.isCompleted()) {
           presenter.setViewModels(rnrFormList.getItemFormList(), regimeWrap.getDataList(),
-              combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(), mmiaDispensedInfoList.getDataList()),
+              setTotalItemValues(mmiaPatientInfoListView.getDataList()),
               mmiaRegimeThreeLineListView.getDataList(), etComment.getText().toString());
           if (presenter.viewModelHasNull()) {
             ToastUtil.show(R.string.msg_requisition_field_exist_null);
           } else if (!presenter.validateFormPeriod()) {
             ToastUtil.show(R.string.msg_requisition_not_unique);
+          } else if (editTextContentIsEmpty(etTotalPatient)) {
+            etTotalPatient.setError(getString(R.string.hint_error_input));
+            etTotalPatient.requestFocus();
+          } else if (editTextContentIsEmpty(etTotalMonth)) {
+            etTotalMonth.setError(getString(R.string.hint_error_input));
+            etTotalMonth.requestFocus();
           } else if (shouldCommentMandatory()) {
             etComment.setError(getString(R.string.mmia_comment_should_not_empty));
             etComment.requestFocus();
@@ -328,11 +378,20 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     };
   }
 
-  private List<BaseInfoItem> combinePatientAndDispensed(List<BaseInfoItem> patients,
-      List<BaseInfoItem> dispensed) {
-    List<BaseInfoItem> newList = new ArrayList<>(patients);
-    newList.addAll(dispensed);
-    return newList;
+  private boolean editTextContentIsEmpty(EditText editText) {
+    return TextUtils.isEmpty(editText.getText().toString());
+  }
+
+  private List<BaseInfoItem> setTotalItemValues(List<BaseInfoItem> patients) {
+    for (BaseInfoItem baseInfoItem : patients) {
+      if (getString(R.string.table_total_patient_key).equals(baseInfoItem.getName())) {
+        baseInfoItem.setValue(etTotalPatient.getText().toString());
+      }
+      if (getString(R.string.table_total_month_key).equals(baseInfoItem.getName())) {
+        baseInfoItem.setValue(etTotalMonth.getText().toString());
+      }
+    }
+    return patients;
   }
 
   private boolean shouldCommentMandatory() {
@@ -449,11 +508,44 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     return getString(R.string.msg_requisition_signature_message_notify_mmia);
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_FOR_CUSTOM_REGIME) {
-      regimeWrap.addCustomRegimenItem((Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN));
+  @VisibleForTesting
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveMMIARequisitionEvent(DebugMMIARequisitionEvent event) {
+    final long mmiaProductNum = event.getMmiaProductNum();
+    final long mmiaRegimeNum = event.getMmiaRegimeNum();
+    final long mmiaThreeLineNum = event.getMmiaThreeLineNum();
+    final long mmiaPatientInfoNum = event.getMmiaPatientInfoNum();
+    final long mmiaTotal = event.getMmiaTotal();
+    RnRForm form = presenter.getRnRForm();
+
+    rnrFormList.removeOriginalTable();
+    for (RnrFormItem formItem : form.getRnrFormItemListWrapper()) {
+      formItem.setIssued(mmiaProductNum);
+      formItem.setAdjustment(mmiaProductNum);
+      formItem.setInventory(mmiaProductNum);
     }
+
+    regimeWrap.removeOriginalTable();
+    for (RegimenItem regimenItem : form.getRegimenItemListWrapper()) {
+      regimenItem.setAmount(mmiaRegimeNum);
+      regimenItem.setPharmacy(mmiaRegimeNum);
+    }
+
+    mmiaRegimeThreeLineListView.removeOriginalTable();
+    for (RegimenItemThreeLines regimenItemThreeLines : form.getRegimenThreeLineListWrapper()) {
+      regimenItemThreeLines.setPatientsAmount(mmiaThreeLineNum);
+      regimenItemThreeLines.setPharmacyAmount(mmiaThreeLineNum);
+    }
+
+    mmiaPatientInfoListView.removeOriginalTable();
+    mmiaDispensedInfoList.removeOriginalTable();
+    for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
+      item.setValue(String.valueOf(mmiaPatientInfoNum));
+    }
+
+    refreshRequisitionForm(form);
+
+    etTotalPatient.setText(String.valueOf(mmiaTotal));
+    etTotalMonth.setText(String.valueOf(mmiaTotal));
   }
 }

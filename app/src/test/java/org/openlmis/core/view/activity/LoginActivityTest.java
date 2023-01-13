@@ -114,6 +114,7 @@ public class LoginActivityTest {
 
   @Test
   public void shouldShowInvalidAlertAfterMethodInvoked() {
+    loginActivity.enableShowAlert = true;
     loginActivity.showInvalidAlert(LoginErrorType.WRONG_PASSWORD);
 
     String invalidUserMessage = loginActivity.getResources().getString(R.string.msg_invalid_user);

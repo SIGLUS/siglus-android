@@ -25,6 +25,7 @@ public enum ScreenName {
   LOGIN_SCREEN("Login Screen"),
   RAPID_TEST_SCREEN("Rapid Test Screen"),
   MMIA_REQUISITION_SCREEN("MMIA Requisition Screen"),
+  MMTB_REQUISITION_SCREEN("MMTB Requisition Screen"),
   AL_REQUISITION_SCREEN("AL Requisition Screen"),
   PTV_REQUISITION_SCREEN("PTV Requisition Screen"),
   VIA_REQUISITION_SCREEN("VIA Requisition Screen"),

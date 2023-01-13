@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="@dimen/px_1892"
+  android:layout_width="@dimen/px_1692"
   android:layout_height="@dimen/px_50"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:showDividers="middle"
   android:orientation="horizontal"
   android:divider="@drawable/divider_vertical">
-  <TextView
-    android:id="@+id/tv_product_dosage"
-    style="@style/Pod.list.lot" />
-  <TextView
-    android:id="@+id/tv_disiganation"
-    style="@style/Pod.list.lot" />
   <LinearLayout
     style="@style/Pod.list.lot"
     android:layout_width="@dimen/px_230">
@@ -39,7 +33,8 @@
     android:id="@+id/tv_partial_fulfilled"
     android:layout_width="@dimen/px_80"
     style="@style/Pod.list.lot" />
-  <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot"
+  <androidx.constraintlayout.widget.ConstraintLayout
+    style="@style/Pod.list.lot"
     android:layout_width="@dimen/px_80">
     <EditText
       android:id="@+id/et_quantity_shipped"
@@ -59,7 +54,8 @@
   <TextView android:id="@+id/tv_value"
     android:layout_width="@dimen/px_80"
     style="@style/Pod.list.lot" />
-  <androidx.constraintlayout.widget.ConstraintLayout style="@style/Pod.list.lot"
+  <androidx.constraintlayout.widget.ConstraintLayout
+    style="@style/Pod.list.lot"
     android:layout_width="@dimen/px_80">
     <EditText
       android:id="@+id/et_quantity_accepted"

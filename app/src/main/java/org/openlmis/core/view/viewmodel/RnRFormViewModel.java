@@ -41,6 +41,7 @@ public class RnRFormViewModel {
   public static final int TYPE_UNSYNCED_HISTORICAL = 50;
   public static final int TYPE_SYNCED_HISTORICAL = 60;
   public static final int TYPE_CANNOT_DO_MONTHLY_INVENTORY = 70;
+  public static final int TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS = 71;
   public static final int TYPE_FIRST_MISSED_PERIOD = 80;
   public static final int TYPE_MISSED_PERIOD = 90;
   public static final int TYPE_INACTIVE = 100;
@@ -98,6 +99,9 @@ public class RnRFormViewModel {
         break;
       case Program.RAPID_TEST_CODE:
         this.name = LMISApp.getContext().getString(R.string.tr_program_name);
+        break;
+      case Program.MMTB_CODE:
+        this.name = LMISApp.getContext().getString(R.string.tb_program_name);
         break;
       default:
         this.name = StringUtils.EMPTY;

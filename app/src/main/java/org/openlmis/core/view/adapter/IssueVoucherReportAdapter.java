@@ -57,10 +57,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     int dataSize = getData().size();
     for (int i = 0; i < dataSize - 1; i++) {
       IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel) getData().get(i);
-      if (productViewModel.validate()) {
-        continue;
-      }
-      if (position == -1) {
+      if (!productViewModel.validate()) {
         position = i;
         break;
       }
@@ -71,14 +68,11 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
 
   protected class IssueVoucherReportViewHolder extends BaseViewHolder implements OnUpdatePodListener {
 
-    private TextView tvProductUnit;
     private TextView tvQuantityOrdered;
     private TextView tvPartialFulfilled;
     private TextView tvPreparedBy;
     private TextView tvConferredBy;
     private TextView tvReceivedBy;
-    private ListView lvLotList;
-    private IssueVoucherReportLotAdapter lotAdapter;
 
     public IssueVoucherReportViewHolder(@NonNull View itemView) {
       super(itemView);
@@ -88,7 +82,6 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
       if (viewModel.getItemType() == IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TYPE.getValue()) {
         IssueVoucherReportProductViewModel productViewModel = (IssueVoucherReportProductViewModel) viewModel;
         initView(productViewModel);
-        tvProductUnit.setText(productViewModel.getProductUnitName());
         tvQuantityOrdered.setText(productViewModel.getOrderedQuantity());
         tvPartialFulfilled.setText(productViewModel.getPartialFulfilledQuantity());
       } else {
@@ -110,14 +103,13 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
 
 
     private void initView(IssueVoucherReportProductViewModel productViewModel) {
-      lvLotList = itemView.findViewById(R.id.lv_issue_voucher_lot_list);
+      ListView lvLotList = itemView.findViewById(R.id.lv_issue_voucher_lot_list);
       List<IssueVoucherReportLotViewModel> lotViewModels = productViewModel.getLotViewModelList();
       lvLotList.getLayoutParams().height =
           (int) itemView.getResources().getDimension(R.dimen.px_50) * lotViewModels.size();
-      lotAdapter = new IssueVoucherReportLotAdapter(itemView.getContext(), lotViewModels);
+      IssueVoucherReportLotAdapter lotAdapter = new IssueVoucherReportLotAdapter(itemView.getContext(), lotViewModels);
       lotAdapter.setOnUpdatePodListener(this);
       lvLotList.setAdapter(lotAdapter);
-      tvProductUnit = itemView.findViewById(R.id.tv_product_dosage);
       tvQuantityOrdered = itemView.findViewById(R.id.tv_quantity_ordered);
       tvPartialFulfilled = itemView.findViewById(R.id.tv_partial_fulfilled);
     }

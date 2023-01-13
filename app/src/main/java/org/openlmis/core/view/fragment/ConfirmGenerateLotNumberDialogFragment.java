@@ -20,7 +20,6 @@ package org.openlmis.core.view.fragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +28,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
@@ -53,7 +53,7 @@ public class ConfirmGenerateLotNumberDialogFragment extends BaseDialogFragment {
     if (getArguments() != null) {
       String message = getArguments().getString(Constants.PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER);
       if (message != null) {
-        msgGenerateLotNumber.setText(Html.fromHtml(message));
+        msgGenerateLotNumber.setText(CompatUtil.fromHtml(message));
       }
     }
 
@@ -72,6 +72,8 @@ public class ConfirmGenerateLotNumberDialogFragment extends BaseDialogFragment {
   public Dialog onCreateDialog(Bundle savedInstanceState) {
     Dialog dialog = super.onCreateDialog(savedInstanceState);
     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    Window window = dialog.getWindow();
+    window.setWindowAnimations(R.style.NoAnimationDialog);
     return dialog;
   }
 

@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -59,7 +60,6 @@ import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
@@ -82,7 +82,7 @@ import rx.Observable;
 public class SyncUpManager {
 
   private static final String TAG = "SyncUpManager";
-  private static final String FAKE_ORDER_NUMBER = "ErrorOrderNumber";
+  private static final String FAKE_ORDER_NUMBER = "local-tarv";
   private static volatile boolean syncing = false;
   protected LMISRestApi lmisRestApi;
   @Inject
@@ -95,8 +95,6 @@ public class SyncUpManager {
   ProductRepository productRepository;
   @Inject
   CmmRepository cmmRepository;
-  @Inject
-  ProgramDataFormRepository programDataFormRepository;
   @Inject
   DbUtil dbUtil;
   @Inject
@@ -337,12 +335,11 @@ public class SyncUpManager {
 
   public void syncAppVersion() {
     try {
-      if (!sharedPreferenceMgr.hasSyncedVersion()) {
+      if (StringUtils.isNotBlank(UserInfoMgr.getInstance().getFacilityCode())) {
         AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(),
             UserInfoMgr.getInstance().getUser().getUsername(),
             UserInfoMgr.getInstance().getVersion());
         lmisRestApi.updateAppVersion(request);
-        sharedPreferenceMgr.setSyncedVersion(true);
       }
     } catch (LMISException e) {
       new LMISException(e, "SyncUpManager.syncArchivedProducts").reportToFabric();
@@ -417,7 +414,7 @@ public class SyncUpManager {
         try {
           lmisRestApi.syncUpDeletedData(sub);
           List<DirtyDataItemInfo> itemInfoList = itemInfos.subList(start, end);
-          dbUtil.withDaoAsBatch(DirtyDataItemInfo.class, (DbUtil.Operation<DirtyDataItemInfo, Void>) dao -> {
+          dbUtil.withDaoAsBatch(DirtyDataItemInfo.class, dao -> {
             for (DirtyDataItemInfo item : itemInfoList) {
               item.setSynced(true);
               dao.createOrUpdate(item);
@@ -475,8 +472,13 @@ public class SyncUpManager {
     try {
       for (RnrFormItem rnrFormItem : rnRForm.getRnrFormItemListWrapper()) {
         if (rnrFormItem.getValidate() != null) {
-          rnrFormItem.setValidate(DateUtil.convertDate(rnrFormItem.getValidate(), DateUtil.DB_DATE_FORMAT,
-              DateUtil.SIMPLE_DATE_FORMAT));
+          if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            rnrFormItem.setValidate(DateUtil.convertDate(rnrFormItem.getValidate(), DateUtil.DB_DATE_FORMAT,
+                DateUtil.SIMPLE_DATE_FORMAT));
+          } else {
+            rnrFormItem.setValidate(rnrFormItem.getValidate());
+          }
+
         }
       }
       rnrFormRepository.createOrUpdateWithItems(rnRForm);
@@ -515,34 +517,32 @@ public class SyncUpManager {
     }
     if (localPod.isLocal()) {
       if (Program.VIA_CODE.equals(localPod.getRequisitionProgramCode())) {
-        localPod.setOrderSupplyFacilityName("DDM de Mopeia");
-        localPod.setOrderSupplyFacilityDistrict("MOPEIA");
+        localPod.setOrderSupplyFacilityName("DDM de Alto Molocue");
+        localPod.setOrderSupplyFacilityDistrict("ALTO MOLOCUE");
         localPod.setOrderSupplyFacilityProvince("ZAMBEZIA");
         localPod.setOrderSupplyFacilityType("DDM");
-        localPod.setPreparedBy("android_user6_ddm");
-        localPod.setConferredBy("android_user6_ddm");
       } else {
         localPod.setOrderSupplyFacilityName("DPM ZAMBEZIA");
         localPod.setOrderSupplyFacilityDistrict("CIDADE DE QUELIMANE");
         localPod.setOrderSupplyFacilityProvince("ZAMBEZIA");
         localPod.setOrderSupplyFacilityType("DPM");
-        localPod.setPreparedBy("android_user6_dpm");
-        localPod.setConferredBy("android_user6_dpm");
       }
+      localPod.setPreparedBy("xzh");
+      localPod.setConferredBy("xzh");
       localPod.setOrderStatus(OrderStatus.RECEIVED);
-      localPod.setRequisitionNumber("RNR-NO010412110000039");
-      if ("ORDER-7SUPER".equals(localPod.getOrderCode())) {
-        localPod.setRequisitionStartDate(DateUtil.parseString("2021-08-21", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionEndDate(DateUtil.parseString("2021-09-20", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-08-21", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-09-18", DateUtil.DB_DATE_FORMAT));
-        localPod.setShippedDate(DateUtil.parseString("2021-10-05", DateUtil.DB_DATE_FORMAT));
+      localPod.setRequisitionNumber("RNO.01040203.2210.10");
+      if ("MIA.01040203.2209.07".equals(localPod.getOrderCode())) {
+        localPod.setRequisitionStartDate(DateUtil.parseString("2022-08-21", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionEndDate(DateUtil.parseString("2022-09-20", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualStartDate(DateUtil.parseString("2022-08-21", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualEndDate(DateUtil.parseString("2022-09-18", DateUtil.DB_DATE_FORMAT));
+        localPod.setShippedDate(DateUtil.parseString("2022-08-23", DateUtil.DB_DATE_FORMAT));
       } else {
-        localPod.setRequisitionStartDate(DateUtil.parseString("2021-10-21", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionEndDate(DateUtil.parseString("2021-11-20", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionActualStartDate(DateUtil.parseString("2021-10-18", DateUtil.DB_DATE_FORMAT));
-        localPod.setRequisitionActualEndDate(DateUtil.parseString("2021-11-18", DateUtil.DB_DATE_FORMAT));
-        localPod.setShippedDate(DateUtil.parseString("2021-11-18", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionStartDate(DateUtil.parseString("2022-09-21", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionEndDate(DateUtil.parseString("2022-10-20", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualStartDate(DateUtil.parseString("2022-09-18", DateUtil.DB_DATE_FORMAT));
+        localPod.setRequisitionActualEndDate(DateUtil.parseString("2022-10-18", DateUtil.DB_DATE_FORMAT));
+        localPod.setShippedDate(DateUtil.parseString("2022-09-24", DateUtil.DB_DATE_FORMAT));
       }
       localPod.setProcessedDate(DateUtil.getCurrentDate());
     }

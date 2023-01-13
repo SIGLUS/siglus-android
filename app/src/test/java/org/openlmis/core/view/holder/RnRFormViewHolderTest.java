@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
 import android.graphics.drawable.ColorDrawable;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -24,6 +23,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.persistence.DbUtil;
+import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -197,7 +197,7 @@ public class RnRFormViewHolderTest {
 
   @SuppressWarnings("ConstantConditions")
   private String getStringResource(int resId, Object... param) {
-    return Html.fromHtml(RuntimeEnvironment.application.getApplicationContext().getResources()
+    return CompatUtil.fromHtml(RuntimeEnvironment.application.getApplicationContext().getResources()
         .getString(resId, param)).toString();
   }
 
