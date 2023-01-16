@@ -729,7 +729,7 @@
   <string name="alert_issue_voucher_can_not_be_blank_for_kit">Insira a quantidade ou remova o produto</string>
   <string name="msg_delete_dirty_data">Excluindo dados sujos…</string>
   <string name="msg_initial_dirty_data_check">O aplicativo está verificando dados sujos, esse processo levará um tempo. \n Por favor aguardar...</string>
-  <string name="msg_logging_in">logando...</string>
+  <string name="msg_logging_in">Iniciando...</string>
   <string name="TR_program_name_for_issue_voucher_title">Testes Rápidos</string>
   <string name="alert_issue_all_lot_expired">Por favor remova o produto</string>
   <string name="error_rapid_test_consumption">O número de consumo não pode estar vazio.</string>
