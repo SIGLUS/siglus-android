@@ -155,7 +155,7 @@ public class MovementDetailsView extends LinearLayout {
         new MovementDateListener(presenter.getViewModel(), presenter.getLastMovementDate(),
             etMovementDate),
         today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
-    dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Done", dialog);
+    dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", dialog);
     dialog.setOnDismissListener(dialog1 -> etMovementDate.setEnabled(true));
     if (dialog.getWindow() != null) {
       dialog.getWindow().setBackgroundDrawable(new ColorDrawable(TRANSPARENT));
