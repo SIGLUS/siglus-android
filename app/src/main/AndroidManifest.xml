@@ -78,12 +78,12 @@
       android:configChanges="orientation|screenSize"
       android:label="@string/label_mmia_title"
       android:name=".view.activity.MMIARequisitionActivity"
-      android:windowSoftInputMode="stateAlwaysHidden" />
+      android:windowSoftInputMode="adjustNothing|stateHidden" />
     <activity
       android:configChanges="orientation|screenSize"
       android:label="@string/label_mmtb_title"
       android:name=".view.activity.MMTBRequisitionActivity"
-      android:windowSoftInputMode="stateAlwaysHidden"
+      android:windowSoftInputMode="adjustNothing|stateHidden"
       />
     <activity
       android:configChanges="orientation|screenSize"
