@@ -239,7 +239,6 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
     actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
     scrollView.setOnTouchListener((v, event) -> {
       scrollView.requestFocus();
-      KeyboardUtil.hideKeyboard(requireActivity());
       return false;
     });
     ViewTreeObserver verticalViewTreeObserver = scrollView.getViewTreeObserver();

@@ -299,7 +299,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
     scrollView.setOnTouchListener((v, event) -> {
       scrollView.requestFocus();
-      KeyboardUtil.hideKeyboard(requireActivity());
       return false;
     });
 
