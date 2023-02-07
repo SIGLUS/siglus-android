@@ -29,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/margin_small"
+        android:paddingBottom="@dimen/px_50"
         android:baselineAligned="false"
         android:orientation="horizontal"
         tools:layout_height="@dimen/px_320">
