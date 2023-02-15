@@ -61,7 +61,7 @@ public class ClickIntervalChecker {
   public boolean isClickLongerThanInterval() {
     long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
     long elapsedTime = currentTimeMillis - getLastClickItemTime();
-    return elapsedTime > CLICK_ITEM_INTERVAL;
+    return elapsedTime > CLICK_ITEM_INTERVAL || elapsedTime < 0;
   }
 
   public boolean isAppTimeOut() {
