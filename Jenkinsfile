@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'docker'}
     options {
         buildDiscarder(logRotator(numToKeepStr: '50'))
         timestamps ()
@@ -7,36 +7,41 @@ pipeline {
     stages {
         stage('Static Code Analysis') {
             steps {
-                sh '''
-                    pwd && ls -l
-                    ./gradlew clean checkstyle pmd spotbugsLocalDebug
-                '''
+                executeInContainer('./gradlew clean checkstyle pmd spotbugsLocalDebug')
             }
         }
         stage('Unit Test') {
             steps {
-                sh '''
-                    ./gradlew testLocalDebug --no-daemon
-                '''
+                executeInContainer('./gradlew testLocalDebug --no-daemon')
             }
         }
         stage('Test Coverage Verification') {
             steps {
-                sh '''
-                    ./gradlew jacocoTestCoverageVerification
-                '''
+                executeInContainer('./gradlew jacocoTestCoverageVerification')
             }
         }
         stage('Sonarqube Analysis') {
+            when {
+                environment name: 'GIT_BRANCH', value: 'master'
+            }
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONARQUBE_TOKEN')]) {
-                    sh '''
-                        if [ "$GIT_BRANCH" = "master" ]; then
-                            ./gradlew sonarqube -x test -Dsonar.projectKey=siglus-android -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONARQUBE_TOKEN
-                        fi
-                    '''
+                    executeInContainer("./gradlew sonarqube -x test -Dsonar.projectKey=siglus-android -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONARQUBE_TOKEN}")
                 }
             }
         }
+    }
+}
+
+def executeInContainer(cmd) {
+    withEnv(["CMD=${cmd}"]) {
+        sh '''
+           docker run --rm -v `pwd`:/app -w /app --network=host \
+           --security-opt seccomp=unconfined \
+           -e KSTOREPWD \
+           -e KEYPWD \
+           siglusdevops/android-runner sh -c \
+           "${CMD}"
+        '''
     }
 }
