@@ -35,13 +35,15 @@ pipeline {
 
 def executeInContainer(cmd) {
     withEnv(["CMD=${cmd}"]) {
-        sh '''
-           docker run --rm -v `pwd`:/app -w /app --network=host \
-           --security-opt seccomp=unconfined \
-           -e KSTOREPWD \
-           -e KEYPWD \
-           siglusdevops/android-runner sh -c \
-           "${CMD}"
-        '''
+        withCredentials([string(credentialsId: 'KSTOREPWD', variable: 'KSTOREPWD'),string(credentialsId: 'KEYPWD', variable: 'KEYPWD')]) {
+            sh '''
+               docker run --rm -v `pwd`:/app -w /app --network=host \
+               --security-opt seccomp=unconfined \
+               -e KSTOREPWD \
+               -e KEYPWD \
+               siglusdevops/android-runner sh -c \
+               "${CMD}"
+            '''
+        }
     }
 }
