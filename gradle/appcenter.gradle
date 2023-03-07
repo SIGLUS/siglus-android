@@ -2,7 +2,7 @@ apply plugin: "com.betomorrow.appcenter"
 
 appcenter {
     apiToken = "6808959844cd46a63a1d3397d7124a0e1b9bd3ae"
-    ownerName = "SIGLUS-V2"
+    ownerName = "SIGLUS"
     distributionGroups = ["Internal"]
     releaseNotes = getGitCommit()
     notifyTesters = false
