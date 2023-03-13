@@ -201,7 +201,7 @@ public class VIARequisitionPresenterTest {
     verify(mockRnrFormRepository, never()).initNormalRnrForm(null);
   }
 
-  @Ignore
+  @Test
   public void shouldSubmitAfterSignedAndStatusIsDraft() throws LMISException {
     //given
     RnRForm form = getRnRFormWithStatus(Status.DRAFT);
