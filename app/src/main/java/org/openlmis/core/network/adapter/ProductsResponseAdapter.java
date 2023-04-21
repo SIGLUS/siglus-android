@@ -64,8 +64,9 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
     final Product product = generateProduct(jsonProduct);
     final String programCode = jsonProduct.get("programCode").getAsString();
     final String category = getString(jsonProduct, "category", "Default");
+    final Boolean showInReport = getBoolean(jsonProduct, "showInReport", false);
     final List<ProductProgram> productPrograms = generateProductProgram(product, programCode,
-        category);
+        category, showInReport);
 
     productAndSupportedPrograms.setProduct(product);
     productAndSupportedPrograms.setProductPrograms(productPrograms);
@@ -107,13 +108,14 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
   }
 
   private List<ProductProgram> generateProductProgram(Product product, String programCode,
-      String category) {
+      String category, Boolean showInReport) {
     final ArrayList<ProductProgram> productPrograms = new ArrayList<>();
     final ProductProgram productProgram = new ProductProgram();
     productProgram.setProgramCode(programCode);
     productProgram.setProductCode(product.getCode());
     productProgram.setActive(product.isActive());
     productProgram.setCategory(category);
+    productProgram.setShowInReport(showInReport);
     productPrograms.add(productProgram);
     return productPrograms;
   }

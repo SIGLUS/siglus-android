@@ -127,4 +127,6 @@ public class FieldConstants {
   public static final String POD_ID = "pod_id";
 
   public static final String FORM_ID = "form_id";
+
+  public static final String SHOW_IN_REPORT = "showInReport";
 }

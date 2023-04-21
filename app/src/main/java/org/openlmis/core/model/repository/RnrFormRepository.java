@@ -379,14 +379,10 @@ public class RnrFormRepository {
 
   protected ArrayList<RnrFormItem> fillAllProducts(RnRForm form, List<RnrFormItem> basicItems)
       throws LMISException {
-    List<Long> productIds;
+    List<String> productCodes;
     String formProgramCode = form.getProgram().getProgramCode();
-    if (formProgramCode.equals(MMIA_PROGRAM_CODE)) {
-      productIds = productProgramRepository.queryActiveProductIdsForMMIA(formProgramCode);
-    } else {
-      productIds = productProgramRepository.queryActiveProductIdsByProgramWithKits(formProgramCode, false);
-    }
-    List<Product> products = productRepository.queryProductsByProductIds(productIds);
+    productCodes = productProgramRepository.queryActiveProductIdsForReports(formProgramCode);
+    List<Product> products = productRepository.queryActiveProductsByCodesWithKits(productCodes, false);
     ArrayList<RnrFormItem> result = new ArrayList<>();
 
     for (Product product : products) {

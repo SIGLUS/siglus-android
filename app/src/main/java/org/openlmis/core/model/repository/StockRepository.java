@@ -518,7 +518,7 @@ public class StockRepository {
           + programCode
           + "' AND category!= '" + MEDICINE_TYPE_DEFAULT + "'";
     }
-    return " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode = '"
+    return " SELECT productCode FROM product_programs WHERE isActive=1 AND showInReport=1 AND programCode = '"
         + programCode + "'";
   }
 
