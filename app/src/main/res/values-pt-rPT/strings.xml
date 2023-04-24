@@ -63,7 +63,7 @@
 
   <!--MMIA-->
   <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
-  <string name="label_rnrfrom_left_header">PRODUCT</string>
+  <string name="label_rnrfrom_left_header">Produtos</string>
   <string name="label_rnrfrom_left_header_old">MEDICAMENTO</string>
   <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
   <string name="total">Total</string>
