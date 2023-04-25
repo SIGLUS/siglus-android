@@ -77,7 +77,6 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
     final Product product = new Product();
     product.setCode(jsonProduct.get("productCode").getAsString());
     product.setPrimaryName(jsonProduct.get("fullProductName").getAsString());
-    product.setStrength("");
     product.setType("");
     product.setArchived(getBoolean(jsonProduct, "archived", false));
     product.setActive(getBoolean(jsonProduct, "active", true));
@@ -85,6 +84,7 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
     product.setBasic(getBoolean(jsonProduct, "isBasic", false));
     product.setHiv(getBoolean(jsonProduct, "isHiv", false));
     product.setKitProductList(generateKitProduct(product.getCode(), jsonProduct));
+    product.setStrength(getString(jsonProduct, "unit", "each"));
     if (!jsonProduct.get("pricePerPack").isJsonNull()) {
       product.setPrice(jsonProduct.get("pricePerPack").getAsBigDecimal().toString());
     }
