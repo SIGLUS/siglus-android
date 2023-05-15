@@ -151,7 +151,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     productProgram.setShowInReport(true);
     when(productProgramRepository.queryByCode(anyString(), anyString())).thenReturn(productProgram);
     List<String> productCodes = new ArrayList<>();
-    when(productProgramRepository.queryActiveProductIdsForReports(Constants.MMIA_PROGRAM_CODE))
+    when(productProgramRepository.queryActiveProductCodesForReports(Constants.MMIA_PROGRAM_CODE))
         .thenReturn(productCodes);
     Product someProduct = ProductBuilder.buildAdultProduct();
     when(mockProductRepository.queryActiveProductsByCodesWithKits(productCodes, false))

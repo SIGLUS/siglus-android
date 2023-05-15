@@ -30,12 +30,12 @@ import androidx.fragment.app.FragmentManager;
 import org.openlmis.core.R;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
 
-public class UnCancelableDialog extends BaseDialogFragment {
+public class NonCancelableDialog extends BaseDialogFragment {
 
-  public static UnCancelableDialog newInstance(int messageId) {
+  public static NonCancelableDialog newInstance(int messageId) {
     Bundle bundle = new Bundle();
     bundle.putInt("messageResId", messageId);
-    UnCancelableDialog unCancelableDialog = new UnCancelableDialog();
+    NonCancelableDialog unCancelableDialog = new NonCancelableDialog();
     unCancelableDialog.setArguments(bundle);
     return unCancelableDialog;
   }

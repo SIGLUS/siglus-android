@@ -119,7 +119,7 @@ public class ProductProgramRepository {
         .toList();
   }
 
-  public List<String> queryActiveProductIdsForReports(String programCode) throws LMISException {
+  public List<String> queryActiveProductCodesForReports(String programCode) throws LMISException {
     List<ProductProgram> productPrograms = listActiveProductProgramsForShowInReport(programCode);
     return FluentIterable.from(productPrograms)
         .transform(ProductProgram::getProductCode)

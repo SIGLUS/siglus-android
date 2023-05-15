@@ -13,10 +13,10 @@
     android:title="@string/action_sign_out" />
 
   <item
-    android:id="@+id/action_wipe_data"
+    android:id="@+id/action_resync_data"
     android:orderInCategory="102"
     android:showAsAction="never"
-    android:title="@string/action_wipe_data" />
+    android:title="@string/action_resync_data" />
 
   <item
     android:id="@+id/action_export_db"

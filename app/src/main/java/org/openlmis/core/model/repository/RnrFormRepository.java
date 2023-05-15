@@ -381,7 +381,7 @@ public class RnrFormRepository {
       throws LMISException {
     List<String> productCodes;
     String formProgramCode = form.getProgram().getProgramCode();
-    productCodes = productProgramRepository.queryActiveProductIdsForReports(formProgramCode);
+    productCodes = productProgramRepository.queryActiveProductCodesForReports(formProgramCode);
     List<Product> products = productRepository.queryActiveProductsByCodesWithKits(productCodes, false);
     ArrayList<RnrFormItem> result = new ArrayList<>();
 

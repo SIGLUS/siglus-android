@@ -411,7 +411,7 @@
   <string name="hint_more_than_limit_product_has_checked">Você só pode selecionar 1 produto para regime</string>
 
   <!--update notification text-->
-  <string name="action_wipe_data">Limpar e importar dados do servidor</string>
+  <string name="action_resync_data">Limpar e importar dados do servidor</string>
 
   <!--Select Emergency Products-->
   <string name="title_select_emergency_products">Seleccione os produtos para adicionar a sua requisição de emergência</string>

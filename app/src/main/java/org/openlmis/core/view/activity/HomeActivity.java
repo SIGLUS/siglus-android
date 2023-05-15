@@ -70,9 +70,9 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.DashboardView;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
+import org.openlmis.core.view.widget.NonCancelableDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.SyncTimeView;
-import org.openlmis.core.view.widget.UnCancelableDialog;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
@@ -103,6 +103,25 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   SharedPreferenceMgr sharedPreferenceMgr;
   @Inject
   DirtyDataManager dirtyDataManager;
+  @InjectResource(R.integer.back_twice_interval)
+  private int backTwiceInterval;
+  @InjectPresenter(HomePresenter.class)
+  private HomePresenter homePresenter;
+  private boolean exitPressedOnce = false;
+  private boolean isCmmCalculating = false;
+  private int syncedCount = 0;
+  private NonCancelableDialog initialDirtyDataCheckDialog;
+  private NonCancelableDialog autoSyncDataBeforeResyncDialog;
+  protected final InternetCheckListener validateConnectionListener = internet -> {
+    if (!internet) {
+      ToastUtil.show(R.string.message_wipe_no_connection);
+    } else {
+      autoSyncDataBeforeResyncDialog = NonCancelableDialog.newInstance(R.string.msg_auto_sync_before_resync);
+      getSupportFragmentManager().beginTransaction()
+          .add(autoSyncDataBeforeResyncDialog, "autoSyncDataBeforeResyncDialog").commitNow();
+      syncData();
+    }
+  };
   private final SingleClickButtonListener singleClickButtonListener = new SingleClickButtonListener() {
     @Override
     public void onSingleClick(View v) {
@@ -130,25 +149,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         default:
           // do nothing
       }
-    }
-  };
-  @InjectResource(R.integer.back_twice_interval)
-  private int backTwiceInterval;
-  @InjectPresenter(HomePresenter.class)
-  private HomePresenter homePresenter;
-  private boolean exitPressedOnce = false;
-  private boolean isCmmCalculating = false;
-  private int syncedCount = 0;
-  private UnCancelableDialog initialDirtyDataCheckDialog;
-  private UnCancelableDialog autoSyncDataBeforeResyncDialog;
-  protected final InternetCheckListener validateConnectionListener = internet -> {
-    if (!internet) {
-      ToastUtil.show(R.string.message_wipe_no_connection);
-    } else {
-      autoSyncDataBeforeResyncDialog = UnCancelableDialog.newInstance(R.string.msg_auto_sync_before_resync);
-      getSupportFragmentManager().beginTransaction()
-          .add(autoSyncDataBeforeResyncDialog, "autoSyncDataBeforeResyncDialog").commitNow();
-      syncData();
     }
   };
 
@@ -181,6 +181,10 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
           syncTimeView.setSyncedMovementError(event.getMsg());
         } else {
           syncTimeView.setSyncStockCardLastYearError();
+        }
+        if (getSupportFragmentManager().findFragmentByTag("autoSyncDataBeforeResyncDialog") != null) {
+          autoSyncDataBeforeResyncDialog.dismiss();
+          showResyncAlertDialog();
         }
         break;
       default:
@@ -260,8 +264,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       case R.id.action_sync_data:
         syncData();
         return true;
-      case R.id.action_wipe_data:
-        alertWipeData();
+      case R.id.action_resync_data:
+        alertResyncData();
         return true;
       case R.id.action_export_db:
         exportDB();
@@ -422,7 +426,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     }
   }
 
-  private void alertWipeData() {
+  private void alertResyncData() {
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
       WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
           R.string.message_warning_wipe_data,
@@ -467,7 +471,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private void showInitialDirtyDataCheckDialog() {
     if (sharedPreferenceMgr.isInitialDirtyDataChecking()) {
-      initialDirtyDataCheckDialog = UnCancelableDialog.newInstance(R.string.msg_initial_dirty_data_check);
+      initialDirtyDataCheckDialog = NonCancelableDialog.newInstance(R.string.msg_initial_dirty_data_check);
       initialDirtyDataCheckDialog.show(getSupportFragmentManager());
     }
   }
