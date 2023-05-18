@@ -23,25 +23,37 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import org.openlmis.core.R;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
 
-public class InitialDirtyDataCheckDialog extends BaseDialogFragment {
+public class NonCancelableDialog extends BaseDialogFragment {
+
+  public static NonCancelableDialog newInstance(int messageId) {
+    Bundle bundle = new Bundle();
+    bundle.putInt("messageResId", messageId);
+    NonCancelableDialog unCancelableDialog = new NonCancelableDialog();
+    unCancelableDialog.setArguments(bundle);
+    return unCancelableDialog;
+  }
 
   @Nullable
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.dialog_initial_dirty_data_check, container, false);
+    View contentView = inflater.inflate(R.layout.dialog_initial_dirty_data_check, container, false);
+    TextView textView = contentView.findViewById(R.id.dialog_message);
+    textView.setText(requireArguments().getInt("messageResId"));
+    return contentView;
   }
 
   @NonNull
   @Override
   public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-    Dialog dialog =  super.onCreateDialog(savedInstanceState);
+    Dialog dialog = super.onCreateDialog(savedInstanceState);
     dialog.setCanceledOnTouchOutside(false);
     setCancelable(false);
     return dialog;

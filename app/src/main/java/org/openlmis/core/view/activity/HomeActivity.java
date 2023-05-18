@@ -70,7 +70,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.DashboardView;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
-import org.openlmis.core.view.widget.InitialDirtyDataCheckDialog;
+import org.openlmis.core.view.widget.NonCancelableDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.SyncTimeView;
 import roboguice.inject.ContentView;
@@ -82,51 +82,81 @@ import roboguice.inject.InjectView;
 public class HomeActivity extends BaseActivity implements HomePresenter.HomeView {
 
   private static final String EXPORT_DATA_PARENT_DIR = "//data//";
-
+  private static final int PERMISSION_REQUEST_CODE = 200;
   IncompleteRequisitionBanner incompleteRequisitionBanner;
-
   SyncTimeView syncTimeView;
-
   @InjectView(R.id.dv_product_dashboard)
   DashboardView dvProductDashboard;
-
   @InjectView(R.id.btn_stock_card)
   View btnStockCardOverView;
-
   @InjectView(R.id.btn_inventory)
   View btnPhysicalInventory;
-
   @InjectView(R.id.btn_requisitions)
   View btnRequisitions;
-
   @InjectView(R.id.btn_kits)
   View btnKits;
-
   @InjectView(R.id.btn_issue_voucher)
   View btnIssueVoucher;
-
-  @InjectResource(R.integer.back_twice_interval)
-  private int backTwiceInterval;
-
   @Inject
   SyncService syncService;
   @Inject
   SharedPreferenceMgr sharedPreferenceMgr;
   @Inject
   DirtyDataManager dirtyDataManager;
-
+  @InjectResource(R.integer.back_twice_interval)
+  private int backTwiceInterval;
   @InjectPresenter(HomePresenter.class)
   private HomePresenter homePresenter;
-
   private boolean exitPressedOnce = false;
-
-  private static final int PERMISSION_REQUEST_CODE = 200;
-
   private boolean isCmmCalculating = false;
-
   private int syncedCount = 0;
+  private NonCancelableDialog initialDirtyDataCheckDialog;
+  private NonCancelableDialog autoSyncDataBeforeResyncDialog;
+  protected final InternetCheckListener validateConnectionListener = internet -> {
+    if (!internet) {
+      ToastUtil.show(R.string.message_wipe_no_connection);
+    } else {
+      autoSyncDataBeforeResyncDialog = NonCancelableDialog.newInstance(R.string.msg_auto_sync_before_resync);
+      getSupportFragmentManager().beginTransaction()
+          .add(autoSyncDataBeforeResyncDialog, "autoSyncDataBeforeResyncDialog").commitNow();
+      syncData();
+    }
+  };
+  private final SingleClickButtonListener singleClickButtonListener = new SingleClickButtonListener() {
+    @Override
+    public void onSingleClick(View v) {
+      if (isHaveDirtyData()) {
+        return;
+      }
+      switch (v.getId()) {
+        case R.id.btn_stock_card:
+          startActivity(StockCardListActivity.class);
+          break;
+        case R.id.btn_inventory:
+          Intent inventoryIntent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
+          startActivity(inventoryIntent);
+          break;
+        case R.id.btn_requisitions:
+          Intent reportIntent = new Intent(HomeActivity.this, ReportListActivity.class);
+          startActivity(reportIntent);
+          break;
+        case R.id.btn_kits:
+          startActivity(KitStockCardListActivity.class);
+          break;
+        case R.id.btn_issue_voucher:
+          startActivity(new Intent(HomeActivity.this, IssueVoucherListActivity.class));
+          break;
+        default:
+          // do nothing
+      }
+    }
+  };
 
-  private final InitialDirtyDataCheckDialog initialDirtyDataCheckDialog = new InitialDirtyDataCheckDialog();
+  public static Intent getIntentToMe(Context context) {
+    Intent intent = new Intent(context, HomeActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    return intent;
+  }
 
   public void syncData() {
     syncService.requestSyncImmediatelyFromUserTrigger();
@@ -141,12 +171,20 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       case FINISH:
         setSyncedTime();
         refreshDashboard();
+        if (getSupportFragmentManager().findFragmentByTag("autoSyncDataBeforeResyncDialog") != null) {
+          autoSyncDataBeforeResyncDialog.dismiss();
+          showResyncAlertDialog();
+        }
         break;
       case ERROR:
         if (event.getMsg() != null) {
           syncTimeView.setSyncedMovementError(event.getMsg());
         } else {
           syncTimeView.setSyncStockCardLastYearError();
+        }
+        if (getSupportFragmentManager().findFragmentByTag("autoSyncDataBeforeResyncDialog") != null) {
+          autoSyncDataBeforeResyncDialog.dismiss();
+          showResyncAlertDialog();
         }
         break;
       default:
@@ -203,12 +241,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     exitPressedOnce = !exitPressedOnce;
   }
 
-  public static Intent getIntentToMe(Context context) {
-    Intent intent = new Intent(context, HomeActivity.class);
-    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    return intent;
-  }
-
   @Override
   public void updateDashboard(int regularAmount, int outAmount, int lowAmount, int overAmount) {
     dvProductDashboard.showFinished(regularAmount, outAmount, lowAmount, overAmount);
@@ -232,8 +264,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       case R.id.action_sync_data:
         syncData();
         return true;
-      case R.id.action_wipe_data:
-        alertWipeData();
+      case R.id.action_resync_data:
+        alertResyncData();
         return true;
       case R.id.action_export_db:
         exportDB();
@@ -320,47 +352,13 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     refreshDashboard();
   }
 
-  protected final InternetCheckListener validateConnectionListener = internet -> {
-    if (!internet) {
-      ToastUtil.show(R.string.message_wipe_no_connection);
-    } else {
-      WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
-          R.string.message_warning_wipe_data,
-          R.string.btn_positive,
-          R.string.btn_negative);
-      getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
-    }
-  };
-
-  private final SingleClickButtonListener singleClickButtonListener = new SingleClickButtonListener() {
-    @Override
-    public void onSingleClick(View v) {
-      if (isHaveDirtyData()) {
-        return;
-      }
-      switch (v.getId()) {
-        case R.id.btn_stock_card:
-          startActivity(StockCardListActivity.class);
-          break;
-        case R.id.btn_inventory:
-          Intent inventoryIntent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
-          startActivity(inventoryIntent);
-          break;
-        case R.id.btn_requisitions:
-          Intent reportIntent = new Intent(HomeActivity.this, ReportListActivity.class);
-          startActivity(reportIntent);
-          break;
-        case R.id.btn_kits:
-          startActivity(KitStockCardListActivity.class);
-          break;
-        case R.id.btn_issue_voucher:
-          startActivity(new Intent(HomeActivity.this, IssueVoucherListActivity.class));
-          break;
-        default:
-          // do nothing
-      }
-    }
-  };
+  private void showResyncAlertDialog() {
+    WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
+        R.string.message_warning_wipe_data,
+        R.string.btn_positive,
+        R.string.btn_negative);
+    getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
+  }
 
   private void setSyncedTime() {
     if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
@@ -428,7 +426,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     }
   }
 
-  private void alertWipeData() {
+  private void alertResyncData() {
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
       WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
           R.string.message_warning_wipe_data,
@@ -473,6 +471,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private void showInitialDirtyDataCheckDialog() {
     if (sharedPreferenceMgr.isInitialDirtyDataChecking()) {
+      initialDirtyDataCheckDialog = NonCancelableDialog.newInstance(R.string.msg_initial_dirty_data_check);
       initialDirtyDataCheckDialog.show(getSupportFragmentManager());
     }
   }

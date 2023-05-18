@@ -12,7 +12,7 @@ pipeline {
         }
         stage('Unit Test') {
             steps {
-                executeInContainer('./gradlew testLocalDebug --no-daemon')
+                executeInContainer('./gradlew testLocalDebugUnitTest --debug')
             }
         }
         stage('Test Coverage Verification') {

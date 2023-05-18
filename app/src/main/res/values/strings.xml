@@ -63,7 +63,7 @@
 
   <!--MMIA-->
   <string name="label_mmia_title">MMIA - %1$s to %2$s</string>
-  <string name="label_rnrfrom_left_header">PRODUCT</string>
+  <string name="label_rnrfrom_left_header">PRODUCTS</string>
   <string name="label_rnrfrom_left_header_old">Medicine</string>
   <string name="label_regime_header_name">THERAPEUTIC REGIME</string>
   <string name="total">Total</string>
@@ -417,7 +417,7 @@
   <string name="hint_more_than_limit_product_has_checked">You can only select 1 products for regime</string>
 
   <!-- update notification text-->
-  <string name="action_wipe_data">Re-sync data from server</string>
+  <string name="action_resync_data">Re-sync data from server</string>
   <string name="message_warning_wipe_data">This operation will remove all the data from this device &amp; download previously submitted data back down to the tablet, \n WARNING \n Any un-synced movements or data will be lost. Do you want to continue?</string>
   <string name="message_wipe_no_connection">The network is unavailable, please try again when you have the network</string>
 
@@ -747,6 +747,7 @@
   <string name="error_msg_sync_failed">Sync failed</string>
   <string name="msg_sync_not_android_user">The administrator has upgraded your facility to a Web facility, please use the Web portal to log in for your further management.</string>
   <string name="msg_sync_not_same_device_user">the facility already logged into another device, please contact the administrator.</string>
+  <string name="msg_auto_sync_before_resync">Automatically sync data before the resync operation to ensure all data has been synced to the server</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minute</item>

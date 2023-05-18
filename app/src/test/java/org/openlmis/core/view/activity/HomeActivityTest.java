@@ -238,8 +238,8 @@ public class HomeActivityTest {
     RobolectricUtils.waitLooperIdle();
 
     // then
-    final Fragment wipeDataWarning = homeActivity.getSupportFragmentManager().findFragmentByTag("WipeDataWarning");
-    assertNotNull(wipeDataWarning);
+    final Fragment autoSyncDataDialog = homeActivity.getSupportFragmentManager().findFragmentByTag("autoSyncDataBeforeResyncDialog");
+    assertNotNull(autoSyncDataDialog);
   }
 
   @Test

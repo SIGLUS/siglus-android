@@ -30,6 +30,11 @@ public class ProductProgramBuilder {
     return this;
   }
 
+  public ProductProgramBuilder setShowInReport(Boolean showInReport) {
+    productProgram.setShowInReport(showInReport);
+    return this;
+  }
+
   public ProductProgram build() {
     return productProgram;
   }

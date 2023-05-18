@@ -196,8 +196,12 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
   }
 
   private void createNewProductProgram(String code, String productCode) throws LMISException {
-    ProductProgram productProgram = new ProductProgramBuilder().setProgramCode(code)
-        .setProductCode(productCode).setActive(true).build();
+    ProductProgram productProgram = new ProductProgramBuilder()
+        .setProgramCode(code)
+        .setProductCode(productCode)
+        .setActive(true)
+        .setShowInReport(true)
+        .build();
     productProgramRepository.createOrUpdate(productProgram);
   }
 

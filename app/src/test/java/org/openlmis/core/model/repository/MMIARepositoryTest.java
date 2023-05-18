@@ -61,6 +61,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.service.RequisitionPeriodService;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.roboguice.shaded.goole.common.collect.Lists;
@@ -147,13 +148,13 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
     ProductProgram productProgram = new ProductProgram();
     productProgram.setCategory("Adult");
+    productProgram.setShowInReport(true);
     when(productProgramRepository.queryByCode(anyString(), anyString())).thenReturn(productProgram);
-    List<String> mmiaCodes = newArrayList("MMIA");
-    List<Long> mmiaProductIds = new ArrayList<>();
-    when(productProgramRepository.queryActiveProductIdsByProgramsWithKits(mmiaCodes, false))
-        .thenReturn(mmiaProductIds);
+    List<String> productCodes = new ArrayList<>();
+    when(productProgramRepository.queryActiveProductCodesForReports(Constants.MMIA_PROGRAM_CODE))
+        .thenReturn(productCodes);
     Product someProduct = ProductBuilder.buildAdultProduct();
-    when(mockProductRepository.queryProductsByProductIds(mmiaProductIds))
+    when(mockProductRepository.queryActiveProductsByCodesWithKits(productCodes, false))
         .thenReturn(newArrayList(product, someProduct));
 
     RnRForm form = mmiaRepository.initNormalRnrForm(null);

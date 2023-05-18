@@ -11,8 +11,7 @@
     android:layout_height="wrap_content"
     android:minHeight="@dimen/px_160"
     android:textColor="@color/color_black"
-    android:gravity="center"
-    android:text="@string/msg_initial_dirty_data_check" />
+    android:gravity="center" />
 
   <ProgressBar
     android:layout_width="wrap_content"

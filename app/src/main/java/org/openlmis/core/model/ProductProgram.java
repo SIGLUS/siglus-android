@@ -44,4 +44,7 @@ public class ProductProgram extends BaseModel {
   @DatabaseField
   private String category;
 
+  @DatabaseField
+  private Boolean showInReport;
+
 }

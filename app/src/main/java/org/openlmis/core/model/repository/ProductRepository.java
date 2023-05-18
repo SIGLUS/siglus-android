@@ -340,11 +340,6 @@ public class ProductRepository {
     return FluentIterable.from(isArchived).transform(Product::getCode).toList();
   }
 
-  public List<Product> queryProductsByProductIds(final List<Long> productIds) throws LMISException {
-    return dbUtil
-        .withDao(Product.class, dao -> dao.queryBuilder().where().in(ID, productIds).query());
-  }
-
   public List<Product> queryActiveProductsInVIAProgramButNotInDraftVIAForm() {
     String rawSql = "SELECT p1.* FROM products p1 "
         + "JOIN product_programs p2 "
@@ -387,18 +382,6 @@ public class ProductRepository {
     }
     Collections.sort(nonBasicProducts);
     return nonBasicProducts;
-  }
-
-  public List<Product> getProductsByCodes(final List<String> codes) throws LMISException {
-    final List<Product> products = new ArrayList<>();
-    dbUtil.withDaoAsBatch(context, Product.class, dao -> {
-      for (String code : codes) {
-        Product product = dao.queryBuilder().where().eq(CODE, code).queryForFirst();
-        products.add(product);
-      }
-      return null;
-    });
-    return products;
   }
 
   public List<Product> queryProductsInStockCard() {

@@ -63,7 +63,7 @@
 
   <!--MMIA-->
   <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
-  <string name="label_rnrfrom_left_header">PRODUCT</string>
+  <string name="label_rnrfrom_left_header">Produtos</string>
   <string name="label_rnrfrom_left_header_old">MEDICAMENTO</string>
   <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
   <string name="total">Total</string>
@@ -411,7 +411,7 @@
   <string name="hint_more_than_limit_product_has_checked">Você só pode selecionar 1 produto para regime</string>
 
   <!--update notification text-->
-  <string name="action_wipe_data">Limpar e importar dados do servidor</string>
+  <string name="action_resync_data">Limpar e importar dados do servidor</string>
 
   <!--Select Emergency Products-->
   <string name="title_select_emergency_products">Seleccione os produtos para adicionar a sua requisição de emergência</string>
@@ -741,6 +741,7 @@
   <string name="error_msg_sync_failed">A sincronização falhou</string>
   <string name="msg_sync_not_android_user">O administrador actualizou as suas instalações para uma instalação Web, por favor utilize o portal Web para iniciar sessão para a sua posterior gestão.</string>
   <string name="msg_sync_not_same_device_user">A US já está cadastrada em outro dispositivo, entre em contato com o administrador.</string>
+  <string name="msg_auto_sync_before_resync">Sincronize automaticamente os dados antes da operação de ressincronização para garantir que todos os dados tenham sido sincronizados com o servidor</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>
