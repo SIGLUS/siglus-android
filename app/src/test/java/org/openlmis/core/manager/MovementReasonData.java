@@ -45,18 +45,19 @@ public class MovementReasonData {
         "Estomatologia",
         "Desembalar Kit"));
     PT_TYPE_TO_DESC_LIST
-        .put(MovementType.NEGATIVE_ADJUST, newArrayList("Devolução de expirados quarentena (ou depósito fornecedor)",
+        .put(MovementType.NEGATIVE_ADJUST, newArrayList("Devolução de expirados para Depósito fornecedor",
             "Danificado no depósito",
             "Empréstimos (para todos níveis) que dão saída do depósito",
-            "Correcção de inventário, no caso do stock em falta (stock é inferior ao existente na ficha de stock)",
-            "Saída para quarentena, no caso de problemas relativos a qualidade"));
+            "Correcção de inventário, no caso do stock inferior (stock é inferior ao existente na ficha de stock)",
+            "Saída para quarentena, no caso de problemas relativos a qualidade",
+            "Devolução Dentro do prazo de validade ao Depósito fornecedor"));
     PT_TYPE_TO_DESC_LIST
-        .put(MovementType.POSITIVE_ADJUST, newArrayList("Devolução dos clientes (US e Depósitos Beneficiários)",
+        .put(MovementType.POSITIVE_ADJUST, newArrayList("Devolução Dentro do prazo de validade dos clientes (US e Depósitos Beneficiários)",
             "Devolução de expirados (US e Depósitos Beneficiários)",
             "Doação ao Depósito",
             "Empréstimos (de todos os níveis) que dão entrada no depósito",
-            "Correcção de inventário, no caso do stock em excesso (stock é superior ao existente na ficha de stock)",
-            "Retorno da quarentena, no caso de se confirmar a qualidade do produto"));
+            "Correcção de inventário, no caso do stock Superior (stock é Superior ao existente na ficha de stock)",
+            "Da quarentena para Depósito, no caso de se confirmar a qualidade do produto"));
     PT_TYPE_TO_DESC_LIST.put(MovementType.PHYSICAL_INVENTORY, newArrayList("Inventario",
         "Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)",
         "Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)"));
@@ -76,17 +77,18 @@ public class MovementReasonData {
         "Dental ward",
         "Unpack kit"));
     EN_TYPE_TO_DESC_LIST
-        .put(MovementType.NEGATIVE_ADJUST, newArrayList("Drugs in quarantine have expired, returned to Supplier",
+        .put(MovementType.NEGATIVE_ADJUST, newArrayList("Return of expired items to supplier warehouse",
             "Damaged in the warehouse",
             "Loans made from a health facility deposit",
-            "Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)",
-            "Product defective, moved to quarantine"));
-    EN_TYPE_TO_DESC_LIST.put(MovementType.POSITIVE_ADJUST, newArrayList("Returns from Customers(HF and dependent wards)",
+            "Inventory correction in case of understock (Stock on hand is less than stock in stock card)",
+            "Product defective, moved to quarantine",
+            "Return within expiration date to supplier warehouse"));
+    EN_TYPE_TO_DESC_LIST.put(MovementType.POSITIVE_ADJUST, newArrayList("Return from Customers(HF and dependent wards) within the validity period",
         "Returns of expired drugs (HF and dependent wards)",
         "Donations to Deposit",
         "Loans received at the health facility deposit",
-        "Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)",
-        "Returns from Quarantine, in the case of quarantined product being fit for use"));
+        "Inventory correction in case of overstock (stock on hand is more than stock in stock card)",
+        "From quarantine to deposit, in the case of quarantined product being fit for use"));
     EN_TYPE_TO_DESC_LIST.put(MovementType.PHYSICAL_INVENTORY, newArrayList("Inventory",
         "Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)",
         "Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)"));

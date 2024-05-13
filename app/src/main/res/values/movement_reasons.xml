@@ -19,19 +19,19 @@
     <item>ISSUE|UNPACK_KIT|Unpack Kit</item>
     <item>ISSUE|APE|APE</item>
 
-    <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Drugs in quarantine have expired, returned to Supplier</item>
+    <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Return of expired items to supplier warehouse</item>
     <item>NEGATIVE_ADJUST|DAMAGED|Damaged in the warehouse</item>
     <item>NEGATIVE_ADJUST|LOANS_DEPOSIT|Loans made from a health facility deposit</item>
-    <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)</item>
+    <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Inventory correction in case of understock (Stock on hand is less than stock in stock card)</item>
     <item>NEGATIVE_ADJUST|PROD_DEFECTIVE|Product defective, moved to quarantine</item>
-    <item>NEGATIVE_ADJUST|RETURN_TO_SUPPLIER|Return to Supplier Warehouse</item>
+    <item>NEGATIVE_ADJUST|RETURN_TO_SUPPLIER|Return within expiration date to supplier warehouse</item>
 
-    <item>POSITIVE_ADJUST|CUSTOMER_RETURN|Returns from Customers(HF and dependent wards)</item>
+    <item>POSITIVE_ADJUST|CUSTOMER_RETURN|Return from Customers(HF and dependent wards) within the validity period</item>
     <item>POSITIVE_ADJUST|EXPIRED_RETURN_FROM_CUSTOMER|Returns of expired drugs (HF and dependent wards)</item>
     <item>POSITIVE_ADJUST|DONATION|Donations to Deposit</item>
     <item>POSITIVE_ADJUST|LOANS_RECEIVED|Loans received at the health facility deposit</item>
-    <item>POSITIVE_ADJUST|INVENTORY_POSITIVE|Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)</item>
-    <item>POSITIVE_ADJUST|RETURN_FROM_QUARANTINE|Returns from Quarantine, in the case of quarantined product being fit for use</item>
+    <item>POSITIVE_ADJUST|INVENTORY_POSITIVE|Inventory correction in case of overstock (stock on hand is more than stock in stock card)</item>
+    <item>POSITIVE_ADJUST|RETURN_FROM_QUARANTINE|From quarantine to deposit, in the case of quarantined product being fit for use</item>
 
     <item>PHYSICAL_INVENTORY|INVENTORY|Inventory</item>
     <item>PHYSICAL_INVENTORY|INVENTORY_NEGATIVE|Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)</item>
@@ -47,6 +47,8 @@
     <item>REJECTION|INSUFFICIENT|Received less quantities than expected</item>
     <item>REJECTION|EXPIRED|Expired products</item>
     <item>REJECTION|UNEATABLE|Inappropriate for consumption</item>
+    <item>REJECTION|EXCESS|Quantity received in excess (in lot)</item>
+    <item>REJECTION|LOT_NOT_SPECIFIED|Lot not specified on the delivery note</item>
   </string-array>
 </resources>
 
