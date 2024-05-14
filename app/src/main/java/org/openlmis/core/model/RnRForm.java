@@ -303,6 +303,10 @@ public class RnRForm extends BaseModel {
     return baseInfoItemList.size() == 7;
   }
 
+  public boolean isOldMMIALayoutV2() {
+    return baseInfoItemList.size() == 23;
+  }
+
   public enum Emergency {
     YES(true),
     NO(false);

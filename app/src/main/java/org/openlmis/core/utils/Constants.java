@@ -182,6 +182,8 @@ public final class Constants {
   public static final String ATTR_TABLE_DISPENSED_DT2 = "dispensed_dt2";
   public static final String ATTR_TABLE_DISPENSED_DT1 = "dispensed_dt1";
   public static final String ATTR_TABLE_DISPENSED_DT = "dispensed_dt";
+  public static final String ATTR_TABLE_DISPENSED_DB1 = "dispensed_db1";
+  public static final String ATTR_TABLE_DISPENSED_DB = "dispensed_db";
   public static final String ATTR_TABLE_DISPENSED_DM = "dispensed_dm";
 
   // auth parameter

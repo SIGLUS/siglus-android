@@ -5,8 +5,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -239,5 +242,25 @@ public class RnRFormTest {
     rnRForm.addSignature(signature2);
     assertEquals(Status.AUTHORIZED, rnRForm.getStatus());
     assertEquals(signature2, rnRForm.getSignaturesWrapper().get(1).getSignature());
+  }
+
+  @Test
+  public void isOldMMIALayoutV2_shouldReturnTrueWhenBaseInfoItemsSizeIs23() {
+    rnRForm = new RnRForm();
+    ForeignCollection<BaseInfoItem> mockedBaseInfoItem = mock(ForeignCollection.class);
+    rnRForm.setBaseInfoItemList(mockedBaseInfoItem);
+    when(mockedBaseInfoItem.size()).thenReturn(23);
+
+    assertTrue(rnRForm.isOldMMIALayoutV2());
+  }
+
+  @Test
+  public void isOldMMIALayoutV2_shouldReturnFalseWhenBaseInfoItemsSizeIsNot23() {
+    rnRForm = new RnRForm();
+    ForeignCollection<BaseInfoItem> mockedBaseInfoItem = mock(ForeignCollection.class);
+    rnRForm.setBaseInfoItemList(mockedBaseInfoItem);
+    when(mockedBaseInfoItem.size()).thenReturn(25);
+
+    assertFalse(rnRForm.isOldMMIALayoutV2());
   }
 }

@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.widget;
 
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DB;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DB1;
 import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DM;
 import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS;
 import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS1;
@@ -37,6 +39,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -47,6 +50,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.openlmis.core.R;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -55,12 +59,14 @@ public class MMIADispensedInfoList extends LinearLayout {
 
   private TextView dsTotal;
   private TextView dtTotal;
+  private TextView dbTotal;
   private TextView dmTotal;
   private TextView withinTotal;
   private TextView total;
   private TextView adjustment;
   private final List<EditText> dsLists = new ArrayList<>();
   private final List<EditText> dtLists = new ArrayList<>();
+  private final List<EditText> dbLists = new ArrayList<>();
   private final List<EditText> dmLists = new ArrayList<>();
   private final List<EditText> withinLists = new ArrayList<>();
   private final List<EditText> editTexts = new ArrayList<>();
@@ -112,6 +118,7 @@ public class MMIADispensedInfoList extends LinearLayout {
     currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DS1, ATTR_TABLE_DISPENSED_DS);
     currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DT2, ATTR_TABLE_DISPENSED_DT1);
     currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DT1, ATTR_TABLE_DISPENSED_DT);
+    currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DB1, ATTR_TABLE_DISPENSED_DB);
   }
 
   private String getString(int id) {
@@ -131,12 +138,13 @@ public class MMIADispensedInfoList extends LinearLayout {
 
   private void getLastBaseInfoItems() {
 
-    if (presenter.getLastRnrForm() == null
-        || presenter.getLastRnrForm().getBaseInfoItemList() == null) {
+    RnRForm lastRnrForm = presenter.getLastRnrForm();
+    if (lastRnrForm == null
+        || lastRnrForm.getBaseInfoItemList() == null) {
       return;
     }
     List<BaseInfoItem> items = getDispensedBaseInfoItems(
-        new ArrayList<>(presenter.getLastRnrForm().getBaseInfoItemList()));
+        new ArrayList<>(lastRnrForm.getBaseInfoItemListWrapper()));
     if (items == null || items.isEmpty()) {
       return;
     }
@@ -189,6 +197,7 @@ public class MMIADispensedInfoList extends LinearLayout {
     sortedByDisplayOrder(list);
     initDSColumn(list);
     initDTDMColumn(list);
+    initDBColumn(list);
 
     withinTotal = getTextView(R.id.type_dispensed_total_within);
     total = getTextView(R.id.type_dispensed_total_total);
@@ -214,6 +223,8 @@ public class MMIADispensedInfoList extends LinearLayout {
     editText.setEnabled(lastInfos.size() == 0);
     if (key.startsWith(ATTR_TABLE_DISPENSED_DS)) {
       dsLists.add(editText);
+    } else if (key.startsWith(ATTR_TABLE_DISPENSED_DB)) {
+      dbLists.add(editText);
     } else {
       dtLists.add(editText);
     }
@@ -241,6 +252,29 @@ public class MMIADispensedInfoList extends LinearLayout {
     withinLists.add(dsWithin);
     editTexts.add(dsWithin);
     dsTotal = getTextView(R.id.type_dispensed_ds_total);
+  }
+
+  private void initDBColumn(List<BaseInfoItem> list) {
+    initEditTextCell(getEditText(R.id.type_dispensed_db_from_last), list, ATTR_TABLE_DISPENSED_DB1);
+
+    EditText dbWithin = initEditText(list, R.id.type_dispensed_db_from_within, ATTR_TABLE_DISPENSED_DB);
+    dbLists.add(dbWithin);
+    withinLists.add(dbWithin);
+    editTexts.add(dbWithin);
+
+    dbTotal = getTextView(R.id.type_dispensed_db_total);
+  }
+
+  @NonNull
+  private EditText initEditText(List<BaseInfoItem> list, @IdRes int editTextId, String attrTableKey) {
+    EditText editText = getEditText(editTextId);
+
+    BaseInfoItem baseInfoItem = getBaseInfoItemFromListByKey(list, attrTableKey);
+    Objects.requireNonNull(baseInfoItem);
+    editText.setText(baseInfoItem.getValue());
+    editText.addTextChangedListener(new EditTextWatcher(baseInfoItem));
+
+    return editText;
   }
 
   private void initDTDMColumn(List<BaseInfoItem> list) {
@@ -282,6 +316,7 @@ public class MMIADispensedInfoList extends LinearLayout {
 
   private String getTreatmentTotal() {
     return String.valueOf(Integer.parseInt(getTypesTotal(dmLists))
+        + Integer.parseInt(getTypesTotal(dbLists))
         + Integer.parseInt(getTypesTotal(dtLists))
         + Integer.parseInt(getTypesTotal(dsLists)));
   }
@@ -310,6 +345,7 @@ public class MMIADispensedInfoList extends LinearLayout {
   private void updateTotalInfo() {
     dsTotal.setText(getTypesTotal(dsLists));
     dtTotal.setText(getTypesTotal(dtLists));
+    dbTotal.setText(getTypesTotal(dbLists));
     dmTotal.setText(getTypesTotal(dmLists));
     withinTotal.setText(getTypesTotal(withinLists));
     total.setText(getTreatmentTotal());
@@ -341,6 +377,7 @@ public class MMIADispensedInfoList extends LinearLayout {
     this.editTexts.clear();
     this.dsLists.clear();
     this.dtLists.clear();
+    this.dbLists.clear();
     this.dmLists.clear();
     this.withinLists.clear();
   }

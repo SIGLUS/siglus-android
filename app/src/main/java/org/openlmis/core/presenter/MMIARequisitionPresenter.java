@@ -18,6 +18,11 @@
 
 package org.openlmis.core.presenter;
 
+import static org.openlmis.core.model.repository.MMIARepository.ATTR_TABLE_DISPENSED_DB1_DISPLAY_ORDER;
+import static org.openlmis.core.model.repository.MMIARepository.ATTR_TABLE_DISPENSED_DB_DISPLAY_ORDER;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DB;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DB1;
+
 import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.Date;
@@ -94,7 +99,22 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
     Collections
         .sort(rnRForms, (lhs, rhs) -> rhs.getPeriodBegin().compareTo(lhs.getPeriodBegin()));
-    return rnRForms.get(1);
+    RnRForm rnRForm1 = rnRForms.get(1);
+
+    // old template, we need set the last period db data for autofill in current period
+    if (rnRForm1 != null && rnRForm1.isOldMMIALayoutV2()) {
+      BaseInfoItem dbItem = new BaseInfoItem(
+              ATTR_TABLE_DISPENSED_DB,
+              BaseInfoItem.TYPE.INT,
+              rnRForm1,
+              getAttrTableDispensedKey(),
+              ATTR_TABLE_DISPENSED_DB_DISPLAY_ORDER
+      );
+      dbItem.setValue("0");
+      rnRForm1.getBaseInfoItemListWrapper().add(dbItem);
+    }
+
+    return rnRForm1;
   }
 
   public void setViewModels(List<RnrFormItem> formItems,
@@ -185,6 +205,35 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
       try {
         rnRForm = getRnrForm(formId);
+
+        if (rnRForm.isOldMMIALayoutV2()) {// old template and data is existed in local db -> create a default value for it
+          String attrTableDispensedKey = getAttrTableDispensedKey();
+
+          BaseInfoItem db1Item = new BaseInfoItem(
+                  ATTR_TABLE_DISPENSED_DB1,
+                  BaseInfoItem.TYPE.INT,
+                  rnRForm,
+                  attrTableDispensedKey,
+                  ATTR_TABLE_DISPENSED_DB1_DISPLAY_ORDER
+          );
+          BaseInfoItem dbItem = new BaseInfoItem(
+                  ATTR_TABLE_DISPENSED_DB,
+                  BaseInfoItem.TYPE.INT,
+                  rnRForm,
+                  attrTableDispensedKey,
+                  ATTR_TABLE_DISPENSED_DB_DISPLAY_ORDER
+          );
+
+          if (!rnRForm.isDraft()) {// we will show the value 0 as default if it is not draft
+            db1Item.setValue("0");
+            dbItem.setValue("0");
+          }
+
+          List<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
+          baseInfoItemListWrapper.add(db1Item);
+          baseInfoItemListWrapper.add(dbItem);
+        }
+
         subscriber.onNext(rnRForm);
         subscriber.onCompleted();
       } catch (LMISException e) {
@@ -192,6 +241,10 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         subscriber.onError(e);
       }
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  private String getAttrTableDispensedKey() {
+    return ((MMIARepository) rnrFormRepository).attrTableDispensedKey;
   }
 
   @Override

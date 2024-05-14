@@ -111,6 +111,26 @@
     <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
 
       <TextView
+          android:id="@+id/type_dispensed_db_title"
+          style="@style/MMIA.Type.Dispensed.Generic.Header"
+          android:text="@string/table_dispensed_label_db" />
+
+      <EditText
+          android:id="@+id/type_dispensed_db_from_last"
+          style="@style/MMIA.Type.Dispensed.DM.Edit" />
+
+      <EditText
+          android:id="@+id/type_dispensed_db_from_within"
+          style="@style/MMIA.Type.Dispensed.DM.Edit" />
+
+      <TextView
+          android:id="@+id/type_dispensed_db_total"
+          style="@style/MMIA.Type.Dispensed.Generic.Total" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
+
+      <TextView
         android:id="@+id/type_dispensed_dm_title"
         style="@style/MMIA.Type.Dispensed.Generic.Header"
         android:text="@string/table_dispensed_label_dm" />

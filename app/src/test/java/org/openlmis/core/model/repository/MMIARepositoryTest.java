@@ -240,7 +240,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     RnRForm rnRForm = new RnRForm();
     List<BaseInfoItem> baseInfoItems = mmiaRepository
         .generateBaseInfoItems(rnRForm, MMIARepository.ReportType.NEW);
-    assertThat(baseInfoItems.size(), is(23));
+    assertThat(baseInfoItems.size(), is(25));
     assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.attrTableTravNewKey));
     assertThat(baseInfoItems.get(1).getName(), is(mmiaRepository.attrTableTravMaintenanceKey));
     assertThat(baseInfoItems.get(2).getName(), is(mmiaRepository.attrTableTravAlterationKey));
@@ -255,6 +255,9 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         is(mmiaRepository.attrTableProphylaxisChildKey));
     assertThat(baseInfoItems.get(11).getName(), is(mmiaRepository.attrTableTotalPatientKey));
     assertThat(baseInfoItems.get(12).getName(), is(mmiaRepository.attrTableTotalMonthKey));
+
+    assertThat(baseInfoItems.get(23).getName(), is("dispensed_db1"));
+    assertThat(baseInfoItems.get(24).getName(), is("dispensed_db"));
   }
 
   @Test

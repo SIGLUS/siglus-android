@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DB;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DB1;
 import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DM;
 import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS;
 import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS1;
@@ -53,6 +55,8 @@ import roboguice.inject.InjectResource;
 
 public class MMIARepository extends RnrFormRepository {
 
+  public static final int ATTR_TABLE_DISPENSED_DB1_DISPLAY_ORDER = 32;
+  public static final int ATTR_TABLE_DISPENSED_DB_DISPLAY_ORDER = 33;
   @InjectResource(R.string.table_arvt_key)
   public String attrTableTravKey;
 
@@ -177,6 +181,8 @@ public class MMIARepository extends RnrFormRepository {
     displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DT1, 29);
     displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DT, 30);
     displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DM, 31);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DB1, ATTR_TABLE_DISPENSED_DB1_DISPLAY_ORDER);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DB, ATTR_TABLE_DISPENSED_DB_DISPLAY_ORDER);
     return displayOrderHashMap;
   }
 
@@ -264,6 +270,8 @@ public class MMIARepository extends RnrFormRepository {
     mAttrs.put(ATTR_TABLE_DISPENSED_DT1, attrTableDispensedKey);
     mAttrs.put(ATTR_TABLE_DISPENSED_DT, attrTableDispensedKey);
     mAttrs.put(ATTR_TABLE_DISPENSED_DM, attrTableDispensedKey);
+    mAttrs.put(ATTR_TABLE_DISPENSED_DB1, attrTableDispensedKey);
+    mAttrs.put(ATTR_TABLE_DISPENSED_DB, attrTableDispensedKey);
   }
 
   private void initDisplayOrder() {

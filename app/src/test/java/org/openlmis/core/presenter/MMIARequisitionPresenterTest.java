@@ -35,6 +35,7 @@ import android.util.Log;
 import com.google.inject.AbstractModule;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
@@ -56,6 +57,7 @@ import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenItemRepository;
 import org.openlmis.core.service.SyncUpManager;
+import org.openlmis.core.utils.Constants;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
@@ -64,6 +66,8 @@ import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)
 public class MMIARequisitionPresenterTest {
+  private static String TABLE_DISPENSED_KEY = "table_dispensed_key";
+  private static String DEFAULT_DISPENSED_VALUE = "0";
 
   private SyncUpManager syncUpManager;
   private MMIARequisitionPresenter presenter;
@@ -255,6 +259,119 @@ public class MMIARequisitionPresenterTest {
   }
 
   @Test
+  public void getRnrFormObservable_shouldAddDBDataWithoutValueWhenTemplateIsOldV2AndIsDraft() {
+    mockForGetRnrFormObservable(true, true);
+    // action
+    Observable<RnRForm> rnrFormObservable = presenter.getRnrFormObservable(100);
+    // assertion
+    TestSubscriber<RnRForm> rnRFormTestSubscriber = new TestSubscriber<>();
+    rnrFormObservable.subscribe(rnRFormTestSubscriber);
+    rnRFormTestSubscriber.awaitTerminalEvent();
+    List<RnRForm> onNextEvents = rnRFormTestSubscriber.getOnNextEvents();
+
+    assertEquals(1, onNextEvents.size());
+    RnRForm rnRForm = onNextEvents.get(0);
+
+    List<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
+    assertEquals(25, baseInfoItemListWrapper.size());
+    String tableDispensedKey = "table_dispensed_key";
+
+    BaseInfoItem db1Item = new BaseInfoItem(
+            "dispensed_db1",
+            BaseInfoItem.TYPE.INT,
+            rnRForm,
+            tableDispensedKey,
+            32
+    );
+    BaseInfoItem actualDb1Item = baseInfoItemListWrapper.get(23);
+    assertEquals(db1Item, actualDb1Item);
+    assertEquals(null, actualDb1Item.getValue());
+    BaseInfoItem dbItem = new BaseInfoItem(
+            "dispensed_db",
+            BaseInfoItem.TYPE.INT,
+            rnRForm,
+            tableDispensedKey,
+            33
+    );
+    BaseInfoItem actualDbItem = baseInfoItemListWrapper.get(24);
+    assertEquals(dbItem, actualDbItem);
+    assertEquals(null, actualDbItem.getValue());
+  }
+
+  @Test
+  public void getRnrFormObservable_shouldAddDBDataWith0ValueWhenTemplateIsOldV2AndIsNotDraft() {
+    mockForGetRnrFormObservable(true, false);
+    // action
+    Observable<RnRForm> rnrFormObservable = presenter.getRnrFormObservable(100);
+    // assertion
+    TestSubscriber<RnRForm> rnRFormTestSubscriber = new TestSubscriber<>();
+    rnrFormObservable.subscribe(rnRFormTestSubscriber);
+    rnRFormTestSubscriber.awaitTerminalEvent();
+    List<RnRForm> onNextEvents = rnRFormTestSubscriber.getOnNextEvents();
+
+    assertEquals(1, onNextEvents.size());
+    RnRForm rnRForm = onNextEvents.get(0);
+
+    List<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
+    assertEquals(25, baseInfoItemListWrapper.size());
+
+    BaseInfoItem db1Item = new BaseInfoItem(
+            "dispensed_db1",
+            BaseInfoItem.TYPE.INT,
+            rnRForm,
+            TABLE_DISPENSED_KEY,
+            32
+    );
+    BaseInfoItem actualDb1Item = baseInfoItemListWrapper.get(23);
+    assertEquals(db1Item, actualDb1Item);
+    assertEquals(DEFAULT_DISPENSED_VALUE, actualDb1Item.getValue());
+
+    BaseInfoItem dbItem = new BaseInfoItem(
+            "dispensed_db",
+            BaseInfoItem.TYPE.INT,
+            rnRForm,
+            TABLE_DISPENSED_KEY,
+            33
+    );
+
+    BaseInfoItem actualDbItem = baseInfoItemListWrapper.get(24);
+    assertEquals(dbItem, actualDbItem);
+    assertEquals(DEFAULT_DISPENSED_VALUE, actualDbItem.getValue());
+  }
+
+  @Test
+  public void getRnrFormObservable_shouldNotAddDBDataWith0ValueWhenTemplateIsNotOldV2() {
+    // Given
+    mockForGetRnrFormObservable(false, false);
+    // action
+    Observable<RnRForm> rnrFormObservable = presenter.getRnrFormObservable(100);
+    // assertion
+    TestSubscriber<RnRForm> rnRFormTestSubscriber = new TestSubscriber<>();
+    rnrFormObservable.subscribe(rnRFormTestSubscriber);
+    rnRFormTestSubscriber.awaitTerminalEvent();
+    List<RnRForm> onNextEvents = rnRFormTestSubscriber.getOnNextEvents();
+
+    assertEquals(1, onNextEvents.size());
+    RnRForm rnRForm = onNextEvents.get(0);
+
+    assertEquals(23, rnRForm.getBaseInfoItemListWrapper().size());
+  }
+
+  private void mockForGetRnrFormObservable(boolean isOldMMIALayoutV2, boolean isDraft) {
+    RnRForm mockedRnRForm = mock(RnRForm.class);
+    when(mockedRnRForm.isOldMMIALayoutV2()).thenReturn(isOldMMIALayoutV2);
+    when(mockedRnRForm.isDraft()).thenReturn(isDraft);
+
+    ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+    for (int i = 0; i < 23; i++) {
+      baseInfoItems.add(mock(BaseInfoItem.class));
+    }
+    when(mockedRnRForm.getBaseInfoItemListWrapper()).thenReturn(baseInfoItems);
+
+    presenter.rnRForm = mockedRnRForm;
+  }
+
+  @Test
   public void shouldGetSaveFormObservable() {
     Observable<Void> saveFormObservable = presenter.getSaveFormObservable(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), null);
     assertNotNull(saveFormObservable);
@@ -281,6 +398,56 @@ public class MMIARequisitionPresenterTest {
     assertEquals(1, rnRForm.getBaseInfoItemListWrapper().size());
     assertEquals(1, rnRForm.getRegimenThreeLinesWrapper().size());
     assertEquals("comment", rnRForm.getComments());
+  }
+
+  @Test
+  public void getLastRnrForm_shouldNotUpdateBaseInfoItemsDataWhenIsNotOldTemplate() {
+    RnRForm mockedRnrForm = mock(RnRForm.class);
+    List<RnRForm> rnrForms = new ArrayList<>();
+    rnrForms.add(mockedRnrForm);
+    rnrForms.add(mockedRnrForm);
+
+    when(mmiaRepository.listInclude(RnRForm.Emergency.NO, Constants.MMIA_PROGRAM_CODE)).thenReturn(rnrForms);
+    when(mockedRnrForm.getPeriodBegin()).thenReturn(mock(Date.class));
+    when(mockedRnrForm.isOldMMIALayoutV2()).thenReturn(false);
+    List mockBaseInfoItemListWrapper = mock(List.class);
+    when(mockedRnrForm.getBaseInfoItemListWrapper()).thenReturn(mockBaseInfoItemListWrapper);
+    // action
+    RnRForm actualRnrForm = presenter.getLastRnrForm();
+    // assertion
+    assertEquals(mockBaseInfoItemListWrapper, actualRnrForm.getBaseInfoItemListWrapper());
+  }
+
+  @Test
+  public void getLastRnrForm_shouldUpdateBaseInfoItemsDataWhenIsOldTemplate() {
+    RnRForm mockedRnrForm = mock(RnRForm.class);
+    List<RnRForm> rnrForms = new ArrayList<>();
+    rnrForms.add(mockedRnrForm);
+    rnrForms.add(mockedRnrForm);
+
+    when(mmiaRepository.listInclude(RnRForm.Emergency.NO, Constants.MMIA_PROGRAM_CODE)).thenReturn(rnrForms);
+    when(mockedRnrForm.getPeriodBegin()).thenReturn(mock(Date.class));
+    when(mockedRnrForm.isOldMMIALayoutV2()).thenReturn(true);
+    List<BaseInfoItem> baseInfoItems = new ArrayList();
+    for (int i = 0; i < 23;i++) {
+      baseInfoItems.add(mock(BaseInfoItem.class));
+    }
+    when(mockedRnrForm.getBaseInfoItemListWrapper()).thenReturn(baseInfoItems);
+    // action
+    RnRForm actualRnrForm = presenter.getLastRnrForm();
+    // assertion
+    List<BaseInfoItem> actualBaseInfoItemListWrapper = actualRnrForm.getBaseInfoItemListWrapper();
+    assertEquals(24, actualBaseInfoItemListWrapper.size());
+
+    BaseInfoItem dbItem = new BaseInfoItem(
+            "dispensed_db",
+            BaseInfoItem.TYPE.INT,
+            mockedRnrForm,
+            TABLE_DISPENSED_KEY,
+            33
+    );
+    dbItem.setValue(DEFAULT_DISPENSED_VALUE);
+    assertEquals(dbItem, actualBaseInfoItemListWrapper.get(23));
   }
 
   private void waitObservableToExecute() {
