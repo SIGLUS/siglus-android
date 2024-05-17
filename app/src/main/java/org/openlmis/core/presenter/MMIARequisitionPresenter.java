@@ -206,7 +206,8 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
       try {
         rnRForm = getRnrForm(formId);
 
-        if (rnRForm.isOldMMIALayoutV2()) {// old template and data is existed in local db -> create a default value for it
+        // old template and data is existed in local db -> create a default value for it
+        if (rnRForm.isOldMMIALayoutV2()) {
           String attrTableDispensedKey = getAttrTableDispensedKey();
 
           BaseInfoItem db1Item = new BaseInfoItem(
@@ -224,7 +225,8 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                   ATTR_TABLE_DISPENSED_DB_DISPLAY_ORDER
           );
 
-          if (!rnRForm.isDraft()) {// we will show the value 0 as default if it is not draft
+          // we will show the value 0 as default if it is not draft
+          if (!rnRForm.isDraft()) {
             db1Item.setValue("0");
             dbItem.setValue("0");
           }
