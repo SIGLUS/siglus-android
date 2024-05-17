@@ -334,7 +334,7 @@ public class RnrFormAdapterTest {
 
     //then
     List<BaseInfoItem> baseInfoItems = rnRForm.getBaseInfoItemListWrapper();
-    assertEquals(23, baseInfoItems.size());
+    assertEquals(25, baseInfoItems.size());
     BaseInfoItem baseInfoItem = baseInfoItems.get(0);
     assertEquals("table_patients_adults_key", baseInfoItem.getName());
     assertEquals("table_patients_key", baseInfoItem.getTableName());
