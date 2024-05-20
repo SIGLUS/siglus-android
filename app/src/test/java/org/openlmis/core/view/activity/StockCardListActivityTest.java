@@ -68,4 +68,14 @@ public class StockCardListActivityTest {
         .isEqualTo(StockCardListActivity.class.getName());
     assertThat(intent.getFlags()).isEqualTo(Intent.FLAG_ACTIVITY_CLEAR_TOP);
   }
+
+  @Test
+  public void shouldNavigateToExpiredProductsPageWhenExpiredProductsMenuClicked() {
+    shadowOf(stockCardListActivity).clickMenuItem(600);
+
+    Intent nextIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+    assertThat(nextIntent.getComponent().getClassName())
+            .isEqualTo(ExpiredProductsActivity.class.getName());
+  }
 }

@@ -750,6 +750,10 @@
   <string name="msg_sync_not_same_device_user">the facility already logged into another device, please contact the administrator.</string>
   <string name="msg_auto_sync_before_resync">Automatically sync data before the resync operation to ensure all data has been synced to the server</string>
 
+  <!-- Stock - Expired Products -->
+  <string name="action_expired_products">Expired Products</string>
+  <string name="title_expired_products">Expired Products</string>
+
   <plurals name="minute_unit">
     <item quantity="one">%s minute</item>
     <item quantity="other">%s minutes</item>

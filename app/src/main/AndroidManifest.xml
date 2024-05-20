@@ -141,6 +141,10 @@
       android:name=".view.activity.BulkEntriesActivity"
       android:screenOrientation="portrait" />
     <activity
+        android:label="@string/action_expired_products"
+        android:name=".view.activity.ExpiredProductsActivity"
+        android:screenOrientation="portrait" />
+    <activity
       android:label="@string/title_add_product_to_bulk_entries"
       android:name=".view.activity.AddProductsToBulkEntriesActivity"
       android:screenOrientation="portrait" />
