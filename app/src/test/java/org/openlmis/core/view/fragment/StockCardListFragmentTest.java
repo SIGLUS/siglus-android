@@ -19,7 +19,6 @@
 package org.openlmis.core.view.fragment;
 
 import static org.assertj.core.util.Lists.newArrayList;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.anyListOf;
@@ -32,19 +31,15 @@ import static org.mockito.Mockito.when;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
-
 import androidx.activity.result.ActivityResult;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.viethoa.RecyclerViewFastScroller;
 import com.viethoa.models.AlphabetItem;
-
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
