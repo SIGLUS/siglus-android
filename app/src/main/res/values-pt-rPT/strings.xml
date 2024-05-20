@@ -744,6 +744,10 @@
   <string name="msg_sync_not_same_device_user">A US já está cadastrada em outro dispositivo, entre em contato com o administrador.</string>
   <string name="msg_auto_sync_before_resync">Sincronize automaticamente os dados antes da operação de ressincronização para garantir que todos os dados tenham sido sincronizados com o servidor</string>
 
+  <!-- Stock - Expired Products -->
+  <string name="action_expired_products">Produtos Expirados</string>
+  <string name="title_expired_products">Produtos Expirados</string>
+
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>
     <item quantity="other">%s minutos</item>

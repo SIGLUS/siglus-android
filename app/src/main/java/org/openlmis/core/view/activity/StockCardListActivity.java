@@ -41,6 +41,7 @@ public class StockCardListActivity extends SearchBarActivity {
   private static final int MENU_ID_MOVEMENT_HISTORY = 300;
   private static final int MENU_ID_BULK_ISSUES = 400;
   private static final int MENU_ID_BULK_ENTRIES = 500;
+  private static final int MENU_ID_EXPIRED_PRODUCTS = 600;
 
   protected StockCardListFragment stockCardFragment;
 
@@ -110,6 +111,9 @@ public class StockCardListActivity extends SearchBarActivity {
             presenter.hasBulkIssueDraft() ? BulkIssueActivity.class : BulkIssueChooseDestinationActivity.class);
         toBulkIssuesOrEntriesLauncher.launch(intent);
         return true;
+      case MENU_ID_EXPIRED_PRODUCTS:
+        toBulkIssuesOrEntriesLauncher.launch(new Intent(LMISApp.getContext(),ExpiredProductsActivity.class));
+        return true;
       default:
         return super.onOptionsItemSelected(item);
     }
@@ -141,5 +145,7 @@ public class StockCardListActivity extends SearchBarActivity {
       menu.add(Menu.NONE, MENU_ID_BULK_ISSUES, 400, getString(R.string.action_bulk_issues))
           .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
+    menu.add(Menu.NONE, MENU_ID_EXPIRED_PRODUCTS, 600, getString(R.string.action_expired_products))
+            .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
   }
 }
