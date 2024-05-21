@@ -112,7 +112,7 @@ public class StockCardListActivity extends SearchBarActivity {
         toBulkIssuesOrEntriesLauncher.launch(intent);
         return true;
       case MENU_ID_EXPIRED_PRODUCTS:
-        toBulkIssuesOrEntriesLauncher.launch(new Intent(LMISApp.getContext(),ExpiredProductsActivity.class));
+        startActivity(ExpiredStockCardListActivity.getIntentToMe(this));
         return true;
       default:
         return super.onOptionsItemSelected(item);

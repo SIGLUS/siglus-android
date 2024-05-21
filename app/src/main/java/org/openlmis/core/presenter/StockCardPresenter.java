@@ -67,7 +67,7 @@ public class StockCardPresenter extends Presenter {
   DirtyDataManager dirtyDataManager;
   @Inject
   SharedPreferenceMgr sharedPreferenceMgr;
-  private StockCardListView view;
+  protected StockCardListView view;
   Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
   public StockCardPresenter() {
@@ -230,7 +230,16 @@ public class StockCardPresenter extends Presenter {
 
   private boolean showInOverview(StockCard stockCard) {
     return !stockCard.getProduct().isKit()
-        && (stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived());
+            && isActiveProduct(stockCard)
+            && !isArchivedProduct(stockCard);
+  }
+
+  protected boolean isActiveProduct(StockCard stockCard) {
+    return stockCard.getProduct().isActive();
+  }
+
+  protected boolean isArchivedProduct(StockCard stockCard) {
+    return stockCard.getProduct().isArchived();
   }
 
   private boolean showInArchiveView(StockCard stockCard) {

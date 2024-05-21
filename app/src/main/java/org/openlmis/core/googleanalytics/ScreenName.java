@@ -55,6 +55,7 @@ public enum ScreenName {
   ISSUE_VOUCHER_INPUT_ORDER_NUMBER_SCREEN("Issue Voucher Input Order number Screen"),
   ISSUE_VOUCHER_DRAFT_SCREEN("Issue Voucher Draft Screen"),
   ISSUE_VOUCHER_REMOT_SCREEN("Issue Voucher Draft Screen"),
+  EXPIRED_PRODUCTS_SCREEN("Expired Products Screen"),
   EDIT_ORDER_NUMBER_SCREEN("Edit Order Number Screen"),;
 
   private final String name;
