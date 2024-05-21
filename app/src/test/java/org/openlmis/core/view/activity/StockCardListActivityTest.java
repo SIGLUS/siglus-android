@@ -76,6 +76,6 @@ public class StockCardListActivityTest {
     Intent nextIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
     assertThat(nextIntent.getComponent().getClassName())
-            .isEqualTo(ExpiredProductsActivity.class.getName());
+            .isEqualTo(ExpiredStockCardListActivity.class.getName());
   }
 }
