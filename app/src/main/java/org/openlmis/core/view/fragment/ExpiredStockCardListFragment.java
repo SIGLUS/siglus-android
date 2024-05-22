@@ -2,7 +2,7 @@ package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
 
 import com.google.inject.Inject;
 
@@ -17,8 +17,11 @@ import roboguice.inject.InjectView;
 
 public class ExpiredStockCardListFragment extends StockCardListFragment {
 
-    @InjectView(R.id.sort_spinner)
-    Spinner spinner;
+    @InjectView(R.id.stock_card_root)
+    LinearLayout rootView;
+
+    @InjectView(R.id.divider)
+    View divider;
 
     @Inject
     ExpiredStockCardListPresenter presenter;
@@ -26,12 +29,16 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        spinner.setVisibility(View.GONE);
+
+        rootView.setBackgroundResource(R.color.general_background_color);
+        sortSpinner.setVisibility(View.GONE);
+        productsUpdateBanner.setVisibility(View.GONE);
+        divider.setVisibility(View.GONE);
     }
 
     @Override
     protected void createAdapter() {
-        mAdapter = new ExpiredStockCardListAdapter(new ArrayList<>(), null);
+        mAdapter = new ExpiredStockCardListAdapter(new ArrayList<>());
     }
 
     @Override
@@ -42,5 +49,10 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
     @Override
     public void loadStockCards() {
         presenter.loadExpiredStockCards();
+    }
+
+    @Override
+    protected boolean isFastScrollEnabled() {
+        return true;
     }
 }

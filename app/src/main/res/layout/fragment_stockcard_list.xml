@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/stock_card_root"
   android:background="@color/color_white"
   android:orientation="vertical">
 
@@ -27,16 +29,33 @@
 
   </RelativeLayout>
 
-  <View style="@style/StockList.HorizontalDivider" />
+    <View
+        android:id="@+id/divider"
+        style="@style/StockList.HorizontalDivider" />
 
   <org.openlmis.core.view.widget.ProductsUpdateBanner
     android:id="@+id/product_update_banner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/products_list"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="vertical" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/products_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/fast_scroller"
+            android:scrollbars="vertical" />
+
+        <com.viethoa.RecyclerViewFastScroller
+            android:id="@+id/fast_scroller"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </RelativeLayout>
+
 </LinearLayout>

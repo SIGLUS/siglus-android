@@ -21,6 +21,7 @@ package org.openlmis.core.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.LayoutRes;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -40,7 +41,7 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
 
   @Override
   public StockCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stockcard, parent, false);
+    View view = LayoutInflater.from(parent.getContext()).inflate(getItemStockCardLayoutId(), parent, false);
     return createViewHolder(view);
   }
 
@@ -83,5 +84,9 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
 
   protected StockCardViewHolder createViewHolder(View view) {
     return new StockCardViewHolder(view, listener);
+  }
+
+  protected @LayoutRes int getItemStockCardLayoutId() {
+    return R.layout.item_stockcard;
   }
 }
