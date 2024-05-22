@@ -127,7 +127,7 @@ public class StockCardViewHolder extends BaseViewHolder {
     });
   }
 
-  private void initStockOnHandWarning(final InventoryViewModel viewModel) {
+  protected void initStockOnHandWarning(final InventoryViewModel viewModel) {
     StockOnHandStatus stockOnHandStatus = StockOnHandStatus
         .calculateStockOnHandLevel(viewModel.getStockCard(), viewModel.getStockOnHand());
     tvStockStatus.setText(context.getResources().getString(stockOnHandStatus.getDescription()));

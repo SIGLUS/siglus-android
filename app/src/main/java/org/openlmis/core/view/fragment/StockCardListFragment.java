@@ -39,8 +39,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import com.viethoa.RecyclerViewFastScroller;
+import com.viethoa.models.AlphabetItem;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
@@ -53,6 +53,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.InventoryUtils;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.HomeActivity;
 import org.openlmis.core.view.activity.StockMovementsWithLotActivity;
@@ -60,6 +61,8 @@ import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
+import java.util.ArrayList;
+import java.util.List;
 import roboguice.inject.InjectView;
 
 @BindEventBus
@@ -77,6 +80,9 @@ public class StockCardListFragment extends BaseFragment implements
 
   @InjectView(R.id.product_update_banner)
   ProductsUpdateBanner productsUpdateBanner;
+
+  @InjectView(R.id.fast_scroller)
+  RecyclerViewFastScroller fastScroller;
 
   @Inject
   StockCardPresenter presenter;
@@ -159,10 +165,35 @@ public class StockCardListFragment extends BaseFragment implements
     mAdapter.refreshList(data);
     tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
     onItemSelected(sortSpinner, null, currentPosition, 0L);
+    checkAndSetUpFastScroller(data);
+  }
+
+  protected boolean isFastScrollEnabled() { return false; }
+
+  private void checkAndSetUpFastScroller(List<InventoryViewModel> data) {
+    if (!isFastScrollEnabled()) {
+      return;
+    }
+    setUpFastScroller(data);
+  }
+
+  protected void setUpFastScroller(List<InventoryViewModel> data) {
+    if (data.isEmpty()) {
+      fastScroller.setVisibility(View.GONE);
+      return;
+    }
+
+    List<AlphabetItem> mAlphabetItems = InventoryUtils.getAlphabetItemsByInventories(data);
+
+    fastScroller.setRecyclerView(stockCardRecycleView);
+    fastScroller.setUpAlphabet(mAlphabetItems);
+
+    fastScroller.setVisibility(View.VISIBLE);
   }
 
   public void onSearch(String query) {
     mAdapter.filter(query);
+    checkAndSetUpFastScroller(mAdapter.getFilteredList());
     tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
   }
 

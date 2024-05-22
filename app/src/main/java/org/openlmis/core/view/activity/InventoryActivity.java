@@ -47,6 +47,7 @@ import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.presenter.InventoryPresenter;
+import org.openlmis.core.utils.InventoryUtils;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
@@ -273,20 +274,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
     if (viewModels.isEmpty()) {
       fastScroller.setVisibility(View.GONE);
     }
-    List<AlphabetItem> mAlphabetItems = new ArrayList<>();
-    List<String> strAlphabets = new ArrayList<>();
-    for (int i = 0; i < viewModels.size(); i++) {
-      String name = viewModels.get(i).getProductName();
-      if (StringUtils.isBlank(name)) {
-        continue;
-      }
-
-      String word = name.substring(0, 1).toUpperCase();
-      if (!strAlphabets.contains(word)) {
-        strAlphabets.add(word);
-        mAlphabetItems.add(new AlphabetItem(i, word, false));
-      }
-    }
+    List<AlphabetItem> mAlphabetItems = InventoryUtils.getAlphabetItemsByInventories(viewModels);
 
     fastScroller.setRecyclerView(productListRecycleView);
     fastScroller.setUpAlphabet(mAlphabetItems);
