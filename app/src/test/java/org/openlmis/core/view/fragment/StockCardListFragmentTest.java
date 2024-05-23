@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.fragment;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
