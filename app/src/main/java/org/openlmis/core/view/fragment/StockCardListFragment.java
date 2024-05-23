@@ -41,6 +41,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import com.viethoa.RecyclerViewFastScroller;
 import com.viethoa.models.AlphabetItem;
+import java.util.ArrayList;
+import java.util.List;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
@@ -61,8 +63,6 @@ import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
-import java.util.ArrayList;
-import java.util.List;
 import roboguice.inject.InjectView;
 
 @BindEventBus
@@ -168,7 +168,9 @@ public class StockCardListFragment extends BaseFragment implements
     checkAndSetUpFastScroller(data);
   }
 
-  protected boolean isFastScrollEnabled() { return false; }
+  protected boolean isFastScrollEnabled() {
+    return false;
+  }
 
   private void checkAndSetUpFastScroller(List<InventoryViewModel> data) {
     if (!isFastScrollEnabled()) {
