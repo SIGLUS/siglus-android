@@ -20,13 +20,18 @@ package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.ExpiredStockCardListPresenter;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.ExpiredStockCardListAdapter;
+import org.openlmis.core.view.widget.SignatureWithDateDialog;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
 
 public class ExpiredStockCardListFragment extends StockCardListFragment {
@@ -36,6 +41,15 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
 
   @InjectView(R.id.divider)
   View divider;
+
+  @InjectView(R.id.action_panel)
+  View actionPanel;
+
+  @InjectView(R.id.btn_complete)
+  public Button btnDone;
+
+  @InjectView(R.id.btn_save)
+  public View btnSave;
 
   @Inject
   ExpiredStockCardListPresenter presenter;
@@ -48,6 +62,37 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
     sortSpinner.setVisibility(View.GONE);
     productsUpdateBanner.setVisibility(View.GONE);
     divider.setVisibility(View.GONE);
+
+    btnSave.setVisibility(View.GONE);
+    btnDone.setText(R.string.expired_products_confirm_return_or_remove);
+    btnDone.setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        onCompleteClick();
+      }
+    });
+  }
+
+  private void onCompleteClick() {
+    if (presenter.isCheckedLotsExisting()) {
+      showSignDialog();
+    } else {
+      ToastUtil.show(R.string.expired_products_select_notice);
+    }
+  }
+
+  private void showSignDialog() {
+    SignatureWithDateDialog signatureDialog = new SignatureWithDateDialog();
+    signatureDialog.setArguments(SignatureWithDateDialog.getBundleToMe(
+        DateUtil.formatDate(DateUtil.getCurrentDate())));
+    signatureDialog.hideTitle();
+    signatureDialog.setDelegate(presenter);
+    signatureDialog.show(getParentFragmentManager());
+  }
+
+  @Override
+  protected int getStockCardListLayoutId() {
+    return R.layout.fragment_expired_stock_card_list;
   }
 
   @Override

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.presenter.ExpiredStockCardListPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.adapter.ExpiredStockCardListAdapter;
@@ -51,4 +52,9 @@ public class ExpiredStockCardListFragmentTest {
     public void shouldReturnTrueWhenIsFastScrollEnabledIsCalled() {
         assertTrue(fragment.isFastScrollEnabled());
     }
+
+  @Test
+  public void shouldReturnMatchedLayoutIdWhenGetStockCardListLayoutIdIsCalled() {
+    assertEquals(R.layout.fragment_expired_stock_card_list, fragment.getStockCardListLayoutId());
+  }
 }

@@ -33,6 +33,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
@@ -141,6 +142,14 @@ public class StockcardListLotAdapterTest {
     assertNotNull(viewHolder.lotCode);
     assertNotNull(viewHolder.expiryDate);
     assertNotNull(viewHolder.lotOnHand);
+  }
+
+  @Test
+  public void shouldReturnMatchedLayoutIdWhenGetItemStockCardListLotLayoutIdIsCalled() {
+    assertEquals(
+        R.layout.item_stockcard_list_lot_info,
+        new StockcardListLotAdapter(null).getItemStockCardListLotLayoutId()
+    );
   }
 
   private LotOnHand generateLotOnHandByExpireDate(Date expireDate) {

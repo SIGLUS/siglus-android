@@ -20,15 +20,19 @@ package org.openlmis.core.presenter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.SignatureDialog;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ExpiredStockCardListPresenter extends StockCardPresenter {
+public class ExpiredStockCardListPresenter extends StockCardPresenter implements
+    SignatureDialog.DialogDelegate {
 
   public void loadExpiredStockCards() {
     view.loading();
@@ -63,5 +67,42 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     return from(lotOnHandListWrapper)
         .filter(lotOnHand -> lotOnHand.getLot().isExpired() && lotOnHand.getQuantityOnHand() > 0)
         .toList();
+  }
+
+  public boolean isCheckedLotsExisting() {
+    for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
+      List<LotOnHand> lots = inventoryViewModel.getStockCard().getLotOnHandListWrapper();
+
+      for (LotOnHand lotOnHand : lots) {
+        if (lotOnHand.isChecked()) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  @Override
+  public void onSign(String sign) {
+    view.loading();
+    // TODO: 1. handle the removed lots - negative adjustment
+
+    // TODO: 2. generate the excel to specific file path - maybe the root path
+  }
+
+  private List<LotOnHand> getCheckedLots() {
+    List<LotOnHand> checkedLots = new ArrayList<>();
+
+    for (int i = 0; i < inventoryViewModels.size(); i++) {
+      InventoryViewModel inventoryViewModel = inventoryViewModels.get(i);
+      checkedLots.addAll(
+          from(inventoryViewModel.getStockCard().getLotOnHandListWrapper())
+              .filter(lotOnHand -> lotOnHand.isChecked())
+              .toList()
+      );
+    }
+
+    return checkedLots;
   }
 }

@@ -136,7 +136,11 @@ public class StockCardViewHolder extends BaseViewHolder {
 
   private void inflateLotLayout(List<LotOnHand> lotOnHandList) {
     rvLotList.setLayoutManager(new LinearLayoutManager(context));
-    rvLotList.setAdapter(new StockcardListLotAdapter(lotOnHandList));
+    rvLotList.setAdapter(createStockCardListAdapter(lotOnHandList));
+  }
+
+  protected StockcardListLotAdapter createStockCardListAdapter(List<LotOnHand> lotOnHandList) {
+    return new StockcardListLotAdapter(lotOnHandList);
   }
 
   public interface OnItemViewClickListener {

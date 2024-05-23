@@ -21,8 +21,11 @@ package org.openlmis.core.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import java.util.ArrayList;
@@ -54,15 +57,22 @@ public class StockcardListLotAdapter extends Adapter<LotInfoHolder> {
   @Override
   public LotInfoHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     return new LotInfoHolder(
-        LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stockcard_list_lot_info, parent, false));
+        LayoutInflater.from(parent.getContext())
+            .inflate(getItemStockCardListLotLayoutId(), parent, false));
   }
 
   @Override
   public void onBindViewHolder(@NonNull LotInfoHolder holder, int position) {
     final LotOnHand lotOnHand = lotInfoList.get(position);
     holder.lotCode.setText(lotOnHand.getLot().getLotNumber());
-    holder.expiryDate.setText(DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.SIMPLE_DATE_FORMAT));
+    holder.expiryDate.setText(
+        DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.SIMPLE_DATE_FORMAT));
     holder.lotOnHand.setText(String.valueOf(lotOnHand.getQuantityOnHand()));
+    if (holder.checkbox != null) {
+      holder.checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        lotOnHand.setChecked(isChecked);
+      });
+    }
   }
 
   @Override
@@ -70,7 +80,11 @@ public class StockcardListLotAdapter extends Adapter<LotInfoHolder> {
     return lotInfoList == null ? 0 : lotInfoList.size();
   }
 
-  static class LotInfoHolder extends ViewHolder {
+  protected @LayoutRes int getItemStockCardListLotLayoutId() {
+    return R.layout.item_stockcard_list_lot_info;
+  }
+
+  public static class LotInfoHolder extends ViewHolder {
 
     TextView lotCode;
 
@@ -78,11 +92,15 @@ public class StockcardListLotAdapter extends Adapter<LotInfoHolder> {
 
     TextView lotOnHand;
 
+    @Nullable
+    CheckBox checkbox;
+
     public LotInfoHolder(@NonNull View itemView) {
       super(itemView);
       lotCode = itemView.findViewById(R.id.tv_lot_code);
       expiryDate = itemView.findViewById(R.id.tv_expiry_date);
       lotOnHand = itemView.findViewById(R.id.tv_lot_on_hand);
+      checkbox = itemView.findViewById(R.id.checkbox);
     }
   }
 }

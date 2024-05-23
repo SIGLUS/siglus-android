@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Card.Padded"
+  style="@style/Card.Padded"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rv_lot_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/layout_product"
+      android:minHeight="@dimen/px_5" />
 
-        <include
-            android:id="@+id/layout_product"
-            layout="@layout/layout_item_stock_card_product"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_tiny" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_lot_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_product"
-            android:minHeight="@dimen/px_5" />
-    </RelativeLayout>
+    <include
+      android:id="@+id/layout_product"
+      layout="@layout/layout_item_stock_card_product"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_tiny"
+      android:layout_marginStart="@dimen/px_50" />
+  </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

@@ -56,7 +56,7 @@ public class StockCardPresenter extends Presenter {
   private static final String TAG = StockCardPresenter.class.getSimpleName();
   private static final String SHOULD_SHOW_ALERT_MSG = "should_show_alert_msg";
   final Map<String, String> lotsOnHands = new HashMap<>();
-  private final List<InventoryViewModel> inventoryViewModels;
+  protected final List<InventoryViewModel> inventoryViewModels;
   @Inject
   StockRepository stockRepository;
   @Inject

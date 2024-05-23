@@ -21,6 +21,7 @@ package org.openlmis.core.view.fragment;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.doNothing;
@@ -42,6 +43,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -195,5 +197,10 @@ public class StockCardListFragmentTest {
     verify(mockedFastScroller).setRecyclerView(mockedRecyclerView);
     verify(mockedFastScroller).setUpAlphabet(anyListOf(AlphabetItem.class));
     verify(mockedFastScroller).setVisibility(visibility);
+  }
+
+  @Test
+  public void shouldReturnMatchedLayoutIdWhenGetStockCardListLayoutIdIsCalled() {
+    assertEquals(R.layout.fragment_stockcard_list, fragment.getStockCardListLayoutId());
   }
 }

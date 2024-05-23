@@ -16,37 +16,20 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.model;
+package org.openlmis.core.view.adapter;
 
-import com.google.gson.annotations.Expose;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import java.util.List;
+import org.openlmis.core.R;
+import org.openlmis.core.model.LotOnHand;
 
-@Data
-@DatabaseTable(tableName = "lots_on_hand")
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@NoArgsConstructor
-public class LotOnHand extends BaseModel {
+public class ExpiredStockCardListLotAdapter extends StockcardListLotAdapter {
 
-  @Expose
-  @DatabaseField(foreign = true, foreignAutoRefresh = true)
-  Lot lot;
+  public ExpiredStockCardListLotAdapter(List<LotOnHand> lotInfoList) {
+    super(lotInfoList);
+  }
 
-  @DatabaseField(foreign = true, foreignAutoRefresh = true)
-  StockCard stockCard;
-
-  @Expose
-  @DatabaseField
-  Long quantityOnHand;
-
-  boolean checked = false;
-
-  public LotOnHand(Lot lot, StockCard stockCard, Long quantityOnHand) {
-    this.lot = lot;
-    this.stockCard = stockCard;
-    this.quantityOnHand = quantityOnHand;
+  @Override
+  protected int getItemStockCardListLotLayoutId() {
+    return R.layout.item_expired_stock_card_list_lot_info;
   }
 }

@@ -34,6 +34,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -114,7 +115,11 @@ public class StockCardListFragment extends BaseFragment implements
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.fragment_stockcard_list, container, false);
+    return inflater.inflate(getStockCardListLayoutId(), container, false);
+  }
+
+  protected @LayoutRes int getStockCardListLayoutId() {
+    return R.layout.fragment_stockcard_list;
   }
 
   @Override

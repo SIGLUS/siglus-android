@@ -753,6 +753,8 @@
   <!-- Stock - Expired Products -->
   <string name="action_expired_products">Expired Products</string>
   <string name="title_expired_products">Expired Products</string>
+  <string name="expired_products_confirm_return_or_remove">Confirm Return/Remove</string>
+  <string name="expired_products_select_notice">Please select at least one item</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minute</item>

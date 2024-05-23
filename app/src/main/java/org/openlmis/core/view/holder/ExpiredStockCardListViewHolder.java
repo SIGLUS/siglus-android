@@ -19,7 +19,11 @@
 package org.openlmis.core.view.holder;
 
 import android.view.View;
+import java.util.List;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.utils.TextStyleUtil;
+import org.openlmis.core.view.adapter.ExpiredStockCardListLotAdapter;
+import org.openlmis.core.view.adapter.StockcardListLotAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 public class ExpiredStockCardListViewHolder extends StockCardViewHolder {
@@ -36,5 +40,10 @@ public class ExpiredStockCardListViewHolder extends StockCardViewHolder {
             inventoryViewModel.getProductStyledName())
     );
     super.initStockOnHandWarning(inventoryViewModel);
+  }
+
+  @Override
+  protected StockcardListLotAdapter createStockCardListAdapter(List<LotOnHand> lotOnHandList) {
+    return new ExpiredStockCardListLotAdapter(lotOnHandList);
   }
 }

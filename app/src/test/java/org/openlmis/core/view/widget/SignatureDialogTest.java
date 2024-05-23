@@ -1,10 +1,12 @@
 package org.openlmis.core.view.widget;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openlmis.core.R;
 
 public class SignatureDialogTest {
 
@@ -29,5 +31,10 @@ public class SignatureDialogTest {
     assertFalse(signatureDialog.checkSignature("123"));
     assertFalse(signatureDialog.checkSignature("aa"));
     assertFalse(signatureDialog.checkSignature("abcdef"));
+  }
+
+  @Test
+  public void shouldReturnMatchedLayoutIdWhenGetSignatureLayoutIdIsCalled() {
+    assertEquals(R.layout.dialog_inventory_signature, signatureDialog.getSignatureLayoutId());
   }
 }
