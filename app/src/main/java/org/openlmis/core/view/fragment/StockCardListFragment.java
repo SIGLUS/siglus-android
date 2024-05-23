@@ -165,13 +165,20 @@ public class StockCardListFragment extends BaseFragment implements
     mAdapter.refreshList(data);
     tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
     onItemSelected(sortSpinner, null, currentPosition, 0L);
-    setUpFastScroller(data);
+    checkAndSetUpFastScroller(data);
   }
 
   protected boolean isFastScrollEnabled() { return false; }
 
-  private void setUpFastScroller(List<InventoryViewModel> data) {
-    if (!isFastScrollEnabled() || data.isEmpty()) {
+  private void checkAndSetUpFastScroller(List<InventoryViewModel> data) {
+    if (!isFastScrollEnabled()) {
+      return;
+    }
+    setUpFastScroller(data);
+  }
+
+  protected void setUpFastScroller(List<InventoryViewModel> data) {
+    if (data.isEmpty()) {
       fastScroller.setVisibility(View.GONE);
       return;
     }
@@ -186,7 +193,7 @@ public class StockCardListFragment extends BaseFragment implements
 
   public void onSearch(String query) {
     mAdapter.filter(query);
-    setUpFastScroller(mAdapter.getFilteredList());
+    checkAndSetUpFastScroller(mAdapter.getFilteredList());
     tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
   }
 

@@ -18,8 +18,12 @@
 
 package org.openlmis.core.view.fragment;
 
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,12 +31,20 @@ import static org.mockito.Mockito.when;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.View;
+
 import androidx.activity.result.ActivityResult;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.viethoa.RecyclerViewFastScroller;
+import com.viethoa.models.AlphabetItem;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
@@ -140,5 +152,52 @@ public class StockCardListFragmentTest {
 
     // then
     verify(productUpdateBanner,times(1)).refreshBannerText();
+  }
+
+  @Test
+  public void shouldReturnFalseWhenIsCalled() {
+    assertFalse(fragment.isFastScrollEnabled());
+  }
+
+  @Test
+  public void shouldHideFastScrollerWhenSetUpFastScrollerAndDataIsEmpty() {
+    // Given
+    int gone = View.GONE;
+    ArrayList<InventoryViewModel> data = newArrayList();
+
+    RecyclerViewFastScroller mockedFastScroller = mock(RecyclerViewFastScroller.class);
+    doNothing().when(mockedFastScroller).setVisibility(gone);
+    fragment.fastScroller = mockedFastScroller;
+    // when
+    fragment.setUpFastScroller(data);
+    // then
+    verify(mockedFastScroller).setVisibility(gone);
+  }
+
+  @Test
+  public void shouldInitializeFastScrollerWhenSetUpFastScrollerAndDataIsNotEmpty() {
+    // Given
+    int visibility = View.VISIBLE;
+
+    InventoryViewModel mockedInventoryViewModel = mock(InventoryViewModel.class);
+    when(mockedInventoryViewModel.getProductName()).thenReturn("A");
+    ArrayList<InventoryViewModel> data = newArrayList(mockedInventoryViewModel);
+
+    RecyclerViewFastScroller mockedFastScroller = mock(RecyclerViewFastScroller.class);
+    doNothing().when(mockedFastScroller).setVisibility(visibility);
+
+    RecyclerView mockedRecyclerView = mock(RecyclerView.class);
+    fragment.stockCardRecycleView = mockedRecyclerView;
+    doNothing().when(mockedFastScroller).setRecyclerView(mockedRecyclerView);
+
+    doNothing().when(mockedFastScroller).setUpAlphabet(anyListOf(AlphabetItem.class));
+
+    fragment.fastScroller = mockedFastScroller;
+    // when
+    fragment.setUpFastScroller(data);
+    // then
+    verify(mockedFastScroller).setRecyclerView(mockedRecyclerView);
+    verify(mockedFastScroller).setUpAlphabet(anyListOf(AlphabetItem.class));
+    verify(mockedFastScroller).setVisibility(visibility);
   }
 }

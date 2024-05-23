@@ -17,6 +17,6 @@ public class ExpiredStockCardListViewHolder extends StockCardViewHolder {
         tvProductName.setText(
                 TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getProductStyledName())
         );
-        initStockOnHandWarning(inventoryViewModel);
+        super.initStockOnHandWarning(inventoryViewModel);
     }
 }
