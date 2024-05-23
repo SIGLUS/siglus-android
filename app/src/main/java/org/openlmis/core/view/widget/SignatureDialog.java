@@ -71,7 +71,11 @@ public class SignatureDialog extends BaseDialogFragment {
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.dialog_inventory_signature, container, false);
+    return inflater.inflate(getSignatureLayoutId(), container, false);
+  }
+
+  protected int getSignatureLayoutId() {
+    return R.layout.dialog_inventory_signature;
   }
 
   @Override

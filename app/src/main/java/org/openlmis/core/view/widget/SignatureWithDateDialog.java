@@ -16,33 +16,49 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.adapter;
+package org.openlmis.core.view.widget;
 
+import android.os.Bundle;
 import android.view.View;
-import java.util.List;
+import android.widget.TextView;
 import org.openlmis.core.R;
-import org.openlmis.core.view.adapter.StockcardListLotAdapter.LotInfoHolder.OnItemSelectListener;
-import org.openlmis.core.view.holder.ExpiredStockCardListViewHolder;
-import org.openlmis.core.view.holder.StockCardViewHolder;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import roboguice.inject.InjectView;
 
-public class ExpiredStockCardListAdapter extends StockCardListAdapter {
+public class SignatureWithDateDialog extends SignatureDialog {
 
-  OnItemSelectListener onItemSelectListener;
+  @InjectView(R.id.et_process_date)
+  private TextView etProcessDate;
 
-  public ExpiredStockCardListAdapter(List<InventoryViewModel> inventoryViewModels,
-      OnItemSelectListener onItemSelectListener) {
-    super(inventoryViewModels, null);
-    this.onItemSelectListener = onItemSelectListener;
+  boolean isHideTitle = false;
+
+  @Override
+  protected int getSignatureLayoutId() {
+    return R.layout.dialog_signature_with_date;
   }
 
   @Override
-  protected int getItemStockCardLayoutId() {
-    return R.layout.item_expired_stock_card;
+  public void onStart() {
+    super.onStart();
+    initPrecessDate();
+    if (isHideTitle) {
+      tvSignatureTitle.setVisibility(View.GONE);
+    }
   }
 
-  @Override
-  protected StockCardViewHolder createViewHolder(View view) {
-    return new ExpiredStockCardListViewHolder(view, onItemSelectListener);
+  public void hideTitle() {
+    isHideTitle = true;
+  }
+
+  public static Bundle getBundleToMe(String date) {
+    Bundle bundle = new Bundle();
+    bundle.putString("Date", date);
+    return bundle;
+  }
+
+  private void initPrecessDate() {
+    Bundle arguments = getArguments();
+    if (arguments != null) {
+      etProcessDate.setText(arguments.getString("Date"));
+    }
   }
 }

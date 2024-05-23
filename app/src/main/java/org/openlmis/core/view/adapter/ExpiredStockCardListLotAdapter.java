@@ -18,31 +18,20 @@
 
 package org.openlmis.core.view.adapter;
 
-import android.view.View;
 import java.util.List;
 import org.openlmis.core.R;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.view.adapter.StockcardListLotAdapter.LotInfoHolder.OnItemSelectListener;
-import org.openlmis.core.view.holder.ExpiredStockCardListViewHolder;
-import org.openlmis.core.view.holder.StockCardViewHolder;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
-public class ExpiredStockCardListAdapter extends StockCardListAdapter {
+public class ExpiredStockCardListLotAdapter extends StockcardListLotAdapter {
 
-  OnItemSelectListener onItemSelectListener;
-
-  public ExpiredStockCardListAdapter(List<InventoryViewModel> inventoryViewModels,
+  public ExpiredStockCardListLotAdapter(List<LotOnHand> lotInfoList,
       OnItemSelectListener onItemSelectListener) {
-    super(inventoryViewModels, null);
-    this.onItemSelectListener = onItemSelectListener;
+    super(lotInfoList, onItemSelectListener);
   }
 
   @Override
-  protected int getItemStockCardLayoutId() {
-    return R.layout.item_expired_stock_card;
-  }
-
-  @Override
-  protected StockCardViewHolder createViewHolder(View view) {
-    return new ExpiredStockCardListViewHolder(view, onItemSelectListener);
+  protected int getItemStockCardListLotLayoutId() {
+    return R.layout.item_expired_stock_card_list_lot_info;
   }
 }

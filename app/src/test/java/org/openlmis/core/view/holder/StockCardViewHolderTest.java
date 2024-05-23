@@ -19,6 +19,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.adapter.StockcardListLotAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 
@@ -124,5 +125,11 @@ public class StockCardViewHolderTest {
     viewHolder.inflateData(inventoryViewModel, "");
 
     assertThat(viewHolder.tvExpiryDateMsg.getVisibility()).isEqualTo(View.GONE);
+  }
+
+  @Test
+  public void shouldReturnStockCardListLotAdapterWhenCreateStockCardListAdapterIsCalled() {
+    assertThat(viewHolder.createStockCardListAdapter(null)).isInstanceOf(
+        StockcardListLotAdapter.class);
   }
 }

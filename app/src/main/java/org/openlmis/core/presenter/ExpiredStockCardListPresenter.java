@@ -20,15 +20,21 @@ package org.openlmis.core.presenter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.view.adapter.StockcardListLotAdapter.LotInfoHolder.OnItemSelectListener;
+import org.openlmis.core.view.widget.SignatureDialog;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ExpiredStockCardListPresenter extends StockCardPresenter {
+public class ExpiredStockCardListPresenter extends StockCardPresenter implements
+    OnItemSelectListener, SignatureDialog.DialogDelegate {
+
+  List<LotOnHand> selectedLots = new ArrayList<>();
 
   public void loadExpiredStockCards() {
     view.loading();
@@ -60,5 +66,23 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     return from(lotOnHandListWrapper)
         .filter(lotOnHand -> lotOnHand.getLot().isExpired() && lotOnHand.getQuantityOnHand() > 0)
         .toList();
+  }
+
+  @Override
+  public void onItemSelect(LotOnHand lotOnHand, boolean isChecked) {
+    if (isChecked && !selectedLots.contains(lotOnHand)) {
+      selectedLots.add(lotOnHand);
+    } else {
+      selectedLots.remove(lotOnHand);
+    }
+  }
+
+  public boolean checkSelectedLotsIsNotEmpty() {
+    return !selectedLots.isEmpty();
+  }
+
+  @Override
+  public void onSign(String sign) {
+    view.loading();
   }
 }

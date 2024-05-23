@@ -1,5 +1,7 @@
 package org.openlmis.core.view.holder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -7,6 +9,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.text.SpannableStringBuilder;
 import android.view.View;
@@ -18,7 +21,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.view.adapter.ExpiredStockCardListLotAdapter;
+import org.openlmis.core.view.adapter.StockcardListLotAdapter;
+import org.openlmis.core.view.adapter.StockcardListLotAdapter.LotInfoHolder.OnItemSelectListener;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 @RunWith(LMISTestRunner.class)
@@ -27,7 +34,7 @@ public class ExpiredStockCardListViewHolderTest {
 
     @Before
     public void setUp() throws Exception {
-        viewHolder = new ExpiredStockCardListViewHolder(new View(ApplicationProvider.getApplicationContext()));
+        viewHolder = new ExpiredStockCardListViewHolder(new View(ApplicationProvider.getApplicationContext()), null);
     }
 
     @Test
@@ -62,4 +69,23 @@ public class ExpiredStockCardListViewHolderTest {
         verify(mockedTvStockStatus).setText(anyString());
         verify(mockedTvStockStatus).setBackgroundColor(anyInt());
     }
+
+  @Test
+  public void shouldReturnExpiredStockCardListLotAdapterWhenCreateStockCardListAdapterIsCalled() {
+    // when
+    StockcardListLotAdapter actualAdapter = viewHolder.createStockCardListAdapter(
+        newArrayList(mock(LotOnHand.class), null));
+    // then
+    assertTrue(actualAdapter instanceof ExpiredStockCardListLotAdapter);
+  }
+
+  @Test
+  public void shouldSetListenerWhenCallConstructorMethodWithListener() {
+    // when
+    OnItemSelectListener mockedOnItemSelectListener = mock(OnItemSelectListener.class);
+    ExpiredStockCardListViewHolder viewHolder = new ExpiredStockCardListViewHolder(
+        new View(ApplicationProvider.getApplicationContext()), mockedOnItemSelectListener);
+    // then
+    assertEquals(mockedOnItemSelectListener, viewHolder.onItemSelectListener);
+  }
 }
