@@ -1,8 +1,6 @@
 package org.openlmis.core.presenter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -137,59 +135,6 @@ public class ExpiredStockCardListPresenterTest {
     // verification
     List<StockCard> loadedStockCards = afterLoadHandler.getOnNextEvents().get(0);
     assertEquals(1, loadedStockCards.size());
-  }
-
-  @Test
-  public void shouldAddLotIntoSelectedListWhenOnItemSelectIsCalledAndIsCheckedAndSelectedListDoesNotContainIt() {
-    // given
-    LotOnHand mockedLotOnHand = mock(LotOnHand.class);
-    presenter.selectedLots = newArrayList();
-    // when
-    presenter.onItemSelect(mockedLotOnHand, true);
-    // then
-    assertTrue(presenter.selectedLots.contains(mockedLotOnHand));
-  }
-
-  @Test
-  public void shouldNotAddLotIntoSelectedListWhenOnItemSelectIsCalledAndIsNotChecked() {
-    // given
-    LotOnHand mockedLotOnHand = mock(LotOnHand.class);
-    presenter.selectedLots = newArrayList();
-    // when
-    presenter.onItemSelect(mockedLotOnHand, false);
-    // then
-    assertFalse(presenter.selectedLots.contains(mockedLotOnHand));
-  }
-
-  @Test
-  public void shouldNotAddLotIntoSelectedListWhenOnItemSelectIsCalledAndIsCheckedAndSelectedListContainsIt() {
-    // given
-    LotOnHand mockedLotOnHand = mock(LotOnHand.class);
-    presenter.selectedLots = newArrayList(mockedLotOnHand);
-    // when
-    presenter.onItemSelect(mockedLotOnHand, true);
-    // then
-    assertFalse(presenter.selectedLots.contains(mockedLotOnHand));
-  }
-
-  @Test
-  public void shouldReturnTrueWhenCheckSelectedLotsIsNotEmptyIsCalledAndSelectedLotsIsNotEmpty() {
-    // given
-    presenter.selectedLots = newArrayList(mock(LotOnHand.class));
-    // when
-    boolean actualResult = presenter.checkSelectedLotsIsNotEmpty();
-    // then
-    assertTrue(actualResult);
-  }
-
-  @Test
-  public void shouldReturnFalseWhenCheckSelectedLotsIsNotEmptyIsCalledAndSelectedLotsIsEmpty() {
-    // given
-    presenter.selectedLots = newArrayList();
-    // when
-    boolean actualResult = presenter.checkSelectedLotsIsNotEmpty();
-    // then
-    assertFalse(actualResult);
   }
 
   private StockCard inActiveStockCard = stockCard(

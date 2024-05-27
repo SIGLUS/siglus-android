@@ -25,6 +25,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import java.util.ArrayList;
@@ -34,12 +35,10 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.adapter.StockcardListLotAdapter.LotInfoHolder;
-import org.openlmis.core.view.adapter.StockcardListLotAdapter.LotInfoHolder.OnItemSelectListener;
 
 public class StockcardListLotAdapter extends Adapter<LotInfoHolder> {
 
   List<LotOnHand> lotInfoList;
-  OnItemSelectListener onItemSelectListener;
 
   public StockcardListLotAdapter(List<LotOnHand> lotInfoList) {
     if (lotInfoList == null) {
@@ -52,12 +51,6 @@ public class StockcardListLotAdapter extends Adapter<LotInfoHolder> {
       return Long.compare(o1ExpirationDate, o2ExpirationDate);
     });
     this.lotInfoList = lotOnHands;
-  }
-
-  public StockcardListLotAdapter(List<LotOnHand> lotInfoList,
-      OnItemSelectListener onItemSelectListener) {
-    this(lotInfoList);
-    this.onItemSelectListener = onItemSelectListener;
   }
 
   @NonNull
@@ -75,9 +68,9 @@ public class StockcardListLotAdapter extends Adapter<LotInfoHolder> {
     holder.expiryDate.setText(
         DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.SIMPLE_DATE_FORMAT));
     holder.lotOnHand.setText(String.valueOf(lotOnHand.getQuantityOnHand()));
-    if (onItemSelectListener != null) {
+    if (holder.checkbox != null) {
       holder.checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-        onItemSelectListener.onItemSelect(lotOnHand, isChecked);
+        lotOnHand.setChecked(isChecked);
       });
     }
   }
@@ -93,27 +86,21 @@ public class StockcardListLotAdapter extends Adapter<LotInfoHolder> {
 
   public static class LotInfoHolder extends ViewHolder {
 
-    View itemView;
     TextView lotCode;
 
     TextView expiryDate;
 
     TextView lotOnHand;
 
+    @Nullable
     CheckBox checkbox;
 
     public LotInfoHolder(@NonNull View itemView) {
       super(itemView);
-      this.itemView = itemView;
       lotCode = itemView.findViewById(R.id.tv_lot_code);
       expiryDate = itemView.findViewById(R.id.tv_expiry_date);
       lotOnHand = itemView.findViewById(R.id.tv_lot_on_hand);
       checkbox = itemView.findViewById(R.id.checkbox);
-    }
-
-    public interface OnItemSelectListener {
-
-      void onItemSelect(LotOnHand lotOnHand, boolean isChecked);
     }
   }
 }

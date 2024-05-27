@@ -74,7 +74,7 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
   }
 
   private void onCompleteClick() {
-    if (presenter.checkSelectedLotsIsNotEmpty()) {
+    if (presenter.isCheckedLotsExisting()) {
       showSignDialog();
     } else {
       ToastUtil.show(R.string.expired_products_select_notice);
@@ -97,7 +97,7 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
 
   @Override
   protected void createAdapter() {
-    mAdapter = new ExpiredStockCardListAdapter(new ArrayList<>(), presenter);
+    mAdapter = new ExpiredStockCardListAdapter(new ArrayList<>());
   }
 
   @Override

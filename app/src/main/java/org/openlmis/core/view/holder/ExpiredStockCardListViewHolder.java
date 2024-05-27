@@ -24,16 +24,12 @@ import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.ExpiredStockCardListLotAdapter;
 import org.openlmis.core.view.adapter.StockcardListLotAdapter;
-import org.openlmis.core.view.adapter.StockcardListLotAdapter.LotInfoHolder.OnItemSelectListener;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 public class ExpiredStockCardListViewHolder extends StockCardViewHolder {
 
-  OnItemSelectListener onItemSelectListener;
-
-  public ExpiredStockCardListViewHolder(View itemView, OnItemSelectListener onItemSelectListener) {
+  public ExpiredStockCardListViewHolder(View itemView) {
     super(itemView, null);
-    this.onItemSelectListener = onItemSelectListener;
   }
 
   @Override
@@ -48,6 +44,6 @@ public class ExpiredStockCardListViewHolder extends StockCardViewHolder {
 
   @Override
   protected StockcardListLotAdapter createStockCardListAdapter(List<LotOnHand> lotOnHandList) {
-    return new ExpiredStockCardListLotAdapter(lotOnHandList, onItemSelectListener);
+    return new ExpiredStockCardListLotAdapter(lotOnHandList);
   }
 }

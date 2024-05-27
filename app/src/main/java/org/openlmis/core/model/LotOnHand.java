@@ -42,6 +42,8 @@ public class LotOnHand extends BaseModel {
   @DatabaseField
   Long quantityOnHand;
 
+  boolean checked = false;
+
   public LotOnHand(Lot lot, StockCard stockCard, Long quantityOnHand) {
     this.lot = lot;
     this.stockCard = stockCard;

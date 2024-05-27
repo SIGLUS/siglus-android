@@ -39,7 +39,7 @@ public class SignatureWithDateDialog extends SignatureDialog {
   @Override
   public void onStart() {
     super.onStart();
-    initPrecessDate();
+    initProcessDate();
     if (isHideTitle) {
       tvSignatureTitle.setVisibility(View.GONE);
     }
@@ -55,7 +55,7 @@ public class SignatureWithDateDialog extends SignatureDialog {
     return bundle;
   }
 
-  private void initPrecessDate() {
+  private void initProcessDate() {
     Bundle arguments = getArguments();
     if (arguments != null) {
       etProcessDate.setText(arguments.getString("Date"));

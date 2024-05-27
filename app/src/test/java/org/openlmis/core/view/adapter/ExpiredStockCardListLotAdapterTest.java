@@ -8,7 +8,7 @@ import org.openlmis.core.R;
 
 public class ExpiredStockCardListLotAdapterTest {
 
-  final ExpiredStockCardListLotAdapter adapter = new ExpiredStockCardListLotAdapter(new ArrayList<>(), null);
+  final ExpiredStockCardListLotAdapter adapter = new ExpiredStockCardListLotAdapter(new ArrayList<>());
 
   @Test
   public void shouldReturnMatchedLayoutIdWhenGetItemStockCardListLotLayoutIdIsCalled() {

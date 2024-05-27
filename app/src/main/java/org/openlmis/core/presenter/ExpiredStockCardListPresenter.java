@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.view.adapter.StockcardListLotAdapter.LotInfoHolder.OnItemSelectListener;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
 import rx.Observable;
 import rx.Subscription;
@@ -32,9 +32,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class ExpiredStockCardListPresenter extends StockCardPresenter implements
-    OnItemSelectListener, SignatureDialog.DialogDelegate {
-
-  List<LotOnHand> selectedLots = new ArrayList<>();
+    SignatureDialog.DialogDelegate {
 
   public void loadExpiredStockCards() {
     view.loading();
@@ -68,21 +66,40 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter implements
         .toList();
   }
 
-  @Override
-  public void onItemSelect(LotOnHand lotOnHand, boolean isChecked) {
-    if (isChecked && !selectedLots.contains(lotOnHand)) {
-      selectedLots.add(lotOnHand);
-    } else {
-      selectedLots.remove(lotOnHand);
-    }
-  }
+  public boolean isCheckedLotsExisting() {
+    for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
+      List<LotOnHand> lots = inventoryViewModel.getStockCard().getLotOnHandListWrapper();
 
-  public boolean checkSelectedLotsIsNotEmpty() {
-    return !selectedLots.isEmpty();
+      for (LotOnHand lotOnHand : lots) {
+        if (lotOnHand.isChecked()) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   @Override
   public void onSign(String sign) {
     view.loading();
+    // TODO: 1. handle the removed lots - negative adjustment
+
+    // TODO: 2. generate the excel to specific file path - maybe the root path
+  }
+
+  private List<LotOnHand> getCheckedLots() {
+    List<LotOnHand> checkedLots = new ArrayList<>();
+
+    for (int i = 0; i < inventoryViewModels.size(); i++) {
+      InventoryViewModel inventoryViewModel = inventoryViewModels.get(i);
+      checkedLots.addAll(
+          from(inventoryViewModel.getStockCard().getLotOnHandListWrapper())
+              .filter(lotOnHand -> lotOnHand.isChecked())
+              .toList()
+      );
+    }
+
+    return checkedLots;
   }
 }

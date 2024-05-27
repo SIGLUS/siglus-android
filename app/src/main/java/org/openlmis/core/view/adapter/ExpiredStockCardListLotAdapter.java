@@ -21,13 +21,11 @@ package org.openlmis.core.view.adapter;
 import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.model.LotOnHand;
-import org.openlmis.core.view.adapter.StockcardListLotAdapter.LotInfoHolder.OnItemSelectListener;
 
 public class ExpiredStockCardListLotAdapter extends StockcardListLotAdapter {
 
-  public ExpiredStockCardListLotAdapter(List<LotOnHand> lotInfoList,
-      OnItemSelectListener onItemSelectListener) {
-    super(lotInfoList, onItemSelectListener);
+  public ExpiredStockCardListLotAdapter(List<LotOnHand> lotInfoList) {
+    super(lotInfoList);
   }
 
   @Override

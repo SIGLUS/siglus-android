@@ -19,7 +19,7 @@ import java.util.ArrayList;
 @RunWith(LMISTestRunner.class)
 public class ExpiredStockCardListAdapterTest {
 
-    final StockCardListAdapter adapter = new ExpiredStockCardListAdapter(new ArrayList<>(), null);
+    final StockCardListAdapter adapter = new ExpiredStockCardListAdapter(new ArrayList<>());
 
     @Test
     public void shouldReturnMatchedLayoutIdWhenGetItemStockCardLayoutIdIsCalled() {
