@@ -1,11 +1,13 @@
 package org.openlmis.core.model;
 
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
@@ -172,5 +174,33 @@ public class StockCardTest {
     item3.setMovementDate(DateUtil.parseString("2016-03-18", DateUtil.DB_DATE_FORMAT));
 
     assertEquals(item2.getMovementDate(), stockCard.getLastStockMovementDate());
+  }
+
+  @Test
+  public void shouldReturn0WhenCalculateSOHFromLotsIsCalledWithEmptyList() {
+    // given
+    ArrayList<LotOnHand> lotsOnHands = newArrayList();
+    // when
+    long actualResult = stockCard.calculateSOHFromLots(lotsOnHands);
+    // then
+    assertEquals(0, actualResult);
+  }
+
+  @Test
+  public void shouldReturnTotalNumberWhenCalculateSOHFromLotsIsCalledWithNonEmptyList() {
+    // given
+    LotOnHand mockedLotOnHand1 = mock(LotOnHand.class);
+    long quality1 = 10L;
+    when(mockedLotOnHand1.getQuantityOnHand()).thenReturn(quality1);
+
+    LotOnHand mockedLotOnHand2 = mock(LotOnHand.class);
+    long quality2 = 9L;
+    when(mockedLotOnHand2.getQuantityOnHand()).thenReturn(quality2);
+
+    ArrayList<LotOnHand> lotsOnHands = newArrayList(mockedLotOnHand1, mockedLotOnHand2);
+    // when
+    long actualResult = stockCard.calculateSOHFromLots(lotsOnHands);
+    // then
+    assertEquals(quality1 + quality2, actualResult);
   }
 }

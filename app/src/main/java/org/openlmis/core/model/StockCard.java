@@ -162,6 +162,16 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     return totalSOHFromLots;
   }
 
+  public long calculateSOHFromLots(@NonNull List<LotOnHand> lotsOnHands) {
+    long totalSOHFromLots = 0L;
+
+    for (LotOnHand lotOnHand : lotsOnHands) {
+      totalSOHFromLots += lotOnHand.getQuantityOnHand();
+    }
+
+    return totalSOHFromLots;
+  }
+
   public List<LotOnHand> getLotOnHandListWrapper() {
     lotOnHandListWrapper = ListUtil.wrapOrEmpty(foreignLotOnHandList, lotOnHandListWrapper);
     return lotOnHandListWrapper;

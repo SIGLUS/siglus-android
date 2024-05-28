@@ -33,7 +33,6 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
   public void loadExpiredStockCards() {
     view.loading();
 
-    lotsOnHands.putAll(stockRepository.lotOnHands());
     Subscription subscription = loadExpiredStockCardsObservable().subscribe(afterLoadHandler);
     subscriptions.add(subscription);
   }
@@ -43,9 +42,13 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
       subscriber.onNext(from(stockRepository.list()).filter(stockCard -> {
         if (stockCard != null && isActiveProduct(stockCard)
             && !isArchivedProduct(stockCard)) {
-          List<LotOnHand> expiredLot = filterExpiredAndNonEmptyLot(stockCard);
-          if (expiredLot.size() > 0) {
-            stockCard.setLotOnHandListWrapper(expiredLot);
+          List<LotOnHand> expiredLots = filterExpiredAndNonEmptyLot(stockCard);
+          if (expiredLots.size() > 0) {
+            lotsOnHands.put(
+                String.valueOf(stockCard.getId()),
+                String.valueOf(stockCard.calculateSOHFromLots(expiredLots))
+            );
+            stockCard.setLotOnHandListWrapper(expiredLots);
             return true;
           }
         }
