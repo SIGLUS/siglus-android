@@ -137,6 +137,24 @@ public class ExpiredStockCardListPresenterTest {
     assertEquals(1, loadedStockCards.size());
   }
 
+  @Test
+  public void shouldReturnMatchedTotalQualityWhenStockCardIsNotArchivedAndActiveAndIsExpiredAndQualityIsGreaterThan0() {
+    TestSubscriber<List<StockCard>> afterLoadHandler = new TestSubscriber<>();
+    presenter.afterLoadHandler = afterLoadHandler;
+
+    int soh = 1;
+    long stockId = 200L;
+
+    List<StockCard> stockCards = newArrayList(stockCard(
+        false, true, soh, true, stockId));
+    when(stockRepository.list()).thenReturn(stockCards);
+    // action
+    presenter.loadExpiredStockCards();
+    afterLoadHandler.awaitTerminalEvent();
+    // verification
+    assertEquals(String.valueOf(soh), presenter.lotsOnHands.get(String.valueOf(stockId)));
+  }
+
   private StockCard inActiveStockCard = stockCard(
       false, false, 1, false);
 
@@ -172,6 +190,18 @@ public class ExpiredStockCardListPresenterTest {
 
     LotOnHand lotOnHand = new LotOnHand(getLot(isExpired), stockCard, (long) soh);
     stockCard.setLotOnHandListWrapper(newArrayList(lotOnHand));
+
+    return stockCard;
+  }
+
+  private StockCard stockCard(boolean isProductArchived,
+      boolean isProductActive,
+      int soh,
+      boolean isExpired,
+      long stockId
+  ) {
+    StockCard stockCard = stockCard(isProductArchived, isProductActive, soh, isExpired);
+    stockCard.setId(stockId);
 
     return stockCard;
   }
