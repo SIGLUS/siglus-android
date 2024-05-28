@@ -56,6 +56,15 @@ public class LotMovementItem extends BaseModel {
 
   private boolean isStockOnHandReset;
 
+  public LotMovementItem(Lot lot, Long movementQuantity, StockMovementItem stockMovementItem,
+      String reason, String documentNumber) {
+    this.lot = lot;
+    this.movementQuantity = movementQuantity;
+    this.reason = reason;
+    this.documentNumber = documentNumber;
+    setStockMovementItemAndUpdateMovementQuantity(stockMovementItem);
+  }
+
   public void setStockMovementItemAndUpdateMovementQuantity(StockMovementItem stockMovementItem) {
     this.stockMovementItem = stockMovementItem;
     updateMovementQuantity();

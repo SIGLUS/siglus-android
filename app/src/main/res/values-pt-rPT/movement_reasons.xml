@@ -25,6 +25,7 @@
     <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Correcção de inventário, no caso do stock inferior (stock é inferior ao existente na ficha de stock)</item>
     <item>NEGATIVE_ADJUST|PROD_DEFECTIVE|Saída para quarentena, no caso de problemas relativos a qualidade</item>
     <item>NEGATIVE_ADJUST|RETURN_TO_SUPPLIER|Devolução Dentro do prazo de validade ao Depósito fornecedor</item>
+    <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER_AND_DISCARD|Transferência de produtos expirados</item>
 
     <item>POSITIVE_ADJUST|CUSTOMER_RETURN|Devolução Dentro do prazo de validade dos clientes (US e Depósitos Beneficiários)</item>
     <item>POSITIVE_ADJUST|EXPIRED_RETURN_FROM_CUSTOMER|Devolução de expirados (US e Depósitos Beneficiários)</item>

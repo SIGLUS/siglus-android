@@ -50,6 +50,7 @@ public final class MovementReasonManager {
   public static final String UNPACK_KIT = "UNPACK_KIT";
   public static final String UNPACK_FROM_KIT = "UNPACK_FROM_KIT";
   public static final String DONATION = "DONATION";
+  public static final String EXPIRED_RETURN_TO_SUPPLIER_AND_DISCARD = "EXPIRED_RETURN_TO_SUPPLIER_AND_DISCARD";
 
   Context context;
   public static final String RES_DIVIDER = "[|]";
@@ -271,6 +272,7 @@ public final class MovementReasonManager {
     protected boolean canBeDisplayOnMovementMenu() {
       return !(code.startsWith(ChangeMovementReasonToCode.DEFAULT_PREFIX)
           || code.equalsIgnoreCase(INVENTORY)
+          || code.equalsIgnoreCase(EXPIRED_RETURN_TO_SUPPLIER_AND_DISCARD)
           || MovementReasonManager.UNPACK_KIT.equals(code)
           || MovementReasonManager.UNPACK_FROM_KIT.equals(code));
     }

@@ -25,6 +25,7 @@
     <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Inventory correction in case of understock (Stock on hand is less than stock in stock card)</item>
     <item>NEGATIVE_ADJUST|PROD_DEFECTIVE|Product defective, moved to quarantine</item>
     <item>NEGATIVE_ADJUST|RETURN_TO_SUPPLIER|Return within expiration date to supplier warehouse</item>
+    <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER_AND_DISCARD|Expired products transfer</item>
 
     <item>POSITIVE_ADJUST|CUSTOMER_RETURN|Return from Customers(HF and dependent wards) within the validity period</item>
     <item>POSITIVE_ADJUST|EXPIRED_RETURN_FROM_CUSTOMER|Returns of expired drugs (HF and dependent wards)</item>
