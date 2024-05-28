@@ -1,11 +1,14 @@
 package org.openlmis.core.presenter;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import com.google.inject.AbstractModule;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import org.joda.time.DateTime;
@@ -13,12 +16,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.presenter.StockCardPresenter.StockCardListView;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
@@ -153,6 +162,52 @@ public class ExpiredStockCardListPresenterTest {
     afterLoadHandler.awaitTerminalEvent();
     // verification
     assertEquals(String.valueOf(soh), presenter.lotsOnHands.get(String.valueOf(stockId)));
+  }
+
+  @Test
+  public void shouldShowLoadingTwiceWhenRemoveCheckedExpiredProducts() {
+    // given
+    StockCardListView mockedStockCardListView = mock(StockCardListView.class);
+    presenter.view = mockedStockCardListView;
+    doNothing().when(mockedStockCardListView).loading();
+    // when
+    presenter.removeCheckedExpiredProducts("sign");
+    // then
+    verify(mockedStockCardListView).loading();
+  }
+
+  @Test
+  public void shouldReturnMatchedMovementItemsWhenConvertLotOnHandsToStockMovementItemsIsCalled() {
+    LotOnHand mockedLotOnHand = mock(LotOnHand.class);
+    long remainingQuantity = 5;
+    when(mockedLotOnHand.getQuantityOnHand()).thenReturn(remainingQuantity);
+    validStockCard.getLotOnHandListWrapper().add(mockedLotOnHand);
+    validStockCard.setStockOnHand(validStockCard.getStockOnHand() + remainingQuantity);
+
+    LotOnHand lotOnHand = validStockCard.getLotOnHandListWrapper().get(0);
+    String signature = "signature";
+
+    User mockedUser = mock(User.class);
+    String facilityCode = "facilityCode";
+    when(mockedUser.getFacilityCode()).thenReturn(facilityCode);
+    UserInfoMgr.getInstance().setUser(mockedUser);
+    // when
+    List<StockMovementItem> actualStockMovementItems = presenter.convertLotOnHandsToStockMovementItems(
+        newArrayList(lotOnHand), signature);
+    // then
+    StockMovementItem stockMovementItem = actualStockMovementItems.get(0);
+
+    String documentNumber = facilityCode + "_" + DateUtil.formatDate(DateUtil.getCurrentDate(),
+        DateUtil.DOCUMENT_NO_DATE_TIME_FORMAT);
+    assertEquals(documentNumber, stockMovementItem.getDocumentNumber());
+
+    assertEquals(remainingQuantity, stockMovementItem.getStockOnHand());
+    assertEquals("EXPIRED_RETURN_TO_SUPPLIER_AND_DISCARD", stockMovementItem.getReason());
+    assertEquals(MovementType.NEGATIVE_ADJUST, stockMovementItem.getMovementType());
+    assertEquals(signature, stockMovementItem.getSignature());
+
+    long expectedQuantity = lotOnHand.getQuantityOnHand();
+    assertEquals(expectedQuantity, stockMovementItem.getMovementQuantity());
   }
 
   private StockCard inActiveStockCard = stockCard(

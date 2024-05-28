@@ -58,6 +58,7 @@ public final class DateUtil {
   public static final String ISO_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
   public static final int DAY_PERIOD_END = 20;
   public static final String DATE_TIME_FORMAT_WITH_MS = "yyyy-MM-dd HH:mm:ss:SSS";
+  public static final String DOCUMENT_NO_DATE_TIME_FORMAT = "ddMMYYYY";
 
   public static final long MILLISECONDS_MINUTE = 60000;
   public static final long MILLISECONDS_HOUR = 3600000;

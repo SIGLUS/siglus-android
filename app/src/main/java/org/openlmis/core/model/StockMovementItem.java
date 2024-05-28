@@ -28,6 +28,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -122,6 +123,30 @@ public class StockMovementItem extends BaseModel {
     this.stockCard = stockCard;
     this.stockOnHand = stockCard.calculateSOHFromLots();
     this.movementDate = DateUtil.getCurrentDate();
+  }
+
+  public StockMovementItem(
+      String documentNumber,
+      long movementQuantity,
+      String reason,
+      MovementType movementType,
+      StockCard stockCard,
+      long stockOnHand,
+      String signature,
+      Date movementDate,
+      Date createdAt,
+      Date updatedAt
+  ) {
+    this.documentNumber = documentNumber;
+    this.movementQuantity = movementQuantity;
+    this.reason = reason;
+    this.movementType = movementType;
+    this.stockCard = stockCard;
+    this.stockOnHand = stockOnHand;
+    this.signature = signature;
+    this.movementDate = movementDate;
+    this.setCreatedAt(createdAt);
+    this.setUpdatedAt(updatedAt);
   }
 
   public boolean isPositiveMovement() {

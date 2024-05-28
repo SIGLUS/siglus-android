@@ -171,6 +171,27 @@ public class StockRepository {
     }
   }
 
+  public void addStockMovementsAndUpdateStockCards(List<StockMovementItem> stockMovementItems)
+      throws LMISException {
+    try {
+      TransactionManager.callInTransaction(
+          LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+            long createTime = LMISApp.getInstance().getCurrentTimeMillis();
+            for (StockMovementItem stockMovementItem : stockMovementItems) {
+              StockCard stockcard = stockMovementItem.getStockCard();
+              createOrUpdate(stockcard);
+              stockMovementRepository.batchCreateStockMovementItemAndLotItems(stockMovementItem,
+                  createTime);
+            }
+            return null;
+          });
+    } catch (SQLException e) {
+      LMISException lmisException = new LMISException(e, ADD_STOCK_ERROR);
+      lmisException.reportToFabric();
+      throw lmisException;
+    }
+  }
+
   public void addStockMovementsAndUpdateStockCards(List<StockCard> needInitialStockCards, List<StockCard> stockCards) {
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
