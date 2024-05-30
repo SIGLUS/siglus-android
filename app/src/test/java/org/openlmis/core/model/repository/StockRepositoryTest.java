@@ -22,6 +22,14 @@ package org.openlmis.core.model.repository;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import androidx.annotation.NonNull;
 import java.util.Arrays;
@@ -420,6 +428,23 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         .assertThat(stockOnHandStatusMap.get(StockOnHandStatus.STOCK_OUT.name()), Matchers.is(1));
     MatcherAssert
         .assertThat(stockOnHandStatusMap.get(StockOnHandStatus.OVER_STOCK.name()), Matchers.is(1));
+  }
+
+  @Test
+  public void shouldSaveStockMovementWhenAddStockMovementsAndUpdateStockCardsIsCalled()
+      throws LMISException {
+    // given
+    StockMovementItem mockedStockMovementItem = mock(StockMovementItem.class);
+    when(mockedStockMovementItem.getStockCard()).thenReturn(createStockAndProduct(100, 10, 5));
+    StockMovementRepository mockedStockMovementRepository = mock(StockMovementRepository.class);
+    stockRepository.stockMovementRepository = mockedStockMovementRepository;
+    doNothing().when(mockedStockMovementRepository)
+        .batchCreateStockMovementItemAndLotItems(any(StockMovementItem.class), anyLong());
+    // when
+    stockRepository.addStockMovementsAndUpdateStockCards(newArrayList(mockedStockMovementItem));
+    // then
+    verify(mockedStockMovementRepository).batchCreateStockMovementItemAndLotItems(
+        eq(mockedStockMovementItem), anyLong());
   }
 
   private StockCard createStockAndProduct(int productId, int stockOnHand, int avg)

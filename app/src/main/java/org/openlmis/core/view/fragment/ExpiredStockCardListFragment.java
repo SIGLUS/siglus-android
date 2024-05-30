@@ -18,10 +18,13 @@
 
 package org.openlmis.core.view.fragment;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import androidx.fragment.app.FragmentActivity;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import org.openlmis.core.R;
@@ -30,6 +33,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.ExpiredStockCardListAdapter;
+import org.openlmis.core.view.widget.SignatureDialog.DialogDelegate;
 import org.openlmis.core.view.widget.SignatureWithDateDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
@@ -86,7 +90,17 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
     signatureDialog.setArguments(SignatureWithDateDialog.getBundleToMe(
         DateUtil.formatDate(DateUtil.getCurrentDate())));
     signatureDialog.hideTitle();
-    signatureDialog.setDelegate(presenter);
+    signatureDialog.setDelegate(new DialogDelegate() {
+      @Override
+      public void onSign(String sign) {
+        presenter.removeCheckedExpiredProducts(sign);
+
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+          activity.setResult(RESULT_OK);
+        }
+      }
+    });
     signatureDialog.show(getParentFragmentManager());
   }
 

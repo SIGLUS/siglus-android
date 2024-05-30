@@ -76,6 +76,9 @@ public class MovementReasonManagerTest {
     assertThat(
         reasonManager.queryByCode(MovementType.ISSUE, MovementReasonManager.UNPACK_KIT).canBeDisplayOnMovementMenu(),
         is(false));
+    assertThat(
+        reasonManager.queryByCode(MovementType.NEGATIVE_ADJUST, MovementReasonManager.EXPIRED_RETURN_TO_SUPPLIER_AND_DISCARD).canBeDisplayOnMovementMenu(),
+        is(false));
   }
 
   @Test

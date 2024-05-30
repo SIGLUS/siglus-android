@@ -37,19 +37,21 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.widget.SignatureDialog;
 import rx.Observable;
 import rx.Observable.OnSubscribe;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ExpiredStockCardListPresenter extends StockCardPresenter implements
-    SignatureDialog.DialogDelegate {
+public class ExpiredStockCardListPresenter extends StockCardPresenter {
 
   public void loadExpiredStockCards() {
     view.loading();
 
+    actualLoadExpiredStockCards();
+  }
+
+  private void actualLoadExpiredStockCards() {
     Subscription subscription = loadExpiredStockCardsObservable().subscribe(afterLoadHandler);
     subscriptions.add(subscription);
   }
@@ -96,14 +98,13 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter implements
     return false;
   }
 
-  @Override
-  public void onSign(String sign) {
+  public void removeCheckedExpiredProducts(String sign) {
     view.loading();
     // TODO: 1. handle the removed lots - negative adjustment
     Observable<List<LotOnHand>> removeExpiredStocksObservable =
         removeExpiredStocksObservable(sign);
     Subscription subscribe = removeExpiredStocksObservable.subscribe(
-        checkedLots -> loadExpiredStockCards(),
+        checkedLots -> actualLoadExpiredStockCards(),
         throwable -> view.loaded()
     );
     subscriptions.add(subscribe);
@@ -126,7 +127,7 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter implements
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
-  private List<StockMovementItem> convertLotOnHandsToStockMovementItems(
+  List<StockMovementItem> convertLotOnHandsToStockMovementItems(
       List<LotOnHand> checkedLots,
       String signature
   ) {
@@ -186,7 +187,7 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter implements
     return stockMovementItem;
   }
 
-  public HashMap<StockCard, List<LotOnHand>> connectStockCardAndLotOnHands(
+  private HashMap<StockCard, List<LotOnHand>> connectStockCardAndLotOnHands(
       List<LotOnHand> allLotOnHands) {
     HashMap<StockCard, List<LotOnHand>> stockCardLotOnHandHashMap = new HashMap<>();
 
@@ -207,7 +208,7 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter implements
 
   @NonNull
   private String generateDocumentNumber(Date currentDate) {
-    return UserInfoMgr.getInstance().getFacilityCode()
+    return UserInfoMgr.getInstance().getFacilityCode() + "_"
         + DateUtil.formatDate(currentDate, DOCUMENT_NO_DATE_TIME_FORMAT);
   }
 

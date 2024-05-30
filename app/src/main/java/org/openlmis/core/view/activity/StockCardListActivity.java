@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import org.openlmis.core.LMISApp;
@@ -56,12 +57,16 @@ public class StockCardListActivity extends SearchBarActivity {
       });
 
   private final ActivityResultLauncher<Intent> toArchivedListLauncher = registerForActivityResult(
-      new StartActivityForResult(), result -> {
-        if (result.getResultCode() == RESULT_OK && stockCardFragment != null) {
-          stockCardFragment.loadStockCards();
-        }
-      });
+      new StartActivityForResult(), this::refreshStockCardList);
 
+  private final ActivityResultLauncher<Intent> toExpiredListLauncher = registerForActivityResult(
+      new StartActivityForResult(), this::refreshStockCardList);
+
+  private void refreshStockCardList(ActivityResult result) {
+    if (result.getResultCode() == RESULT_OK && stockCardFragment != null) {
+      stockCardFragment.loadStockCards();
+    }
+  }
 
   public static Intent getIntentToMe(Context context) {
     Intent intent = new Intent(context, StockCardListActivity.class);
@@ -112,7 +117,7 @@ public class StockCardListActivity extends SearchBarActivity {
         toBulkIssuesOrEntriesLauncher.launch(intent);
         return true;
       case MENU_ID_EXPIRED_PRODUCTS:
-        startActivity(ExpiredStockCardListActivity.getIntentToMe(this));
+        toExpiredListLauncher.launch(ExpiredStockCardListActivity.getIntentToMe(this));
         return true;
       default:
         return super.onOptionsItemSelected(item);
