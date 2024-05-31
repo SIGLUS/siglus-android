@@ -59,6 +59,7 @@ public final class DateUtil {
   public static final int DAY_PERIOD_END = 20;
   public static final String DATE_TIME_FORMAT_WITH_MS = "yyyy-MM-dd HH:mm:ss:SSS";
   public static final String DOCUMENT_NO_DATE_TIME_FORMAT = "ddMMYYYY";
+  public static final String DATE_TIME_WITH_AM_MARKER_FORMAT = "dd MMM YYYY hh:mm:ss a";
 
   public static final long MILLISECONDS_MINUTE = 60000;
   public static final long MILLISECONDS_HOUR = 3600000;

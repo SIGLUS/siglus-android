@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import com.google.inject.AbstractModule;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import org.joda.time.DateTime;
@@ -16,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Lot;
@@ -171,7 +169,7 @@ public class ExpiredStockCardListPresenterTest {
     presenter.view = mockedStockCardListView;
     doNothing().when(mockedStockCardListView).loading();
     // when
-    presenter.removeCheckedExpiredProducts("sign");
+    presenter.handleCheckedExpiredProducts("sign");
     // then
     verify(mockedStockCardListView).loading();
   }
@@ -193,7 +191,7 @@ public class ExpiredStockCardListPresenterTest {
     UserInfoMgr.getInstance().setUser(mockedUser);
     // when
     List<StockMovementItem> actualStockMovementItems = presenter.convertLotOnHandsToStockMovementItems(
-        newArrayList(lotOnHand), signature);
+        newArrayList(lotOnHand), signature, DateUtil.getCurrentDate());
     // then
     StockMovementItem stockMovementItem = actualStockMovementItems.get(0);
 

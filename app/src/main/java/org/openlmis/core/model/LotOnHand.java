@@ -18,12 +18,16 @@
 
 package org.openlmis.core.model;
 
+import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
+
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import java.math.BigDecimal;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.openlmis.core.utils.DateUtil;
 
 @Data
 @DatabaseTable(tableName = "lots_on_hand")
@@ -48,5 +52,29 @@ public class LotOnHand extends BaseModel {
     this.lot = lot;
     this.stockCard = stockCard;
     this.quantityOnHand = quantityOnHand;
+  }
+
+  public LotExcelModel convertToExcelModel(
+      String orderedQuantity,
+      String partialFulfilled,
+      String suppliedQuantity
+  ) {
+    Product product = this.stockCard.product;
+    String price = product.price != null ? product.price: "0" ;
+
+    BigDecimal perPrice = new BigDecimal(price);
+    BigDecimal totalValue = perPrice.multiply(new BigDecimal(suppliedQuantity));
+
+    return new LotExcelModel(
+        product.code,
+        product.primaryName,
+        lot.lotNumber,
+        DateUtil.formatDate(lot.expirationDate, DB_DATE_FORMAT),
+        orderedQuantity,
+        partialFulfilled,
+        suppliedQuantity,
+        price,
+        String.valueOf(totalValue)
+    );
   }
 }

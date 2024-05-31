@@ -18,6 +18,7 @@
 
 package org.openlmis.core.utils;
 
+import androidx.annotation.NonNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.openlmis.core.exceptions.LMISException;
 
 public final class FileUtil {
@@ -58,7 +60,8 @@ public final class FileUtil {
   }
 
   public static void copyInputStreamToFile(InputStream in, File file) {
-    try (PrintWriter writer = new PrintWriter(file, "UTF_8"); OutputStream out = new FileOutputStream(
+    try (PrintWriter writer = new PrintWriter(file,
+        "UTF_8"); OutputStream out = new FileOutputStream(
         file)) {
       writer.print("");
       byte[] buf = new byte[1024];
@@ -71,4 +74,40 @@ public final class FileUtil {
       new LMISException(e, "FileUtil.copyInputStreamToFile").reportToFabric();
     }
   }
+
+  public static void createNewExcel(String filePath, String fileName, HSSFWorkbook hssfWorkbook) {
+    try {
+      File file = createNewFileWithoutDuplication(filePath, fileName);
+
+      FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsoluteFile());
+      hssfWorkbook.write(fileOutputStream);
+
+      fileOutputStream.flush();
+      fileOutputStream.close();
+    } catch (IOException e) {
+      new LMISException(e, "FileUtil.createExcel").reportToFabric();
+    }
+  }
+
+  @NonNull
+  public static File createNewFileWithoutDuplication(String filePath, String fileName)
+      throws IOException {
+    File dir = new File(filePath);
+    dir.mkdirs();
+
+    File file = new File(filePath + File.separator + fileName);
+
+    int newFileNameIndex = 1;
+    String newFileName;
+    while (file.exists()) {
+      int suffixIndex = fileName.lastIndexOf(".");
+      newFileName = fileName.substring(0, suffixIndex)
+          + "(" + newFileNameIndex++ + ")"
+          + fileName.substring(suffixIndex);
+      file = new File(filePath + File.separator + newFileName);
+    }
+    file.createNewFile();
+    return file;
+  }
+
 }
