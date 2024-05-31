@@ -18,17 +18,25 @@
 
 package org.openlmis.core.view.fragment;
 
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.app.Activity.RESULT_OK;
 
+import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.ExpiredStockCardListPresenter;
+import org.openlmis.core.presenter.ExpiredStockCardListPresenter.ExpiredStockCardListView;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
@@ -38,8 +46,10 @@ import org.openlmis.core.view.widget.SignatureWithDateDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
 
-public class ExpiredStockCardListFragment extends StockCardListFragment {
+public class ExpiredStockCardListFragment extends StockCardListFragment implements
+    ExpiredStockCardListView {
 
+  private final int PERMISSION_REQUEST_CODE = 200;
   @InjectView(R.id.stock_card_root)
   LinearLayout rootView;
 
@@ -57,6 +67,15 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
 
   @Inject
   ExpiredStockCardListPresenter presenter;
+
+  private ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
+      new RequestPermission(), isGranted -> {
+        if (isGranted) {
+          showSignDialog();
+        } else {
+          showPermissionRationale(getActivity());
+        }
+      });
 
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -78,11 +97,13 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
   }
 
   private void onCompleteClick() {
+    btnDone.setEnabled(false);
     if (presenter.isCheckedLotsExisting()) {
-      showSignDialog();
+      checkWritePermission();
     } else {
       ToastUtil.show(R.string.expired_products_select_notice);
     }
+    btnDone.setEnabled(true);
   }
 
   private void showSignDialog() {
@@ -93,7 +114,7 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
     signatureDialog.setDelegate(new DialogDelegate() {
       @Override
       public void onSign(String sign) {
-        presenter.removeCheckedExpiredProducts(sign);
+        presenter.handleCheckedExpiredProducts(sign);
 
         FragmentActivity activity = getActivity();
         if (activity != null) {
@@ -102,6 +123,44 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
       }
     });
     signatureDialog.show(getParentFragmentManager());
+  }
+
+  private void checkWritePermission() {
+    FragmentActivity activity = getActivity();
+    if (activity == null) {
+      return;
+    }
+    int permissionCheck = ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE);
+    if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+      showSignDialog();
+    } else {
+      if (ActivityCompat.shouldShowRequestPermissionRationale(activity, WRITE_EXTERNAL_STORAGE)) {
+        showPermissionRationale(activity);
+      } else {
+        permissionLauncher.launch(WRITE_EXTERNAL_STORAGE);
+        requestWriteStoragePermission(activity);
+      }
+    }
+  }
+
+  private void requestWriteStoragePermission(FragmentActivity activity) {
+    ActivityCompat.requestPermissions(activity, new String[]{WRITE_EXTERNAL_STORAGE},
+        PERMISSION_REQUEST_CODE);
+  }
+
+  private void showPermissionRationale(FragmentActivity activity) {
+    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(activity);
+    alertBuilder.setCancelable(true);
+    alertBuilder.setTitle(getString(R.string.expired_products_request_storage_permission_title));
+    alertBuilder.setMessage(
+        getString(R.string.expired_products_request_storage_permission_message)
+    );
+    alertBuilder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+          requestWriteStoragePermission(activity);
+        }
+    );
+    AlertDialog alert = alertBuilder.create();
+    alert.show();
   }
 
   @Override
@@ -127,5 +186,10 @@ public class ExpiredStockCardListFragment extends StockCardListFragment {
   @Override
   protected boolean isFastScrollEnabled() {
     return true;
+  }
+
+  @Override
+  public void showHandleCheckedExpiredResult(String excelPath) {
+    ToastUtil.show(getString(R.string.expired_products_removed_success, excelPath));
   }
 }
