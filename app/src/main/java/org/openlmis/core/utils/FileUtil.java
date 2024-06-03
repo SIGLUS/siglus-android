@@ -19,6 +19,7 @@
 package org.openlmis.core.utils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -75,7 +76,8 @@ public final class FileUtil {
     }
   }
 
-  public static void createNewExcel(String filePath, String fileName, HSSFWorkbook hssfWorkbook) {
+  @Nullable
+  public static File createNewExcel(String filePath, String fileName, HSSFWorkbook hssfWorkbook) {
     try {
       File file = createNewFileWithoutDuplication(filePath, fileName);
 
@@ -84,9 +86,12 @@ public final class FileUtil {
 
       fileOutputStream.flush();
       fileOutputStream.close();
+
+      return file;
     } catch (IOException e) {
       new LMISException(e, "FileUtil.createExcel").reportToFabric();
     }
+    return null;
   }
 
   @NonNull

@@ -175,7 +175,7 @@ public class StockCardPresenter extends Presenter {
         });
   }
 
-  private void refreshViewModels(List<StockCard> stockCards) {
+  void refreshViewModels(List<StockCard> stockCards) {
     List<InventoryViewModel> inventoryViewModelList = new ArrayList<>();
     for (StockCard stockCard : stockCards) {
       inventoryViewModelList.add(new InventoryViewModel(stockCard, lotsOnHands));

@@ -749,6 +749,9 @@
   <string name="title_expired_products">Produtos Expirados</string>
   <string name="expired_products_confirm_return_or_remove">Confirmar o Retorno/Remover</string>
   <string name="expired_products_select_notice">Por favor, selecione pelo menos um item</string>
+  <string name="expired_products_request_storage_permission_title">Solicitar permissão de armazenamento</string>
+  <string name="expired_products_request_storage_permission_message">Precisamos de permissão de armazenamento para gerar relatório do Excel de remoção de produtos expirados, você pode precisar conceder a permissão na configurações</string>
+  <string name="expired_products_removed_success">Produtos expirados removidos com sucesso, verifique %1$s</string>
 
   <plurals name="minute_unit">
     <item quantity="one">%s minuto</item>

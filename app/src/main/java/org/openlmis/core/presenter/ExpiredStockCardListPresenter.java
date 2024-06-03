@@ -29,6 +29,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.os.Environment;
 import androidx.annotation.NonNull;
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,11 +58,14 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import rx.Observable;
 import rx.Observable.OnSubscribe;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class ExpiredStockCardListPresenter extends StockCardPresenter {
+
+  private String excelFilePath;
 
   @Override
   public void attachView(BaseView v) {
@@ -124,7 +128,28 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
   public void handleCheckedExpiredProducts(String sign) {
     view.loading();
 
-    Subscription subscribe = handleExpiredStocksObservable(sign).subscribe(afterLoadHandler);
+    Subscription subscribe = handleExpiredStocksObservable(sign).subscribe(
+        new Observer<List<StockCard>>() {
+          @Override
+          public void onCompleted() {
+            afterLoadHandler.onCompleted();
+          }
+
+          @Override
+          public void onError(Throwable e) {
+            afterLoadHandler.onError(e);
+          }
+
+          @Override
+          public void onNext(List<StockCard> stockCards) {
+            afterLoadHandler.onNext(stockCards);
+            if (excelFilePath != null) {
+              ((ExpiredStockCardListView) view).showHandleCheckedExpiredResult(excelFilePath);
+            }
+          }
+        }
+    );
+
     subscriptions.add(subscribe);
   }
 
@@ -139,7 +164,7 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
             convertLotOnHandsToStockMovementItems(checkedLots, sign, currentDate)
         );
         // 2. generate excel
-        generateExcelReport(checkedLots, sign, currentDate);
+        excelFilePath = generateExcelReport(checkedLots, sign, currentDate);
       } catch (LMISException e) {
         subscriber.onError(e);
       }
@@ -150,7 +175,7 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
-  void generateExcelReport(
+  String generateExcelReport(
       List<LotOnHand> checkedLotOnHands,
       String signature,
       Date currentDate
@@ -205,11 +230,12 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
 
     generateExcelDate(rowStartIndex, currentDate, hssfSheet);
     // generate excel file
-    createNewExcel(
+    File excelFile = createNewExcel(
         Environment.getExternalStorageDirectory().getAbsolutePath(),
         generateExcelFileName(currentDate, facilityName),
         hssfWorkbook
     );
+    return excelFile == null ? null : excelFile.getAbsolutePath();
   }
 
   @NonNull

@@ -151,10 +151,9 @@ public class ExpiredStockCardListFragment extends StockCardListFragment implemen
   private void showPermissionRationale(FragmentActivity activity) {
     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(activity);
     alertBuilder.setCancelable(true);
-    alertBuilder.setTitle("Request storage permission");
+    alertBuilder.setTitle(getString(R.string.expired_products_request_storage_permission_title));
     alertBuilder.setMessage(
-        "We need storage permission for generating excel report for removing expired products, "
-            + "you may need to grant the permission in setting"
+        getString(R.string.expired_products_request_storage_permission_message)
     );
     alertBuilder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
           requestWriteStoragePermission(activity);
@@ -191,6 +190,6 @@ public class ExpiredStockCardListFragment extends StockCardListFragment implemen
 
   @Override
   public void showHandleCheckedExpiredResult(String excelPath) {
-    ToastUtil.show("Removed expired products successful, please check " + excelPath);
+    ToastUtil.show(getString(R.string.expired_products_removed_success, excelPath));
   }
 }
