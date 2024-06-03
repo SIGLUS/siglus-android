@@ -41,6 +41,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.exceptions.LMISException;
@@ -161,7 +162,6 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     for (int columnIndex = 0; columnIndex < 10; columnIndex++) {
       hssfSheet.setColumnWidth(columnIndex, width);
     }
-
     // border style
     HSSFCellStyle borderStyle = hssfWorkbook.createCellStyle();
     BorderStyle thinBoarder = BorderStyle.THIN;
@@ -171,39 +171,191 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     borderStyle.setBorderLeft(thinBoarder);
 
     // Summary part
-    LinkedHashMap<String, String> templateForSupplier = new LinkedHashMap<>();
-    templateForSupplier.put("Document number:", generateDocumentNumber(currentDate));
-    String facilityName = UserInfoMgr.getInstance().getFacilityName();
-    templateForSupplier.put("Supplier:", facilityName);
-    templateForSupplier.put("Client:", "");
-    templateForSupplier.put("District: ", "");
-    templateForSupplier.put("Province:", "");
-    templateForSupplier.put(
-        "Issue voucher date:", DateUtil.formatDate(currentDate, SIMPLE_DATE_FORMAT)
-    );
-    templateForSupplier.put("Requisition Nr:", "");
-    templateForSupplier.put("Total of volume:", "");
-    templateForSupplier.put("Requisition date:", "");
-    templateForSupplier.put("Supply", "");
-    templateForSupplier.put("Returned", "");
-    templateForSupplier.put("Expired", "");
-    templateForSupplier.put("Overstocked", "");
-    templateForSupplier.put("Reception date:", "");
-
     int rowStartIndex = 0;
-    for (String title : templateForSupplier.keySet()) {
-      HSSFRow row = hssfSheet.createRow(rowStartIndex);
-      HSSFCell titleCell = row.createCell(0);
-      titleCell.setCellValue(title);
-      titleCell.setCellStyle(borderStyle);
-      HSSFCell valueCell = row.createCell(1);
-      valueCell.setCellValue(templateForSupplier.get(title));
-      valueCell.setCellStyle(borderStyle);
-      rowStartIndex++;
-    }
-
+    String facilityName = UserInfoMgr.getInstance().getFacilityName();
+    rowStartIndex = generateExcelSummary(
+        rowStartIndex, hssfSheet, borderStyle, currentDate, facilityName
+    );
     // Filled in by the supplier
     hssfSheet.createRow(rowStartIndex++);
+
+    List<LotExcelModel> lotExcelModels = from(checkedLotOnHands).transform(
+        lotOnHand -> lotOnHand.convertToExcelModel(
+            "", "", String.valueOf(lotOnHand.getQuantityOnHand())
+        )
+    ).toList();
+
+    rowStartIndex = generateExcelFilledBySupplier(
+        rowStartIndex, hssfSheet, borderStyle, lotExcelModels
+    );
+    // Filled in by the client
+    hssfSheet.createRow(rowStartIndex++);
+
+    rowStartIndex = generateExcelFilledByClient(rowStartIndex, hssfSheet, borderStyle);
+    // Total value
+    hssfSheet.createRow(rowStartIndex++);
+
+    rowStartIndex = generateTotalValue(rowStartIndex, hssfSheet, borderStyle, lotExcelModels);
+    // Signature
+    hssfSheet.createRow(rowStartIndex++);
+
+    rowStartIndex = generateExcelSignature(rowStartIndex, signature, hssfSheet, borderStyle);
+    // Date
+    hssfSheet.createRow(rowStartIndex++);
+
+    generateExcelDate(rowStartIndex, currentDate, hssfSheet);
+    // generate excel file
+    createNewExcel(
+        Environment.getExternalStorageDirectory().getAbsolutePath(),
+        generateExcelFileName(currentDate, facilityName),
+        hssfWorkbook
+    );
+  }
+
+  @NonNull
+  private String generateExcelFileName(Date currentDate, String facilityName) {
+    return facilityName
+        + "_"
+        + DateUtil.formatDate(currentDate, DB_DATE_FORMAT)
+        + ".xlsx";
+  }
+
+  private void generateExcelDate(int rowStartIndex, Date currentDate, HSSFSheet hssfSheet) {
+    HSSFRow dateRow = hssfSheet.createRow(rowStartIndex);
+    dateRow.createCell(0).setCellValue(
+        DateUtil.formatDate(currentDate, DATE_TIME_WITH_AM_MARKER_FORMAT)
+    );
+  }
+
+  private int generateExcelSignature(
+      int rowStartIndex,
+      String signature,
+      HSSFSheet hssfSheet,
+      HSSFCellStyle borderStyle
+  ) {
+    // by row
+    HSSFRow byRow = hssfSheet.createRow(rowStartIndex++);
+    HSSFCell preparedByCell = byRow.createCell(0);
+    preparedByCell.setCellValue("Prepared by: ");
+    preparedByCell.setCellStyle(borderStyle);
+    HSSFCell preparedByValueCell = byRow.createCell(1);
+    preparedByValueCell.setCellValue(signature);
+    preparedByValueCell.setCellStyle(borderStyle);
+    HSSFCell conferredByCell = byRow.createCell(2);
+    conferredByCell.setCellValue("Conferred by:");
+    conferredByCell.setCellStyle(borderStyle);
+    byRow.createCell(3).setCellStyle(borderStyle);
+    HSSFCell receivedByCell = byRow.createCell(4);
+    receivedByCell.setCellValue("Received by:");
+    receivedByCell.setCellStyle(borderStyle);
+    byRow.createCell(5).setCellStyle(borderStyle);
+    // signature row
+    HSSFRow signatureRow = hssfSheet.createRow(rowStartIndex++);
+    HSSFCell preparedSignatureCell = signatureRow.createCell(0);
+    String signatureTitle = "Signature:";
+    preparedSignatureCell.setCellValue(signatureTitle);
+    preparedSignatureCell.setCellStyle(borderStyle);
+    signatureRow.createCell(1).setCellStyle(borderStyle);
+    HSSFCell conferredSignatureCell = signatureRow.createCell(2);
+    conferredSignatureCell.setCellValue(signatureTitle);
+    conferredSignatureCell.setCellStyle(borderStyle);
+    signatureRow.createCell(3).setCellStyle(borderStyle);
+    HSSFCell receivedSignatureCell = signatureRow.createCell(4);
+    receivedSignatureCell.setCellValue(signatureTitle);
+    receivedSignatureCell.setCellStyle(borderStyle);
+    signatureRow.createCell(5).setCellStyle(borderStyle);
+
+    return rowStartIndex;
+  }
+
+  private int generateTotalValue(
+      int rowStartIndex,
+      HSSFSheet hssfSheet,
+      HSSFCellStyle borderStyle,
+      List<LotExcelModel> lotExcelModels
+  ) {
+    // title
+    HSSFRow totalValueTitleRow = hssfSheet.createRow(rowStartIndex++);
+    HSSFCell totalTitleCell = totalValueTitleRow.createCell(0);
+    totalTitleCell.setCellValue("Total value of the issue voucher");
+    totalTitleCell.setCellStyle(borderStyle);
+    // value
+    BigDecimal totalValue = BigDecimal.ZERO;
+    for (LotExcelModel lotExcelModel : lotExcelModels) {
+      totalValue = totalValue.add(new BigDecimal(lotExcelModel.getTotalValue()));
+    }
+    HSSFCell totalValueCell = totalValueTitleRow.createCell(1);
+    totalValueCell.setCellValue(String.valueOf(totalValue));
+    totalValueCell.setCellStyle(borderStyle);
+
+    return rowStartIndex;
+  }
+
+  private int generateExcelFilledByClient(
+      int rowStartIndex,
+      HSSFSheet hssfSheet,
+      HSSFCellStyle borderStyle
+  ) {
+    hssfSheet.createRow(rowStartIndex++).createCell(0).setCellValue("Filled in by the supplier");
+
+    HSSFRow clientTitleRow = hssfSheet.createRow(rowStartIndex++);
+    HSSFCell receivedQuantityCell = clientTitleRow.createCell(0);
+    receivedQuantityCell.setCellValue("Received Quantity");
+    receivedQuantityCell.setCellStyle(borderStyle);
+    HSSFCell differenceCell = clientTitleRow.createCell(1);
+    differenceCell.setCellValue("Difference");
+    differenceCell.setCellStyle(borderStyle);
+
+    HSSFRow clientTitleRow2 = hssfSheet.createRow(rowStartIndex++);
+    HSSFCell qrCell = clientTitleRow2.createCell(0);
+    qrCell.setCellValue("QR");
+    qrCell.setCellStyle(borderStyle);
+    HSSFCell qrQfCell = clientTitleRow2.createCell(1);
+    qrQfCell.setCellValue("QR-QF");
+    qrQfCell.setCellStyle(borderStyle);
+
+    HSSFRow clientValueRow = hssfSheet.createRow(rowStartIndex++);
+    clientValueRow.createCell(0).setCellStyle(borderStyle);
+    clientValueRow.createCell(1).setCellStyle(borderStyle);
+
+    return rowStartIndex;
+  }
+
+  private int generateExcelFilledBySupplier(
+      int rowStartIndex,
+      HSSFSheet hssfSheet,
+      CellStyle borderStyle,
+      List<LotExcelModel> lotExcelModels
+  ) {
+    rowStartIndex = generateExcelTitleOfLots(rowStartIndex, hssfSheet, borderStyle);
+
+    rowStartIndex = generateExcelValueOfLots(
+        rowStartIndex, hssfSheet, borderStyle, lotExcelModels
+    );
+
+    return rowStartIndex;
+  }
+
+  private int generateExcelValueOfLots(
+      int rowStartIndex,
+      HSSFSheet hssfSheet,
+      CellStyle borderStyle,
+      List<LotExcelModel> lotExcelModels
+  ) {
+    int lotsRowIndex = 1;
+    short height = 2 * 256;
+    for (LotExcelModel lotExcelModel : lotExcelModels) {
+      HSSFRow lotRow = hssfSheet.createRow(rowStartIndex++);
+      lotRow.setHeight(height);
+
+      lotsRowIndex = generateExcelLot(borderStyle, lotsRowIndex, lotExcelModel, lotRow);
+    }
+
+    return rowStartIndex;
+  }
+
+  private int generateExcelTitleOfLots(int rowStartIndex, HSSFSheet hssfSheet,
+      CellStyle borderStyle) {
     HSSFRow templateTitleOfRemovedLotsRow = hssfSheet.createRow(rowStartIndex++);
     HSSFCell templateTitleOfRemovedLotsColumn = templateTitleOfRemovedLotsRow.createCell(0);
     templateTitleOfRemovedLotsColumn.setCellValue("Filled in by the supplier");
@@ -248,140 +400,85 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
       lotsColumnStartIndex++;
     }
 
-    List<LotExcelModel> lotExcelModels = from(checkedLotOnHands).transform(
-        lotOnHand -> lotOnHand.convertToExcelModel(
-            "", "", String.valueOf(lotOnHand.getQuantityOnHand())
-        )
-    ).toList();
+    return rowStartIndex;
+  }
 
-    int lotsRowIndex = 1;
-    short height = 2 * 256;
-    for (LotExcelModel lotExcelModel : lotExcelModels) {
-      HSSFRow lotRow = hssfSheet.createRow(rowStartIndex++);
-      lotRow.setHeight(height);
+  private int generateExcelLot(
+      CellStyle borderStyle,
+      int lotsRowIndex,
+      LotExcelModel lotExcelModel,
+      HSSFRow lotRow
+  ) {
+    int columnIndex = 0;
+    HSSFCell indexCell = lotRow.createCell(columnIndex++);
+    indexCell.setCellValue(lotsRowIndex++);
+    indexCell.setCellStyle(borderStyle);
+    HSSFCell productCodeCell = lotRow.createCell(columnIndex++);
+    productCodeCell.setCellValue(lotExcelModel.getProductCode());
+    productCodeCell.setCellStyle(borderStyle);
+    HSSFCell productNameCell = lotRow.createCell(columnIndex++);
+    productNameCell.setCellValue(lotExcelModel.getProductName());
+    productNameCell.setCellStyle(borderStyle);
+    HSSFCell lotNumberCell = lotRow.createCell(columnIndex++);
+    lotNumberCell.setCellValue(lotExcelModel.getLotNumber());
+    lotNumberCell.setCellStyle(borderStyle);
+    HSSFCell expiringDateCell = lotRow.createCell(columnIndex++);
+    expiringDateCell.setCellValue(lotExcelModel.getExpirationDate());
+    expiringDateCell.setCellStyle(borderStyle);
 
-      int columnIndex = 0;
-      HSSFCell indexCell = lotRow.createCell(columnIndex++);
-      indexCell.setCellValue(lotsRowIndex++);
-      indexCell.setCellStyle(borderStyle);
-      HSSFCell productCodeCell = lotRow.createCell(columnIndex++);
-      productCodeCell.setCellValue(lotExcelModel.getProductCode());
-      productCodeCell.setCellStyle(borderStyle);
-      HSSFCell productNameCell = lotRow.createCell(columnIndex++);
-      productNameCell.setCellValue(lotExcelModel.getProductName());
-      productNameCell.setCellStyle(borderStyle);
-      HSSFCell lotNumberCell = lotRow.createCell(columnIndex++);
-      lotNumberCell.setCellValue(lotExcelModel.getLotNumber());
-      lotNumberCell.setCellStyle(borderStyle);
-      HSSFCell expiringDateCell = lotRow.createCell(columnIndex++);
-      expiringDateCell.setCellValue(lotExcelModel.getExpirationDate());
-      expiringDateCell.setCellStyle(borderStyle);
+    lotRow.createCell(columnIndex++).setCellStyle(borderStyle);
+    lotRow.createCell(columnIndex++).setCellStyle(borderStyle);
 
-      lotRow.createCell(columnIndex++).setCellStyle(borderStyle);
-      lotRow.createCell(columnIndex++).setCellStyle(borderStyle);
-
-      HSSFCell suppliedQuantityCell = lotRow.createCell(columnIndex++);
-      suppliedQuantityCell.setCellValue(lotExcelModel.getSuppliedQuantity());
-      suppliedQuantityCell.setCellStyle(borderStyle);
-      HSSFCell priceCell = lotRow.createCell(columnIndex++);
-      priceCell.setCellValue(lotExcelModel.getPrice());
-      priceCell.setCellStyle(borderStyle);
-      HSSFCell totalValueCell = lotRow.createCell(columnIndex);
-      totalValueCell.setCellValue(lotExcelModel.getTotalValue());
-      totalValueCell.setCellStyle(borderStyle);
-    }
-
-    // Filled in by the client
-    hssfSheet.createRow(rowStartIndex++);
-
-    hssfSheet.createRow(rowStartIndex++).createCell(0).setCellValue("Filled in by the supplier");
-
-    HSSFRow clientTitleRow = hssfSheet.createRow(rowStartIndex++);
-    HSSFCell receivedQuantityCell = clientTitleRow.createCell(0);
-    receivedQuantityCell.setCellValue("Received Quantity");
-    receivedQuantityCell.setCellStyle(borderStyle);
-    HSSFCell differenceCell = clientTitleRow.createCell(1);
-    differenceCell.setCellValue("Difference");
-    differenceCell.setCellStyle(borderStyle);
-
-    HSSFRow clientTitleRow2 = hssfSheet.createRow(rowStartIndex++);
-    HSSFCell qrCell = clientTitleRow2.createCell(0);
-    qrCell.setCellValue("QR");
-    qrCell.setCellStyle(borderStyle);
-    HSSFCell qrQfCell = clientTitleRow2.createCell(1);
-    qrQfCell.setCellValue("QR-QF");
-    qrQfCell.setCellStyle(borderStyle);
-
-    HSSFRow clientValueRow = hssfSheet.createRow(rowStartIndex++);
-    clientValueRow.createCell(0).setCellStyle(borderStyle);
-    clientValueRow.createCell(1).setCellStyle(borderStyle);
-
-    // Total value
-    hssfSheet.createRow(rowStartIndex++);
-
-    HSSFRow totalValueTitleRow = hssfSheet.createRow(rowStartIndex++);
-    HSSFCell totalTitleCell = totalValueTitleRow.createCell(0);
-    totalTitleCell.setCellValue("Total value of the issue voucher");
-    totalTitleCell.setCellStyle(borderStyle);
-
-    BigDecimal totalValue = BigDecimal.ZERO;
-    for (LotExcelModel lotExcelModel : lotExcelModels) {
-      totalValue = totalValue.add(new BigDecimal(lotExcelModel.getTotalValue()));
-    }
-    HSSFCell totalValueCell = totalValueTitleRow.createCell(1);
-    totalValueCell.setCellValue(String.valueOf(totalValue));
+    HSSFCell suppliedQuantityCell = lotRow.createCell(columnIndex++);
+    suppliedQuantityCell.setCellValue(lotExcelModel.getSuppliedQuantity());
+    suppliedQuantityCell.setCellStyle(borderStyle);
+    HSSFCell priceCell = lotRow.createCell(columnIndex++);
+    priceCell.setCellValue(lotExcelModel.getPrice());
+    priceCell.setCellStyle(borderStyle);
+    HSSFCell totalValueCell = lotRow.createCell(columnIndex);
+    totalValueCell.setCellValue(lotExcelModel.getTotalValue());
     totalValueCell.setCellStyle(borderStyle);
 
-    // Signature
-    hssfSheet.createRow(rowStartIndex++);
+    return lotsRowIndex;
+  }
 
-    HSSFRow byRow = hssfSheet.createRow(rowStartIndex++);
-    HSSFCell preparedByCell = byRow.createCell(0);
-    preparedByCell.setCellValue("Prepared by: ");
-    preparedByCell.setCellStyle(borderStyle);
-    HSSFCell preparedByValueCell = byRow.createCell(1);
-    preparedByValueCell.setCellValue(signature);
-    preparedByValueCell.setCellStyle(borderStyle);
-    HSSFCell conferredByCell = byRow.createCell(2);
-    conferredByCell.setCellValue("Conferred by:");
-    conferredByCell.setCellStyle(borderStyle);
-    byRow.createCell(3).setCellStyle(borderStyle);
-    HSSFCell receivedByCell = byRow.createCell(4);
-    receivedByCell.setCellValue("Received by:");
-    receivedByCell.setCellStyle(borderStyle);
-    byRow.createCell(5).setCellStyle(borderStyle);
-
-    HSSFRow signatureRow = hssfSheet.createRow(rowStartIndex++);
-    HSSFCell preparedSignatureCell = signatureRow.createCell(0);
-    preparedSignatureCell.setCellValue("Signature:");
-    preparedSignatureCell.setCellStyle(borderStyle);
-    signatureRow.createCell(1).setCellStyle(borderStyle);
-    HSSFCell conferredSignatureCell = signatureRow.createCell(2);
-    conferredSignatureCell.setCellValue("Signature:");
-    conferredSignatureCell.setCellStyle(borderStyle);
-    signatureRow.createCell(3).setCellStyle(borderStyle);
-    HSSFCell receivedSignatureCell = signatureRow.createCell(4);
-    receivedSignatureCell.setCellValue("Signature:");
-    receivedSignatureCell.setCellStyle(borderStyle);
-    signatureRow.createCell(5).setCellStyle(borderStyle);
-
-    // Date
-    hssfSheet.createRow(rowStartIndex++);
-    HSSFRow dateRow = hssfSheet.createRow(rowStartIndex);
-    dateRow.createCell(0).setCellValue(
-        DateUtil.formatDate(currentDate, DATE_TIME_WITH_AM_MARKER_FORMAT)
+  private int generateExcelSummary(
+      int rowStartIndex,
+      HSSFSheet hssfSheet,
+      HSSFCellStyle borderStyle,
+      Date currentDate,
+      String facilityName
+  ) {
+    LinkedHashMap<String, String> templateForSupplier = new LinkedHashMap<>();
+    templateForSupplier.put("Document number:", generateDocumentNumber(currentDate));
+    templateForSupplier.put("Supplier:", facilityName);
+    templateForSupplier.put("Client:", "");
+    templateForSupplier.put("District: ", "");
+    templateForSupplier.put("Province:", "");
+    templateForSupplier.put(
+        "Issue voucher date:", DateUtil.formatDate(currentDate, SIMPLE_DATE_FORMAT)
     );
+    templateForSupplier.put("Requisition Nr:", "");
+    templateForSupplier.put("Total of volume:", "");
+    templateForSupplier.put("Requisition date:", "");
+    templateForSupplier.put("Supply", "");
+    templateForSupplier.put("Returned", "");
+    templateForSupplier.put("Expired", "");
+    templateForSupplier.put("Overstocked", "");
+    templateForSupplier.put("Reception date:", "");
 
-    // generate excel file
-    String fileName = facilityName
-        + "_"
-        + DateUtil.formatDate(currentDate, DB_DATE_FORMAT)
-        + ".xlsx";
-    createNewExcel(
-        Environment.getExternalStorageDirectory().getAbsolutePath(),
-        fileName,
-        hssfWorkbook
-    );
+    for (String title : templateForSupplier.keySet()) {
+      HSSFRow row = hssfSheet.createRow(rowStartIndex);
+      HSSFCell titleCell = row.createCell(0);
+      titleCell.setCellValue(title);
+      titleCell.setCellStyle(borderStyle);
+      HSSFCell valueCell = row.createCell(1);
+      valueCell.setCellValue(templateForSupplier.get(title));
+      valueCell.setCellStyle(borderStyle);
+      rowStartIndex++;
+    }
+
+    return rowStartIndex;
   }
 
   List<StockMovementItem> convertLotOnHandsToStockMovementItems(
