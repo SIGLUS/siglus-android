@@ -66,6 +66,18 @@ public class User extends BaseModel {
 
   Boolean isTokenExpired = false;
 
+  @DatabaseField
+  String provinceCode;
+
+  @DatabaseField
+  String provinceName;
+
+  @DatabaseField
+  String districtCode;
+
+  @DatabaseField
+  String districtName;
+
   public User(String username, String password) {
     this.username = username;
     this.password = password;

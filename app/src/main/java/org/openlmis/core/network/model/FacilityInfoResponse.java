@@ -28,6 +28,10 @@ public class FacilityInfoResponse {
   private boolean isAndroid;
   private String code;
   private String name;
+  private String provinceName;
+  private String provinceCode;
+  private String districtName;
+  private String districtCode;
   private List<SupportedProgram> supportedPrograms;
   private List<ReportTypeForm> supportedReportTypes;
 }

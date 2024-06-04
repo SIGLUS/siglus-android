@@ -76,6 +76,10 @@ public class UserRepository {
     User user = UserInfoMgr.getInstance().getUser();
     user.setFacilityCode(facilityInfoResponse.getCode());
     user.setFacilityName(facilityInfoResponse.getName());
+    user.setProvinceCode(facilityInfoResponse.getProvinceCode());
+    user.setProvinceName(facilityInfoResponse.getProvinceName());
+    user.setDistrictCode(facilityInfoResponse.getDistrictCode());
+    user.setDistrictName(facilityInfoResponse.getDistrictName());
     UserInfoMgr.getInstance().setUser(user);
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {

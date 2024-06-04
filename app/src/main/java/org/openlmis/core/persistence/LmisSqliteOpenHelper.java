@@ -59,6 +59,7 @@ import org.openlmis.core.persistence.migrations.AddNewPrograms;
 import org.openlmis.core.persistence.migrations.AddParentCodeToProgramTable;
 import org.openlmis.core.persistence.migrations.AddProductPrice;
 import org.openlmis.core.persistence.migrations.AddProgramToRegimen;
+import org.openlmis.core.persistence.migrations.AddProvinceAndDistrictFieldsInUsersTable;
 import org.openlmis.core.persistence.migrations.AddRapidTestColumnsTemplate;
 import org.openlmis.core.persistence.migrations.AddRapidTestProgram;
 import org.openlmis.core.persistence.migrations.AddRegimeDisplayOrder;
@@ -237,6 +238,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new DropRegimenShortCodeTable());
     MIGRATIONS.add(new DropProgramDataFormTables());
     MIGRATIONS.add(new AddShowInReportFieldInProductProgramTable());
+    MIGRATIONS.add(new AddProvinceAndDistrictFieldsInUsersTable());
   }
 
   private LmisSqliteOpenHelper(Context context) {

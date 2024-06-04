@@ -197,9 +197,12 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
 
     // Summary part
     int rowStartIndex = 0;
-    String facilityName = UserInfoMgr.getInstance().getFacilityName();
+    UserInfoMgr userInfoMgr = UserInfoMgr.getInstance();
+    String facilityName = userInfoMgr.getFacilityName();
+    String provinceName = userInfoMgr.getProvinceName();
+    String districtName = userInfoMgr.getDistrictName();
     rowStartIndex = generateExcelSummary(
-        rowStartIndex, hssfSheet, borderStyle, currentDate, facilityName
+        rowStartIndex, hssfSheet, borderStyle, currentDate, facilityName, provinceName, districtName
     );
     // Filled in by the supplier
     hssfSheet.createRow(rowStartIndex++);
@@ -473,14 +476,16 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
       HSSFSheet hssfSheet,
       HSSFCellStyle borderStyle,
       Date currentDate,
-      String facilityName
+      String facilityName,
+      String provinceName,
+      String districtName
   ) {
     LinkedHashMap<String, String> templateForSupplier = new LinkedHashMap<>();
     templateForSupplier.put("Document number:", generateDocumentNumber(currentDate));
     templateForSupplier.put("Supplier:", facilityName);
     templateForSupplier.put("Client:", "");
-    templateForSupplier.put("District: ", "");
-    templateForSupplier.put("Province:", "");
+    templateForSupplier.put("District: ", districtName);
+    templateForSupplier.put("Province:", provinceName);
     templateForSupplier.put(
         "Issue voucher date:", DateUtil.formatDate(currentDate, SIMPLE_DATE_FORMAT)
     );
