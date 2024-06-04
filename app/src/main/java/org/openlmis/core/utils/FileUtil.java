@@ -77,20 +77,32 @@ public final class FileUtil {
 
   @Nullable
   public static File createNewExcel(String filePath, String fileName, HSSFWorkbook hssfWorkbook) {
+    FileOutputStream fileOutputStream = null;
     try {
       File file = createNewFileWithoutDuplication(filePath, fileName);
 
-      FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsoluteFile());
+      fileOutputStream = new FileOutputStream(file.getAbsoluteFile());
       hssfWorkbook.write(fileOutputStream);
 
       fileOutputStream.flush();
-      fileOutputStream.close();
 
       return file;
     } catch (IOException e) {
-      new LMISException(e, "FileUtil.createExcel").reportToFabric();
+      reportException(e);
+    } finally {
+      if (fileOutputStream != null) {
+        try {
+          fileOutputStream.close();
+        } catch (IOException e) {
+          reportException(e);
+        }
+      }
     }
     return null;
+  }
+
+  private static void reportException(IOException e) {
+    new LMISException(e, "FileUtil.createExcel").reportToFabric();
   }
 
   @NonNull
