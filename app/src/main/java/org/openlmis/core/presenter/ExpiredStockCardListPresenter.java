@@ -43,6 +43,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.exceptions.LMISException;
@@ -188,12 +190,7 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
       hssfSheet.setColumnWidth(columnIndex, width);
     }
     // border style
-    HSSFCellStyle borderStyle = hssfWorkbook.createCellStyle();
-    BorderStyle thinBoarder = BorderStyle.THIN;
-    borderStyle.setBorderBottom(thinBoarder);
-    borderStyle.setBorderTop(thinBoarder);
-    borderStyle.setBorderRight(thinBoarder);
-    borderStyle.setBorderLeft(thinBoarder);
+    HSSFCellStyle borderStyle = createBoarderStyle(hssfWorkbook);
 
     // Summary part
     int rowStartIndex = 0;
@@ -202,7 +199,8 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     String provinceName = userInfoMgr.getProvinceName();
     String districtName = userInfoMgr.getDistrictName();
     rowStartIndex = generateExcelSummary(
-        rowStartIndex, hssfSheet, borderStyle, currentDate, facilityName, provinceName, districtName
+        rowStartIndex, hssfWorkbook, hssfSheet, borderStyle, currentDate, facilityName,
+        provinceName, districtName
     );
     // Filled in by the supplier
     hssfSheet.createRow(rowStartIndex++);
@@ -239,6 +237,17 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
         hssfWorkbook
     );
     return excelFile == null ? null : excelFile.getAbsolutePath();
+  }
+
+  @NonNull
+  private HSSFCellStyle createBoarderStyle(HSSFWorkbook hssfWorkbook) {
+    HSSFCellStyle borderStyle = hssfWorkbook.createCellStyle();
+    BorderStyle thinBoarder = BorderStyle.THIN;
+    borderStyle.setBorderBottom(thinBoarder);
+    borderStyle.setBorderTop(thinBoarder);
+    borderStyle.setBorderRight(thinBoarder);
+    borderStyle.setBorderLeft(thinBoarder);
+    return borderStyle;
   }
 
   @NonNull
@@ -473,6 +482,7 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
 
   private int generateExcelSummary(
       int rowStartIndex,
+      HSSFWorkbook hssfWorkbook,
       HSSFSheet hssfSheet,
       HSSFCellStyle borderStyle,
       Date currentDate,
@@ -489,7 +499,8 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     templateForSupplier.put(
         "Issue voucher date:", DateUtil.formatDate(currentDate, SIMPLE_DATE_FORMAT)
     );
-    templateForSupplier.put("Requisition Nr:", "");
+    String requisitionNumberKey = "Requisition Nr:";
+    templateForSupplier.put(requisitionNumberKey, "");
     templateForSupplier.put("Total of volume:", "");
     templateForSupplier.put("Requisition date:", "");
     templateForSupplier.put("Supply", "");
@@ -498,14 +509,30 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     templateForSupplier.put("Overstocked", "");
     templateForSupplier.put("Reception date:", "");
 
+    HSSFCellStyle backgroundAndBoarderStyle = createBoarderStyle(hssfWorkbook);
+    backgroundAndBoarderStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+    backgroundAndBoarderStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+    boolean startSetBackgroundStyleForTitle = false;
     for (String title : templateForSupplier.keySet()) {
       HSSFRow row = hssfSheet.createRow(rowStartIndex);
+
       HSSFCell titleCell = row.createCell(0);
+      // set background color for the titles which are below of `Requisition Nr:`
+      if (!startSetBackgroundStyleForTitle && requisitionNumberKey.equals(title)) {
+        startSetBackgroundStyleForTitle = true;
+      }
       titleCell.setCellValue(title);
-      titleCell.setCellStyle(borderStyle);
+      if (startSetBackgroundStyleForTitle) {
+        titleCell.setCellStyle(backgroundAndBoarderStyle);
+      } else {
+        titleCell.setCellStyle(borderStyle);
+      }
+
       HSSFCell valueCell = row.createCell(1);
       valueCell.setCellValue(templateForSupplier.get(title));
       valueCell.setCellStyle(borderStyle);
+
       rowStartIndex++;
     }
 
