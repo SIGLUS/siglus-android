@@ -36,12 +36,12 @@ public class ExpiredStockCardListPresenterTest {
 
   private ExpiredStockCardListPresenter presenter;
   private StockRepository stockRepository;
-  private StockCardPresenter.StockCardListView stockCardListView;
+  private ExpiredStockCardListPresenter.ExpiredStockCardListView expiredStockCardListView;
 
   @Before
   public void setUp() throws Exception {
     stockRepository = mock(StockRepository.class);
-    stockCardListView = mock(StockCardPresenter.StockCardListView.class);
+    expiredStockCardListView = mock(ExpiredStockCardListPresenter.ExpiredStockCardListView.class);
 
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
       @Override
@@ -51,7 +51,7 @@ public class ExpiredStockCardListPresenterTest {
     });
     presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(ExpiredStockCardListPresenter.class);
-    presenter.attachView(stockCardListView);
+    presenter.attachView(expiredStockCardListView);
   }
 
   @Test

@@ -2,6 +2,7 @@ package org.openlmis.core.manager;
 
 import static org.junit.Assert.assertEquals;
 
+import android.util.Log;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -64,7 +65,8 @@ public class UserInfoMgrTest {
     try {
       userInfoMgr.setUser(null);
     } catch (NullPointerException e) {
-
+      // do nothing, just for testing
+      Log.d(this.getClass().getName(), "just for testing:" + e.getMessage());
     }
   }
 }

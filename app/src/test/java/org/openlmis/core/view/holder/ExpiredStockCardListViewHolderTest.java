@@ -18,8 +18,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.adapter.ExpiredStockCardListLotAdapter;
 import org.openlmis.core.view.adapter.StockcardListLotAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -70,9 +72,14 @@ public class ExpiredStockCardListViewHolderTest {
 
   @Test
   public void shouldReturnExpiredStockCardListLotAdapterWhenCreateStockCardListAdapterIsCalled() {
+    // given
+    LotOnHand mockedLotOnHand = mock(LotOnHand.class);
+    Lot mockedLot = mock(Lot.class);
+    when(mockedLot.getExpirationDate()).thenReturn(DateUtil.getCurrentDate());
+    when(mockedLotOnHand.getLot()).thenReturn(mockedLot);
     // when
     StockcardListLotAdapter actualAdapter = viewHolder.createStockCardListAdapter(
-        newArrayList(mock(LotOnHand.class), null));
+        newArrayList(mockedLotOnHand, mockedLotOnHand));
     // then
     assertTrue(actualAdapter instanceof ExpiredStockCardListLotAdapter);
   }

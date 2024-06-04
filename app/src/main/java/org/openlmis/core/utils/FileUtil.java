@@ -62,8 +62,7 @@ public final class FileUtil {
 
   public static void copyInputStreamToFile(InputStream in, File file) {
     try (PrintWriter writer = new PrintWriter(file,
-        "UTF_8"); OutputStream out = new FileOutputStream(
-        file)) {
+        "UTF_8"); OutputStream out = new FileOutputStream(file)) {
       writer.print("");
       byte[] buf = new byte[1024];
       int len;
@@ -105,7 +104,7 @@ public final class FileUtil {
     int newFileNameIndex = 1;
     String newFileName;
     while (file.exists()) {
-      int suffixIndex = fileName.lastIndexOf(".");
+      int suffixIndex = fileName.lastIndexOf('.');
       newFileName = fileName.substring(0, suffixIndex)
           + "(" + newFileNameIndex++ + ")"
           + fileName.substring(suffixIndex);
