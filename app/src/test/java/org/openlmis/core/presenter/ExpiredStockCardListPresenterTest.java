@@ -163,7 +163,7 @@ public class ExpiredStockCardListPresenterTest {
   }
 
   @Test
-  public void shouldShowLoadingTwiceWhenRemoveCheckedExpiredProducts() {
+  public void shouldShowLoadingWhenRemoveCheckedExpiredProducts() {
     // given
     StockCardListView mockedStockCardListView = mock(StockCardListView.class);
     presenter.view = mockedStockCardListView;

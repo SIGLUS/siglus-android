@@ -59,7 +59,7 @@ public class LotOnHand extends BaseModel {
       String partialFulfilled,
       String suppliedQuantity
   ) {
-    Product product = this.stockCard.product;
+    Product product = lot.product;
     String price = product.price != null ? product.price: "0" ;
 
     BigDecimal perPrice = new BigDecimal(price);
