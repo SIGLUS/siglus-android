@@ -49,7 +49,7 @@ import roboguice.inject.InjectView;
 public class ExpiredStockCardListFragment extends StockCardListFragment implements
     ExpiredStockCardListView {
 
-  private final int PERMISSION_REQUEST_CODE = 200;
+  private static final int PERMISSION_REQUEST_CODE = 200;
   @InjectView(R.id.stock_card_root)
   LinearLayout rootView;
 

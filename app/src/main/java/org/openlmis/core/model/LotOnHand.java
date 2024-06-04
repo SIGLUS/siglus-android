@@ -60,7 +60,7 @@ public class LotOnHand extends BaseModel {
       String suppliedQuantity
   ) {
     Product product = lot.product;
-    String price = product.price != null ? product.price: "0" ;
+    String price = product.price != null ? product.price : "0";
 
     BigDecimal perPrice = new BigDecimal(price);
     BigDecimal totalValue = perPrice.multiply(new BigDecimal(suppliedQuantity));
