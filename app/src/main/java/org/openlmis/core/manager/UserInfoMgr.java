@@ -67,6 +67,14 @@ public final class UserInfoMgr {
     return user == null ? "" : user.getFacilityName();
   }
 
+  public String getProvinceName() {
+    return user == null ? "" : user.getProvinceName();
+  }
+
+  public String getDistrictName() {
+    return user == null ? "" : user.getDistrictName();
+  }
+
   public String getUserNameForAppCenter() {
     String userName;
     String lastUserFacilityName = SharedPreferenceMgr.getInstance().getCurrentUserFacility();
