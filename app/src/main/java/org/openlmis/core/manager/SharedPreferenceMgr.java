@@ -20,6 +20,7 @@ package org.openlmis.core.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -585,11 +586,12 @@ public class SharedPreferenceMgr {
 
   }
 
-  public void setNewShippedProgramNames(String programNames) {
+  public void setNewShippedProgramNames(@Nullable String programNames) {
     sharedPreferences.edit().putString(KEY_NEW_SHIPPED_PROGRAM_NAMES, programNames).apply();
   }
 
+  @Nullable
   public String getNewShippedProgramNames() {
-    return sharedPreferences.getString(KEY_NEW_SHIPPED_PROGRAM_NAMES, "");
+    return sharedPreferences.getString(KEY_NEW_SHIPPED_PROGRAM_NAMES, null);
   }
 }

@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import org.greenrobot.eventbus.EventBus;
@@ -40,6 +41,7 @@ import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.AdditionalProductProgramRepository;
 import org.openlmis.core.model.repository.PodRepository;
@@ -257,11 +259,17 @@ public class SyncDownManager {
     ArrayList<String> shippedProgramCodes = new ArrayList<>();
     List<String> shippedProgramNames = new ArrayList<>();
 
+    List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
+    HashMap<String, String> programCodeAndNamePair = new HashMap<>();
+    for (ReportTypeForm reportTypeForm: reportTypeForms) {
+      programCodeAndNamePair.put(reportTypeForm.getCode(), reportTypeForm.getName());
+    }
+
     for (Pod pod : newShippedPods) {
       String programCode = pod.getRequisitionProgramCode();
       if (!shippedProgramCodes.contains(programCode)) {
         shippedProgramCodes.add(programCode);
-        shippedProgramNames.add(reportTypeFormRepository.queryByCode(programCode).getName());
+        shippedProgramNames.add(programCodeAndNamePair.get(programCode));
       }
     }
 

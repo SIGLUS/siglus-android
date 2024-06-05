@@ -149,7 +149,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         case R.id.btn_issue_voucher:
           if (newShippedIssueVoucherBanner != null) {
             newShippedIssueVoucherBanner.setVisibility(View.INVISIBLE);
-            sharedPreferenceMgr.setNewShippedProgramNames("");
+            sharedPreferenceMgr.setNewShippedProgramNames(null);
           }
           startActivity(new Intent(HomeActivity.this, IssueVoucherListActivity.class));
           break;
@@ -182,6 +182,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
           autoSyncDataBeforeResyncDialog.dismiss();
           showResyncAlertDialog();
         }
+        checkAndTryShowNewShippedPodNotification();
         break;
       case ERROR:
         if (event.getMsg() != null) {

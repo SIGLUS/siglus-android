@@ -2,6 +2,7 @@ package org.openlmis.core.manager;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -115,8 +116,8 @@ public class SharedPreferenceMgrTest {
   }
 
   @Test
-  public void shouldReturnEmptyStringWhenDoesNotSaveNewShippedPods() {
-    assertThat(sharedPreferenceMgr.getNewShippedProgramNames(), is(""));
+  public void shouldReturnNullWhenDoesNotSaveNewShippedPods() {
+    assertThat(sharedPreferenceMgr.getNewShippedProgramNames() == null, is(true));
   }
 
   @Test

@@ -228,17 +228,22 @@ public class SyncDownManagerTest {
     Pod shippedIVPods = createMockedPod(OrderStatus.SHIPPED, ivProgramCode);
     Pod shippedIVPods2 = createMockedPod(OrderStatus.SHIPPED, ivProgramCode);
     Pod shippedMMIAPods = createMockedPod(OrderStatus.SHIPPED, mmiaProgramCode);
-    Pod receivedPods = createMockedPod(OrderStatus.RECEIVED, ivProgramCode);
+    Pod receivedPods = createMockedPod(OrderStatus.RECEIVED, "MMTB");
 
     String ivProgramName = "IV NAME";
     ReportTypeForm mockedIvReportTypeForm = mock(ReportTypeForm.class);
     when(mockedIvReportTypeForm.getName()).thenReturn(ivProgramName);
-    when(reportTypeFormRepository.queryByCode(ivProgramCode)).thenReturn(mockedIvReportTypeForm);
+    when(mockedIvReportTypeForm.getCode()).thenReturn(ivProgramCode);
 
     ReportTypeForm mockedMMIAReportTypeForm = mock(ReportTypeForm.class);
     String mmiaProgramName = "MMIA NAME";
     when(mockedMMIAReportTypeForm.getName()).thenReturn(mmiaProgramName);
-    when(reportTypeFormRepository.queryByCode(mmiaProgramCode)).thenReturn(mockedMMIAReportTypeForm);
+    when(mockedMMIAReportTypeForm.getCode()).thenReturn(mmiaProgramCode);
+
+    when(reportTypeFormRepository.listAll()).thenReturn(
+        newArrayList(mockedIvReportTypeForm, mockedMMIAReportTypeForm)
+    );
+
     // when
     syncDownManager.saveNewShippedProgramNames(
         newArrayList(shippedIVPods, receivedPods, shippedIVPods2, shippedMMIAPods)
