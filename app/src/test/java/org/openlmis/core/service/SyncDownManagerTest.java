@@ -21,6 +21,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import androidx.annotation.NonNull;
 import com.google.inject.AbstractModule;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -31,12 +32,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
@@ -211,6 +214,74 @@ public class SyncDownManagerTest {
     assertEquals(response1, response);
     //        assertEquals(productAndSupportedPrograms, productAndSupportedPrograms1);
 
+  }
+
+  @Test
+  public void shouldSetNewShippedProgramNamesWhenNewPodsContainShippedPods() throws LMISException {
+    // given
+    String ivProgramCode = "IV";
+    String mmiaProgramCode = "MMIA";
+
+    Pod shippedIVPods = createMockedPod(OrderStatus.SHIPPED, ivProgramCode);
+    Pod shippedIVPods2 = createMockedPod(OrderStatus.SHIPPED, ivProgramCode);
+    Pod shippedMMIAPods = createMockedPod(OrderStatus.SHIPPED, mmiaProgramCode);
+    Pod receivedPods = createMockedPod(OrderStatus.RECEIVED, "MMTB");
+
+    String ivProgramName = "IV NAME";
+    Program mockedIvProgram = createMockedProgram(ivProgramCode, ivProgramName);
+    String mmiaProgramName = "MMIA NAME";
+    Program mockedMMIAProgram = createMockedProgram(mmiaProgramCode, mmiaProgramName);
+    when(programRepository.list()).thenReturn(newArrayList(mockedIvProgram, mockedMMIAProgram));
+
+    // when
+    syncDownManager.saveNewShippedProgramNames(
+        newArrayList(shippedIVPods, receivedPods, shippedIVPods2, shippedMMIAPods)
+    );
+    // then
+    verify(sharedPreferenceMgr).setNewShippedProgramNames(ivProgramName + ", " + mmiaProgramName);
+  }
+
+  @Test
+  public void shouldAddNewShippedProgramNamesWhenNewPodsContainShippedPodsAndHasExistingPods()
+      throws LMISException {
+    // given
+    String ivProgramCode = "IV";
+    String mmiaProgramCode = "MMIA";
+    String mmtbProgramName = "MMTB NAME";
+
+    Pod shippedIVPods = createMockedPod(OrderStatus.SHIPPED, ivProgramCode);
+    Pod shippedMMIAPods = createMockedPod(OrderStatus.SHIPPED, mmiaProgramCode);
+
+    String ivProgramName = "IV NAME";
+    Program mockedIvProgram = createMockedProgram(ivProgramCode, ivProgramName);
+    String mmiaProgramName = "MMIA NAME";
+    Program mockedMMIAProgram = createMockedProgram(mmiaProgramCode, mmiaProgramName);
+    when(programRepository.list()).thenReturn(newArrayList(mockedIvProgram, mockedMMIAProgram));
+
+    when(sharedPreferenceMgr.getNewShippedProgramNames()).thenReturn(mmtbProgramName);
+
+    // when
+    syncDownManager.saveNewShippedProgramNames(newArrayList(shippedIVPods, shippedMMIAPods));
+    // then
+    verify(sharedPreferenceMgr).setNewShippedProgramNames(
+        ivProgramName + ", " + mmiaProgramName + ", " + mmtbProgramName
+    );
+  }
+
+  @NonNull
+  private Pod createMockedPod(OrderStatus orderStatus, String ivProgramCode) {
+    Pod shippedIVPods = mock(Pod.class);
+    when(shippedIVPods.getOrderStatus()).thenReturn(orderStatus);
+    when(shippedIVPods.getRequisitionProgramCode()).thenReturn(ivProgramCode);
+    return shippedIVPods;
+  }
+
+  @NonNull
+  private static Program createMockedProgram(String ivProgramCode, String ivProgramName) {
+    Program mockedProgram = mock(Program.class);
+    when(mockedProgram.getProgramName()).thenReturn(ivProgramName);
+    when(mockedProgram.getProgramCode()).thenReturn(ivProgramCode);
+    return mockedProgram;
   }
 
   private void testSyncProgress(SyncProgress progress) throws SQLException {

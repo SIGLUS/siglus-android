@@ -445,6 +445,10 @@
   <string name="incomplete_alert_message">"Seus relatórios: %s não foram concluídos"</string>
   <string name="incomplete_alert_message_for_single_report">"Seu relatórios: %s não foi concluído"</string>
 
+  <!-- New shipped issue voucher banner -->
+  <string name="new_shipped_issue_voucher_alert_message">O pedido dos %1$s foi cumprida</string>
+  <string name="new_shipped_issue_voucher_alert_message_for_single_program">O pedido do %1$s foi cumprido</string>
+
   <!--Add products to requisition form-->
   <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
   <string name="title_add_drugs_to_form">Adicione produtos para requisição</string>

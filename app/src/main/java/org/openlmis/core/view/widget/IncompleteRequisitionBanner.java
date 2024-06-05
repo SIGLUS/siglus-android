@@ -21,9 +21,6 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import com.google.inject.Inject;
 import java.util.List;
 import org.openlmis.core.R;
@@ -33,13 +30,8 @@ import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.TranslationUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.RoboGuice;
-import roboguice.inject.InjectView;
 
-
-public class IncompleteRequisitionBanner extends LinearLayout {
-
-  @InjectView(R.id.tx_incomplete_requisition)
-  TextView txMissedRequisition;
+public class IncompleteRequisitionBanner extends NotificationBanner {
 
   @Inject
   RequisitionPeriodService requisitionPeriodService;
@@ -48,17 +40,16 @@ public class IncompleteRequisitionBanner extends LinearLayout {
 
   public IncompleteRequisitionBanner(Context context) {
     super(context);
-    init(context);
   }
 
   public IncompleteRequisitionBanner(Context context, AttributeSet attrs) {
     super(context, attrs);
-    init(context);
   }
 
-  private void init(Context context) {
+  @Override
+  protected void init(Context context) {
+    super.init(context);
     this.context = context;
-    LayoutInflater.from(context).inflate(R.layout.view_incomplete_requisition_banner, this);
     RoboGuice.injectMembers(getContext(), this);
     RoboGuice.getInjector(getContext()).injectViewMembers(this);
     setIncompleteRequisitionBanner();
@@ -71,7 +62,7 @@ public class IncompleteRequisitionBanner extends LinearLayout {
         this.setVisibility(GONE);
       } else {
         TranslationUtil.translateReportName(incompleteReports);
-        txMissedRequisition.setText(buildTipMessage(incompleteReports));
+        setNotificationMessage(buildTipMessage(incompleteReports));
         this.setVisibility(VISIBLE);
       }
     } catch (LMISException e) {

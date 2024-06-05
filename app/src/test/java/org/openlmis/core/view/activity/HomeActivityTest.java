@@ -35,6 +35,7 @@ import static org.robolectric.Shadows.shadowOf;
 import android.content.Intent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import androidx.fragment.app.Fragment;
 import com.google.inject.AbstractModule;
 import org.junit.After;
@@ -54,6 +55,7 @@ import org.openlmis.core.model.builder.ReportTypeBuilder;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.widget.DashboardView;
+import org.openlmis.core.view.widget.NotificationBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -114,7 +116,8 @@ public class HomeActivityTest {
 
     // then
     Intent nextStartedIntent = shadowOf(homeActivity).getNextStartedActivity();
-    assertEquals(StockCardListActivity.class.getName(), nextStartedIntent.getComponent().getClassName());
+    assertEquals(StockCardListActivity.class.getName(),
+        nextStartedIntent.getComponent().getClassName());
   }
 
   @Test
@@ -127,7 +130,8 @@ public class HomeActivityTest {
 
     // then
     Intent nextStartedIntent = shadowOf(homeActivity).getNextStartedActivity();
-    assertEquals(KitStockCardListActivity.class.getName(), nextStartedIntent.getComponent().getClassName());
+    assertEquals(KitStockCardListActivity.class.getName(),
+        nextStartedIntent.getComponent().getClassName());
   }
 
   @Test
@@ -140,7 +144,8 @@ public class HomeActivityTest {
 
     // then
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
-    assertThat(startedIntent.getComponent().getClassName(), equalTo(PhysicalInventoryActivity.class.getName()));
+    assertThat(startedIntent.getComponent().getClassName(),
+        equalTo(PhysicalInventoryActivity.class.getName()));
   }
 
   @Test
@@ -153,7 +158,8 @@ public class HomeActivityTest {
 
     // then
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
-    assertThat(startedIntent.getComponent().getClassName(), equalTo(ReportListActivity.class.getName()));
+    assertThat(startedIntent.getComponent().getClassName(),
+        equalTo(ReportListActivity.class.getName()));
   }
 
   @Test
@@ -166,7 +172,8 @@ public class HomeActivityTest {
 
     // then
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
-    assertThat(startedIntent.getComponent().getClassName(), equalTo(IssueVoucherListActivity.class.getName()));
+    assertThat(startedIntent.getComponent().getClassName(),
+        equalTo(IssueVoucherListActivity.class.getName()));
   }
 
   private void verifyNextPage(String className) {
@@ -238,7 +245,8 @@ public class HomeActivityTest {
     RobolectricUtils.waitLooperIdle();
 
     // then
-    final Fragment autoSyncDataDialog = homeActivity.getSupportFragmentManager().findFragmentByTag("autoSyncDataBeforeResyncDialog");
+    final Fragment autoSyncDataDialog = homeActivity.getSupportFragmentManager()
+        .findFragmentByTag("autoSyncDataBeforeResyncDialog");
     assertNotNull(autoSyncDataDialog);
   }
 
@@ -312,5 +320,78 @@ public class HomeActivityTest {
     // then
     verify(syncTimeView, times(1)).setSyncStockCardLastYearText();
     verify(dashboardView, times(1)).showCalculating();
+  }
+
+  @Test
+  public void shouldShowNotificationWhenHasNewShippedPod() {
+    // given
+    String shippedProgramNames = "MMIA";
+    when(mockSharedPreferenceMgr.getNewShippedProgramNames()).thenReturn(shippedProgramNames);
+
+    // when
+    homeActivity.onResume();
+
+    // then
+    NotificationBanner notificationBanner = (NotificationBanner) homeActivity.findViewById(
+        R.id.view_new_shipped_issue_voucher_banner
+    );
+    CharSequence actualNotificationMessage = notificationBanner.txMissedRequisition.getText();
+    assertEquals(
+        homeActivity.getString(
+            R.string.new_shipped_issue_voucher_alert_message_for_single_program, shippedProgramNames
+        ),
+        actualNotificationMessage
+    );
+    assertEquals(
+        "The order for the " + shippedProgramNames + " has been fulfilled",
+        actualNotificationMessage
+    );
+    assertEquals(View.VISIBLE, notificationBanner.getVisibility());
+  }
+
+  @Test
+  public void shouldShowNotificationWhenHasNewShippedPods() {
+    // given
+    String shippedProgramNames = "Test, MMIA";
+    when(mockSharedPreferenceMgr.getNewShippedProgramNames()).thenReturn(shippedProgramNames);
+
+    // when
+    homeActivity.onResume();
+
+    // then
+    NotificationBanner notificationBanner = (NotificationBanner) homeActivity.findViewById(
+        R.id.view_new_shipped_issue_voucher_banner
+    );
+    CharSequence actualNotificationMessage = notificationBanner.txMissedRequisition.getText();
+    assertEquals(
+        homeActivity.getString(
+            R.string.new_shipped_issue_voucher_alert_message, shippedProgramNames
+        ),
+        actualNotificationMessage
+    );
+    assertEquals(
+        "The order for the " + shippedProgramNames + " have been fulfilled",
+        actualNotificationMessage
+    );
+    assertEquals(View.VISIBLE, notificationBanner.getVisibility());
+  }
+
+  @Test
+  public void shouldHideIVNotificationAndClearNewShippedPodsWhenClickIVEntry() {
+    // given
+    String shippedProgramNames = "Test, MMIA";
+    when(mockSharedPreferenceMgr.getNewShippedProgramNames()).thenReturn(shippedProgramNames);
+
+    resetNextClickTime();
+    // when
+    homeActivity.onResume();
+    homeActivity.findViewById(R.id.btn_issue_voucher).performClick();
+
+    // then
+    assertEquals(
+        View.INVISIBLE,
+        homeActivity.findViewById(R.id.view_new_shipped_issue_voucher_banner).getVisibility()
+    );
+    verify(mockSharedPreferenceMgr).setNewShippedProgramNames(null);
   }
 }
