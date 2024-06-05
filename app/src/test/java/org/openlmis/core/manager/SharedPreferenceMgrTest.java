@@ -114,6 +114,22 @@ public class SharedPreferenceMgrTest {
     Assert.assertTrue(hasSyncedUpLatestMovementToday);
   }
 
+  @Test
+  public void shouldReturnEmptyStringWhenDoesNotSaveNewShippedPods() {
+    assertThat(sharedPreferenceMgr.getNewShippedProgramNames(), is(""));
+  }
+
+  @Test
+  public void shouldReturnSavedStringWhenSavedNewShippedPods() {
+    // given
+    String newShippedProgramNames = "MMIA";
+    sharedPreferenceMgr.setNewShippedProgramNames(newShippedProgramNames);
+    // when
+    String actualShippedProgramNames = sharedPreferenceMgr.getNewShippedProgramNames();
+    // then
+    assertThat(actualShippedProgramNames, is(newShippedProgramNames));
+  }
+
   public class MyTestModule extends AbstractModule {
 
     @Override

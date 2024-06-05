@@ -43,6 +43,7 @@ import java.io.File;
 import org.apache.commons.collections.CollectionUtils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.annotation.BindEventBus;
@@ -71,6 +72,7 @@ import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.DashboardView;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.NonCancelableDialog;
+import org.openlmis.core.view.widget.NotificationBanner;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.SyncTimeView;
 import roboguice.inject.ContentView;
@@ -84,6 +86,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private static final String EXPORT_DATA_PARENT_DIR = "//data//";
   private static final int PERMISSION_REQUEST_CODE = 200;
   IncompleteRequisitionBanner incompleteRequisitionBanner;
+  NotificationBanner newShippedIssueVoucherBanner;
   SyncTimeView syncTimeView;
   @InjectView(R.id.dv_product_dashboard)
   DashboardView dvProductDashboard;
@@ -144,6 +147,10 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
           startActivity(KitStockCardListActivity.class);
           break;
         case R.id.btn_issue_voucher:
+          if (newShippedIssueVoucherBanner != null) {
+            newShippedIssueVoucherBanner.setVisibility(View.INVISIBLE);
+            sharedPreferenceMgr.setNewShippedProgramNames("");
+          }
           startActivity(new Intent(HomeActivity.this, IssueVoucherListActivity.class));
           break;
         default:
@@ -339,6 +346,9 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     } else {
       incompleteRequisitionBanner.setVisibility(View.GONE);
     }
+
+    checkAndTryShowNewShippedPodNotification();
+
     if (sharedPreferenceMgr.isStockCardLastYearSyncError()) {
       syncTimeView.setSyncStockCardLastYearError();
     } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
@@ -350,6 +360,29 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     dirtyDataManager.dirtyDataMonthlyCheck();
     isHaveDirtyData();
     refreshDashboard();
+  }
+
+  private void checkAndTryShowNewShippedPodNotification() {
+    String newShippedProgramNames = sharedPreferenceMgr.getNewShippedProgramNames();
+    if (!TextUtils.isEmpty(newShippedProgramNames)) {
+      if (newShippedIssueVoucherBanner == null) {
+        newShippedIssueVoucherBanner = findViewById(R.id.view_new_shipped_issue_voucher_banner);
+      }
+      newShippedIssueVoucherBanner.setNotificationMessage(
+          createNewShippedNotification(newShippedProgramNames)
+      );
+      newShippedIssueVoucherBanner.setVisibility(View.VISIBLE);
+    }
+  }
+
+  @NonNull
+  private String createNewShippedNotification(@NotNull String newShippedProgramNames) {
+    if (newShippedProgramNames.contains(",")) {
+      return getString(R.string.new_shipped_issue_voucher_alert_message, newShippedProgramNames);
+    }
+    return getString(
+        R.string.new_shipped_issue_voucher_alert_message_for_single_program, newShippedProgramNames
+    );
   }
 
   private void showResyncAlertDialog() {

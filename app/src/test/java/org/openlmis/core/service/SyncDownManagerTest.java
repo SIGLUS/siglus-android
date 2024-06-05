@@ -21,6 +21,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import androidx.annotation.NonNull;
 import com.google.inject.AbstractModule;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -31,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -48,6 +50,7 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -90,6 +93,8 @@ public class SyncDownManagerTest {
 
   private StockMovementRepository stockMovementRepository;
 
+  private ReportTypeFormRepository reportTypeFormRepository;
+
   @Before
   public void setUp() throws Exception {
     sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
@@ -100,6 +105,7 @@ public class SyncDownManagerTest {
     stockRepository = mock(StockRepository.class);
     stockService = mock(StockService.class);
     stockMovementRepository = mock(StockMovementRepository.class);
+    reportTypeFormRepository = mock(ReportTypeFormRepository.class);
 
     reset(rnrFormRepository);
     reset(lmisRestApi);
@@ -211,6 +217,42 @@ public class SyncDownManagerTest {
     assertEquals(response1, response);
     //        assertEquals(productAndSupportedPrograms, productAndSupportedPrograms1);
 
+  }
+
+  @Test
+  public void shouldSetNewShippedProgramNamesWhenNewPodsContainShippedPods() throws LMISException {
+    // given
+    String ivProgramCode = "IV";
+    String mmiaProgramCode = "MMIA";
+
+    Pod shippedIVPods = createMockedPod(OrderStatus.SHIPPED, ivProgramCode);
+    Pod shippedIVPods2 = createMockedPod(OrderStatus.SHIPPED, ivProgramCode);
+    Pod shippedMMIAPods = createMockedPod(OrderStatus.SHIPPED, mmiaProgramCode);
+    Pod receivedPods = createMockedPod(OrderStatus.RECEIVED, ivProgramCode);
+
+    String ivProgramName = "IV NAME";
+    ReportTypeForm mockedIvReportTypeForm = mock(ReportTypeForm.class);
+    when(mockedIvReportTypeForm.getName()).thenReturn(ivProgramName);
+    when(reportTypeFormRepository.queryByCode(ivProgramCode)).thenReturn(mockedIvReportTypeForm);
+
+    ReportTypeForm mockedMMIAReportTypeForm = mock(ReportTypeForm.class);
+    String mmiaProgramName = "MMIA NAME";
+    when(mockedMMIAReportTypeForm.getName()).thenReturn(mmiaProgramName);
+    when(reportTypeFormRepository.queryByCode(mmiaProgramCode)).thenReturn(mockedMMIAReportTypeForm);
+    // when
+    syncDownManager.saveNewShippedProgramNames(
+        newArrayList(shippedIVPods, receivedPods, shippedIVPods2, shippedMMIAPods)
+    );
+    // then
+    verify(sharedPreferenceMgr).setNewShippedProgramNames(ivProgramName + ", " + mmiaProgramName);
+  }
+
+  @NonNull
+  private Pod createMockedPod(OrderStatus orderStatus, String ivProgramCode) {
+    Pod shippedIVPods = mock(Pod.class);
+    when(shippedIVPods.getOrderStatus()).thenReturn(orderStatus);
+    when(shippedIVPods.getRequisitionProgramCode()).thenReturn(ivProgramCode);
+    return shippedIVPods;
   }
 
   private void testSyncProgress(SyncProgress progress) throws SQLException {
@@ -370,6 +412,7 @@ public class SyncDownManagerTest {
       bind(StockRepository.class).toInstance(stockRepository);
       bind(StockMovementRepository.class).toInstance(stockMovementRepository);
       bind(StockService.class).toInstance(stockService);
+      bind(ReportTypeFormRepository.class).toInstance(reportTypeFormRepository);
     }
   }
 }

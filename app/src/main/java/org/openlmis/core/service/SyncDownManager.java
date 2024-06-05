@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.Objects;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
@@ -44,6 +46,7 @@ import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
@@ -109,6 +112,8 @@ public class SyncDownManager {
   PodRepository podRepository;
   @Inject
   AdditionalProductProgramRepository additionalProductProgramRepository;
+  @Inject
+  ReportTypeFormRepository reportTypeFormRepository;
 
   public SyncDownManager() {
     lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -235,7 +240,34 @@ public class SyncDownManager {
         })
         .toList();
     podRepository.batchCreatePodsWithItems(filteredPods);
-    return !filteredPods.isEmpty();
+
+    boolean hasNewPods = !filteredPods.isEmpty();
+    if (hasNewPods) {
+      saveNewShippedProgramNames(filteredPods);
+    }
+
+    return hasNewPods;
+  }
+
+  void saveNewShippedProgramNames(List<Pod> newPods) throws LMISException {
+    ImmutableList<Pod> newShippedPods = FluentIterable.from(newPods)
+        .filter(pod -> pod.getOrderStatus() == OrderStatus.SHIPPED)
+        .toList();
+
+    ArrayList<String> shippedProgramCodes = new ArrayList<>();
+    List<String> shippedProgramNames = new ArrayList<>();
+
+    for (Pod pod : newShippedPods) {
+      String programCode = pod.getRequisitionProgramCode();
+      if (!shippedProgramCodes.contains(programCode)) {
+        shippedProgramCodes.add(programCode);
+        shippedProgramNames.add(reportTypeFormRepository.queryByCode(programCode).getName());
+      }
+    }
+
+    sharedPreferenceMgr.setNewShippedProgramNames(
+        shippedProgramNames.toString().replace("[", "").replace("]", "")
+    );
   }
 
   @NonNull

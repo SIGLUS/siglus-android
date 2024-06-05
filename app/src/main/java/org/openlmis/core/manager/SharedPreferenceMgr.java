@@ -99,6 +99,7 @@ public class SharedPreferenceMgr {
   public static final String KEY_IS_POD_DATA_SYNCED = "key_is_pod_data_synced";
   public static final String KEY_TRAINING_FIRST_LOGIN_TIME = "training_first_login_time";
   public static final String KEY_IS_INITIAL_DIRTY_DATA_CHECKING = "key_is_initial_dirty_data_checking";
+  public static final String KEY_NEW_SHIPPED_PROGRAM_NAMES = "key_new_shipped_program_names";
 
   static final int MONTH_OFFSET = 13;
   protected StockRepository stockRepository;
@@ -584,4 +585,11 @@ public class SharedPreferenceMgr {
 
   }
 
+  public void setNewShippedProgramNames(String programNames) {
+    sharedPreferences.edit().putString(KEY_NEW_SHIPPED_PROGRAM_NAMES, programNames).apply();
+  }
+
+  public String getNewShippedProgramNames() {
+    return sharedPreferences.getString(KEY_NEW_SHIPPED_PROGRAM_NAMES, "");
+  }
 }
