@@ -41,14 +41,14 @@ import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Pod;
-import org.openlmis.core.model.ReportTypeForm;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.AdditionalProductProgramRepository;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
-import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
@@ -115,7 +115,7 @@ public class SyncDownManager {
   @Inject
   AdditionalProductProgramRepository additionalProductProgramRepository;
   @Inject
-  ReportTypeFormRepository reportTypeFormRepository;
+  ProgramRepository programRepository;
 
   public SyncDownManager() {
     lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -259,10 +259,10 @@ public class SyncDownManager {
     ArrayList<String> shippedProgramCodes = new ArrayList<>();
     List<String> shippedProgramNames = new ArrayList<>();
 
-    List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
+    List<Program> programs = programRepository.list();
     HashMap<String, String> programCodeAndNamePair = new HashMap<>();
-    for (ReportTypeForm reportTypeForm: reportTypeForms) {
-      programCodeAndNamePair.put(reportTypeForm.getCode(), reportTypeForm.getName());
+    for (Program program : programs) {
+      programCodeAndNamePair.put(program.getProgramCode(), program.getProgramName());
     }
 
     for (Pod pod : newShippedPods) {
@@ -270,6 +270,15 @@ public class SyncDownManager {
       if (!shippedProgramCodes.contains(programCode)) {
         shippedProgramCodes.add(programCode);
         shippedProgramNames.add(programCodeAndNamePair.get(programCode));
+      }
+    }
+
+    String existingShippedProgramNames = sharedPreferenceMgr.getNewShippedProgramNames();
+    if (existingShippedProgramNames != null) {
+      for (String existingProgramName : existingShippedProgramNames.split(",")) {
+        if (!shippedProgramNames.contains(existingProgramName)) {
+          shippedProgramNames.add(existingProgramName);
+        }
       }
     }
 

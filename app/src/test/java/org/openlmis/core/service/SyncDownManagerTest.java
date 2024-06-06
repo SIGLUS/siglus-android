@@ -39,6 +39,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
@@ -50,7 +51,6 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
-import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -93,8 +93,6 @@ public class SyncDownManagerTest {
 
   private StockMovementRepository stockMovementRepository;
 
-  private ReportTypeFormRepository reportTypeFormRepository;
-
   @Before
   public void setUp() throws Exception {
     sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
@@ -105,7 +103,6 @@ public class SyncDownManagerTest {
     stockRepository = mock(StockRepository.class);
     stockService = mock(StockService.class);
     stockMovementRepository = mock(StockMovementRepository.class);
-    reportTypeFormRepository = mock(ReportTypeFormRepository.class);
 
     reset(rnrFormRepository);
     reset(lmisRestApi);
@@ -231,18 +228,10 @@ public class SyncDownManagerTest {
     Pod receivedPods = createMockedPod(OrderStatus.RECEIVED, "MMTB");
 
     String ivProgramName = "IV NAME";
-    ReportTypeForm mockedIvReportTypeForm = mock(ReportTypeForm.class);
-    when(mockedIvReportTypeForm.getName()).thenReturn(ivProgramName);
-    when(mockedIvReportTypeForm.getCode()).thenReturn(ivProgramCode);
-
-    ReportTypeForm mockedMMIAReportTypeForm = mock(ReportTypeForm.class);
+    Program mockedIvProgram = createMockedProgram(ivProgramCode, ivProgramName);
     String mmiaProgramName = "MMIA NAME";
-    when(mockedMMIAReportTypeForm.getName()).thenReturn(mmiaProgramName);
-    when(mockedMMIAReportTypeForm.getCode()).thenReturn(mmiaProgramCode);
-
-    when(reportTypeFormRepository.listAll()).thenReturn(
-        newArrayList(mockedIvReportTypeForm, mockedMMIAReportTypeForm)
-    );
+    Program mockedMMIAProgram = createMockedProgram(mmiaProgramCode, mmiaProgramName);
+    when(programRepository.list()).thenReturn(newArrayList(mockedIvProgram, mockedMMIAProgram));
 
     // when
     syncDownManager.saveNewShippedProgramNames(
@@ -252,12 +241,47 @@ public class SyncDownManagerTest {
     verify(sharedPreferenceMgr).setNewShippedProgramNames(ivProgramName + ", " + mmiaProgramName);
   }
 
+  @Test
+  public void shouldAddNewShippedProgramNamesWhenNewPodsContainShippedPodsAndHasExistingPods()
+      throws LMISException {
+    // given
+    String ivProgramCode = "IV";
+    String mmiaProgramCode = "MMIA";
+    String mmtbProgramName = "MMTB NAME";
+
+    Pod shippedIVPods = createMockedPod(OrderStatus.SHIPPED, ivProgramCode);
+    Pod shippedMMIAPods = createMockedPod(OrderStatus.SHIPPED, mmiaProgramCode);
+
+    String ivProgramName = "IV NAME";
+    Program mockedIvProgram = createMockedProgram(ivProgramCode, ivProgramName);
+    String mmiaProgramName = "MMIA NAME";
+    Program mockedMMIAProgram = createMockedProgram(mmiaProgramCode, mmiaProgramName);
+    when(programRepository.list()).thenReturn(newArrayList(mockedIvProgram, mockedMMIAProgram));
+
+    when(sharedPreferenceMgr.getNewShippedProgramNames()).thenReturn(mmtbProgramName);
+
+    // when
+    syncDownManager.saveNewShippedProgramNames(newArrayList(shippedIVPods, shippedMMIAPods));
+    // then
+    verify(sharedPreferenceMgr).setNewShippedProgramNames(
+        ivProgramName + ", " + mmiaProgramName + ", " + mmtbProgramName
+    );
+  }
+
   @NonNull
   private Pod createMockedPod(OrderStatus orderStatus, String ivProgramCode) {
     Pod shippedIVPods = mock(Pod.class);
     when(shippedIVPods.getOrderStatus()).thenReturn(orderStatus);
     when(shippedIVPods.getRequisitionProgramCode()).thenReturn(ivProgramCode);
     return shippedIVPods;
+  }
+
+  @NonNull
+  private static Program createMockedProgram(String ivProgramCode, String ivProgramName) {
+    Program mockedProgram = mock(Program.class);
+    when(mockedProgram.getProgramName()).thenReturn(ivProgramName);
+    when(mockedProgram.getProgramCode()).thenReturn(ivProgramCode);
+    return mockedProgram;
   }
 
   private void testSyncProgress(SyncProgress progress) throws SQLException {
@@ -417,7 +441,6 @@ public class SyncDownManagerTest {
       bind(StockRepository.class).toInstance(stockRepository);
       bind(StockMovementRepository.class).toInstance(stockMovementRepository);
       bind(StockService.class).toInstance(stockService);
-      bind(ReportTypeFormRepository.class).toInstance(reportTypeFormRepository);
     }
   }
 }
