@@ -142,7 +142,7 @@ public class RapidTestRnrForm extends LinearLayout {
     if (notCompletePosition != -1) {
       rvRightProductInfo.scrollToPosition(notCompletePosition);
       rvRightProductInfo.setCantExceedPosition(notCompletePosition);
-      infoAdapter.showError(notCompletePosition);
+      infoAdapter.showError();
       return false;
     }
     return true;

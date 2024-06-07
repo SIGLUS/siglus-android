@@ -349,6 +349,8 @@ public class RapidTestReportFormFragment extends BaseReportFragment
     List<RnrFormItem> productItems = viewModel.getProductItems();
     for (RnrFormItem item : productItems) {
       item.setInitialAmount(mmitProductNum);
+      item.setIssued(mmitProductNum);
+      item.setAdjustment(mmitProductNum);
       item.setInventory(mmitProductNum);
     }
     //fill MMIT Report
