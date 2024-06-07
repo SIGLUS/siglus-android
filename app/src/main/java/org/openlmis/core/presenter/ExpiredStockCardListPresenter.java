@@ -46,7 +46,6 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -567,10 +566,10 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     return stockMovementItems;
   }
 
-  @NotNull
+  @NonNull
   private StockMovementItem convertLotOnHandsToStockMovementItem(
       StockCard stockCard,
-      @NotNull List<LotOnHand> lotOnHands,
+      @NonNull List<LotOnHand> lotOnHands,
       String signature,
       Date currentDate) {
     // quality
