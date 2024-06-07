@@ -34,10 +34,16 @@ public class RapidTestFormGridViewModel {
   public enum RapidTestGridColumnCode {
     CONSUMPTION,
     POSITIVE,
-    UNJUSTIFIED
+    UNJUSTIFIED,
+    POSITIVE_HIV,
+    POSITIVE_SYPHILIS,
   }
 
   public enum ColumnCode {
+    DUOTESTEHIVSYPHILIS,
+    HEPATITISBTESTES,
+    TDRORALDEHIV,
+    NEWTEST,
     HIVDETERMINE,
     HIVUNIGOLD,
     SYPHILLIS,
@@ -52,8 +58,12 @@ public class RapidTestFormGridViewModel {
   ColumnCode columnCode;
   String consumptionValue = StringUtils.EMPTY;
   String positiveValue = StringUtils.EMPTY;
+  String positiveHivValue = StringUtils.EMPTY;
+  String positiveSyphilisValue = StringUtils.EMPTY;
   String unjustifiedValue = StringUtils.EMPTY;
   UsageColumnsMap positiveColumn;
+  UsageColumnsMap positiveHivColumn;
+  UsageColumnsMap positiveSyphilisColumn;
   UsageColumnsMap consumeColumn;
   UsageColumnsMap unjustifiedColumn;
   Boolean isNeedAllAPEValue = false;
@@ -63,6 +73,8 @@ public class RapidTestFormGridViewModel {
   private static final String COLUMN_CODE_PREFIX_CONSUME = "CONSUME_";
   private static final String COLUMN_CODE_PREFIX_POSITIVE = "POSITIVE_";
   private static final String COLUMN_CODE_PREFIX_UNJUSTIFIED = "UNJUSTIFIED_";
+  private static final String COLUMN_CODE_PREFIX_POSITIVE_HIV = "POSITIVE-HIV_";
+  private static final String COLUMN_CODE_PREFIX_POSITIVE_SYPHILIS = "POSITIVE-SYPHILIS_";
 
   RapidTestFormGridViewModel(ColumnCode columnCode) {
     this.columnCode = columnCode;
@@ -71,11 +83,26 @@ public class RapidTestFormGridViewModel {
   public boolean validate() {
     try {
       return isEmpty()
-          || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue)
+          || (isConsumptionGreaterThanPositive()
           && Long.parseLong(unjustifiedValue) >= 0);
     } catch (NumberFormatException e) {
       return false;
     }
+  }
+
+  private boolean isConsumptionGreaterThanPositive() {
+    return Long.parseLong(consumptionValue) >= calculatePositiveValue();
+  }
+
+  private long calculatePositiveValue() {
+    if (isDuoTest()) {
+      return Long.parseLong(positiveHivValue) + Long.parseLong(positiveSyphilisValue);
+    }
+    return Long.parseLong(positiveValue);
+  }
+
+  public boolean isDuoTest() {
+    return columnCode == ColumnCode.DUOTESTEHIVSYPHILIS;
   }
 
   public MMITGridErrorType validateThreeGrid() {
@@ -101,16 +128,24 @@ public class RapidTestFormGridViewModel {
 
   private boolean validateConsumption() {
     try {
-      return !((StringUtils.isNotEmpty(positiveValue) || StringUtils.isNotEmpty(unjustifiedValue))
+      return !((isPositiveNotEmpty() || StringUtils.isNotEmpty(unjustifiedValue))
           && StringUtils.isEmpty(consumptionValue));
     } catch (NumberFormatException e) {
       return false;
     }
   }
 
+  private boolean isPositiveNotEmpty() {
+    if (isDuoTest()) {
+      return StringUtils.isNotEmpty(positiveHivValue)
+          && StringUtils.isNotEmpty(positiveSyphilisValue);
+    }
+    return StringUtils.isNotEmpty(positiveValue);
+  }
+
   private boolean validatePositiveIsEmpty() {
     try {
-      return !(StringUtils.isNotEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue));
+      return !(StringUtils.isNotEmpty(consumptionValue) && !isPositiveNotEmpty());
     } catch (NumberFormatException e) {
       return false;
     }
@@ -127,7 +162,7 @@ public class RapidTestFormGridViewModel {
   private boolean validateUnjustified() {
     try {
       return !(StringUtils.isNotEmpty(consumptionValue)
-          && StringUtils.isNotEmpty(positiveValue)
+          && isPositiveNotEmpty()
           && StringUtils.isEmpty(unjustifiedValue));
     } catch (NumberFormatException e) {
       return false;
@@ -138,6 +173,8 @@ public class RapidTestFormGridViewModel {
   public void setValue(UsageColumnsMap column, int value) {
     setConsumptionValue(column, value);
     setPositiveValue(column, value);
+    setPositiveHivValue(column, value);
+    setPositiveSyphilisValue(column, value);
     setUnjustifiedValue(column, value);
   }
 
@@ -152,6 +189,12 @@ public class RapidTestFormGridViewModel {
       case UNJUSTIFIED:
         unjustifiedValue = value;
         break;
+      case POSITIVE_HIV:
+        positiveHivValue = value;
+        break;
+      case POSITIVE_SYPHILIS:
+        positiveSyphilisValue = value;
+        break;
       default:
         // do nothing
     }
@@ -162,6 +205,8 @@ public class RapidTestFormGridViewModel {
     List<TestConsumptionItem> testConsumptionLineItems = new ArrayList<>();
     setConsumptionFormItem(issueReason, testConsumptionLineItems);
     setPositiveFormItem(issueReason, testConsumptionLineItems);
+    setPositiveHivFormItem(issueReason, testConsumptionLineItems);
+    setPositiveSyphilisFormItem(issueReason, testConsumptionLineItems);
     setUnjustifiedFormItem(issueReason, testConsumptionLineItems);
     return testConsumptionLineItems;
   }
@@ -177,6 +222,12 @@ public class RapidTestFormGridViewModel {
       case UNJUSTIFIED:
         unjustifiedValue = StringUtils.EMPTY;
         break;
+      case POSITIVE_HIV:
+        positiveHivValue = StringUtils.EMPTY;
+        break;
+      case POSITIVE_SYPHILIS:
+        positiveSyphilisValue = StringUtils.EMPTY;
+        break;
       default:
         // do nothing
     }
@@ -184,7 +235,7 @@ public class RapidTestFormGridViewModel {
 
   public boolean isEmpty() {
     return StringUtils.isEmpty(consumptionValue)
-        && StringUtils.isEmpty(positiveValue)
+        && !isPositiveNotEmpty()
         && StringUtils.isEmpty(unjustifiedValue);
   }
 
@@ -193,8 +244,8 @@ public class RapidTestFormGridViewModel {
   }
 
   private boolean positiveGreaterThanConsumption() {
-    if (StringUtils.isNotEmpty(consumptionValue) && StringUtils.isNotEmpty(positiveValue)) {
-      return Long.parseLong(consumptionValue) < Long.parseLong(positiveValue);
+    if (StringUtils.isNotEmpty(consumptionValue) && isPositiveNotEmpty()) {
+      return Long.parseLong(consumptionValue) < calculatePositiveValue();
     } else {
       return false;
     }
@@ -202,18 +253,18 @@ public class RapidTestFormGridViewModel {
 
   private boolean isAllNotEmpty() {
     return StringUtils.isNotEmpty(consumptionValue)
-        && StringUtils.isNotEmpty(positiveValue)
+        && isPositiveNotEmpty()
         && StringUtils.isNotEmpty(unjustifiedValue);
   }
 
   public boolean isAddUnjustified() {
     return StringUtils.isEmpty(unjustifiedValue)
         && !(StringUtils.isEmpty(consumptionValue)
-        && StringUtils.isEmpty(positiveValue));
+        && !isPositiveNotEmpty());
   }
 
   private String generateFullColumnName(String prefix) {
-    return prefix + StringUtils.upperCase(getColumnCode().name());
+    return prefix + StringUtils.upperCase(columnCode.name());
   }
 
   private void setUnjustifiedValue(UsageColumnsMap column, int value) {
@@ -227,6 +278,20 @@ public class RapidTestFormGridViewModel {
     if (column.getCode().contains(COLUMN_CODE_PREFIX_POSITIVE)) {
       positiveColumn = column;
       setPositiveValue(String.valueOf(value));
+    }
+  }
+
+  private void setPositiveHivValue(UsageColumnsMap column, int value) {
+    if (column.getCode().contains(COLUMN_CODE_PREFIX_POSITIVE_HIV)) {
+      positiveHivColumn = column;
+      positiveHivValue = String.valueOf(value);
+    }
+  }
+  
+  private void setPositiveSyphilisValue(UsageColumnsMap column, int value) {
+    if (column.getCode().contains(COLUMN_CODE_PREFIX_POSITIVE_SYPHILIS)) {
+      positiveSyphilisColumn = column;
+      positiveSyphilisValue = String.valueOf(value);
     }
   }
 
@@ -263,15 +328,47 @@ public class RapidTestFormGridViewModel {
     }
   }
 
+  private void setPositiveHivFormItem(
+      MovementReasonManager.MovementReason issueReason,
+      List<TestConsumptionItem> programDataFormItems
+  ) {
+    if (!StringUtils.isEmpty(positiveHivValue)) {
+      if (positiveHivColumn == null) {
+        positiveHivColumn = new UsageColumnsMap();
+        positiveHivColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_POSITIVE_HIV));
+      }
+      TestConsumptionItem positiveHivDataFormItem = new TestConsumptionItem(
+          issueReason.getCode(), positiveHivColumn, Integer.parseInt(positiveHivValue)
+      );
+      programDataFormItems.add(positiveHivDataFormItem);
+    }
+  }
+
+  private void setPositiveSyphilisFormItem(
+      MovementReasonManager.MovementReason issueReason,
+      List<TestConsumptionItem> programDataFormItems
+  ) {
+    if (!StringUtils.isEmpty(positiveSyphilisValue)) {
+      if (positiveSyphilisColumn == null) {
+        positiveSyphilisColumn = new UsageColumnsMap();
+        positiveSyphilisColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_POSITIVE_SYPHILIS));
+      }
+      TestConsumptionItem positiveSyphilisDataFormItem = new TestConsumptionItem(
+          issueReason.getCode(), positiveSyphilisColumn, Integer.parseInt(positiveSyphilisValue)
+      );
+      programDataFormItems.add(positiveSyphilisDataFormItem);
+    }
+  }
+  
   private void setConsumptionFormItem(MovementReasonManager.MovementReason issueReason,
       List<TestConsumptionItem> programDataFormItems) {
-    if (!StringUtils.isEmpty(getConsumptionValue())) {
+    if (!StringUtils.isEmpty(consumptionValue)) {
       if (consumeColumn == null) {
         consumeColumn = new UsageColumnsMap();
         consumeColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_CONSUME));
       }
       TestConsumptionItem consumeDataFormItem = new TestConsumptionItem(issueReason.getCode(),
-          consumeColumn, Integer.parseInt(getConsumptionValue()));
+          consumeColumn, Integer.parseInt(consumptionValue));
       programDataFormItems.add(consumeDataFormItem);
     }
   }

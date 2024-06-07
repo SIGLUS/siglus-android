@@ -10,7 +10,7 @@
   <LinearLayout
     android:layout_width="@dimen/px_0"
     android:layout_height="match_parent"
-    android:layout_weight="1"
+    android:layout_weight="3"
     android:orientation="vertical">
 
     <TextView
@@ -38,7 +38,7 @@
         android:background="@drawable/border_right_black"
         android:gravity="center"
         android:maxLines="1"
-        android:text="Consumo"
+        android:text="@string/mmit_report_subtitle_consumo"
         android:textColor="@color/color_black"
         android:textSize="@dimen/font_size_small" />
 
@@ -49,7 +49,7 @@
         android:background="@drawable/border_right_black"
         android:gravity="center"
         android:maxLines="1"
-        android:text="Positivo"
+        android:text="@string/mmit_report_subtitle_positivo"
         android:textColor="@color/color_black"
         android:textSize="@dimen/font_size_small" />
 
@@ -71,7 +71,7 @@
   <LinearLayout
     android:layout_width="@dimen/px_0"
     android:layout_height="match_parent"
-    android:layout_weight="1"
+    android:layout_weight="3"
     android:background="@drawable/border_left_black_bold"
     android:orientation="vertical">
 
@@ -100,7 +100,7 @@
         android:background="@drawable/border_right_black"
         android:gravity="center"
         android:maxLines="1"
-        android:text="Consumo"
+        android:text="@string/mmit_report_subtitle_consumo"
         android:textColor="@color/color_black"
         android:textSize="@dimen/font_size_small" />
 
@@ -111,7 +111,7 @@
         android:background="@drawable/border_right_black"
         android:gravity="center"
         android:maxLines="1"
-        android:text="Positivo"
+        android:text="@string/mmit_report_subtitle_positivo"
         android:textColor="@color/color_black"
         android:textSize="@dimen/font_size_small" />
 
@@ -134,7 +134,7 @@
   <LinearLayout
     android:layout_width="@dimen/px_0"
     android:layout_height="match_parent"
-    android:layout_weight="1"
+    android:layout_weight="3"
     android:background="@drawable/border_left_black_bold"
     android:orientation="vertical">
 
@@ -163,7 +163,7 @@
         android:background="@drawable/border_right_black"
         android:gravity="center"
         android:maxLines="1"
-        android:text="Consumo"
+        android:text="@string/mmit_report_subtitle_consumo"
         android:textColor="@color/color_black"
         android:textSize="@dimen/font_size_small" />
 
@@ -174,7 +174,7 @@
         android:background="@drawable/border_right_black"
         android:gravity="center"
         android:maxLines="1"
-        android:text="Positivo"
+        android:text="@string/mmit_report_subtitle_positivo"
         android:textColor="@color/color_black"
         android:textSize="@dimen/font_size_small" />
 
@@ -196,7 +196,7 @@
   <LinearLayout
     android:layout_width="@dimen/px_0"
     android:layout_height="match_parent"
-    android:layout_weight="1"
+    android:layout_weight="3"
     android:background="@drawable/border_left_black_bold"
     android:orientation="vertical">
 
@@ -225,7 +225,7 @@
         android:background="@drawable/border_right_black"
         android:gravity="center"
         android:maxLines="1"
-        android:text="Consumo"
+        android:text="@string/mmit_report_subtitle_consumo"
         android:textColor="@color/color_black"
         android:textSize="@dimen/font_size_small" />
 
@@ -236,7 +236,7 @@
         android:background="@drawable/border_right_black"
         android:gravity="center"
         android:maxLines="1"
-        android:text="Positivo"
+        android:text="@string/mmit_report_subtitle_positivo"
         android:textColor="@color/color_black"
         android:textSize="@dimen/font_size_small" />
 
@@ -254,5 +254,263 @@
     </LinearLayout>
 
   </LinearLayout>
+  <!-- Duo-Teste HIV-sifilis -->
+  <LinearLayout
+    android:layout_width="@dimen/px_0"
+    android:layout_height="match_parent"
+    android:layout_weight="4"
+    android:background="@drawable/border_left_black_bold"
+    android:orientation="vertical">
 
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/px_0"
+      android:layout_weight="1"
+      android:background="@drawable/border_top_black"
+      android:gravity="center"
+      android:text="@string/mmit_report_title_duo_tests_hiv_sifilis"
+      android:textColor="@color/color_black"
+      android:textSize="@dimen/font_size_regular"
+      android:textStyle="bold" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/px_0"
+      android:layout_weight="1"
+      android:background="@drawable/border_top_black"
+      android:orientation="horizontal">
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/mmit_report_subtitle_consumo"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_small" />
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/mmit_report_subtitle_positivo_hiv"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_small" />
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/mmit_report_subtitle_positivo_sifilis"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_small" />
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/unjustified"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_title_small" />
+
+    </LinearLayout>
+
+  </LinearLayout>
+  <!-- Hepatite B testes -->
+  <LinearLayout
+    android:layout_width="@dimen/px_0"
+    android:layout_height="match_parent"
+    android:layout_weight="3"
+    android:background="@drawable/border_left_black_bold"
+    android:orientation="vertical">
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/px_0"
+      android:layout_weight="1"
+      android:background="@drawable/border_top_black"
+      android:gravity="center"
+      android:text="@string/mmit_report_title_hepatite_b_testes"
+      android:textColor="@color/color_black"
+      android:textSize="@dimen/font_size_regular"
+      android:textStyle="bold" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/px_0"
+      android:layout_weight="1"
+      android:background="@drawable/border_top_black"
+      android:orientation="horizontal">
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/mmit_report_subtitle_consumo"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_small" />
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/mmit_report_subtitle_positivo"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_small" />
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/unjustified"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_title_small" />
+
+    </LinearLayout>
+
+  </LinearLayout>
+  <!-- TDR Oral de HIV -->
+  <LinearLayout
+    android:layout_width="@dimen/px_0"
+    android:layout_height="match_parent"
+    android:layout_weight="3"
+    android:background="@drawable/border_left_black_bold"
+    android:orientation="vertical">
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/px_0"
+      android:layout_weight="1"
+      android:background="@drawable/border_top_black"
+      android:gravity="center"
+      android:text="@string/mmit_report_title_tdr_oral_de_hiv"
+      android:textColor="@color/color_black"
+      android:textSize="@dimen/font_size_regular"
+      android:textStyle="bold" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/px_0"
+      android:layout_weight="1"
+      android:background="@drawable/border_top_black"
+      android:orientation="horizontal">
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/mmit_report_subtitle_consumo"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_small" />
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/mmit_report_subtitle_positivo"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_small" />
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/unjustified"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_title_small" />
+
+    </LinearLayout>
+
+  </LinearLayout>
+  <!--New test-->
+  <LinearLayout
+    android:layout_width="@dimen/px_0"
+    android:layout_height="match_parent"
+    android:layout_weight="3"
+    android:background="@drawable/border_left_black_bold"
+    android:orientation="vertical">
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/px_0"
+      android:layout_weight="1"
+      android:background="@drawable/border_top_black"
+      android:gravity="center"
+      android:text="@string/mmit_report_title_new_test"
+      android:textColor="@color/color_black"
+      android:textSize="@dimen/font_size_regular"
+      android:textStyle="bold" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/px_0"
+      android:layout_weight="1"
+      android:background="@drawable/border_top_black"
+      android:orientation="horizontal">
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/mmit_report_subtitle_consumo"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_small" />
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/mmit_report_subtitle_positivo"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_small" />
+
+      <TextView
+        android:layout_width="@dimen/px_0"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_right_black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/unjustified"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/font_size_title_small" />
+
+    </LinearLayout>
+
+  </LinearLayout>
 </LinearLayout>

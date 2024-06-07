@@ -22,8 +22,11 @@ import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.Column
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.CONSUMPTION;
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.POSITIVE;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.POSITIVE_HIV;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.POSITIVE_SYPHILIS;
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.UNJUSTIFIED;
 
+import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.Data;
 import lombok.Getter;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -136,14 +140,18 @@ public class RapidTestReportViewModel {
 
   private void setFormItemViewModels(List<TestConsumptionItem> testConsumptionLineItemList) {
     for (TestConsumptionItem item : testConsumptionLineItemList) {
-      itemViewModelMap.get(item.getService())
-          .setColumnValue(item.getUsageColumnsMap(), item.getValue());
+      RapidTestFormItemViewModel itemViewModel = itemViewModelMap.get(item.getService());
+      if (itemViewModel != null) {
+        itemViewModel.setColumnValue(item.getUsageColumnsMap(), item.getValue());
+      }
     }
     addCompatibleWithNotSubmitUnjustified();
     addCompatibleWithNotSubmitAPE();
     for (ColumnCode columnCode : ColumnCode.values()) {
       updateTotal(columnCode, CONSUMPTION);
       updateTotal(columnCode, POSITIVE);
+      updateTotal(columnCode, POSITIVE_HIV);
+      updateTotal(columnCode, POSITIVE_SYPHILIS);
       updateTotal(columnCode, UNJUSTIFIED);
     }
     updateAPEWaring();
@@ -160,14 +168,19 @@ public class RapidTestReportViewModel {
       if (Boolean.TRUE.equals(isNeedAPE(columnName))) {
         RapidTestFormGridViewModel viewModel = itemAPEs.rapidTestFormGridViewModelMap
             .get(columnName);
-        itemAPEs.updateNoValueGridRowToZero(viewModel);
+        if (viewModel != null) {
+          itemAPEs.updateNoValueGridRowToZero(viewModel);
+        }
       }
     }
   }
 
   private Boolean isNeedAPE(ColumnCode columnName) {
     for (RapidTestFormItemViewModel viewModel : itemViewModelList) {
-      if (!viewModel.rapidTestFormGridViewModelMap.get(columnName).isEmpty()) {
+      RapidTestFormGridViewModel rapidTestFormGridViewModel =
+          viewModel.rapidTestFormGridViewModelMap.get(columnName);
+
+      if (rapidTestFormGridViewModel != null && !rapidTestFormGridViewModel.isEmpty()) {
         return true;
       }
     }
@@ -296,7 +309,9 @@ public class RapidTestReportViewModel {
         continue;
       }
       RapidTestFormGridViewModel gridViewModel = itemViewModel.getRapidTestFormGridViewModelMap().get(columnCode);
-      calculateTotalLogic(total, gridViewModel, gridColumnCode);
+      if (gridViewModel != null) {
+        calculateTotalLogic(total, gridViewModel, gridColumnCode);
+      }
     }
     setTotalRowValue(itemTotal, columnCode, gridColumnCode, String.valueOf(total.longTotal));
     setTotalRowValue(itemRealTotal, columnCode, gridColumnCode, total.stringTotal);
@@ -306,11 +321,13 @@ public class RapidTestReportViewModel {
     for (RapidTestFormGridViewModel viewModel : itemRealTotal.rapidTestFormGridViewModelList) {
       RapidTestFormGridViewModel apeViewModel = itemAPEs.rapidTestFormGridViewModelMap
           .get(viewModel.getColumnCode());
-      apeViewModel.isNeedAllAPEValue = !viewModel.isEmpty();
+      if (apeViewModel != null) {
+        apeViewModel.isNeedAllAPEValue = !viewModel.isEmpty();
+      }
     }
   }
 
-  private void calculateTotalLogic(Total total, RapidTestFormGridViewModel gridViewModel,
+  private void calculateTotalLogic(Total total, @NonNull RapidTestFormGridViewModel gridViewModel,
       RapidTestGridColumnCode gridColumnCode) {
     switch (gridColumnCode) {
       case CONSUMPTION:
@@ -322,6 +339,20 @@ public class RapidTestReportViewModel {
       case POSITIVE:
         if (!gridViewModel.getPositiveValue().equals("")) {
           total.longTotal += Long.parseLong(gridViewModel.getPositiveValue());
+          total.stringTotal = String.valueOf(total.longTotal);
+        }
+        break;
+      case POSITIVE_HIV:
+        String positiveHivValue = gridViewModel.getPositiveHivValue();
+        if (StringUtils.isNotEmpty(positiveHivValue)) {
+          total.longTotal += Long.parseLong(positiveHivValue);
+          total.stringTotal = String.valueOf(total.longTotal);
+        }
+        break;
+      case POSITIVE_SYPHILIS:
+        String positiveSyphilisValue = gridViewModel.getPositiveSyphilisValue();
+        if (StringUtils.isNotEmpty(positiveSyphilisValue)) {
+          total.longTotal += Long.parseLong(positiveSyphilisValue);
           total.stringTotal = String.valueOf(total.longTotal);
         }
         break;
@@ -340,13 +371,39 @@ public class RapidTestReportViewModel {
       RapidTestGridColumnCode gridColumnCode, String total) {
     switch (gridColumnCode) {
       case CONSUMPTION:
-        totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setConsumptionValue(total);
+        RapidTestFormGridViewModel consumptionFormGridViewModel =
+            totalItem.getRapidTestFormGridViewModelMap().get(columnCode);
+        if (consumptionFormGridViewModel != null) {
+          consumptionFormGridViewModel.setConsumptionValue(total);
+        }
         break;
       case POSITIVE:
-        totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setPositiveValue(total);
+        RapidTestFormGridViewModel positiveFormGridViewModel =
+            totalItem.getRapidTestFormGridViewModelMap().get(columnCode);
+        if (positiveFormGridViewModel != null) {
+          positiveFormGridViewModel.setPositiveValue(total);
+        }
+        break;
+      case POSITIVE_HIV:
+        RapidTestFormGridViewModel positiveHivFormGridViewModel =
+            totalItem.getRapidTestFormGridViewModelMap().get(columnCode);
+        if (positiveHivFormGridViewModel != null) {
+          positiveHivFormGridViewModel.setPositiveHivValue(total);
+        }
+        break;
+      case POSITIVE_SYPHILIS:
+        RapidTestFormGridViewModel positiveSyphilisFormGridViewModel =
+            totalItem.getRapidTestFormGridViewModelMap().get(columnCode);
+        if (positiveSyphilisFormGridViewModel != null) {
+          positiveSyphilisFormGridViewModel.setPositiveSyphilisValue(total);
+        }
         break;
       case UNJUSTIFIED:
-        totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setUnjustifiedValue(total);
+        RapidTestFormGridViewModel unjustifiedFormGridViewModel =
+            totalItem.getRapidTestFormGridViewModelMap().get(columnCode);
+        if (unjustifiedFormGridViewModel != null) {
+          unjustifiedFormGridViewModel.setUnjustifiedValue(total);
+        }
         break;
       default:
         // do nothing
