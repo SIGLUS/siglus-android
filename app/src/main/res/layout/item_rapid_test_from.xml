@@ -28,18 +28,27 @@
     android:layout_width="@dimen/px_70"
     android:layout_height="wrap_content" />
 
-  <TextView
-    android:id="@+id/tv_issue"
+  <org.openlmis.core.view.widget.CleanableEditText
+    android:id="@+id/et_issue"
     style="@style/RapidTestForm.productList"
     android:layout_width="@dimen/px_70"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:background="@null"
+    android:enabled="false"
+    android:inputType="number"
+    android:focusableInTouchMode="true"
+    android:maxLength="@integer/max_length_rapid_test_no_total" />
 
-
-  <TextView
-    android:id="@+id/tv_adjustment"
+  <org.openlmis.core.view.widget.CleanableEditText
+    android:id="@+id/et_adjustment"
     style="@style/RapidTestForm.productList"
     android:layout_width="@dimen/px_156"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:background="@null"
+    android:enabled="false"
+    android:inputType="number"
+    android:focusableInTouchMode="true"
+    android:maxLength="@integer/max_length_rapid_test_no_total" />
 
   <org.openlmis.core.view.widget.CleanableEditText
     android:id="@+id/et_inventory"

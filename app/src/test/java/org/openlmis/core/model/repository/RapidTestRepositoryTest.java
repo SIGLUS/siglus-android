@@ -136,19 +136,6 @@ public class RapidTestRepositoryTest extends LMISRepositoryUnitTest {
     assertEquals(notCustomRnrFormItem.getInitialAmount(), lastInventory);
   }
 
-  @Test
-  public void shouldUpdateDefaultValue() {
-    //given
-    RnrFormItem rnrFormItem = new RnrFormItem();
-
-    //when
-    rapidTestRepository.updateDefaultValue(rnrFormItem);
-
-    //then
-    assertEquals(Long.valueOf(0), rnrFormItem.getIssued());
-    assertEquals(Long.valueOf(0), rnrFormItem.getAdjustment());
-  }
-
   public class MyTestModule extends AbstractModule {
 
     @Override

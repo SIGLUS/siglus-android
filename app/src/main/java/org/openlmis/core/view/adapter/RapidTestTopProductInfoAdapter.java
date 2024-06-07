@@ -24,11 +24,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.enumeration.RapidTestTopProductValidationType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
@@ -37,6 +37,16 @@ import org.openlmis.core.view.widget.CleanableEditText;
 import org.openlmis.core.view.widget.RapidTestProductInfoView;
 
 public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Adapter {
+
+  /**
+   * stock EditText Cache
+   */
+  private final List<CleanableEditText> issueEditTexts;
+
+  /**
+   * stock EditText Cache
+   */
+  private final List<CleanableEditText> adjustmentEditTexts;
 
   /**
    * inventory EditText Cache
@@ -50,10 +60,12 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
 
   private final List<RnrFormItem> productInfos;
 
-  private RapidTestTopProductValidationType lastNotCompleteType;
+  private CleanableEditText lastNotCompleteEditText;
 
   public RapidTestTopProductInfoAdapter(List<RnrFormItem> productInfos) {
     this.productInfos = productInfos;
+    this.issueEditTexts = new ArrayList<>();
+    this.adjustmentEditTexts = new ArrayList<>();
     this.inventoryEditTexts = new ArrayList<>();
     this.stockEditTexts = new ArrayList<>();
   }
@@ -68,19 +80,40 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
   public void onUpdateView(View itemView, int position) {
     TextView tvProductName = itemView.findViewById(R.id.tv_name);
     TextView tvReceived = itemView.findViewById(R.id.tv_received);
-    TextView tvIssue = itemView.findViewById(R.id.tv_issue);
     TextView tvValidate = itemView.findViewById(R.id.tv_expire);
     final RnrFormItem formBasicItem = productInfos.get(position);
     tvProductName.setText(formBasicItem.getProduct().getPrimaryName());
     tvReceived.setText(String.valueOf(formBasicItem.getReceived()));
-    tvIssue.setText(String.valueOf(formBasicItem.getIssued()));
-    TextView tvAdjustment = itemView.findViewById(R.id.tv_adjustment);
-    tvAdjustment.setText(String.valueOf(formBasicItem.getAdjustment()));
+
+    boolean isDraftOrUnknownStatus = isDraftOrUnknownStatus(formBasicItem);
+    // config etIssue
+    CleanableEditText etIssue = itemView.findViewById(R.id.et_issue);
+    etIssue.setText(getValue(formBasicItem.getIssued()));
+    etIssue.setEnabled(isDraftOrUnknownStatus);
+    etIssue.addTextChangedListener(new SimpleTextWatcher() {
+      @Override
+      public void afterTextChanged(Editable s) {
+        formBasicItem.setIssued(getEditValue(s));
+        super.afterTextChanged(s);
+      }
+    });
+    issueEditTexts.add(etIssue);
+    // config etAdjustment
+    CleanableEditText etAdjustment = itemView.findViewById(R.id.et_adjustment);
+    etAdjustment.setText(getValue(formBasicItem.getAdjustment()));
+    etAdjustment.setEnabled(isDraftOrUnknownStatus);
+    etAdjustment.addTextChangedListener(new SimpleTextWatcher() {
+      @Override
+      public void afterTextChanged(Editable s) {
+        formBasicItem.setAdjustment(getEditValue(s));
+        super.afterTextChanged(s);
+      }
+    });
+    adjustmentEditTexts.add(etAdjustment);
     //config etStock
     CleanableEditText etStock = itemView.findViewById(R.id.et_stock);
     etStock.setText(getValue(formBasicItem.getInitialAmount()));
-    etStock.setEnabled(Boolean.TRUE.equals(formBasicItem.getIsCustomAmount()) && (
-        formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().isDraft()));
+    etStock.setEnabled(Boolean.TRUE.equals(formBasicItem.getIsCustomAmount()) && isDraftOrUnknownStatus);
     if (Boolean.TRUE.equals(formBasicItem.getIsCustomAmount())) {
       etStock.addTextChangedListener(new SimpleTextWatcher() {
         @Override
@@ -94,7 +127,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     //config etInventory
     CleanableEditText etInventory = itemView.findViewById(R.id.et_inventory);
     etInventory.setText(getValue(formBasicItem.getInventory()));
-    etInventory.setEnabled(formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().isDraft());
+    etInventory.setEnabled(isDraftOrUnknownStatus);
     etInventory.addTextChangedListener(new SimpleTextWatcher() {
       @Override
       public void afterTextChanged(Editable s) {
@@ -112,6 +145,10 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     }
   }
 
+  private boolean isDraftOrUnknownStatus(RnrFormItem formBasicItem) {
+    return formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().isDraft();
+  }
+
   @Override
   protected void onNotifyDataChangeCalled() {
     clearEditText();
@@ -123,43 +160,63 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
   }
 
   private void clearEditText() {
-    for (CleanableEditText editText : inventoryEditTexts) {
+    clearEditTexts(issueEditTexts);
+    clearEditTexts(adjustmentEditTexts);
+    clearEditTexts(inventoryEditTexts);
+    clearEditTexts(stockEditTexts);
+  }
+
+  private void clearEditTexts(List<CleanableEditText> editTexts) {
+    for (CleanableEditText editText : editTexts) {
       editText.clearTextChangedListeners();
     }
-    for (CleanableEditText editText : stockEditTexts) {
-      editText.clearTextChangedListeners();
-    }
-    inventoryEditTexts.clear();
-    stockEditTexts.clear();
+    editTexts.clear();
   }
 
   public int getNotCompletePosition() {
-    for (int i = 0; i < stockEditTexts.size(); i++) {
-      final CleanableEditText item = stockEditTexts.get(i);
-      if (TextUtils.isEmpty(item.getText().toString())) {
-        lastNotCompleteType = RapidTestTopProductValidationType.STOCK_EMPTY;
-        return i;
-      }
+    Integer emptyIssuePosition = getNotCompletePositionFromEditTexts(issueEditTexts);
+    if (emptyIssuePosition != null) {
+      return emptyIssuePosition;
     }
-    for (int i = 0; i < inventoryEditTexts.size(); i++) {
-      final CleanableEditText item = inventoryEditTexts.get(i);
-      if (TextUtils.isEmpty(item.getText().toString())) {
-        lastNotCompleteType = RapidTestTopProductValidationType.INVENTORY_EMPTY;
-        return i;
-      }
+
+    Integer emptyAdjustmentPosition = getNotCompletePositionFromEditTexts(adjustmentEditTexts);
+    if (emptyAdjustmentPosition != null) {
+      return emptyAdjustmentPosition;
     }
+
+    Integer emptyStockPosition = getNotCompletePositionFromEditTexts(stockEditTexts);
+    if (emptyStockPosition != null) {
+      return emptyStockPosition;
+    }
+
+    Integer emptyInventoryPosition = getNotCompletePositionFromEditTexts(inventoryEditTexts);
+    if (emptyInventoryPosition != null) {
+      return emptyInventoryPosition;
+    }
+
     return -1;
   }
 
-  public void showError(int position) {
-    if (position < 0) {
-      return;
+  @Nullable
+  private Integer getNotCompletePositionFromEditTexts(
+      List<CleanableEditText> editTexts
+  ) {
+    for (int i = 0; i < editTexts.size(); i++) {
+      CleanableEditText cleanableEditText = editTexts.get(i);
+      Editable text = cleanableEditText.getText();
+      if (text != null && TextUtils.isEmpty(text.toString())) {
+        lastNotCompleteEditText = cleanableEditText;
+        return i;
+      }
     }
-    final CleanableEditText editText =
-        lastNotCompleteType == RapidTestTopProductValidationType.INVENTORY_EMPTY ? inventoryEditTexts.get(position)
-            : stockEditTexts.get(position);
-    editText.setError(LMISApp.getContext().getString(R.string.hint_error_input));
-    editText.requestFocus();
+    return null;
+  }
+
+  public void showError() {
+    if (lastNotCompleteEditText != null) {
+      lastNotCompleteEditText.setError(LMISApp.getContext().getString(R.string.hint_error_input));
+      lastNotCompleteEditText.requestFocus();
+    }
   }
 
   private String getValue(Long value) {
@@ -177,11 +234,17 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
   }
 
   public void clearFocusByPosition(int position) {
-    if (position >= 0 && position < inventoryEditTexts.size()) {
-      inventoryEditTexts.get(position).clearFocus();
-    }
-    if (position >= 0 && position < stockEditTexts.size()) {
-      stockEditTexts.get(position).clearFocus();
+    clearFocusFromEditTextsByPosition(position, issueEditTexts);
+    clearFocusFromEditTextsByPosition(position, adjustmentEditTexts);
+    clearFocusFromEditTextsByPosition(position, inventoryEditTexts);
+    clearFocusFromEditTextsByPosition(position, stockEditTexts);
+  }
+
+  private void clearFocusFromEditTextsByPosition(
+      int position, List<CleanableEditText> editTexts
+  ) {
+    if (position >= 0 && position < editTexts.size()) {
+      editTexts.get(position).clearFocus();
     }
   }
 
