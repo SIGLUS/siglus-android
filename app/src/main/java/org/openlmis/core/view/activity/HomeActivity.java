@@ -43,7 +43,6 @@ import java.io.File;
 import org.apache.commons.collections.CollectionUtils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.annotation.BindEventBus;
@@ -377,7 +376,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   }
 
   @NonNull
-  private String createNewShippedNotification(@NotNull String newShippedProgramNames) {
+  private String createNewShippedNotification(@NonNull String newShippedProgramNames) {
     if (newShippedProgramNames.contains(",")) {
       return getString(R.string.new_shipped_issue_voucher_alert_message, newShippedProgramNames);
     }
