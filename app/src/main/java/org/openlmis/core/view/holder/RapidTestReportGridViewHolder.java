@@ -18,6 +18,10 @@
 
 package org.openlmis.core.view.holder;
 
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.CONSUMPTION;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.POSITIVE;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.UNJUSTIFIED;
+
 import android.text.Editable;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
@@ -56,7 +60,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
   LinearLayout warningLinerLayout;
 
   RapidTestFormGridViewModel viewModel;
-  private boolean editable;
+  boolean editable;
   private QuantityChangeListener quantityChangeListener;
 
   public RapidTestReportGridViewHolder(View itemView) {
@@ -68,6 +72,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     this.viewModel = viewModel;
     this.editable = editable;
     this.quantityChangeListener = quantityChangeListener;
+
     populateData(viewModel);
     setEditable(editable);
     setTextWatcher();
@@ -99,7 +104,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     (editable ? etUnjustified : etUnjustifiedTotal).setText(viewModel.getUnjustifiedValue());
   }
 
-  private void setTextWatcher() {
+  void setTextWatcher() {
     if (editable) {
       TextWatcher textWatcherConsume = new TextWatcher(etConsume);
       TextWatcher textWatcherPositive = new TextWatcher(etPositive);
@@ -110,7 +115,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
   }
 
-  private void updateAlert() {
+  void updateAlert() {
     if (editable && !viewModel.validate()) {
       etPositive.setTextColor(ContextCompat.getColor(context, R.color.color_red));
       etConsume.setTextColor(ContextCompat.getColor(context, R.color.color_red));
@@ -125,7 +130,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
   }
 
-  private void setInvalidInput() {
+  void setInvalidInput() {
     if (viewModel.getInvalidColumn() != null) {
       switch (viewModel.getInvalidColumn()) {
         case CONSUMPTION:
@@ -143,7 +148,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
   }
 
-  private OnFocusChangeListener getOnFocusChangeListener() {
+  OnFocusChangeListener getOnFocusChangeListener() {
     return (v, hasFocus) -> {
       if (hasFocus) {
         clearError();
@@ -151,13 +156,13 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     };
   }
 
-  private void clearError() {
+  void clearError() {
     etConsume.setError(null);
     etPositive.setError(null);
     etUnjustified.setError(null);
   }
 
-  private String getString(int id) {
+  String getString(int id) {
     return LMISApp.getContext().getString(id);
   }
 
@@ -196,13 +201,13 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
 
     private RapidTestGridColumnCode switchEditIdToGridColumn(EditText editText) {
-      RapidTestGridColumnCode column = RapidTestGridColumnCode.UNJUSTIFIED;
+      RapidTestGridColumnCode column = UNJUSTIFIED;
       switch (editText.getId()) {
         case R.id.et_consume_rapid_test_report_grid:
-          column = RapidTestGridColumnCode.CONSUMPTION;
+          column = CONSUMPTION;
           break;
         case R.id.et_positive_rapid_test_report_grid:
-          column = RapidTestGridColumnCode.POSITIVE;
+          column = POSITIVE;
           break;
         default:
           // do nothing

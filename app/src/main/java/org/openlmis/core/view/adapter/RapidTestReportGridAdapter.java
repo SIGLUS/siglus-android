@@ -18,29 +18,37 @@
 
 package org.openlmis.core.view.adapter;
 
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode.DUOTESTEHIVSYPHILIS;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import org.openlmis.core.R;
+import org.openlmis.core.view.holder.RapidTestReport4ColumnsGridViewHolder;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 
 public class RapidTestReportGridAdapter extends
     RecyclerView.Adapter<RapidTestReportGridViewHolder> {
 
+  public static final int FOUR_COLUMN_VIEW_TYPE = 1;
+  
   Context context;
   private final boolean editable;
   List<RapidTestFormGridViewModel> viewModels;
   private final RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener;
   private final int itemWidth;
+  private final long baseItemWidth;
 
   public RapidTestReportGridAdapter(List<RapidTestFormGridViewModel> viewModels, Context context,
       boolean editable,
       RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener) {
-    itemWidth = (int) (context.getResources().getDimension(R.dimen.rapid_view_width)) / 4;
+    baseItemWidth = (long) (context.getResources().getDimension(R.dimen.rapid_view_width) / 25);
+    itemWidth = (int) (3 * baseItemWidth);
     this.viewModels = viewModels;
     this.context = context;
     this.editable = editable;
@@ -48,8 +56,43 @@ public class RapidTestReportGridAdapter extends
   }
 
   @Override
-  public RapidTestReportGridViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+  public int getItemViewType(int position) {
+    if (viewModels.size() > position && isDuoTest(viewModels.get(position))) {
+      return FOUR_COLUMN_VIEW_TYPE;
+    }
+    return super.getItemViewType(position);
+  }
+
+  @NonNull
+  @Override
+  public RapidTestReportGridViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    if (FOUR_COLUMN_VIEW_TYPE == viewType) {
+      return new RapidTestReport4ColumnsGridViewHolder(initialize4ColumnItemView(parent));
+    }
+
+    return new RapidTestReportGridViewHolder(initializeNormalItemView(parent));
+  }
+
+  @NonNull
+  private View initialize4ColumnItemView(ViewGroup parent) {
     View itemView;
+
+    if (editable) {
+      itemView = LayoutInflater.from(context)
+          .inflate(R.layout.item_rapid_test_report_four_columns_grid, parent, false);
+    } else {
+      itemView = LayoutInflater.from(context)
+          .inflate(R.layout.item_rapid_test_report_four_columns_grid_total, parent, false);
+    }
+    itemView.getLayoutParams().width = (int) (4 * baseItemWidth);
+
+    return itemView;
+  }
+
+  @NonNull
+  private View initializeNormalItemView(ViewGroup parent) {
+    View itemView;
+    
     if (editable) {
       itemView = LayoutInflater.from(context)
           .inflate(R.layout.item_rapid_test_report_grid, parent, false);
@@ -58,13 +101,17 @@ public class RapidTestReportGridAdapter extends
           .inflate(R.layout.item_rapid_test_report_grid_total, parent, false);
     }
     itemView.getLayoutParams().width = itemWidth;
-    return new RapidTestReportGridViewHolder(itemView);
+    
+    return itemView;
   }
 
   @Override
   public void onBindViewHolder(RapidTestReportGridViewHolder holder, int position) {
-    RapidTestFormGridViewModel viewModel = viewModels.get(position);
-    holder.populate(viewModel, editable, quantityChangeListener);
+    holder.populate(viewModels.get(position), editable, quantityChangeListener);
+  }
+
+  private boolean isDuoTest(RapidTestFormGridViewModel viewModel) {
+    return viewModel != null && DUOTESTEHIVSYPHILIS == viewModel.getColumnCode();
   }
 
   @Override

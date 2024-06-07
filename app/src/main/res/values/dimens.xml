@@ -49,7 +49,7 @@
   <dimen name="cardview_radius">@dimen/px_4</dimen>
 
   <!--RapidTest-->
-  <dimen name="rapid_view_width">@dimen/px_1110</dimen>
+  <dimen name="rapid_view_width">@dimen/px_2325</dimen>
   <dimen name="rapid_view_Header_view">@dimen/px_101</dimen>
   <dimen name="rapid_view_view_left_padding">@dimen/px_12</dimen>
   <dimen name="rapid_view_border_width">@dimen/px_2</dimen>
@@ -816,4 +816,5 @@
   <dimen name="px_1684">1684.00dp</dimen>
   <dimen name="px_1692">1692.00dp</dimen>
   <dimen name="px_1892">1892.00dp</dimen>
+  <dimen name="px_2325">2325.00dp</dimen>
 </resources>
