@@ -18,6 +18,11 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import static org.openlmis.core.persistence.migrations.UpdateUsageColumnsMap.USAGE_COLUMN_SEPARATOR;
+import static org.openlmis.core.persistence.migrations.UpdateUsageColumnsMapV2.POSITIVE_HIV;
+import static org.openlmis.core.persistence.migrations.UpdateUsageColumnsMapV2.POSITIVE_SYPHILIS;
+
+import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
@@ -40,8 +45,8 @@ public class RapidTestFormGridViewModel {
   }
 
   public enum ColumnCode {
-    DUOTESTEHIVSYPHILIS,
-    HEPATITISBTESTES,
+    DUOTESTEHIVSIFILIS,
+    HEPATITEBTESTES,
     TDRORALDEHIV,
     NEWTEST,
     HIVDETERMINE,
@@ -49,6 +54,7 @@ public class RapidTestFormGridViewModel {
     SYPHILLIS,
     MALARIA;
 
+    @NonNull
     @Override
     public String toString() {
       return StringUtils.upperCase(name());
@@ -73,8 +79,8 @@ public class RapidTestFormGridViewModel {
   private static final String COLUMN_CODE_PREFIX_CONSUME = "CONSUME_";
   private static final String COLUMN_CODE_PREFIX_POSITIVE = "POSITIVE_";
   private static final String COLUMN_CODE_PREFIX_UNJUSTIFIED = "UNJUSTIFIED_";
-  private static final String COLUMN_CODE_PREFIX_POSITIVE_HIV = "POSITIVE-HIV_";
-  private static final String COLUMN_CODE_PREFIX_POSITIVE_SYPHILIS = "POSITIVE-SYPHILIS_";
+  private static final String COLUMN_CODE_PREFIX_POSITIVE_HIV = POSITIVE_HIV + USAGE_COLUMN_SEPARATOR;
+  private static final String COLUMN_CODE_PREFIX_POSITIVE_SYPHILIS = POSITIVE_SYPHILIS + USAGE_COLUMN_SEPARATOR;
 
   RapidTestFormGridViewModel(ColumnCode columnCode) {
     this.columnCode = columnCode;
@@ -102,7 +108,7 @@ public class RapidTestFormGridViewModel {
   }
 
   public boolean isDuoTest() {
-    return columnCode == ColumnCode.DUOTESTEHIVSYPHILIS;
+    return columnCode == ColumnCode.DUOTESTEHIVSIFILIS;
   }
 
   public MMITGridErrorType validateThreeGrid() {
@@ -204,9 +210,12 @@ public class RapidTestFormGridViewModel {
       MovementReasonManager.MovementReason issueReason) {
     List<TestConsumptionItem> testConsumptionLineItems = new ArrayList<>();
     setConsumptionFormItem(issueReason, testConsumptionLineItems);
-    setPositiveFormItem(issueReason, testConsumptionLineItems);
-    setPositiveHivFormItem(issueReason, testConsumptionLineItems);
-    setPositiveSyphilisFormItem(issueReason, testConsumptionLineItems);
+    if (isDuoTest()) {
+      setPositiveHivFormItem(issueReason, testConsumptionLineItems);
+      setPositiveSyphilisFormItem(issueReason, testConsumptionLineItems);
+    } else {
+      setPositiveFormItem(issueReason, testConsumptionLineItems);
+    }
     setUnjustifiedFormItem(issueReason, testConsumptionLineItems);
     return testConsumptionLineItems;
   }

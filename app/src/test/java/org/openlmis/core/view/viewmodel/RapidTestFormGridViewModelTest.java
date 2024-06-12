@@ -1,6 +1,7 @@
 package org.openlmis.core.view.viewmodel;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -24,8 +25,8 @@ public class RapidTestFormGridViewModelTest {
       RapidTestFormGridViewModel.ColumnCode.MALARIA);
 
   RapidTestFormGridViewModel duoTestViewModel = new RapidTestFormGridViewModel(
-      ColumnCode.DUOTESTEHIVSYPHILIS);
-  private static String VALUE_50 = "50";
+      ColumnCode.DUOTESTEHIVSIFILIS);
+  private static final String VALUE_50 = "50";
 
   @Test
   public void shouldValidate() {
@@ -124,6 +125,53 @@ public class RapidTestFormGridViewModelTest {
   }
 
   @Test
+  public void shouldReturnTestConsumptionsWhenConvertFormGridViewModelToDataModelWithDuoTest() {
+    // given
+    String consumeCode = "CONSUME_DUOTESTEHIVSIFILIS";
+    duoTestViewModel.setConsumptionValue("20");
+    UsageColumnsMap consumeColumn3 = new UsageColumnsMap();
+    consumeColumn3.setCode(consumeCode);
+    duoTestViewModel.setConsumeColumn(consumeColumn3);
+
+    String positiveHivCode = "POSITIVE-HIV_DUOTESTEHIVSIFILIS";
+    duoTestViewModel.setPositiveHivValue("1000");
+    UsageColumnsMap positiveHivColumn = new UsageColumnsMap();
+    positiveHivColumn.setCode(positiveHivCode);
+    duoTestViewModel.setPositiveHivColumn(positiveHivColumn);
+
+    String positiveSyphilisCode = "POSITIVE-SYPHILIS_DUOTESTEHIVSIFILIS";
+    duoTestViewModel.setPositiveSyphilisValue("1");
+    UsageColumnsMap positiveSyphilisColumn = new UsageColumnsMap();
+    positiveSyphilisColumn.setCode(positiveSyphilisCode);
+    duoTestViewModel.setPositiveSyphilisColumn(positiveSyphilisColumn);
+
+    String unjustifiedCode = "UNJUSTIFIED_DUOTESTEHIVSIFILIS";
+    duoTestViewModel.setUnjustifiedValue("121");
+    UsageColumnsMap unjustifiedCodeColumn = new UsageColumnsMap();
+    unjustifiedCodeColumn.setCode(unjustifiedCode);
+    duoTestViewModel.setUnjustifiedColumn(unjustifiedCodeColumn);
+
+    MovementReasonManager.MovementReason reason = new MovementReasonManager.MovementReason(
+        MovementReasonManager.MovementType.ISSUE, ACC_EMERGENCY, "Acc emergency");
+    // when
+    List<TestConsumptionItem> programDataFormItems =
+        duoTestViewModel.convertFormGridViewModelToDataModel(reason);
+    // then
+    assertProgramDateFormItem(programDataFormItems.get(0), consumeCode, 20);
+    assertProgramDateFormItem(programDataFormItems.get(1), positiveHivCode, 1000);
+    assertProgramDateFormItem(programDataFormItems.get(2), positiveSyphilisCode, 1);
+    assertProgramDateFormItem(programDataFormItems.get(3), unjustifiedCode, 121);
+  }
+
+  private void assertProgramDateFormItem(
+      TestConsumptionItem testConsumptionItem, String columnCode, int value
+  ) {
+    assertEquals(ACC_EMERGENCY, testConsumptionItem.getService());
+    assertEquals(columnCode, testConsumptionItem.getUsageColumnsMap().getCode());
+    assertEquals(value, testConsumptionItem.getValue());
+  }
+
+  @Test
   public void shouldReturnTrueWhenIsDuoTestCalledByDuoTest() {
     assertTrue(duoTestViewModel.isDuoTest());
   }
@@ -136,7 +184,7 @@ public class RapidTestFormGridViewModelTest {
   @Test
   public void shouldReturnTrueWhenIsEmptyCalledByDuoTestAndAllEmpty() {
     // given
-    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSYPHILIS);
+    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSIFILIS);
     // when
     boolean actualResult = duoTestViewModel.isEmpty();
     // then
@@ -146,7 +194,7 @@ public class RapidTestFormGridViewModelTest {
   @Test
   public void shouldReturnTrueWhenIsEmptyCalledByDuoTestAndPositiveHivIsEmpty() {
     // given
-    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSYPHILIS);
+    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSIFILIS);
     duoTestViewModel.setPositiveSyphilisValue(VALUE_50);
     // when
     boolean actualResult = duoTestViewModel.isEmpty();
@@ -157,7 +205,7 @@ public class RapidTestFormGridViewModelTest {
   @Test
   public void shouldReturnTrueWhenIsEmptyCalledByDuoTestAndPositiveSyphilisIsEmpty() {
     // given
-    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSYPHILIS);
+    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSIFILIS);
     duoTestViewModel.setPositiveHivValue(VALUE_50);
     // when
     boolean actualResult = duoTestViewModel.isEmpty();
@@ -168,7 +216,7 @@ public class RapidTestFormGridViewModelTest {
   @Test
   public void shouldReturnFalseWhenIsEmptyCalledByDuoTestAndConsumptionIsNotEmpty() {
     // given
-    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSYPHILIS);
+    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSIFILIS);
     duoTestViewModel.setConsumptionValue(VALUE_50);
     // when
     boolean actualResult = duoTestViewModel.isEmpty();
@@ -179,7 +227,7 @@ public class RapidTestFormGridViewModelTest {
   @Test
   public void shouldReturnFalseWhenIsEmptyCalledByDuoTestAndPositiveIsNotEmpty() {
     // given
-    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSYPHILIS);
+    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSIFILIS);
     duoTestViewModel.setPositiveHivValue(VALUE_50);
     duoTestViewModel.setPositiveSyphilisValue(VALUE_50);
     // when
@@ -191,7 +239,7 @@ public class RapidTestFormGridViewModelTest {
   @Test
   public void shouldReturnFalseWhenIsEmptyCalledByDuoTestAndUnjustifiedIsNotEmpty() {
     // given
-    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSYPHILIS);
+    duoTestViewModel = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSIFILIS);
     duoTestViewModel.setUnjustifiedValue(VALUE_50);
     // when
     boolean actualResult = duoTestViewModel.isEmpty();
