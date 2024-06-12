@@ -78,8 +78,8 @@ public class RapidTestFormItemViewModel {
 
   public void updateUnjustifiedColumn() {
     for (RapidTestFormGridViewModel viewModel : rapidTestFormGridViewModelList) {
-      if (!newAddedRapidTestFormGridViewModelList.contains(viewModel) &&
-          viewModel.isAddUnjustified()) {
+      if (!newAddedRapidTestFormGridViewModelList.contains(viewModel)
+          && viewModel.isAddUnjustified()) {
         viewModel.unjustifiedValue = "0";
       }
     }

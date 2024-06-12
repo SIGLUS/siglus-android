@@ -20,6 +20,8 @@ package org.openlmis.core.view.holder;
 
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.CONSUMPTION;
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.POSITIVE;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.POSITIVE_HIV;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.POSITIVE_SYPHILIS;
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.UNJUSTIFIED;
 
 import android.text.Editable;
@@ -89,45 +91,75 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
   public void setEditable(Boolean editable) {
     if (Boolean.TRUE.equals(editable)) {
-      etConsume.setFocusable(true);
-      etConsume.setOnFocusChangeListener(getOnFocusChangeListener());
-      etPositive.setFocusable(true);
-      etPositive.setOnFocusChangeListener(getOnFocusChangeListener());
-      etUnjustified.setFocusable(true);
-      etUnjustified.setOnFocusChangeListener(getOnFocusChangeListener());
+      setEditableForEditText(etConsume);
+      setEditTableForPositiveEditText();
+      setEditableForEditText(etUnjustified);
     }
+  }
+
+  public void setEditTableForPositiveEditText() {
+    setEditableForEditText(etPositive);
+  }
+
+  void setEditableForEditText(EditText editText) {
+    editText.setFocusable(true);
+    editText.setOnFocusChangeListener(getOnFocusChangeListener());
   }
 
   public void populateData(RapidTestFormGridViewModel viewModel) {
     (editable ? etConsume : etConsumeTotal).setText(viewModel.getConsumptionValue());
-    (editable ? etPositive : etPositiveTotal).setText(viewModel.getPositiveValue());
+    populateDataForPositive(viewModel);
     (editable ? etUnjustified : etUnjustifiedTotal).setText(viewModel.getUnjustifiedValue());
   }
 
-  void setTextWatcher() {
+  void populateDataForPositive(RapidTestFormGridViewModel viewModel) {
+    (editable ? etPositive : etPositiveTotal).setText(viewModel.getPositiveValue());
+  }
+
+  private void setTextWatcher() {
     if (editable) {
-      TextWatcher textWatcherConsume = new TextWatcher(etConsume);
-      TextWatcher textWatcherPositive = new TextWatcher(etPositive);
-      TextWatcher textWatcherUnjustified = new TextWatcher(etUnjustified);
-      etConsume.addTextChangedListener(textWatcherConsume);
-      etPositive.addTextChangedListener(textWatcherPositive);
-      etUnjustified.addTextChangedListener(textWatcherUnjustified);
+      setTextWatcherForEditText(etConsume);
+      setTextWatcherForPositiveEditText();
+      setTextWatcherForEditText(etUnjustified);
     }
   }
 
-  void updateAlert() {
+  void setTextWatcherForPositiveEditText() {
+    setTextWatcherForEditText(etPositive);
+  }
+
+  void setTextWatcherForEditText(EditText editText) {
+    TextWatcher textWatcherConsume = new TextWatcher(editText);
+    editText.addTextChangedListener(textWatcherConsume);
+  }
+
+  private void updateAlert() {
     if (editable && !viewModel.validate()) {
-      etPositive.setTextColor(ContextCompat.getColor(context, R.color.color_red));
-      etConsume.setTextColor(ContextCompat.getColor(context, R.color.color_red));
-      etUnjustified.setTextColor(ContextCompat.getColor(context, R.color.color_red));
+      setTextColorForEditText(etConsume);
+      setTextColorForPositiveEditText();
+      setTextColorForEditText(etUnjustified);
     } else {
-      (editable ? etPositive : etPositiveTotal)
-          .setTextColor(ContextCompat.getColor(context, R.color.color_black));
-      (editable ? etConsume : etConsumeTotal)
-          .setTextColor(ContextCompat.getColor(context, R.color.color_black));
-      (editable ? etUnjustified : etUnjustifiedTotal)
-          .setTextColor(ContextCompat.getColor(context, R.color.color_black));
+      setTextColorForTextView(etConsume, etConsumeTotal);
+      setTextColorForPositiveTextView();
+      setTextColorForTextView(etUnjustified, etUnjustifiedTotal);
     }
+  }
+
+  void setTextColorForPositiveTextView() {
+    setTextColorForTextView(etPositive, etPositiveTotal);
+  }
+
+  void setTextColorForTextView(EditText editableView, TextView uneditableView) {
+    (editable ? editableView : uneditableView)
+        .setTextColor(ContextCompat.getColor(context, R.color.color_black));
+  }
+
+  void setTextColorForPositiveEditText() {
+    setTextColorForEditText(etPositive);
+  }
+
+  void setTextColorForEditText(EditText etPositive) {
+    etPositive.setTextColor(ContextCompat.getColor(context, R.color.color_red));
   }
 
   void setInvalidInput() {
@@ -156,10 +188,18 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     };
   }
 
-  void clearError() {
-    etConsume.setError(null);
-    etPositive.setError(null);
-    etUnjustified.setError(null);
+  private void clearError() {
+    clearErrorForEditText(etConsume);
+    clearErrorForPositiveEditText();
+    clearErrorForEditText(etUnjustified);
+  }
+
+  void clearErrorForPositiveEditText() {
+    clearErrorForEditText(etPositive);
+  }
+
+  void clearErrorForEditText(EditText editText) {
+    editText.setError(null);
   }
 
   String getString(int id) {
@@ -208,6 +248,12 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
           break;
         case R.id.et_positive_rapid_test_report_grid:
           column = POSITIVE;
+          break;
+        case R.id.et_positive_hiv_rapid_test_report_grid:
+          column = POSITIVE_HIV;
+          break;
+        case R.id.et_positive_syphilis_rapid_test_report_grid:
+          column = POSITIVE_SYPHILIS;
           break;
         default:
           // do nothing

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.Data;
 import lombok.Getter;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -338,6 +339,20 @@ public class RapidTestReportViewModel {
       case POSITIVE:
         if (!gridViewModel.getPositiveValue().equals("")) {
           total.longTotal += Long.parseLong(gridViewModel.getPositiveValue());
+          total.stringTotal = String.valueOf(total.longTotal);
+        }
+        break;
+      case POSITIVE_HIV:
+        String positiveHivValue = gridViewModel.getPositiveHivValue();
+        if (StringUtils.isNotEmpty(positiveHivValue)) {
+          total.longTotal += Long.parseLong(positiveHivValue);
+          total.stringTotal = String.valueOf(total.longTotal);
+        }
+        break;
+      case POSITIVE_SYPHILIS:
+        String positiveSyphilisValue = gridViewModel.getPositiveSyphilisValue();
+        if (StringUtils.isNotEmpty(positiveSyphilisValue)) {
+          total.longTotal += Long.parseLong(positiveSyphilisValue);
           total.stringTotal = String.valueOf(total.longTotal);
         }
         break;

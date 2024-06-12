@@ -18,8 +18,6 @@
 
 package org.openlmis.core.view.adapter;
 
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode.DUOTESTEHIVSYPHILIS;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,7 +109,7 @@ public class RapidTestReportGridAdapter extends
   }
 
   private boolean isDuoTest(RapidTestFormGridViewModel viewModel) {
-    return viewModel != null && DUOTESTEHIVSYPHILIS == viewModel.getColumnCode();
+    return viewModel != null && viewModel.isDuoTest();
   }
 
   @Override

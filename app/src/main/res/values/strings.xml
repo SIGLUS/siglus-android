@@ -767,7 +767,7 @@
   <string name="mmit_report_title_duo_tests_hiv_sifilis">Duo-Teste HIV-sifilis</string>
   <string name="mmit_report_title_hepatite_b_testes">Hepatite B testes</string>
   <string name="mmit_report_title_tdr_oral_de_hiv">TDR Oral de HIV</string>
-  <string name="mmit_report_title_new_test">New test</string>
+  <string name="mmit_report_title_new_test">Novo teste</string>
 
   <string name="mmit_report_subtitle_consumo">Consumo</string>
   <string name="mmit_report_subtitle_positivo">Positivo</string>

@@ -83,11 +83,26 @@ public class RapidTestFormGridViewModel {
   public boolean validate() {
     try {
       return isEmpty()
-          || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue)
+          || (isConsumptionGreaterThanPositive()
           && Long.parseLong(unjustifiedValue) >= 0);
     } catch (NumberFormatException e) {
       return false;
     }
+  }
+
+  private boolean isConsumptionGreaterThanPositive() {
+    return Long.parseLong(consumptionValue) >= calculatePositiveValue();
+  }
+
+  private long calculatePositiveValue() {
+    if (isDuoTest()) {
+      return Long.parseLong(positiveHivValue) + Long.parseLong(positiveSyphilisValue);
+    }
+    return Long.parseLong(positiveValue);
+  }
+
+  public boolean isDuoTest() {
+    return columnCode == ColumnCode.DUOTESTEHIVSYPHILIS;
   }
 
   public MMITGridErrorType validateThreeGrid() {
@@ -113,16 +128,24 @@ public class RapidTestFormGridViewModel {
 
   private boolean validateConsumption() {
     try {
-      return !((StringUtils.isNotEmpty(positiveValue) || StringUtils.isNotEmpty(unjustifiedValue))
+      return !((isPositiveNotEmpty() || StringUtils.isNotEmpty(unjustifiedValue))
           && StringUtils.isEmpty(consumptionValue));
     } catch (NumberFormatException e) {
       return false;
     }
   }
 
+  private boolean isPositiveNotEmpty() {
+    if (isDuoTest()) {
+      return StringUtils.isNotEmpty(positiveHivValue)
+          && StringUtils.isNotEmpty(positiveSyphilisValue);
+    }
+    return StringUtils.isNotEmpty(positiveValue);
+  }
+
   private boolean validatePositiveIsEmpty() {
     try {
-      return !(StringUtils.isNotEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue));
+      return !(StringUtils.isNotEmpty(consumptionValue) && !isPositiveNotEmpty());
     } catch (NumberFormatException e) {
       return false;
     }
@@ -139,7 +162,7 @@ public class RapidTestFormGridViewModel {
   private boolean validateUnjustified() {
     try {
       return !(StringUtils.isNotEmpty(consumptionValue)
-          && StringUtils.isNotEmpty(positiveValue)
+          && isPositiveNotEmpty()
           && StringUtils.isEmpty(unjustifiedValue));
     } catch (NumberFormatException e) {
       return false;
@@ -168,8 +191,10 @@ public class RapidTestFormGridViewModel {
         break;
       case POSITIVE_HIV:
         positiveHivValue = value;
+        break;
       case POSITIVE_SYPHILIS:
         positiveSyphilisValue = value;
+        break;
       default:
         // do nothing
     }
@@ -210,7 +235,7 @@ public class RapidTestFormGridViewModel {
 
   public boolean isEmpty() {
     return StringUtils.isEmpty(consumptionValue)
-        && StringUtils.isEmpty(positiveValue)
+        && !isPositiveNotEmpty()
         && StringUtils.isEmpty(unjustifiedValue);
   }
 
@@ -219,8 +244,8 @@ public class RapidTestFormGridViewModel {
   }
 
   private boolean positiveGreaterThanConsumption() {
-    if (StringUtils.isNotEmpty(consumptionValue) && StringUtils.isNotEmpty(positiveValue)) {
-      return Long.parseLong(consumptionValue) < Long.parseLong(positiveValue);
+    if (StringUtils.isNotEmpty(consumptionValue) && isPositiveNotEmpty()) {
+      return Long.parseLong(consumptionValue) < calculatePositiveValue();
     } else {
       return false;
     }
@@ -228,14 +253,14 @@ public class RapidTestFormGridViewModel {
 
   private boolean isAllNotEmpty() {
     return StringUtils.isNotEmpty(consumptionValue)
-        && StringUtils.isNotEmpty(positiveValue)
+        && isPositiveNotEmpty()
         && StringUtils.isNotEmpty(unjustifiedValue);
   }
 
   public boolean isAddUnjustified() {
     return StringUtils.isEmpty(unjustifiedValue)
         && !(StringUtils.isEmpty(consumptionValue)
-        && StringUtils.isEmpty(positiveValue));
+        && !isPositiveNotEmpty());
   }
 
   private String generateFullColumnName(String prefix) {

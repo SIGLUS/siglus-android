@@ -1,3 +1,21 @@
+/*
+ * This program is part of the OpenLMIS logistics management information
+ * system platform software.
+ *
+ * Copyright © 2015 ThoughtWorks, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version. This program is distributed in the
+ * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details. You should
+ * have received a copy of the GNU Affero General Public License along with
+ * this program. If not, see http://www.gnu.org/licenses. For additional
+ * information contact info@OpenLMIS.org
+ */
+
 package org.openlmis.core.view.holder;
 
 import android.view.View;
@@ -27,47 +45,34 @@ public class RapidTestReport4ColumnsGridViewHolder extends RapidTestReportGridVi
   }
 
   @Override
-  public void populateData(RapidTestFormGridViewModel viewModel) {
-    (editable ? etConsume : etConsumeTotal).setText(viewModel.getConsumptionValue());
+  void populateDataForPositive(RapidTestFormGridViewModel viewModel) {
     (editable ? etPositiveHiv : etPositiveHivTotal).setText(viewModel.getPositiveHivValue());
     (editable ? etPositiveSyphilis : etPositiveSyphilisTotal)
         .setText(viewModel.getPositiveSyphilisValue());
-    (editable ? etUnjustified : etUnjustifiedTotal).setText(viewModel.getUnjustifiedValue());
   }
 
   @Override
-  public void setEditable(Boolean editable) {
-    if (Boolean.TRUE.equals(editable)) {
-      setEditable(etConsume);
-      setEditable(etPositiveHiv);
-      setEditable(etPositiveSyphilis);
-      setEditable(etUnjustified);
-    }
-  }
-
-  private void setEditable(EditText editText) {
-    editText.setFocusable(true);
-    editText.setOnFocusChangeListener(getOnFocusChangeListener());
+  public void setEditTableForPositiveEditText() {
+    setEditableForEditText(etPositiveHiv);
+    setEditableForEditText(etPositiveSyphilis);
   }
 
   @Override
-  void setTextWatcher() {
-    if (editable) {
-      setTextWatcherForET(etConsume);
-      setTextWatcherForET(etPositiveHiv);
-      setTextWatcherForET(etPositiveSyphilis);
-      setTextWatcherForET(etUnjustified);
-    }
-  }
-
-  private void setTextWatcherForET(EditText editText) {
-    TextWatcher textWatcherConsume = new TextWatcher(editText);
-    editText.addTextChangedListener(textWatcherConsume);
+  void setTextWatcherForPositiveEditText() {
+    setTextWatcherForEditText(etPositiveHiv);
+    setTextWatcherForEditText(etPositiveSyphilis);
   }
 
   @Override
-  void updateAlert() {
-    // TODO: confirm the alert rule
+  void setTextColorForPositiveEditText() {
+    setTextColorForEditText(etPositiveHiv);
+    setTextColorForEditText(etPositiveSyphilis);
+  }
+
+  @Override
+  void setTextColorForPositiveTextView() {
+    setTextColorForTextView(etPositiveHiv, etPositiveHivTotal);
+    setTextColorForTextView(etPositiveSyphilis, etPositiveSyphilisTotal);
   }
 
   @Override
@@ -98,14 +103,8 @@ public class RapidTestReport4ColumnsGridViewHolder extends RapidTestReportGridVi
   }
 
   @Override
-  void clearError() {
-    clearErrorForET(etConsume);
-    clearErrorForET(etPositiveHiv);
-    clearErrorForET(etPositiveSyphilis);
-    clearErrorForET(etUnjustified);
-  }
-
-  private void clearErrorForET(EditText editText) {
-    editText.setError(null);
+  void clearErrorForPositiveEditText() {
+    clearErrorForEditText(etPositiveHiv);
+    clearErrorForEditText(etPositiveSyphilis);
   }
 }
