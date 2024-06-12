@@ -761,7 +761,7 @@
   <string name="expired_products_select_notice">Please select at least one item</string>
   <string name="expired_products_request_storage_permission_title">Request storage permission</string>
   <string name="expired_products_request_storage_permission_message">We need storage permission for generating excel report of removing expired products, you may need to grant the permission in settings</string>
-  <string name="expired_products_removed_success">Removed expired products successful, please check %1$s</string>
+  <string name="expired_products_removed_success">Removed expired products successfully, please check %1$s</string>
 
   <!-- MMIT template - add 4 new columns -->
   <string name="mmit_report_title_duo_tests_hiv_sifilis">Duo-Teste HIV-sifilis</string>

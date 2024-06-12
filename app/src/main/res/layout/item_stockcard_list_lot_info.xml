@@ -60,12 +60,14 @@
     android:id="@+id/tv_label_expiry_date"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:layout_constraintLeft_toLeftOf="@id/gl_vertical_one"
+    app:layout_constraintStart_toStartOf="@id/gl_vertical_one"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
     android:textSize="@dimen/px_20"
     android:textColor="@color/color_606162"
-    android:text="@string/label_stockcard_lot_expire_date" />
+    android:text="@string/label_stockcard_lot_expire_date"
+    android:maxWidth="@dimen/px_110"
+    />
 
   <TextView
     android:id="@+id/tv_expiry_date"
