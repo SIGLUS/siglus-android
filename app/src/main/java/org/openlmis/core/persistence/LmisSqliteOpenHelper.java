@@ -21,7 +21,6 @@ package org.openlmis.core.persistence;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.os.Build;
 import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
@@ -128,6 +127,7 @@ import org.openlmis.core.persistence.migrations.UpdateReportType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardSOHStatus;
 import org.openlmis.core.persistence.migrations.UpdateUsageColumnsMap;
+import org.openlmis.core.persistence.migrations.UpdateUsageColumnsMapV2;
 
 
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
@@ -239,6 +239,8 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new DropProgramDataFormTables());
     MIGRATIONS.add(new AddShowInReportFieldInProductProgramTable());
     MIGRATIONS.add(new AddProvinceAndDistrictFieldsInUsersTable());
+    MIGRATIONS.add(new UpdateUsageColumnsMapV2());
+    MIGRATIONS.add(new UpdateUsageColumnsMapV2());
   }
 
   private LmisSqliteOpenHelper(Context context) {
@@ -303,8 +305,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
   @Override
   public void onOpen(SQLiteDatabase db) {
     super.onOpen(db);
-    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)
-        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
       db.disableWriteAheadLogging();
     }
   }

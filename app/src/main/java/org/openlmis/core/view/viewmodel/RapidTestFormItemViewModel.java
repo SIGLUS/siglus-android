@@ -46,8 +46,8 @@ public class RapidTestFormItemViewModel {
   RapidTestFormGridViewModel gridHIVUnigold = new RapidTestFormGridViewModel(ColumnCode.HIVUNIGOLD);
   RapidTestFormGridViewModel gridSyphillis = new RapidTestFormGridViewModel(ColumnCode.SYPHILLIS);
   RapidTestFormGridViewModel gridMalaria = new RapidTestFormGridViewModel(ColumnCode.MALARIA);
-  RapidTestFormGridViewModel gridDuoTest = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSYPHILIS);
-  RapidTestFormGridViewModel gridHepatitis = new RapidTestFormGridViewModel(ColumnCode.HEPATITISBTESTES);
+  RapidTestFormGridViewModel gridDuoTest = new RapidTestFormGridViewModel(ColumnCode.DUOTESTEHIVSIFILIS);
+  RapidTestFormGridViewModel gridHepatitis = new RapidTestFormGridViewModel(ColumnCode.HEPATITEBTESTES);
   RapidTestFormGridViewModel gridTDROral = new RapidTestFormGridViewModel(ColumnCode.TDRORALDEHIV);
   RapidTestFormGridViewModel gridNewTest = new RapidTestFormGridViewModel(ColumnCode.NEWTEST);
 
