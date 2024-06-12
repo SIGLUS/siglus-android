@@ -362,6 +362,17 @@ public class RapidTestReportFormFragment extends BaseReportFragment
         gridViewModel.setPositiveValue(String.valueOf(mmitReportNum));
         viewModel.updateTotal(gridViewModel.getColumnCode(), RapidTestGridColumnCode.POSITIVE);
 
+        int halfOfMMITReportNum = (int) (mmitReportNum / 2);
+        gridViewModel.setPositiveHivValue(String.valueOf(halfOfMMITReportNum));
+        viewModel.updateTotal(
+            gridViewModel.getColumnCode(), RapidTestGridColumnCode.POSITIVE_HIV
+        );
+
+        gridViewModel.setPositiveSyphilisValue(String.valueOf(halfOfMMITReportNum));
+        viewModel.updateTotal(
+            gridViewModel.getColumnCode(), RapidTestGridColumnCode.POSITIVE_SYPHILIS
+        );
+
         gridViewModel.setUnjustifiedValue(String.valueOf(mmitReportNum));
         viewModel.updateTotal(gridViewModel.getColumnCode(), RapidTestGridColumnCode.UNJUSTIFIED);
       }
