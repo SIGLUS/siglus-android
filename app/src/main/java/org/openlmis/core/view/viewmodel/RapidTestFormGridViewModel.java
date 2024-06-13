@@ -116,19 +116,27 @@ public class RapidTestFormGridViewModel {
       this.setInvalidColumn(RapidTestGridColumnCode.CONSUMPTION);
       return MMITGridErrorType.EMPTY_CONSUMPTION;
     } else if (!validatePositiveIsEmpty()) {
-      this.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
+      setPositiveAsInvalidColumn();
       return MMITGridErrorType.EMPTY_POSITIVE;
     } else if (!validateUnjustified()) {
       this.setInvalidColumn(RapidTestGridColumnCode.UNJUSTIFIED);
       return MMITGridErrorType.EMPTY_UNJUSTIFIED;
     } else if (!validatePositiveMoreThanCon()) {
-      this.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
+      setPositiveAsInvalidColumn();
       return MMITGridErrorType.POSITIVE_MORE_THAN_CONSUMPTION;
     } else if (isNeedAddGridViewWarning()) {
       this.setInvalidColumn(RapidTestGridColumnCode.CONSUMPTION);
       return MMITGridErrorType.APE_ALL_EMPTY;
     } else {
       return MMITGridErrorType.NO_ERROR;
+    }
+  }
+
+  private void setPositiveAsInvalidColumn() {
+    if (isDuoTest()) {
+      this.setInvalidColumn(RapidTestGridColumnCode.POSITIVE_HIV);
+    } else {
+      this.setInvalidColumn(RapidTestGridColumnCode.POSITIVE);
     }
   }
 

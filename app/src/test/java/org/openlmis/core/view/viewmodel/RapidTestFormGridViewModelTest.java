@@ -5,11 +5,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.openlmis.core.enumeration.MMITGridErrorType.EMPTY_POSITIVE;
+import static org.openlmis.core.enumeration.MMITGridErrorType.POSITIVE_MORE_THAN_CONSUMPTION;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.POSITIVE_HIV;
 
 import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.enumeration.MMITGridErrorType;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.UsageColumnsMap;
@@ -24,9 +29,14 @@ public class RapidTestFormGridViewModelTest {
   RapidTestFormGridViewModel viewModel = new RapidTestFormGridViewModel(
       RapidTestFormGridViewModel.ColumnCode.MALARIA);
 
-  RapidTestFormGridViewModel duoTestViewModel = new RapidTestFormGridViewModel(
-      ColumnCode.DUOTESTEHIVSIFILIS);
+  RapidTestFormGridViewModel duoTestViewModel;
   private static final String VALUE_50 = "50";
+
+  @Before
+  public void setUp() throws Exception {
+    duoTestViewModel = new RapidTestFormGridViewModel(
+        ColumnCode.DUOTESTEHIVSIFILIS);
+  }
 
   @Test
   public void shouldValidate() {
@@ -245,5 +255,51 @@ public class RapidTestFormGridViewModelTest {
     boolean actualResult = duoTestViewModel.isEmpty();
     // then
     assertFalse(actualResult);
+  }
+
+  @Test
+  public void shouldSetPositiveHivAsInvalidColumnWhenThreeGridValidatedWithDuoTestAndPositiveSyphilisIsEmpty() {
+    //given
+    duoTestViewModel.setConsumptionValue("10");
+    duoTestViewModel.setPositiveHivValue("10");
+    duoTestViewModel.setUnjustifiedValue("10");
+
+    // when
+    MMITGridErrorType actualErrorType = duoTestViewModel.validateThreeGrid();
+
+    //then
+    assertEquals(EMPTY_POSITIVE, actualErrorType);
+    assertEquals(POSITIVE_HIV, duoTestViewModel.invalidColumn);
+  }
+
+  @Test
+  public void shouldSetPositiveHivAsInvalidColumnWhenThreeGridValidatedWithDuoTestAndPositiveHivIsEmpty() {
+    //given
+    duoTestViewModel.setConsumptionValue("10");
+    duoTestViewModel.setPositiveSyphilisValue("10");
+    duoTestViewModel.setUnjustifiedValue("10");
+
+    // when
+    MMITGridErrorType actualErrorType = duoTestViewModel.validateThreeGrid();
+
+    //then
+    assertEquals(EMPTY_POSITIVE, actualErrorType);
+    assertEquals(POSITIVE_HIV, duoTestViewModel.invalidColumn);
+  }
+
+  @Test
+  public void shouldSetPositiveHivAsInvalidColumnWhenThreeGridValidatedWithDuoTestAndPositiveIsGreaterThanConsume() {
+    //given
+    duoTestViewModel.setConsumptionValue("10");
+    duoTestViewModel.setPositiveHivValue("10");
+    duoTestViewModel.setPositiveSyphilisValue("10");
+    duoTestViewModel.setUnjustifiedValue("10");
+
+    // when
+    MMITGridErrorType actualErrorType = duoTestViewModel.validateThreeGrid();
+
+    //then
+    assertEquals(POSITIVE_MORE_THAN_CONSUMPTION, actualErrorType);
+    assertEquals(POSITIVE_HIV, duoTestViewModel.invalidColumn);
   }
 }
