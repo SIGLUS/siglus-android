@@ -36,6 +36,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.Guideline;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.inject.Inject;
@@ -86,6 +87,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private static final int PERMISSION_REQUEST_CODE = 200;
   IncompleteRequisitionBanner incompleteRequisitionBanner;
   NotificationBanner newShippedIssueVoucherBanner;
+  Guideline guideline;
   SyncTimeView syncTimeView;
   @InjectView(R.id.dv_product_dashboard)
   DashboardView dvProductDashboard;
@@ -367,11 +369,15 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     if (!TextUtils.isEmpty(newShippedProgramNames)) {
       if (newShippedIssueVoucherBanner == null) {
         newShippedIssueVoucherBanner = findViewById(R.id.view_new_shipped_issue_voucher_banner);
+        guideline = findViewById(R.id.gl_half_screen);
       }
       newShippedIssueVoucherBanner.setNotificationMessage(
           createNewShippedNotification(newShippedProgramNames)
       );
       newShippedIssueVoucherBanner.setVisibility(View.VISIBLE);
+      if (incompleteRequisitionBanner.getVisibility() == View.VISIBLE) {
+        guideline.setGuidelinePercent(0.65f);
+      }
     }
   }
 
