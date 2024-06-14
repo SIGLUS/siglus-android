@@ -32,6 +32,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
@@ -82,6 +83,8 @@ import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
 import org.robolectric.RuntimeEnvironment;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import roboguice.RoboGuice;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
@@ -262,7 +265,7 @@ public class SyncUpManagerTest {
   }
 
   @Test
-  public void shouldSaveErrorMessageWhenSyncRnRFormFail() throws Exception {
+  public void shouldSaveErrorMessageWhenSyncRnRFormFailWithout409() throws Exception {
     List<RnRForm> unSyncedList = new ArrayList<>();
     RnRForm form = new RnRForm();
     unSyncedList.add(form);
@@ -274,6 +277,23 @@ public class SyncUpManagerTest {
     syncUpManager.syncRnr();
 
     verify(mockedSyncErrorsRepository).save(any(SyncError.class));
+  }
+
+  @Test
+  public void shouldNotSaveErrorMessageWhenSyncRnRFormFailWith409() throws Exception {
+    // given
+    when(mockedRnrFormRepository.queryAllUnsyncedForms()).thenReturn(newArrayList(new RnRForm()));
+
+    Response response = new Response("", 409, "", newArrayList(), null);
+    RetrofitError mockedRetrofitError = mock(RetrofitError.class);
+    when(mockedRetrofitError.getResponse()).thenReturn(response);
+
+    doThrow(new LMISException(mockedRetrofitError)).when(mockedLmisRestApi)
+        .submitRequisition(any(RnRForm.class));
+    // when
+    syncUpManager.syncRnr();
+    // then
+    verifyZeroInteractions(mockedSyncErrorsRepository);
   }
 
   @Test

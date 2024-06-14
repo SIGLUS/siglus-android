@@ -576,6 +576,120 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     assertThat(listWithEmergency.size(), is(2));
   }
 
+  @Test
+  public void shouldReturnOldestPeriodBeginRnrFormWhenQueryOldestSyncedRnRFormGroupByProgramWithData()
+      throws LMISException {
+    // given
+    Date periodBegin = new Date();
+    RnRForm rnRForm = generateRnrForm(periodBegin);
+
+    Date oldestPeriodBegin = DateUtil.dateMinusMonth(periodBegin, 1);
+    RnRForm rnRForm2 = generateRnrForm(oldestPeriodBegin);
+
+    rnrFormRepository.create(rnRForm);
+    rnrFormRepository.create(rnRForm2);
+    // when
+    RnRForm actualRnrForm = rnrFormRepository.queryOldestSyncedRnRFormGroupByProgram();
+    // then
+    assertEquals(
+        DateUtil.parseString(DateUtil.formatDate(oldestPeriodBegin, DateUtil.DB_DATE_FORMAT),
+            DateUtil.DB_DATE_FORMAT),
+        actualRnrForm.getPeriodBegin()
+    );
+  }
+
+  @Test
+  public void shouldReturnNullWhenQueryOldestSyncedRnRFormGroupByProgramWithoutData()
+      throws LMISException {
+    // when
+    RnRForm actualRnrForm = rnrFormRepository.queryOldestSyncedRnRFormGroupByProgram();
+    // then
+    assertNull(actualRnrForm);
+  }
+
+  @Test
+  public void shouldQueryFormByPeriodAndProgramCodeWhenSaveAndDeleteDuplicatedPeriodRequisitionsAndListIsNotEmpty()
+      throws LMISException {
+    // given
+    String programCode = "programCode";
+
+    Program program = new Program();
+    program.setProgramCode(programCode);
+    program.setId(1);
+
+    when(mockProgramRepository.queryByCode(programCode)).thenReturn(program);
+
+    RnRForm rnRForm = new RnRForm();
+    rnRForm.setProgram(program);
+    rnRForm.setPeriodBegin(new Date());
+
+    ArrayList<RnRForm> forms = newArrayList(rnRForm);
+    // when
+    rnrFormRepository.saveAndDeleteDuplicatedPeriodRequisitions(forms);
+    // then
+    verify(mockProgramRepository).queryByCode(programCode);
+  }
+
+  @Test
+  public void shouldSaveFormWhenSaveAndDeleteDuplicatedPeriodRequisitionsAndListIsNotEmptyAndNoExistForm()
+      throws LMISException {
+    // given
+    Program program = new Program();
+    program.setProgramCode("programCode");
+    program.setId(1);
+
+    RnRForm rnRForm = new RnRForm();
+    rnRForm.setProgram(program);
+    Date periodBegin = new Date();
+    rnRForm.setPeriodBegin(periodBegin);
+
+    when(mockProgramRepository.queryByCode(anyString())).thenReturn(null);
+
+    ArrayList<RnRForm> inputForms = newArrayList(rnRForm);
+    // when
+    rnrFormRepository.saveAndDeleteDuplicatedPeriodRequisitions(inputForms);
+    // then
+    List<RnRForm> actualForms = rnrFormRepository.list();
+    assertEquals(1, actualForms.size());
+    RnRForm actualForm = actualForms.get(0);
+    assertEquals(
+        DateUtil.formatDate(periodBegin),
+        DateUtil.formatDate(actualForm.getPeriodBegin())
+    );
+  }
+
+  @Test
+  public void shouldDeleteExistFormWhenSaveAndDeleteDuplicatedPeriodRequisitionsAndListIsNotEmptyAndHasExistForm()
+      throws LMISException {
+    // given
+    Program program = new Program();
+    program.setProgramCode("programCode");
+    program.setId(1);
+
+    RnRForm rnRForm = new RnRForm();
+    rnRForm.setProgram(program);
+    Date periodBegin = new Date();
+    rnRForm.setPeriodBegin(periodBegin);
+
+    when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
+
+    rnrFormRepository.create(rnRForm);
+    ArrayList<RnRForm> inputForms = newArrayList(rnRForm);
+    // when
+    rnrFormRepository.saveAndDeleteDuplicatedPeriodRequisitions(inputForms);
+    // then
+    assertEquals(1, rnrFormRepository.list().size());
+  }
+
+  private RnRForm generateRnrForm(Date current) {
+    RnRForm form = new RnRForm();
+    form.setSynced(true);
+    form.setPeriodBegin(current);
+    form.setPeriodEnd(DateUtil.dateMinusMonth(current, -1));
+
+    return form;
+  }
+
   public class MyTestModule extends AbstractModule {
 
     @Override

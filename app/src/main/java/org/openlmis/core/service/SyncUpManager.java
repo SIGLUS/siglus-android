@@ -75,6 +75,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Sets;
+import retrofit.RetrofitError;
 import rx.Observable;
 
 @Singleton
@@ -174,11 +175,16 @@ public class SyncUpManager {
       return false;
     }
     List<Program> needBlockPrograms = new ArrayList<>();
+    List<RnRForm> conflictForms = new ArrayList<>();
     for (RnRForm form : forms) {
       if (needBlockPrograms.contains(form.getProgram())) {
         markRnrFormBlocked(form);
       } else {
-        boolean result = submitRequisition(form);
+        Boolean result = submitRequisition(form);
+        if (result == null) {
+          conflictForms.add(form);
+          continue;
+        }
         if (result) {
           markRnrFormSynced(form);
         } else {
@@ -187,6 +193,11 @@ public class SyncUpManager {
       }
     }
     EventBus.getDefault().post(new SyncRnrFinishEvent());
+
+    if (!conflictForms.isEmpty()) {
+      forms = from(forms).filter(form -> !conflictForms.contains(form)).toList();
+    }
+
     return from(forms).allMatch(RnRForm::isSynced);
   }
 
@@ -432,7 +443,7 @@ public class SyncUpManager {
     }
   }
 
-  private boolean submitRequisition(RnRForm rnRForm) {
+  private Boolean submitRequisition(RnRForm rnRForm) {
     try {
       lmisRestApi.submitRequisition(rnRForm);
       syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, rnRForm.getId());
@@ -443,6 +454,17 @@ public class SyncUpManager {
       Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
       return false;
     } catch (LMISException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof RetrofitError
+          && 409 == ((RetrofitError) cause).getResponse().getStatus()
+      ) {
+        // conflict data with superior provided
+        Log.w(TAG, "===> SyncRnr : sync failed -> [Ignore] due to conflict with superior provided data: "
+            + e.getMessage()
+        );
+        return null;
+      }
+
       new LMISException(e, "SyncUpManager.submitRequisition").reportToFabric();
       Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
       syncErrorsRepository.save(new SyncError(e, SyncType.RNR_FORM, rnRForm.getId()));
