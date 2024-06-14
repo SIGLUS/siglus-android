@@ -240,7 +240,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new AddShowInReportFieldInProductProgramTable());
     MIGRATIONS.add(new AddProvinceAndDistrictFieldsInUsersTable());
     MIGRATIONS.add(new UpdateUsageColumnsMapV2());
-    MIGRATIONS.add(new UpdateUsageColumnsMapV2());
   }
 
   private LmisSqliteOpenHelper(Context context) {
