@@ -737,4 +737,73 @@ public class RnrFormRepository {
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
         .execSQL(deleteRnrForm);
   }
+
+  public RnRForm queryOldestSyncedRnRFormGroupByProgram() throws LMISException {
+    try (Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
+        .getWritableDatabase().rawQuery(
+            "select * from rnr_forms form "
+                + "where ( "
+                + "select count(*) from rnr_forms form2 "
+                + "where form.program_id = form2.program_id "
+                + "and form.periodBegin < form2.periodBegin "
+                + "and synced = 1 "
+                + ") = 0 "
+                + "and synced = 1 "
+                + "order by periodBegin",
+            null
+        )) {
+
+      boolean moveToFirst = cursor.moveToFirst();
+      if (moveToFirst) {
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setPeriodBegin(DateUtil.parseString(
+                cursor.getString(cursor.getColumnIndexOrThrow(PERIOD_BEGIN)), DateUtil.DB_DATE_FORMAT
+            )
+        );
+        return rnRForm;
+      } else {
+        return null;
+      }
+    } catch (IllegalArgumentException e) {
+      throw new LMISException(e);
+    }
+  }
+
+  public void saveAndDeleteDuplicatedPeriodRequisitions(List<RnRForm> forms) throws LMISException {
+    try {
+      TransactionManager.callInTransaction(
+          LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+            for (RnRForm form : forms) {
+              RnRForm existingForm = queryFormByPeriodAndProgramCode(
+                  form.getProgram(), form.getPeriodBegin()
+              );
+              if (existingForm != null) {
+                  removeRnrForm(existingForm);
+              }
+              createOrUpdateWithItems(form);
+            }
+            return null;
+          });
+    } catch (SQLException e) {
+      throw new LMISException(e);
+    }
+  }
+
+  @Nullable
+  private RnRForm queryFormByPeriodAndProgramCode(Program program, Date periodBegin)
+      throws LMISException {
+    Program dbProgram = programRepository.queryByCode(program.getProgramCode());
+    if (dbProgram == null) {
+      return null;
+    }
+
+    return dbUtil.withDao(
+        RnRForm.class,
+        dao -> dao.queryBuilder()
+            .where()
+            .eq(PROGRAM_ID, dbProgram.getId())
+            .and().eq(PERIOD_BEGIN, periodBegin)
+            .queryForFirst()
+    );
+  }
 }

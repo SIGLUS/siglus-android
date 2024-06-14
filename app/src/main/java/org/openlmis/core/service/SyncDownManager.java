@@ -21,6 +21,7 @@ package org.openlmis.core.service;
 import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.j256.ormlite.misc.TransactionManager;
@@ -36,12 +37,14 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.event.CmmCalculateEvent;
+import org.openlmis.core.event.SyncRnrFinishEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.AdditionalProductProgramRepository;
 import org.openlmis.core.model.repository.PodRepository;
@@ -342,17 +345,76 @@ public class SyncDownManager {
   private void syncDownRequisition(Subscriber<? super SyncProgress> subscriber)
       throws LMISException {
     if (!sharedPreferenceMgr.isRequisitionDataSynced()) {
-      try {
-        subscriber.onNext(SyncProgress.SYNCING_REQUISITION);
-        fetchAndSaveRequisition();
-        sharedPreferenceMgr.setRequisitionDataSynced(true);
-        subscriber.onNext(SyncProgress.REQUISITION_SYNCED);
-      } catch (LMISException e) {
-        sharedPreferenceMgr.setRequisitionDataSynced(false);
-        LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_requisition_failed));
-        e1.reportToFabric();
-        throw e1;
+      syncDownFullRequisitions(subscriber);
+    } else {
+      // incremental sync down due to superior can create requisition for subordinate
+      syncDownIncrementalRequisitions(subscriber);
+    }
+  }
+
+  private void syncDownIncrementalRequisitions(
+      Subscriber<? super SyncProgress> subscriber
+  ) throws LMISException {
+    try {
+      subscriber.onNext(SyncProgress.SYNCING_REQUISITION);
+
+      String incrementalStartDate = getIncrementalStartDate();
+      if (incrementalStartDate == null) {
+        return;
       }
+
+      SyncDownRequisitionsResponse syncDownRequisitionsResponse =
+          fetchRequisition(incrementalStartDate);
+      List<RnRForm> requisitionResponseList = syncDownRequisitionsResponse.getRequisitionResponseList();
+      if (requisitionResponseList != null && !requisitionResponseList.isEmpty()) {
+        rnrFormRepository.saveAndDeleteDuplicatedPeriodRequisitions(requisitionResponseList);
+      }
+      // would not update wrong data in the process of syncing up, so notifying UI here
+      EventBus.getDefault().post(new SyncRnrFinishEvent());
+
+      subscriber.onNext(SyncProgress.REQUISITION_SYNCED);
+    } catch (LMISException e) {
+      LMISException wrappedException = new LMISException(
+          e, errorMessage(R.string.msg_sync_requisition_failed)
+      );
+      wrappedException.reportToFabric();
+      throw wrappedException;
+    }
+  }
+
+  @Nullable
+  private String getIncrementalStartDate() throws LMISException {
+    Date startDate;
+
+    RnRForm oldestSyncedProgramRnRForm = rnrFormRepository.queryOldestSyncedRnRFormGroupByProgram();
+    if (oldestSyncedProgramRnRForm == null) {
+      return null;
+    } else {
+      startDate = DateUtil.dateMinusMonth(oldestSyncedProgramRnRForm.getPeriodBegin(), -1);
+    }
+
+    if (DateUtil.dateMinusMonth(startDate, -13).compareTo(DateUtil.getCurrentDate()) < 0) {
+      return getStartDate();
+    }
+
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(startDate);
+    calendar.set(Calendar.DAY_OF_MONTH, 1);
+
+    return DateUtil.formatDate(calendar.getTime(), DateUtil.DB_DATE_FORMAT);
+  }
+
+  private void syncDownFullRequisitions(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+    try {
+      subscriber.onNext(SyncProgress.SYNCING_REQUISITION);
+      fetchAndSaveRequisition();
+      sharedPreferenceMgr.setRequisitionDataSynced(true);
+      subscriber.onNext(SyncProgress.REQUISITION_SYNCED);
+    } catch (LMISException e) {
+      sharedPreferenceMgr.setRequisitionDataSynced(false);
+      LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_requisition_failed));
+      e1.reportToFabric();
+      throw e1;
     }
   }
 
@@ -464,15 +526,24 @@ public class SyncDownManager {
   }
 
   private void fetchAndSaveRequisition() throws LMISException {
-    SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(getStartDate());
+    SyncDownRequisitionsResponse syncDownRequisitionsResponse = fetchRequisition(getStartDate());
+
+    rnrFormRepository.createRnRsWithItems(
+        syncDownRequisitionsResponse.getRequisitionResponseList());
+  }
+
+  @NonNull
+  private SyncDownRequisitionsResponse fetchRequisition(@NonNull String startDate) throws LMISException {
+    SyncDownRequisitionsResponse syncDownRequisitionsResponse =
+        lmisRestApi.fetchRequisitions(startDate);
+
     if (syncDownRequisitionsResponse == null) {
       LMISException e = new LMISException(
           "Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
       e.reportToFabric();
       throw e;
     }
-
-    rnrFormRepository.createRnRsWithItems(syncDownRequisitionsResponse.getRequisitionResponseList());
+    return syncDownRequisitionsResponse;
   }
 
   private void fetchLatestOneMonthMovements() throws LMISException {
