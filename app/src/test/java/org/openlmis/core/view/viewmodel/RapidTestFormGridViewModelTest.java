@@ -143,13 +143,13 @@ public class RapidTestFormGridViewModelTest {
     consumeColumn3.setCode(consumeCode);
     duoTestViewModel.setConsumeColumn(consumeColumn3);
 
-    String positiveHivCode = "POSITIVE-HIV_DUOTESTEHIVSIFILIS";
+    String positiveHivCode = "POSITIVEHIV_DUOTESTEHIVSIFILIS";
     duoTestViewModel.setPositiveHivValue("1000");
     UsageColumnsMap positiveHivColumn = new UsageColumnsMap();
     positiveHivColumn.setCode(positiveHivCode);
     duoTestViewModel.setPositiveHivColumn(positiveHivColumn);
 
-    String positiveSyphilisCode = "POSITIVE-SYPHILIS_DUOTESTEHIVSIFILIS";
+    String positiveSyphilisCode = "POSITIVESYPHILIS_DUOTESTEHIVSIFILIS";
     duoTestViewModel.setPositiveSyphilisValue("1");
     UsageColumnsMap positiveSyphilisColumn = new UsageColumnsMap();
     positiveSyphilisColumn.setCode(positiveSyphilisCode);

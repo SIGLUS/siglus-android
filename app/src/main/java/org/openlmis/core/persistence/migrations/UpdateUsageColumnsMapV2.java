@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class UpdateUsageColumnsMapV2 extends UpdateUsageColumnsMap {
 
-  public static final String POSITIVE_HIV = "POSITIVE-HIV";
-  public static final String POSITIVE_SYPHILIS = "POSITIVE-SYPHILIS";
+  public static final String POSITIVE_HIV = "POSITIVEHIV";
+  public static final String POSITIVE_SYPHILIS = "POSITIVESYPHILIS";
 
   @Override
   public void up() {
