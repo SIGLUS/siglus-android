@@ -60,7 +60,7 @@ public interface LMISRestApi {
   StockCardsLocalResponse fetchStockMovementData(@Query("startTime") String startDate, @Query("endTime") String endDate)
       throws LMISException;
 
-  @GET("/api/siglusapi/android/me/facility/requisitions")
+  @GET("/api/siglusapi/v2/android/me/facility/requisitions")
   SyncDownRequisitionsResponse fetchRequisitions(@Query("startDate") String startDate) throws LMISException;
 
   @GET("/api/siglusapi/android/me/facility/pods")
