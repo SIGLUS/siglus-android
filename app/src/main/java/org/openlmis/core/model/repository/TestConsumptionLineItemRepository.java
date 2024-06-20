@@ -51,6 +51,10 @@ public class TestConsumptionLineItemRepository {
     List<UsageColumnsMap> usageColumnsMaps = usageColumnsMapRepository.list();
     dbUtil.withDaoAsBatch(TestConsumptionItem.class, dao -> {
       for (TestConsumptionItem item : testConsumptionLineItems) {
+        if (item.getUsageColumnsMap() == null) {
+          // it means there are some new columns data, should ignore them
+          continue;
+        }
         setUsageColumnsMap(item, usageColumnsMaps);
         dao.createOrUpdate(item);
       }
@@ -81,9 +85,14 @@ public class TestConsumptionLineItemRepository {
     return genericDao.queryForAll();
   }
 
-  private void setUsageColumnsMap(TestConsumptionItem lineItem, List<UsageColumnsMap> usageColumnsMaps) {
+  private void setUsageColumnsMap(
+      TestConsumptionItem lineItem,
+      List<UsageColumnsMap> usageColumnsMaps
+  ) {
     List<UsageColumnsMap> usageColumnsMapList = from(usageColumnsMaps)
-        .filter(usageColumnsMap -> usageColumnsMap.getCode().equals(lineItem.getUsageColumnsMap().getCode()))
+        .filter(usageColumnsMap -> usageColumnsMap != null
+            && usageColumnsMap.getCode().equals(lineItem.getUsageColumnsMap().getCode()
+        ))
         .toList();
     if (!usageColumnsMapList.isEmpty()) {
       lineItem.setUsageColumnsMap(usageColumnsMapList.get(0));
