@@ -93,6 +93,11 @@ public class LMISApp extends Application {
     getCurrentActivity();
   }
 
+  public void renewLmisSqliteOpenHelper() {
+    LmisSqliteOpenHelper.closeHelper();
+    LmisSqliteOpenHelper.getInstance(this).checkDatabaseVersion();
+  }
+
   public boolean isRoboUniTest() {
     return "robolectric".equals(Build.FINGERPRINT);
   }
@@ -137,6 +142,9 @@ public class LMISApp extends Application {
         }
       }
     }
+  }
+
+  public void killAppProcess() {
     android.os.Process.killProcess(android.os.Process.myPid());
   }
 

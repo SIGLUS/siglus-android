@@ -26,6 +26,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -479,9 +480,38 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {
     return () -> {
-      setRestartIntent();
-      LMISApp.getInstance().wipeAppData();
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+        setRestartIntent();
+
+        LMISApp lmisApp = LMISApp.getInstance();
+        lmisApp.wipeAppData();
+        lmisApp.killAppProcess();
+      } else {
+        reSyncDataForAndroid10AndHigherVersion();
+      }
     };
+  }
+
+  private void reSyncDataForAndroid10AndHigherVersion() {
+    NonCancelableDialog autoReSyncingDialog =
+        NonCancelableDialog.newInstance(R.string.msg_auto_resyncing);
+    getSupportFragmentManager().beginTransaction()
+        .add(autoReSyncingDialog, "autoReSyncDialog").commitNow();
+
+    LMISApp lmisApp = LMISApp.getInstance();
+    lmisApp.wipeAppData();
+    lmisApp.renewLmisSqliteOpenHelper();
+
+    autoReSyncingDialog.dismiss();
+
+    Intent intent = new Intent(this, LoginActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    User currentUser = UserInfoMgr.getInstance().getUser();
+    intent.putExtra(Constants.PARAM_USERNAME, currentUser.getUsername());
+    intent.putExtra(Constants.PARAM_PASSWORD, currentUser.getPassword());
+
+    startActivity(intent);
+    finish();
   }
 
   private void setRestartIntent() {
