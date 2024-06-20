@@ -747,6 +747,7 @@
   <string name="msg_sync_not_android_user">O administrador actualizou as suas instalações para uma instalação Web, por favor utilize o portal Web para iniciar sessão para a sua posterior gestão.</string>
   <string name="msg_sync_not_same_device_user">A US já está cadastrada em outro dispositivo, entre em contato com o administrador.</string>
   <string name="msg_auto_sync_before_resync">Sincronize automaticamente os dados antes da operação de ressincronização para garantir que todos os dados tenham sido sincronizados com o servidor</string>
+  <string name="msg_auto_resyncing">Ressincronização de dados...</string>
 
   <!-- Stock - Expired Products -->
   <string name="action_expired_products">Produtos Expirados</string>

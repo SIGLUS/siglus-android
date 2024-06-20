@@ -753,6 +753,7 @@
   <string name="msg_sync_not_android_user">The administrator has upgraded your facility to a Web facility, please use the Web portal to log in for your further management.</string>
   <string name="msg_sync_not_same_device_user">the facility already logged into another device, please contact the administrator.</string>
   <string name="msg_auto_sync_before_resync">Automatically sync data before the resync operation to ensure all data has been synced to the server</string>
+  <string name="msg_auto_resyncing">Resyncing data...</string>
 
   <!-- Stock - Expired Products -->
   <string name="action_expired_products">Expired Products</string>

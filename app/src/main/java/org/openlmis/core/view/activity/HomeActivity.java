@@ -26,6 +26,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -62,7 +63,9 @@ import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.persistence.ExportSqliteOpenHelper;
 import org.openlmis.core.presenter.HomePresenter;
 import org.openlmis.core.service.DirtyDataManager;
+import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncService;
+import org.openlmis.core.service.SyncUpManager;
 import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.FileUtil;
@@ -116,13 +119,14 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private int syncedCount = 0;
   private NonCancelableDialog initialDirtyDataCheckDialog;
   private NonCancelableDialog autoSyncDataBeforeResyncDialog;
+  private static final String AUTO_SYNC_DATA_BEFORE_RESYNC_DIALOG_NAME = "autoSyncDataBeforeResyncDialog";
   protected final InternetCheckListener validateConnectionListener = internet -> {
     if (!internet) {
       ToastUtil.show(R.string.message_wipe_no_connection);
     } else {
       autoSyncDataBeforeResyncDialog = NonCancelableDialog.newInstance(R.string.msg_auto_sync_before_resync);
       getSupportFragmentManager().beginTransaction()
-          .add(autoSyncDataBeforeResyncDialog, "autoSyncDataBeforeResyncDialog").commitNow();
+          .add(autoSyncDataBeforeResyncDialog, AUTO_SYNC_DATA_BEFORE_RESYNC_DIALOG_NAME).commitNow();
       syncData();
     }
   };
@@ -179,10 +183,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       case FINISH:
         setSyncedTime();
         refreshDashboard();
-        if (getSupportFragmentManager().findFragmentByTag("autoSyncDataBeforeResyncDialog") != null) {
-          autoSyncDataBeforeResyncDialog.dismiss();
-          showResyncAlertDialog();
-        }
+        tryShowResyncConfirmationDialog();
         checkAndTryShowNewShippedPodNotification();
         break;
       case ERROR:
@@ -191,14 +192,28 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         } else {
           syncTimeView.setSyncStockCardLastYearError();
         }
-        if (getSupportFragmentManager().findFragmentByTag("autoSyncDataBeforeResyncDialog") != null) {
-          autoSyncDataBeforeResyncDialog.dismiss();
-          showResyncAlertDialog();
-        }
+        tryShowResyncConfirmationDialog();
         break;
       default:
         break;
     }
+  }
+
+  private void tryShowResyncConfirmationDialog() {
+    if (isAutoSyncDataBeforeResyncDialogShowing()
+        && isSynced()) {
+      autoSyncDataBeforeResyncDialog.dismiss();
+      showResyncAlertDialog();
+    }
+  }
+
+  private boolean isSynced() {
+    return !SyncUpManager.isSyncing() && !SyncDownManager.isSyncing();
+  }
+
+  private boolean isAutoSyncDataBeforeResyncDialogShowing() {
+    return getSupportFragmentManager()
+        .findFragmentByTag(AUTO_SYNC_DATA_BEFORE_RESYNC_DIALOG_NAME) != null;
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
@@ -479,9 +494,51 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {
     return () -> {
-      setRestartIntent();
-      LMISApp.getInstance().wipeAppData();
+      if (isAndroid9OrLowerVersion()) {
+        wipeDataAndResatAppOnAndroid9AndLowerVersion();
+      } else {
+        reSyncDataForAndroid10AndHigherVersion();
+      }
     };
+  }
+
+  private void wipeDataAndResatAppOnAndroid9AndLowerVersion() {
+    setRestartIntent();
+
+    LMISApp lmisApp = LMISApp.getInstance();
+    lmisApp.wipeAppData();
+    lmisApp.killAppProcess();
+  }
+
+  private boolean isAndroid9OrLowerVersion() {
+    return Build.VERSION.SDK_INT < Build.VERSION_CODES.Q;
+  }
+
+  private void reSyncDataForAndroid10AndHigherVersion() {
+    NonCancelableDialog autoReSyncingDialog =
+        NonCancelableDialog.newInstance(R.string.msg_auto_resyncing);
+    getSupportFragmentManager().beginTransaction()
+        .add(autoReSyncingDialog, "autoReSyncDialog").commitNow();
+
+    LMISApp lmisApp = LMISApp.getInstance();
+    lmisApp.wipeAppData();
+
+    try {
+      lmisApp.resetApp();
+    } catch (LMISException e) {
+      wipeDataAndResatAppOnAndroid9AndLowerVersion();
+    }
+
+    autoReSyncingDialog.dismiss();
+
+    Intent intent = new Intent(this, LoginActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    User currentUser = UserInfoMgr.getInstance().getUser();
+    intent.putExtra(Constants.PARAM_USERNAME, currentUser.getUsername());
+    intent.putExtra(Constants.PARAM_PASSWORD, currentUser.getPassword());
+
+    startActivity(intent);
+    finish();
   }
 
   private void setRestartIntent() {
