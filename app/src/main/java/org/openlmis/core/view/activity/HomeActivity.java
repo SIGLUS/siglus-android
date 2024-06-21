@@ -53,6 +53,7 @@ import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.event.InitialDirtyDataCheckEvent;
 import org.openlmis.core.event.SyncPercentEvent;
 import org.openlmis.core.event.SyncStatusEvent;
+import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -63,7 +64,9 @@ import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.persistence.ExportSqliteOpenHelper;
 import org.openlmis.core.presenter.HomePresenter;
 import org.openlmis.core.service.DirtyDataManager;
+import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncService;
+import org.openlmis.core.service.SyncUpManager;
 import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.FileUtil;
@@ -117,13 +120,14 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private int syncedCount = 0;
   private NonCancelableDialog initialDirtyDataCheckDialog;
   private NonCancelableDialog autoSyncDataBeforeResyncDialog;
+  private static final String AUTO_SYNC_DATA_BEFORE_RESYNC_DIALOG_NAME = "autoSyncDataBeforeResyncDialog";
   protected final InternetCheckListener validateConnectionListener = internet -> {
     if (!internet) {
       ToastUtil.show(R.string.message_wipe_no_connection);
     } else {
       autoSyncDataBeforeResyncDialog = NonCancelableDialog.newInstance(R.string.msg_auto_sync_before_resync);
       getSupportFragmentManager().beginTransaction()
-          .add(autoSyncDataBeforeResyncDialog, "autoSyncDataBeforeResyncDialog").commitNow();
+          .add(autoSyncDataBeforeResyncDialog, AUTO_SYNC_DATA_BEFORE_RESYNC_DIALOG_NAME).commitNow();
       syncData();
     }
   };
@@ -180,10 +184,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       case FINISH:
         setSyncedTime();
         refreshDashboard();
-        if (getSupportFragmentManager().findFragmentByTag("autoSyncDataBeforeResyncDialog") != null) {
-          autoSyncDataBeforeResyncDialog.dismiss();
-          showResyncAlertDialog();
-        }
+        tryShowResyncConfirmationDialog();
         checkAndTryShowNewShippedPodNotification();
         break;
       case ERROR:
@@ -192,14 +193,28 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         } else {
           syncTimeView.setSyncStockCardLastYearError();
         }
-        if (getSupportFragmentManager().findFragmentByTag("autoSyncDataBeforeResyncDialog") != null) {
-          autoSyncDataBeforeResyncDialog.dismiss();
-          showResyncAlertDialog();
-        }
+        tryShowResyncConfirmationDialog();
         break;
       default:
         break;
     }
+  }
+
+  private void tryShowResyncConfirmationDialog() {
+    if (isAutoSyncDataBeforeResyncDialogShowing()
+        && isSynced()) {
+      autoSyncDataBeforeResyncDialog.dismiss();
+      showResyncAlertDialog();
+    }
+  }
+
+  private boolean isSynced() {
+    return !SyncUpManager.isSyncing() && !SyncDownManager.isSyncing();
+  }
+
+  private boolean isAutoSyncDataBeforeResyncDialogShowing() {
+    return getSupportFragmentManager()
+        .findFragmentByTag(AUTO_SYNC_DATA_BEFORE_RESYNC_DIALOG_NAME) != null;
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
@@ -480,7 +495,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {
     return () -> {
-      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+      if (isAndroid9OrLowerVersion()) {
         setRestartIntent();
 
         LMISApp lmisApp = LMISApp.getInstance();
@@ -490,6 +505,10 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         reSyncDataForAndroid10AndHigherVersion();
       }
     };
+  }
+
+  private boolean isAndroid9OrLowerVersion() {
+    return Build.VERSION.SDK_INT < Build.VERSION_CODES.Q;
   }
 
   private void reSyncDataForAndroid10AndHigherVersion() {
