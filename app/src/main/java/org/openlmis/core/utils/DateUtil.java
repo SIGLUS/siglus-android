@@ -299,4 +299,12 @@ public final class DateUtil {
     }
     return calendar;
   }
+
+  public static Date getFirstDayForCurrentMonthByDate(Date date) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    calendar.set(Calendar.DAY_OF_MONTH, 1);
+
+    return calendar.getTime();
+  }
 }

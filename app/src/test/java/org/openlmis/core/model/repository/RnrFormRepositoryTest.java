@@ -21,6 +21,7 @@ package org.openlmis.core.model.repository;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
@@ -44,6 +45,7 @@ import androidx.annotation.NonNull;
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -619,9 +621,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     when(mockProgramRepository.queryByCode(programCode)).thenReturn(program);
 
-    RnRForm rnRForm = new RnRForm();
-    rnRForm.setProgram(program);
-    rnRForm.setPeriodBegin(new Date());
+    RnRForm rnRForm = generateRnRForm(program, new Date());
 
     ArrayList<RnRForm> forms = newArrayList(rnRForm);
     // when
@@ -638,10 +638,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     program.setProgramCode("programCode");
     program.setId(1);
 
-    RnRForm rnRForm = new RnRForm();
-    rnRForm.setProgram(program);
     Date periodBegin = new Date();
-    rnRForm.setPeriodBegin(periodBegin);
+    RnRForm rnRForm = generateRnRForm(program, periodBegin);
 
     when(mockProgramRepository.queryByCode(anyString())).thenReturn(null);
 
@@ -658,6 +656,15 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     );
   }
 
+  @NonNull
+  private RnRForm generateRnRForm(Program program, Date periodBegin) {
+    RnRForm rnRForm = new RnRForm();
+    rnRForm.setProgram(program);
+    rnRForm.setPeriodBegin(periodBegin);
+
+    return rnRForm;
+  }
+
   @Test
   public void shouldDeleteExistFormWhenSaveAndDeleteDuplicatedPeriodRequisitionsAndListIsNotEmptyAndHasExistForm()
       throws LMISException {
@@ -666,19 +673,42 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     program.setProgramCode("programCode");
     program.setId(1);
 
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(2024, 5, 20);
+    Date periodBegin = calendar.getTime();
+    RnRForm rnRForm = generateRnRForm(program);
+
+    Program shouldBeDeletedProgram = new Program();
+    shouldBeDeletedProgram.setProgramCode("programCode");
+    shouldBeDeletedProgram.setId(2);
+    Date shouldBeDeletedPeriodBegin = DateUtil.getFirstDayForCurrentMonthByDate(periodBegin);
+    RnRForm shouldBeDeletedRnRForm = generateRnRForm(shouldBeDeletedProgram, shouldBeDeletedPeriodBegin);
+
+    when(mockProgramRepository.queryByCode(anyString())).thenReturn(shouldBeDeletedProgram, program);
+
+    rnrFormRepository.create(shouldBeDeletedRnRForm);
+    rnrFormRepository.create(rnRForm);
+    ArrayList<RnRForm> inputForms = newArrayList(shouldBeDeletedRnRForm);
+    // when
+    rnrFormRepository.saveAndDeleteDuplicatedPeriodRequisitions(inputForms);
+    // then
+    List<RnRForm> rnRForms = rnrFormRepository.list();
+    assertEquals(2, rnRForms.size());
+
+    RnRForm actualRnRForm1 = rnRForms.get(0);
+    assertNotEquals(
+        DateUtil.formatDate(shouldBeDeletedPeriodBegin, DateUtil.DB_DATE_FORMAT),
+        DateUtil.formatDate(actualRnRForm1.getPeriodBegin(), DateUtil.DB_DATE_FORMAT)
+    );
+  }
+
+  @NonNull
+  private static RnRForm generateRnRForm(Program program) {
     RnRForm rnRForm = new RnRForm();
     rnRForm.setProgram(program);
     Date periodBegin = new Date();
     rnRForm.setPeriodBegin(periodBegin);
-
-    when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
-
-    rnrFormRepository.create(rnRForm);
-    ArrayList<RnRForm> inputForms = newArrayList(rnRForm);
-    // when
-    rnrFormRepository.saveAndDeleteDuplicatedPeriodRequisitions(inputForms);
-    // then
-    assertEquals(1, rnrFormRepository.list().size());
+    return rnRForm;
   }
 
   private RnRForm generateRnrForm(Date current) {

@@ -32,6 +32,7 @@ import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMTB_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.DateUtil.getFirstDayForCurrentMonthByDate;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -774,11 +775,11 @@ public class RnrFormRepository {
       TransactionManager.callInTransaction(
           LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
             for (RnRForm form : forms) {
-              RnRForm existingForm = queryFormByPeriodAndProgramCode(
+              RnRForm existingForm = queryNonEmergencyFormByPeriodAndProgramCode(
                   form.getProgram(), form.getPeriodBegin()
               );
               if (existingForm != null) {
-                  removeRnrForm(existingForm);
+                removeRnrForm(existingForm);
               }
               createOrUpdateWithItems(form);
             }
@@ -790,19 +791,24 @@ public class RnrFormRepository {
   }
 
   @Nullable
-  private RnRForm queryFormByPeriodAndProgramCode(Program program, Date periodBegin)
-      throws LMISException {
+  private RnRForm queryNonEmergencyFormByPeriodAndProgramCode(
+      Program program, Date periodBegin
+  ) throws LMISException {
     Program dbProgram = programRepository.queryByCode(program.getProgramCode());
     if (dbProgram == null) {
       return null;
     }
 
+    Date firstDayOfCurrentPeriod = getFirstDayForCurrentMonthByDate(periodBegin);
+
     return dbUtil.withDao(
         RnRForm.class,
         dao -> dao.queryBuilder()
+            .orderBy(PERIOD_BEGIN, true)
             .where()
             .eq(PROGRAM_ID, dbProgram.getId())
-            .and().eq(PERIOD_BEGIN, periodBegin)
+            .and().ge(PERIOD_BEGIN, firstDayOfCurrentPeriod)
+            .and().eq(EMERGENCY, false)
             .queryForFirst()
     );
   }
