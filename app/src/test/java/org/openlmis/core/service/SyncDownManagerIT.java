@@ -159,7 +159,7 @@ public class SyncDownManagerIT {
         .addNewMockedResponse("/rest-api/report-types/mapping/" + getDefaultUser().getFacilityId(),
             200, "OK", fetchReportTypesMapping);
     lmisRestManager.addNewMockedResponse(
-        "/api/siglusapi/android/me/facility/requisitions?" + "startDate=" + getStartDateWithDB_DATE_FORMAT(), 200,
+        "/api/siglusapi/v2/android/me/facility/requisitions?" + "startDate=" + getStartDateWithDB_DATE_FORMAT(), 200,
         "OK", fetchRequisitionsData);
     lmisRestManager.addNewMockedResponse(
         "/rest-api/programData/facilities/" + getDefaultUser().getFacilityId(), 200, "OK",
@@ -252,7 +252,7 @@ public class SyncDownManagerIT {
     String facilityInfoJson = JsonFileReader.readJson(getClass(), "fetchFacilityInfoResponse.json");
     String requisitionsJson = JsonFileReader.readJson(getClass(), "fetchRequisitionsData.json");
     LMISRestManagerMock lmisRestManagerMock = LMISRestManagerMock.getRestManagerWithMockClient(
-        "/api/siglusapi/android/me/facility/requisitions?" + "startDate=" + getStartDateWithDB_DATE_FORMAT(), 200,
+        "/api/siglusapi/v2/android/me/facility/requisitions?" + "startDate=" + getStartDateWithDB_DATE_FORMAT(), 200,
         "OK", requisitionsJson, RuntimeEnvironment.application);
     lmisRestManagerMock.addNewMockedResponse("/api/siglusapi/android/me/facility", 200, "OK",
         facilityInfoJson);
