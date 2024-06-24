@@ -613,7 +613,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
   public void shouldQueryFormByPeriodAndProgramCodeWhenSaveAndDeleteDuplicatedPeriodRequisitionsAndListIsNotEmpty()
       throws LMISException {
     // given
-    String programCode = "programCode";
+    String programCode = "programCode1";
 
     Program program = new Program();
     program.setProgramCode(programCode);
@@ -635,7 +635,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
       throws LMISException {
     // given
     Program program = new Program();
-    program.setProgramCode("programCode");
+    program.setProgramCode("programCode2");
     program.setId(1);
 
     Date periodBegin = new Date();
@@ -670,7 +670,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
       throws LMISException {
     // given
     Program program = new Program();
-    program.setProgramCode("programCode");
+    program.setProgramCode("programCode3");
     program.setId(1);
 
     Calendar calendar = Calendar.getInstance();
@@ -679,7 +679,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     RnRForm rnRForm = generateRnRForm(program);
 
     Program shouldBeDeletedProgram = new Program();
-    shouldBeDeletedProgram.setProgramCode("programCode");
+    shouldBeDeletedProgram.setProgramCode("programCode4");
     shouldBeDeletedProgram.setId(2);
     Date shouldBeDeletedPeriodBegin = DateUtil.getFirstDayForCurrentMonthByDate(periodBegin);
     RnRForm shouldBeDeletedRnRForm = generateRnRForm(shouldBeDeletedProgram, shouldBeDeletedPeriodBegin);
