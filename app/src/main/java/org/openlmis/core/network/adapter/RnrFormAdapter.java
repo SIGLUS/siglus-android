@@ -187,16 +187,28 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
         Map<String, Integer> tableNameToDisplayOrder = mmiaRepository.getDisplayOrderMap();
         for (JsonElement column : jsonObjectForPatient.get(COLUMNS).getAsJsonArray()) {
           JsonObject jsonColumn = column.getAsJsonObject();
-          String tableName = jsonColumn.get(NAME).getAsString();
+          JsonElement tableNameJson = jsonColumn.get(NAME);
+          if (isNullOrNullJson(tableNameJson)) {
+            continue;
+          }
+          String tableName = tableNameJson.getAsString();
           BaseInfoItem baseInfoItem = new BaseInfoItem(tableName, TYPE.STRING, rnRForm, componentName,
               tableNameToDisplayOrder.containsKey(tableName) ? tableNameToDisplayOrder.get(tableName) : 0);
 
-          baseInfoItem.setValue(jsonColumn.get(VALUE).getAsString());
+          JsonElement valueJson = jsonColumn.get(VALUE);
+          if (isNullOrNullJson(valueJson)) {
+            continue;
+          }
+          baseInfoItem.setValue(valueJson.getAsString());
           baseInfoItems.add(baseInfoItem);
         }
       }
       rnRForm.setBaseInfoItemListWrapper(baseInfoItems);
     }
+  }
+
+  private boolean isNullOrNullJson(JsonElement jsonElement) {
+    return jsonElement == null || jsonElement.isJsonNull();
   }
 
   private void setRegimenLineItemsForMalaria(RnRForm rnRForm, JsonObject jsonObject) {
