@@ -23,6 +23,8 @@ import androidx.annotation.NonNull;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import org.joda.time.DateTime;
@@ -47,6 +49,22 @@ public final class AnalyticsTracker {
       throw new IllegalStateException("Call initialize() before getInstance()");
     }
     return sInstance;
+  }
+
+  public static void reset() throws LMISException {
+    try {
+      if (sInstance != null) {
+        Method unsetInstanceMethod = AppCenter.class.getDeclaredMethod("unsetInstance");
+        unsetInstanceMethod.setAccessible(true);
+        unsetInstanceMethod.invoke(null);
+
+        sInstance = null;
+      }
+    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+      LMISException lmisException = new LMISException(e);
+      lmisException.reportToFabric();
+      throw lmisException;
+    }
   }
 
   /**

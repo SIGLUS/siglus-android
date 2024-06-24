@@ -47,6 +47,7 @@ import java.io.File;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.onAdaptListener;
 import net.danlew.android.joda.JodaTimeAndroid;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -64,6 +65,8 @@ import roboguice.RoboGuice;
 
 @SuppressWarnings({"squid:S2696", "squid:S5803"})
 public class LMISApp extends Application {
+
+  public static final String FACEBOOK_SO_NAME = "lib-main";
 
   private static LMISApp instance;
 
@@ -93,7 +96,10 @@ public class LMISApp extends Application {
     getCurrentActivity();
   }
 
-  public void renewLmisSqliteOpenHelper() {
+  public void resetApp() throws LMISException {
+    AnalyticsTracker.reset();
+    AnalyticsTracker.initialize(this);
+
     LmisSqliteOpenHelper.closeHelper();
     LmisSqliteOpenHelper.getInstance(this).checkDatabaseVersion();
   }
@@ -135,9 +141,14 @@ public class LMISApp extends Application {
   public void wipeAppData() {
     File cache = getCacheDir();
     File appDir = new File(cache.getParent());
-    if (new File(getCacheDir().getParent()).exists()) {
-      for (String s : appDir.list()) {
-        if (!s.equals("lib")) {
+    if (appDir.exists()) {
+      String[] fileList = appDir.list();
+      if (fileList == null) {
+        return;
+      }
+
+      for (String s : fileList) {
+        if (!s.equals("lib") && !s.equals(FACEBOOK_SO_NAME)) {
           FileUtil.deleteDir(new File(appDir, s));
         }
       }

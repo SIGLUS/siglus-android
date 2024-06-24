@@ -53,7 +53,6 @@ import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.event.InitialDirtyDataCheckEvent;
 import org.openlmis.core.event.SyncPercentEvent;
 import org.openlmis.core.event.SyncStatusEvent;
-import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -496,15 +495,19 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {
     return () -> {
       if (isAndroid9OrLowerVersion()) {
-        setRestartIntent();
-
-        LMISApp lmisApp = LMISApp.getInstance();
-        lmisApp.wipeAppData();
-        lmisApp.killAppProcess();
+        wipeDataAndResatAppOnAndroid9AndLowerVersion();
       } else {
         reSyncDataForAndroid10AndHigherVersion();
       }
     };
+  }
+
+  private void wipeDataAndResatAppOnAndroid9AndLowerVersion() {
+    setRestartIntent();
+
+    LMISApp lmisApp = LMISApp.getInstance();
+    lmisApp.wipeAppData();
+    lmisApp.killAppProcess();
   }
 
   private boolean isAndroid9OrLowerVersion() {
@@ -519,7 +522,12 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
     LMISApp lmisApp = LMISApp.getInstance();
     lmisApp.wipeAppData();
-    lmisApp.renewLmisSqliteOpenHelper();
+
+    try {
+      lmisApp.resetApp();
+    } catch (LMISException e) {
+      wipeDataAndResatAppOnAndroid9AndLowerVersion();
+    }
 
     autoReSyncingDialog.dismiss();
 
