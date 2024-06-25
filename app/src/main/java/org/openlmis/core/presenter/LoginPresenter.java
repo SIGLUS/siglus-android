@@ -22,6 +22,7 @@ import static org.openlmis.core.utils.Constants.GRANT_TYPE;
 
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import java.util.Date;
 import java.util.List;
@@ -73,7 +74,7 @@ public class LoginPresenter extends Presenter {
 
   private static final String TAG = LoginPresenter.class.getSimpleName();
 
-  LoginView view;
+  @Nullable LoginView view;
 
 
   @Inject
@@ -125,12 +126,25 @@ public class LoginPresenter extends Presenter {
     this.view = (LoginView) v;
   }
 
+  @Override
+  public void onStop() {
+    super.onStop();
+    if (view != null) {
+      view = null;
+    }
+  }
+
   private static final int TIMEOUT = 10 * 1000;
 
   private User user;
 
   public void startLogin(String userName, String password, boolean fromReSync) {
     hasGoneToNextPage = false;
+
+    if (view == null) {
+      return;
+    }
+
     if (StringUtils.EMPTY.equals(userName.trim())) {
       view.showUserNameEmpty();
       return;
@@ -149,8 +163,10 @@ public class LoginPresenter extends Presenter {
   }
 
   protected void onLoginFailed(LoginErrorType loginErrorType) {
-    view.loaded();
-    view.showInvalidAlert(loginErrorType);
+    if (view != null) {
+      view.loaded();
+      view.showInvalidAlert(loginErrorType);
+    }
   }
 
   protected void syncLocalUserData() {
@@ -188,15 +204,21 @@ public class LoginPresenter extends Presenter {
       public void onNext(SyncLocalUserProgress progress) {
         switch (progress) {
           case SYNC_LAST_SYNC_PRODUCT_FAIL:
-            view.loaded();
+            if (view != null) {
+              view.loaded();
+            }
             ToastUtil.show(R.string.msg_sync_products_list_failed);
             break;
           case SYNC_LAST_MONTH_STOCK_DATA_FAIL:
-            view.loaded();
+            if (view != null) {
+              view.loaded();
+            }
             ToastUtil.show(R.string.msg_sync_stock_movement_failed);
             break;
           case SYNC_REQUISITION_DATA_FAIL:
-            view.loaded();
+            if (view != null) {
+              view.loaded();
+            }
             ToastUtil.show(R.string.msg_sync_requisition_failed);
             break;
           case SYNC_LAST_DATA_SUCCESS:
@@ -223,7 +245,9 @@ public class LoginPresenter extends Presenter {
         if (!LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False).equals(e.getMessage())) {
           ToastUtil.show(e.getMessage());
         }
-        view.loaded();
+        if (view != null) {
+          view.loaded();
+        }
       }
 
       @Override
@@ -235,7 +259,9 @@ public class LoginPresenter extends Presenter {
           case SYNCING_PODS:
           case SYNCING_STOCK_CARDS_LAST_MONTH:
           case SYNCING_REQUISITION:
-            view.loading(LMISApp.getInstance().getString(progress.getMessageCode()));
+            if (view != null) {
+              view.loading(LMISApp.getInstance().getString(progress.getMessageCode()));
+            }
             break;
 
           case PRODUCT_SYNCED:
@@ -245,7 +271,7 @@ public class LoginPresenter extends Presenter {
             break;
 
           case SHOULD_GO_TO_INITIAL_INVENTORY:
-            if (!view.needInitInventory()) {
+            if (view != null && !view.needInitInventory()) {
               ToastUtil.show(R.string.msg_initial_sync_success);
             }
             goToNextPage();
@@ -378,11 +404,15 @@ public class LoginPresenter extends Presenter {
     syncService.createSyncAccount(user);
 
     UserInfoMgr.getInstance().setUser(user);
-    view.clearErrorAlerts();
+    if (view != null) {
+      view.clearErrorAlerts();
+    }
 
     syncDownManager.syncDownServerData(getSyncSubscriber());
 
-    view.sendScreenToGoogleAnalyticsAfterLogin();
+    if (view != null) {
+      view.sendScreenToGoogleAnalyticsAfterLogin();
+    }
     archiveOldData();
     saveUserDataToLocalDatabase(user);
 
@@ -429,10 +459,14 @@ public class LoginPresenter extends Presenter {
     if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
         .isSyncingLastYearStockCards()) {
       sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
-      view.sendSyncStartBroadcast();
+      if (view != null) {
+        view.sendSyncStartBroadcast();
+      }
       syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
     } else {
-      view.sendSyncFinishedBroadcast();
+      if (view != null) {
+        view.sendSyncFinishedBroadcast();
+      }
       sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
     }
   }
@@ -451,7 +485,9 @@ public class LoginPresenter extends Presenter {
         sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
         sharedPreferenceMgr.setStockCardLastYearSyncError(true);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-        view.sendSyncErrorBroadcast();
+        if (view != null) {
+          view.sendSyncErrorBroadcast();
+        }
         new LMISException(e).reportToFabric();
       }
 
@@ -472,7 +508,9 @@ public class LoginPresenter extends Presenter {
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
         sharedPreferenceMgr.setStockLastSyncTime();
         dirtyDataManager.initialDirtyDataCheck();
-        view.sendSyncFinishedBroadcast();
+        if (view != null) {
+          view.sendSyncFinishedBroadcast();
+        }
       }
 
       @Override
@@ -480,7 +518,9 @@ public class LoginPresenter extends Presenter {
         sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
         sharedPreferenceMgr.setStockCardLastYearSyncError(true);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-        view.sendSyncErrorBroadcast();
+        if (view != null) {
+          view.sendSyncErrorBroadcast();
+        }
       }
 
       @Override
@@ -497,6 +537,10 @@ public class LoginPresenter extends Presenter {
   }
 
   private void goToNextPage() {
+    if (view == null) {
+      return;
+    }
+
     view.loaded();
 
     if (view.needInitInventory()) {
