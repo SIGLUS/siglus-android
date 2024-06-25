@@ -18,6 +18,8 @@
 
 package org.openlmis.core.service;
 
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.NonNull;
@@ -67,7 +69,6 @@ import org.openlmis.core.service.sync.SchedulerBuilder;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import rx.Observable;
 import rx.Subscriber;
@@ -235,7 +236,7 @@ public class SyncDownManager {
       e.reportToFabric();
       throw e;
     }
-    ImmutableList<Pod> filteredPods = FluentIterable.from(pods)
+    ImmutableList<Pod> filteredPods = from(pods)
         .filter(pod -> {
           try {
             return podRepository.queryByOrderCode(Objects.requireNonNull(pod).getOrderCode()) == null;
@@ -255,7 +256,7 @@ public class SyncDownManager {
   }
 
   void saveNewShippedProgramNames(List<Pod> newPods) throws LMISException {
-    ImmutableList<Pod> newShippedPods = FluentIterable.from(newPods)
+    ImmutableList<Pod> newShippedPods = from(newPods)
         .filter(pod -> pod.getOrderStatus() == OrderStatus.SHIPPED)
         .toList();
 
@@ -348,11 +349,11 @@ public class SyncDownManager {
       syncDownFullRequisitions(subscriber);
     } else {
       // incremental sync down due to superior can create requisition for subordinate
-      syncDownIncrementalRequisitions(subscriber);
+      syncDownIncrementalNonEmergencyRequisitions(subscriber);
     }
   }
 
-  private void syncDownIncrementalRequisitions(
+  private void syncDownIncrementalNonEmergencyRequisitions(
       Subscriber<? super SyncProgress> subscriber
   ) throws LMISException {
     try {
@@ -367,7 +368,13 @@ public class SyncDownManager {
           fetchRequisition(incrementalStartDate);
       List<RnRForm> requisitionResponseList = syncDownRequisitionsResponse.getRequisitionResponseList();
       if (requisitionResponseList != null && !requisitionResponseList.isEmpty()) {
-        rnrFormRepository.saveAndDeleteDuplicatedPeriodRequisitions(requisitionResponseList);
+        List<RnRForm> nonEmergencyForms = from(requisitionResponseList)
+            .filter(rnRForm -> rnRForm != null && !rnRForm.isEmergency())
+            .toList();
+
+        if (nonEmergencyForms != null && !nonEmergencyForms.isEmpty()) {
+          rnrFormRepository.saveAndDeleteDuplicatedPeriodRequisitions(nonEmergencyForms);
+        }
       }
       // would not update wrong data in the process of syncing up, so notifying UI here
       EventBus.getDefault().post(new SyncRnrFinishEvent());
