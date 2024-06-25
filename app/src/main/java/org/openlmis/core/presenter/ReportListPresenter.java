@@ -28,6 +28,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.TranslationUtil;
 import org.openlmis.core.view.BaseView;
 import rx.Observable;
@@ -129,6 +130,22 @@ public class ReportListPresenter extends Presenter {
       }
     }
     hasVCReportType = false;
+  }
+
+  public Observable<Boolean> hasMoreThan2ViaProgramEmergencyRequisition() {
+    return Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
+      try {
+        boolean hasOverLimit = requisitionPeriodService.hasOverLimit(
+            Program.VIA_CODE, 2,
+            DateUtil.getFirstDayForCurrentMonthByDate(DateUtil.getCurrentDate()));
+
+        subscriber.onNext(hasOverLimit);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "hasMoreThan2ViaProgramEmergencyRequisition").reportToFabric();
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
   public interface ReportListView extends BaseView {

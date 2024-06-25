@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model.service;
 
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,6 +34,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Emergency;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
@@ -226,5 +229,23 @@ public class RequisitionPeriodService {
       }
     }
     return currentMonthBeginDate;
+  }
+
+  public boolean hasOverLimit(String programCode, int limit, Date endPeriod) throws LMISException {
+    List<RnRForm> allCurrentProgramRnRForms =
+        rnrFormRepository.listInclude(Emergency.YES, programCode);
+
+    if (allCurrentProgramRnRForms != null && !allCurrentProgramRnRForms.isEmpty()) {
+      DateTime periodEnd = new DateTime(endPeriod);
+
+      return from(allCurrentProgramRnRForms)
+          .filter(rnRForm -> rnRForm != null && rnRForm.isEmergency())
+          .filter(rnRForm -> rnRForm != null
+              && new DateTime(rnRForm.getPeriodEnd()).isAfter(periodEnd))
+          .toList()
+          .size() >= limit;
+    }
+
+    return false;
   }
 }

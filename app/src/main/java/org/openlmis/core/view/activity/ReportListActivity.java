@@ -131,7 +131,7 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
       return;
     }
     int dayOfMonth = new DateTime(LMISApp.getInstance().getCurrentTimeMillis()).getDayOfMonth();
-    if (dayOfMonth >= Period.INVENTORY_BEGIN_DAY && dayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
+    if (dayOfMonth < Period.EMERGENCY_BEGIN_DAY || dayOfMonth > Period.EMERGENCY_END_DAY) {
       ToastUtil.show(R.string.msg_create_emergency_date_invalid);
       return;
     }
@@ -140,13 +140,11 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
     reportListPresenter.hasMissedViaProgramPeriod().subscribe(new Subscriber<Boolean>() {
       @Override
       public void onCompleted() {
-        loaded();
       }
 
       @Override
       public void onError(Throwable e) {
-        loaded();
-        ToastUtil.show(e.getMessage());
+        handleError(e);
       }
 
       @Override
@@ -154,12 +152,45 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
         if (Boolean.TRUE.equals(hasMissed)) {
           ToastUtil.show(R.string.msg_create_emergency_has_missed);
         } else {
-          reportListViewpager.setCurrentItem(0);
-          toSelectEmergencyProductsLauncher.launch(
-              SelectEmergencyProductsActivity.getIntentToMe(ReportListActivity.this));
+          checkViaProgramEmergencyRequisitionsCount();
         }
       }
     });
+  }
+
+  private void checkViaProgramEmergencyRequisitionsCount() {
+    reportListPresenter.hasMoreThan2ViaProgramEmergencyRequisition().subscribe(new Subscriber<Boolean>() {
+
+      @Override
+      public void onCompleted() {
+        loaded();
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        handleError(e);
+      }
+
+      @Override
+      public void onNext(Boolean isMoreThan2EmergencyRequisitions) {
+        if (Boolean.TRUE.equals(isMoreThan2EmergencyRequisitions)) {
+          ToastUtil.show(R.string.msg_create_emergency_has_over_limit);
+        } else {
+          launchSelectEmergencyProductsActivity();
+        }
+      }
+    });
+  }
+
+  private void handleError(Throwable e) {
+    loaded();
+    ToastUtil.show(e.getMessage());
+  }
+
+  private void launchSelectEmergencyProductsActivity() {
+    reportListViewpager.setCurrentItem(0);
+    toSelectEmergencyProductsLauncher.launch(
+        SelectEmergencyProductsActivity.getIntentToMe(ReportListActivity.this));
   }
 
   @Override

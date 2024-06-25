@@ -416,7 +416,8 @@
 
   <!--Select Emergency Products-->
   <string name="title_select_emergency_products">Seleccione os produtos para adicionar a sua requisição de emergência</string>
-  <string name="msg_create_emergency_date_invalid">Você não tem permissão para criar uma Requisição de emergencia entre os dias 18 e 25, por favor submeta o pedido usando o formulário de requisição mensal.</string>
+  <string name="msg_create_emergency_date_invalid">Você só está autorizado a criar uma emergência entre os dias 11 e 17, envie a solicitação usando o formulário de requisição mensal.</string>
+  <string name="msg_create_emergency_has_over_limit">Você não tem permissão para criar uma requisição de emergência devido a você já ter criado 2 requisições</string>
   <string name="msg_create_emergency_has_missed">Você não tem permissão para criar uma Requisição de emergencia até que conclua todas as suas requisições mensais anteriores.</string>
   <string name="msg_out_limit_of_selected_emergency_products">Você só pode selecionar 10 produtos para uma requisição de emergência</string>
   <string name="label_emergency_requisition_title">Requisição de emergência -%1$s</string>

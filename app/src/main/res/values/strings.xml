@@ -424,8 +424,9 @@
 
   <!--Select Emergency Products-->
   <string name="title_select_emergency_products">Select the drugs to add to your emergency requisition</string>
-  <string name="msg_create_emergency_date_invalid">You are not allowed to create an emergency between 18th and 25th, please submit request using the monthly requisition form.</string>
+  <string name="msg_create_emergency_date_invalid">You are only allowed to create an emergency between 11th and 17th, please submit request using the monthly requisition form.</string>
   <string name="msg_create_emergency_has_missed">You are not allowed to create an emergency requisition until you complete all your previous monthly requisitions.</string>
+  <string name="msg_create_emergency_has_over_limit">You are not allowed to create an emergency requisition due to you already created 2 requisitions</string>
   <string name="msg_out_limit_of_selected_emergency_products">You can only select 10 products for an emergency requisition</string>
   <string name="label_emergency_requisition_title">Emergency requisition - %1$s</string>
   <string name="label_emergency_requisition_balance">Emergency requisition balancete</string>
