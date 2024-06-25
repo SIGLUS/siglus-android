@@ -2,6 +2,8 @@ package org.openlmis.core.model.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -12,6 +14,8 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +27,7 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Emergency;
 import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -210,6 +215,71 @@ public class RequisitionPeriodServiceTest {
     doReturn(nextPeriodInSchedule).when(requisitionPeriodService).generateNextPeriod("P1", null);
 
     assertThat(requisitionPeriodService.getMissedPeriodOffsetMonth("P1"), is(1));
+  }
+
+  @Test
+  public void shouldReturnFalseWhenHasOverLimitIsCalledWithNull() throws LMISException {
+    // given
+    String programCode = "programCode";
+    when(mockRnrFormRepository.listInclude(Emergency.YES, programCode)).thenReturn(null);
+    // when
+    boolean actualResult = requisitionPeriodService.hasOverLimit(programCode, 0, new Date());
+    // then
+    assertFalse(actualResult);
+  }
+
+  @Test
+  public void shouldReturnFalseWhenHasOverLimitIsCalledWithEmptyForms() throws LMISException {
+    // given
+    String programCode = "programCode";
+    when(mockRnrFormRepository.listInclude(Emergency.YES, programCode))
+        .thenReturn(Collections.emptyList());
+    // when
+    boolean actualResult = requisitionPeriodService.hasOverLimit(programCode, 0, new Date());
+    // then
+    assertFalse(actualResult);
+  }
+
+  @Test
+  public void shouldReturnFalseWhenHasOverLimitIsCalledWithNonEmptyFormsAndValidSizeIsLessThanLimit()
+      throws LMISException {
+    // given
+    String programCode = "programCode";
+    Date currentDate = DateUtil.getCurrentDate();
+
+    RnRForm rnRForm = new RnRForm();
+    rnRForm.setEmergency(true);
+    rnRForm.setPeriodEnd(currentDate);
+
+    when(mockRnrFormRepository.listInclude(Emergency.YES, programCode))
+        .thenReturn(newArrayList(rnRForm));
+    // when
+    boolean actualResult = requisitionPeriodService.hasOverLimit(
+        programCode, 2, DateUtil.getFirstDayForCurrentMonthByDate(currentDate)
+    );
+    // then
+    assertFalse(actualResult);
+  }
+
+  @Test
+  public void shouldReturnTrueWhenHasOverLimitIsCalledWithNonEmptyFormsAndValidSizeIsGELimit()
+      throws LMISException {
+    // given
+    String programCode = "programCode";
+    Date currentDate = DateUtil.getCurrentDate();
+
+    RnRForm rnRForm = new RnRForm();
+    rnRForm.setEmergency(true);
+    rnRForm.setPeriodEnd(currentDate);
+
+    when(mockRnrFormRepository.listInclude(Emergency.YES, programCode))
+        .thenReturn(newArrayList(rnRForm));
+    // when
+    boolean actualResult = requisitionPeriodService.hasOverLimit(
+        programCode, 1, DateUtil.getFirstDayForCurrentMonthByDate(currentDate)
+    );
+    // then
+    assertTrue(actualResult);
   }
 
   public class MyTestModule extends AbstractModule {

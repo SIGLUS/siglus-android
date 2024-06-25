@@ -110,15 +110,14 @@ public class ReportListActivityTest {
   public void shouldShowToastWhenDateNotInEmergencyDate() {
     // given
     LMISTestApp.getInstance().setCurrentTimeMillis(
-        DateUtil.parseString("2015-05-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+        DateUtil.parseString("2015-05-10 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
     when(mockedPresenter.isHasVCReportType()).thenReturn(true);
-
     // when
     reportListActivity.checkAndGotoEmergencyPage();
 
     // then
     MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(),
-        is("You are not allowed to create an emergency between 18th and 25th, please submit request using the monthly requisition form."));
+        is("You are only allowed to create an emergency between 11th and 17th, please submit request using the monthly requisition form."));
   }
 
   @Test
@@ -158,6 +157,8 @@ public class ReportListActivityTest {
     Observable<Boolean> value = Observable.create(subscriber -> subscriber.onNext(false));
     when(mockedPresenter.hasMissedViaProgramPeriod()).thenReturn(value);
     when(mockedPresenter.isHasVCReportType()).thenReturn(true);
+    Observable<Boolean> hasOverLimitObservable = Observable.create(subscriber -> subscriber.onNext(false));
+    when(mockedPresenter.hasMoreThan2ViaProgramEmergencyRequisition()).thenReturn(hasOverLimitObservable);
 
     MenuItem menuItem = mock(MenuItem.class);
     when(menuItem.getItemId()).thenReturn(R.id.action_create_emergency_rnr);

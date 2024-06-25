@@ -36,6 +36,8 @@ public class Period implements Serializable {
   public static final int INVENTORY_BEGIN_DAY = 18;
   public static final int INVENTORY_END_DAY_NEXT = 26;
   public static final int DEFAULT_INVENTORY_DAY = 20;
+  public static final int EMERGENCY_BEGIN_DAY = 11;
+  public static final int EMERGENCY_END_DAY = 17;
 
   private final DateTime periodBegin;
   private final DateTime periodEnd;
