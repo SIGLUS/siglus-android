@@ -37,6 +37,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -117,7 +118,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private boolean exitPressedOnce = false;
   private boolean isCmmCalculating = false;
   private int syncedCount = 0;
-  private NonCancelableDialog initialDirtyDataCheckDialog;
+  @Nullable private NonCancelableDialog initialDirtyDataCheckDialog;
   private NonCancelableDialog autoSyncDataBeforeResyncDialog;
   private static final String AUTO_SYNC_DATA_BEFORE_RESYNC_DIALOG_NAME = "autoSyncDataBeforeResyncDialog";
   protected final InternetCheckListener validateConnectionListener = internet -> {
@@ -168,6 +169,15 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     Intent intent = new Intent(context, HomeActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     return intent;
+  }
+
+  @Override
+  protected void onDestroy() {
+    if (initialDirtyDataCheckDialog != null) {
+      initialDirtyDataCheckDialog.dismiss();
+      initialDirtyDataCheckDialog = null;
+    }
+    super.onDestroy();
   }
 
   public void syncData() {
@@ -233,7 +243,9 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   public void onReceiveInitialDirtyDataCheckEvent(InitialDirtyDataCheckEvent event) {
     if (!event.isChecking()
         && getSupportFragmentManager().findFragmentByTag("initial_dirty_data_check_dialog") != null) {
-      initialDirtyDataCheckDialog.dismiss();
+      if (initialDirtyDataCheckDialog != null) {
+        initialDirtyDataCheckDialog.dismiss();
+      }
       if (event.isExistingDirtyData()) {
         showDeletedWarningDialog(dirtyDataManager::deleteAndReset);
       }

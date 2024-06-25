@@ -234,7 +234,9 @@ public class LMISApp extends Application {
 
       @Override
       public void onActivityResumed(@NonNull Activity activity) {
-        topActivity = (FragmentActivity) activity;
+        if (activity instanceof FragmentActivity) {
+          topActivity = (FragmentActivity) activity;
+        }
       }
 
       @Override
