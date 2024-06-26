@@ -231,17 +231,16 @@ public class RequisitionPeriodService {
     return currentMonthBeginDate;
   }
 
-  public boolean hasOverLimit(String programCode, int limit, Date endPeriod) throws LMISException {
+  public boolean hasOverLimit(String programCode, int limit, Date periodEnd) throws LMISException {
     List<RnRForm> allCurrentProgramRnRForms =
         rnrFormRepository.listInclude(Emergency.YES, programCode);
 
     if (allCurrentProgramRnRForms != null && !allCurrentProgramRnRForms.isEmpty()) {
-      DateTime periodEnd = new DateTime(endPeriod);
 
       return from(allCurrentProgramRnRForms)
           .filter(rnRForm -> rnRForm != null && rnRForm.isEmergency())
           .filter(rnRForm -> rnRForm != null
-              && new DateTime(rnRForm.getPeriodEnd()).isAfter(periodEnd))
+              && rnRForm.getPeriodEnd().compareTo(periodEnd) > 0)
           .toList()
           .size() >= limit;
     }

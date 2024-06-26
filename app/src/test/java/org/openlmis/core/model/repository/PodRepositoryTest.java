@@ -18,7 +18,13 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
+
+import androidx.annotation.NonNull;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
@@ -75,7 +81,7 @@ public class PodRepositoryTest {
     List<Pod> allPods = podRepository.list();
 
     // then
-    Assert.assertEquals(1, allPods.size());
+    assertEquals(1, allPods.size());
   }
 
   @Test
@@ -85,8 +91,8 @@ public class PodRepositoryTest {
     List<Pod> receivedPods = podRepository.queryByStatus(OrderStatus.RECEIVED);
 
     // then
-    Assert.assertEquals(1, shippedPods.size());
-    Assert.assertEquals(0, receivedPods.size());
+    assertEquals(1, shippedPods.size());
+    assertEquals(0, receivedPods.size());
   }
 
   @Test
@@ -95,7 +101,7 @@ public class PodRepositoryTest {
     podRepository.deleteByOrderCode(FieldConstants.ORDER_CODE);
 
     // then
-    Assert.assertEquals(0, podRepository.list().size());
+    assertEquals(0, podRepository.list().size());
   }
 
   @Test
@@ -120,7 +126,7 @@ public class PodRepositoryTest {
     List<String> orderCodes = podRepository.querySameProgramIssueVoucherByOrderCode("VCPod");
 
     // then
-    Assert.assertEquals("remoteVCIssueVoucher", orderCodes.get(0));
+    assertEquals("remoteVCIssueVoucher", orderCodes.get(0));
   }
 
   @Test
@@ -175,8 +181,8 @@ public class PodRepositoryTest {
 
     // then
     Pod updatedPod = podRepository.queryByOrderCode(issueVoucherOrderCode);
-    Assert.assertEquals(issueVoucherOrderCode, updatedPod.getOrderCode());
-    Assert.assertEquals(podOrderCode, updatedPod.getOriginOrderCode());
+    assertEquals(issueVoucherOrderCode, updatedPod.getOrderCode());
+    assertEquals(podOrderCode, updatedPod.getOriginOrderCode());
     Assert.assertNull(podRepository.queryByOrderCode(podOrderCode));
     Assert.assertFalse(podRepository.hasUnmatchedPodByProgram(Program.VIA_PROGRAM.getCode()));
   }
@@ -215,13 +221,13 @@ public class PodRepositoryTest {
     podRepository.batchCreatePodsWithItems(pods);
 
     // then
-    Assert.assertEquals(2, podRepository.list().size());
+    assertEquals(2, podRepository.list().size());
 
     // when
     podRepository.deleteOldData();
 
     // then
-    Assert.assertEquals(1, podRepository.list().size());
+    assertEquals(1, podRepository.list().size());
   }
 
   @Test
@@ -238,8 +244,8 @@ public class PodRepositoryTest {
     List<Pod> unsyncedPods = podRepository.queryUnsyncedPods();
 
     // then
-    Assert.assertEquals(1, unsyncedPods.size());
-    Assert.assertEquals(pod.getId(), unsyncedPods.get(0).getId());
+    assertEquals(1, unsyncedPods.size());
+    assertEquals(pod.getId(), unsyncedPods.get(0).getId());
 
     // when
     boolean result = podRepository.markSynced(pod);
@@ -247,5 +253,53 @@ public class PodRepositoryTest {
     // then
     Assert.assertTrue(result);
     Assert.assertTrue(pod.isSynced());
+  }
+
+  @Test
+  public void test_queryRemotePodsByProgramCodeAndPeriod() throws Exception {
+    // given
+    Date periodBegin = DateUtil.getCurrentDate();
+    String programCode = "VC";
+
+    Pod regularPod = generatePod("regularPod", programCode, periodBegin, false, false);
+    Pod emergencyPod = generatePod("emergencyPod", programCode, periodBegin, false, true);
+    Pod localPod = generatePod("localPod", programCode, periodBegin, true, false);
+    Pod otherPeriodSubmittedPod = generatePod(
+        "otherPeriodSubmittedPod",
+        programCode, DateUtil.dateMinusMonth(periodBegin, 5), true, false
+    );
+
+    podRepository.batchCreatePodsWithItems(
+        newArrayList(regularPod, emergencyPod, localPod, otherPeriodSubmittedPod)
+    );
+    // when
+    List<Pod> actualPods = podRepository.queryRegularRemotePodsByProgramCodeAndPeriod(
+        programCode, DateUtil.getFirstDayForCurrentMonthByDate(periodBegin)
+    );
+    // then
+    assertEquals(1, actualPods.size());
+    Pod pod = actualPods.get(0);
+    assertEquals(programCode, pod.getRequisitionProgramCode());
+    assertEquals(
+        DateUtil.formatDate(periodBegin, DateUtil.DB_DATE_FORMAT),
+        DateUtil.formatDate(pod.getRequisitionStartDate(), DateUtil.DB_DATE_FORMAT)
+    );
+    assertFalse(pod.isLocal());
+  }
+
+  @NonNull
+  private Pod generatePod(
+      String orderCode, String programCode, Date periodBegin, boolean isLocal,
+      boolean requisitionIsEmergency
+  ) throws Exception {
+    Pod pod = PodBuilder.generatePod();
+
+    pod.setOrderCode(orderCode);
+    pod.setLocal(isLocal);
+    pod.setRequisitionProgramCode(programCode);
+    pod.setRequisitionStartDate(periodBegin);
+    pod.setRequisitionIsEmergency(requisitionIsEmergency);
+
+    return pod;
   }
 }

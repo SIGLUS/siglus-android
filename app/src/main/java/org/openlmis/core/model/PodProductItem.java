@@ -69,4 +69,12 @@ public class PodProductItem extends BaseModel {
     return podProductLotItemsWrapper;
   }
 
+  public long getSumShippedQuantity() {
+    long sum = 0L;
+    for (PodProductLotItem podProductLotItem : getPodProductLotItemsWrapper()) {
+      sum += podProductLotItem.getShippedQuantity();
+    }
+    return sum;
+  }
+
 }

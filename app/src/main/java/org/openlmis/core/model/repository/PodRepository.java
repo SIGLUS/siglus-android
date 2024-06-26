@@ -18,9 +18,13 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.IS_LOCAL;
 import static org.openlmis.core.constant.FieldConstants.IS_SYNCED;
 import static org.openlmis.core.constant.FieldConstants.ORDER_STATUS;
 import static org.openlmis.core.constant.FieldConstants.POD_ID;
+import static org.openlmis.core.constant.FieldConstants.REQUISITION_IS_EMERGENCY;
+import static org.openlmis.core.constant.FieldConstants.REQUISITION_PROGRAM_CODE;
+import static org.openlmis.core.constant.FieldConstants.REQUISITION_START_DATE;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -289,5 +293,18 @@ public class PodRepository {
       return false;
     }
     return true;
+  }
+
+  public List<Pod> queryRegularRemotePodsByProgramCodeAndPeriod(
+      String programCode, Date firstDayOfThePeriodMonth) throws LMISException {
+    return dbUtil.withDao(Pod.class, dao ->
+        dao.queryBuilder()
+            .orderBy(REQUISITION_START_DATE, false)
+            .where().eq(IS_LOCAL, false)
+            .and().eq(REQUISITION_PROGRAM_CODE, programCode)
+            .and().ge(REQUISITION_START_DATE, firstDayOfThePeriodMonth)
+            .and().eq(REQUISITION_IS_EMERGENCY, false)
+            .query()
+    );
   }
 }

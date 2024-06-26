@@ -20,13 +20,26 @@ package org.openlmis.core.presenter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.PodProductItem;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
+import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Emergency;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
@@ -42,6 +55,12 @@ public class ProductPresenter extends Presenter {
 
   @Inject
   private StockRepository stockRepository;
+
+  @Inject
+  private RnrFormRepository rnrFormRepository;
+
+  @Inject
+  private PodRepository podRepository;
 
   @Override
   public void attachView(BaseView v) {
@@ -95,8 +114,19 @@ public class ProductPresenter extends Presenter {
   public Observable<List<InventoryViewModel>> loadEmergencyProducts() {
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
       try {
-        ImmutableList<InventoryViewModel> inventoryViewModels = from(
-            stockRepository.listEmergencyStockCards()).transform(InventoryViewModel::buildEmergencyModel).toList();
+        List<StockCard> allEmergencyStockCards = stockRepository.listEmergencyStockCards();
+
+        List<Long> invalidProductIds = getInvalidEmergencyProductsForLatestPeriod();
+        if (invalidProductIds != null && !invalidProductIds.isEmpty()) {
+          allEmergencyStockCards = from(allEmergencyStockCards)
+              .filter(stockCard -> stockCard != null
+                  && !invalidProductIds.contains(stockCard.getProduct().getId()))
+              .toList();
+        }
+
+        ImmutableList<InventoryViewModel> inventoryViewModels = from(allEmergencyStockCards)
+            .transform(InventoryViewModel::buildEmergencyModel)
+            .toList();
         subscriber.onNext(inventoryViewModels);
         subscriber.onCompleted();
       } catch (LMISException e) {
@@ -104,5 +134,89 @@ public class ProductPresenter extends Presenter {
         subscriber.onError(e);
       }
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  @Nullable
+  private List<Long> getInvalidEmergencyProductsForLatestPeriod() throws LMISException {
+    String programCode = Program.VIA_CODE;
+    List<RnRForm> allViaRnRForms = rnrFormRepository.listInclude(Emergency.NO, programCode);
+
+    if (allViaRnRForms == null) {
+      return null;
+    }
+    RnRForm latestViaRnrForm = from(allViaRnRForms)
+        .last()
+        .orNull();
+
+    if (latestViaRnrForm == null) {
+      return null;
+    }
+
+    Date firstDayOfCurrentMonth = DateUtil.getFirstDayForCurrentMonthByDate(
+        latestViaRnrForm.getPeriodBegin());
+    List<Pod> regularPods = podRepository.queryRegularRemotePodsByProgramCodeAndPeriod(
+        programCode, firstDayOfCurrentMonth
+    );
+
+    if (regularPods == null || regularPods.isEmpty()) {
+      return null;
+    }
+
+    List<Long> invalidProductIds = new ArrayList<>();
+    HashMap<Long, Long> productIdToShippedQuantityPair = new HashMap<>();
+    HashMap<Long, Long> productIdToOrderQuantityPair = new HashMap<>();
+
+    collectShippedAndOrderQuantityBySubPods(
+        regularPods, productIdToShippedQuantityPair, productIdToOrderQuantityPair
+    );
+
+    tryToAddPossibleInvalidProducts(
+        invalidProductIds, productIdToShippedQuantityPair, productIdToOrderQuantityPair
+    );
+
+    return invalidProductIds;
+  }
+
+  private void tryToAddPossibleInvalidProducts(
+      @NonNull List<Long> invalidProductIds,
+      @NonNull HashMap<Long, Long> productIdToShippedQuantityPair,
+      @NonNull HashMap<Long, Long> productIdToOrderQuantityPair
+  ) {
+    for (Long productId : productIdToShippedQuantityPair.keySet()) {
+      if (productId != null && !invalidProductIds.contains(productId)) {
+        Long shippedQuantity = productIdToShippedQuantityPair.get(productId);
+        Long orderQuantity = productIdToOrderQuantityPair.get(productId);
+
+        if (shippedQuantity != null && orderQuantity != null && shippedQuantity < orderQuantity) {
+          invalidProductIds.add(productId);
+        }
+      }
+    }
+  }
+
+  private void collectShippedAndOrderQuantityBySubPods(
+      @NonNull List<Pod> subpodList,
+      @NonNull HashMap<Long, Long> productIdToShippedQuantityPair,
+      @NonNull HashMap<Long, Long> productIdToOrderQuantityPair
+  ) {
+    for (Pod subpod : subpodList) {
+      for (PodProductItem podProductItem : subpod.getPodProductItemsWrapper()) {
+        Long productId = podProductItem.getProduct().getId();
+        // shipped quantity
+        long currentAcceptedQuantity = podProductItem.getSumShippedQuantity();
+        Long currentProductQuantity = productIdToShippedQuantityPair.get(productId);
+        if (currentProductQuantity != null) {
+          productIdToShippedQuantityPair.put(
+              productId, currentProductQuantity + currentAcceptedQuantity
+          );
+        } else {
+          productIdToShippedQuantityPair.put(productId, currentAcceptedQuantity);
+        }
+        // order quantity
+        if (productIdToOrderQuantityPair.get(productId) == null) {
+          productIdToOrderQuantityPair.put(productId, podProductItem.getOrderedQuantity());
+        }
+      }
+    }
   }
 }
