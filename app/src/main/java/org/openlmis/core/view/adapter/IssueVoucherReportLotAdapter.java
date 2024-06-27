@@ -43,7 +43,6 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
-import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
@@ -132,7 +131,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       updateTotalValue(lotViewModel);
       etQuantityShipped.setText(convertLongValueToString(lotViewModel.getShippedQuantity()));
       etQuantityAccepted.setText(convertLongValueToString(lotViewModel.getAcceptedQuantity()));
-      tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getDifferenceQuality()));
+      tvQuantityReturned.setText(convertLongValueToString(lotViewModel.compareAcceptedAndShippedQuantity()));
       etNote.setText(lotViewModel.getNotes() == null ? "" : lotViewModel.getNotes());
       icLotClear.setOnClickListener(getOnClickListenerForDeleteIcon());
       updateClearButtonStatus(lotViewModel);
@@ -204,14 +203,16 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private void setRejectReason() {
-      if (lotViewModel.getDifferenceQuality() != null && lotViewModel.getDifferenceQuality() < 0) {
+      Long differenceQuality = lotViewModel.compareAcceptedAndShippedQuantity();
+      if (differenceQuality != null && differenceQuality != 0) {
         setRejectReasonForCanSelectStatus();
         vRejectionReason.setOnClickListener(new SingleClickButtonListener() {
           @Override
           public void onSingleClick(View v) {
             Bundle bundle = new Bundle();
+
             List<MovementReason> movementReasons = MovementReasonManager.getInstance()
-                .buildReasonListForMovementType(MovementType.REJECTION);
+                .buildReasonListForRejection(differenceQuality > 0);
             String[] reasonArray = FluentIterable.from(movementReasons).transform(MovementReason::getDescription)
                 .toArray(String.class);
             bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonArray);
@@ -260,7 +261,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       } else if (lotViewModel.getAcceptedQuantity() > lotViewModel.getShippedQuantity()) {
         etQuantityAccepted.setError(getContext().getString(R.string.hint_error_more_than_shipped));
         etQuantityAccepted.requestFocus();
-      } else if (lotViewModel.getDifferenceQuality() < 0 && lotViewModel.getRejectedReason() == null) {
+      } else if (lotViewModel.compareAcceptedAndShippedQuantity() < 0 && lotViewModel.getRejectedReason() == null) {
         tvRejectionReason.setError("");
         vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_red);
       }
@@ -279,7 +280,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
             }
             updateTotalValue(lotViewModel);
             etQuantityShipped.setError(null);
-            tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getDifferenceQuality()));
+            tvQuantityReturned.setText(convertLongValueToString(lotViewModel.compareAcceptedAndShippedQuantity()));
             setRejectReason();
           } catch (NumberFormatException e) {
             new LMISException(e, "lotViewModel shippedQuantity").reportToFabric();
@@ -304,7 +305,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
             Long acceptedValue = StringUtils.isEmpty(acceptedQuantity) ? null : Long.parseLong(acceptedQuantity);
             lotViewModel.setAcceptedQuantity(acceptedValue);
             etQuantityAccepted.setError(null);
-            tvQuantityReturned.setText(convertLongValueToString(lotViewModel.getDifferenceQuality()));
+            tvQuantityReturned.setText(convertLongValueToString(lotViewModel.compareAcceptedAndShippedQuantity()));
             setRejectReason();
           } catch (NumberFormatException e) {
             new LMISException(e, "issue voucher acceptedQuantity").reportToFabric();
