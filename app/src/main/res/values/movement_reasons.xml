@@ -48,6 +48,7 @@
     <item>REJECTION|INSUFFICIENT|Received less quantities than expected</item>
     <item>REJECTION|EXPIRED|Expired products</item>
     <item>REJECTION|UNEATABLE|Inappropriate for consumption</item>
+    <item>REJECTION|INCORRECT_BATCH|Incorrect batch</item>
     <item>REJECTION|EXCESS|Quantity received in excess (in lot)</item>
     <item>REJECTION|LOT_NOT_SPECIFIED|Lot not specified on the delivery note</item>
   </string-array>
