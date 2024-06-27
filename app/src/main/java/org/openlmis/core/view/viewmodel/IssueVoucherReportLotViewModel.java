@@ -20,6 +20,7 @@ package org.openlmis.core.view.viewmodel;
 
 import java.math.BigDecimal;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
@@ -33,6 +34,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 @Data
+@NoArgsConstructor
 public class IssueVoucherReportLotViewModel {
 
   private Lot lot;
@@ -59,7 +61,7 @@ public class IssueVoucherReportLotViewModel {
     this.orderStatus = orderStatus;
   }
 
-  public Long getDifferenceQuality() {
+  public Long compareAcceptedAndShippedQuantity() {
     if (shippedQuantity == null || acceptedQuantity == null) {
       return null;
     }

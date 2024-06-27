@@ -21,6 +21,7 @@ package org.openlmis.core.view.viewmodel;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import java.util.List;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.openlmis.core.enumeration.IssueVoucherItemType;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.PodProductItem;
@@ -29,6 +30,7 @@ import org.openlmis.core.model.Product;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
+@NoArgsConstructor
 public class IssueVoucherReportProductViewModel implements MultiItemEntity {
 
   private Product product;
@@ -110,14 +112,16 @@ public class IssueVoucherReportProductViewModel implements MultiItemEntity {
   }
 
   private boolean isContainInvalidateQuantity(IssueVoucherReportLotViewModel lotViewModel) {
-    return lotViewModel.getShippedQuantity() == null || lotViewModel.getAcceptedQuantity() == null
-        || lotViewModel.getShippedQuantity() == 0 || lotViewModel.getDifferenceQuality() > 0
+    return lotViewModel.getShippedQuantity() == null
+        || lotViewModel.getAcceptedQuantity() == null
+        || lotViewModel.getShippedQuantity() == 0
         || isInvalidateReason(lotViewModel);
   }
 
   private boolean isInvalidateReason(IssueVoucherReportLotViewModel lotViewModel) {
-    return lotViewModel.getDifferenceQuality() != null && lotViewModel.getDifferenceQuality() < 0
-        && lotViewModel.getRejectedReason() == null;
+    Long diffQuantity = lotViewModel.compareAcceptedAndShippedQuantity();
+
+    return diffQuantity != null && diffQuantity != 0 && lotViewModel.getRejectedReason() == null;
   }
 
   @Override
