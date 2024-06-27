@@ -52,6 +52,9 @@ public final class MovementReasonManager {
   public static final String DONATION = "DONATION";
   public static final String EXPIRED_RETURN_TO_SUPPLIER_AND_DISCARD = "EXPIRED_RETURN_TO_SUPPLIER_AND_DISCARD";
 
+  public static final String REJECTION_EXCESS = "EXCESS";
+  public static final String REJECTION_LOT_NOT_SPECIFIED = "LOT_NOT_SPECIFIED";
+
   Context context;
   public static final String RES_DIVIDER = "[|]";
 
@@ -150,6 +153,25 @@ public final class MovementReasonManager {
             && !movementReason.getCode().equals("APE")
             && movementReason.canBeDisplayOnMovementMenu())
         .toList();
+  }
+
+  public List<MovementReason> buildReasonListForRejection(boolean isPositive) {
+    return FluentIterable.from(buildReasonListForMovementType(MovementType.REJECTION))
+        .filter(movementReason -> checkPositiveRejectionReason(isPositive, movementReason))
+        .toList();
+  }
+
+  private boolean checkPositiveRejectionReason(boolean isPositive, MovementReason movementReason) {
+    if (isPositive) {
+      return isPositiveRejectionReason(movementReason);
+    } else {
+      return !isPositiveRejectionReason(movementReason);
+    }
+  }
+
+  private boolean isPositiveRejectionReason(MovementReason movementReason) {
+    return REJECTION_EXCESS.equals(movementReason.code)
+        || REJECTION_LOT_NOT_SPECIFIED.equals(movementReason.code);
   }
 
   public MovementReason queryByDesc(MovementType movementType, String reason) throws MovementReasonNotFoundException {

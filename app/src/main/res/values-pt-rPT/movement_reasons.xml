@@ -48,6 +48,7 @@
     <item>REJECTION|INSUFFICIENT|Quantidade recebida a menos (no lote)</item>
     <item>REJECTION|EXPIRED|Fora do prazo de validade</item>
     <item>REJECTION|UNEATABLE|Impróprio para o consumo</item>
+    <item>REJECTION|INCORRECT_BATCH|Lote incorreto</item>
     <item>REJECTION|EXCESS|Quantidade recebida a mais (no lote)</item>
     <item>REJECTION|LOT_NOT_SPECIFIED|Lote não especificado na Guia de Remessa</item>
   </string-array>
