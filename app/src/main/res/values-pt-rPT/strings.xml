@@ -672,10 +672,8 @@
   <string name="label_note">Observação</string>
   <string name="label_default_rejection_reason">Selecione uma opção</string>
   <string name="hint_error_field_required">Este campo é obrigatório</string>
-  <string name="hint_error_more_than_shipped">Você não pode confirmar stock acima da quantidade aviada</string>
   <string name="alert_issue_voucher_can_not_be_blank">Insira a quantidade para pelo menos um lote ou remova o produto</string>
   <string name="msg_issue_voucher_back_confirm">Tem certeza de que deseja sair sem gravar o seu trabalho? Se você clicar em "sim", seu rascunho será apagado.</string>
-  <string name="msg_shipped_quantity_less_than_accepted_quantity">Você não pode aceitar mais estoque do que foi enviado</string>
   <string name="msg_shipped_quantity_can_not_be_blank">A quantidade fornecida não pode estar em branco</string>
   <string name="msg_accepted_quantity_can_not_be_blank">A quantidade recebida não pode estar em branco</string>
   <string name="msg_shipped_quantity_can_not_be_zero">Quantidade fornecida não pode ser 0</string>

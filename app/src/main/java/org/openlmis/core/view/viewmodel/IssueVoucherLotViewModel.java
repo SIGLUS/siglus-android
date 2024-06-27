@@ -110,16 +110,9 @@ public class IssueVoucherLotViewModel implements MultiItemEntity, Comparable<Iss
   }
 
   public boolean validateLot() {
-    return !isAcceptedQuantityMoreThanShippedQuantity()
-        && !isNewAddedLotHasBlank()
+    return !isNewAddedLotHasBlank()
         && !existedLotHasBlank()
         && !isShippedQuantityZero();
-  }
-
-  public boolean isAcceptedQuantityMoreThanShippedQuantity() {
-    return shippedQuantity != null
-        && acceptedQuantity != null
-        && acceptedQuantity > shippedQuantity;
   }
 
   public boolean isNewAddedLotHasBlank() {

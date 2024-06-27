@@ -182,9 +182,6 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
       } else if (viewModel.getAcceptedQuantity() >= 0) {
         tilAcceptedQuantity.setError(null);
       }
-      if (viewModel.isAcceptedQuantityMoreThanShippedQuantity()) {
-        tilAcceptedQuantity.setError(getString(R.string.msg_shipped_quantity_less_than_accepted_quantity));
-      }
     }
 
     @NonNull

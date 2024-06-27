@@ -258,10 +258,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       } else if (lotViewModel.getAcceptedQuantity() == null) {
         etQuantityAccepted.setError(getContext().getString(R.string.hint_error_field_required));
         etQuantityAccepted.requestFocus();
-      } else if (lotViewModel.getAcceptedQuantity() > lotViewModel.getShippedQuantity()) {
-        etQuantityAccepted.setError(getContext().getString(R.string.hint_error_more_than_shipped));
-        etQuantityAccepted.requestFocus();
-      } else if (lotViewModel.compareAcceptedAndShippedQuantity() < 0 && lotViewModel.getRejectedReason() == null) {
+      } else if (lotViewModel.compareAcceptedAndShippedQuantity() != 0 && lotViewModel.getRejectedReason() == null) {
         tvRejectionReason.setError("");
         vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_red);
       }
