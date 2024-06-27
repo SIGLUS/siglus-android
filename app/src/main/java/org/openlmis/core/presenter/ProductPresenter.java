@@ -139,14 +139,12 @@ public class ProductPresenter extends Presenter {
   @Nullable
   private List<Long> getInvalidEmergencyProductsForLatestPeriod() throws LMISException {
     String programCode = Program.VIA_CODE;
-    List<RnRForm> allViaRnRForms =
-        rnrFormRepository.listInclude(Emergency.YES, programCode);
+    List<RnRForm> allViaRnRForms = rnrFormRepository.listInclude(Emergency.NO, programCode);
 
     if (allViaRnRForms == null) {
       return null;
     }
     RnRForm latestViaRnrForm = from(allViaRnRForms)
-        .filter(rnRForm -> rnRForm != null && !rnRForm.isEmergency())
         .last()
         .orNull();
 
@@ -156,11 +154,11 @@ public class ProductPresenter extends Presenter {
 
     Date firstDayOfCurrentMonth = DateUtil.getFirstDayForCurrentMonthByDate(
         latestViaRnrForm.getPeriodBegin());
-    List<Pod> allLatestPeriodPods = podRepository.querySubmittedPodsByProgramCodeAndPeriod(
+    List<Pod> regularPods = podRepository.queryRegularRemotePodsByProgramCodeAndPeriod(
         programCode, firstDayOfCurrentMonth
     );
 
-    if (allLatestPeriodPods == null || allLatestPeriodPods.isEmpty()) {
+    if (regularPods == null || regularPods.isEmpty()) {
       return null;
     }
 
@@ -169,7 +167,7 @@ public class ProductPresenter extends Presenter {
     HashMap<Long, Long> productIdToOrderQuantityPair = new HashMap<>();
 
     collectShippedAndOrderQuantityBySubPods(
-        allLatestPeriodPods, productIdToShippedQuantityPair, productIdToOrderQuantityPair
+        regularPods, productIdToShippedQuantityPair, productIdToOrderQuantityPair
     );
 
     tryToAddPossibleInvalidProducts(
@@ -205,7 +203,7 @@ public class ProductPresenter extends Presenter {
       for (PodProductItem podProductItem : subpod.getPodProductItemsWrapper()) {
         Long productId = podProductItem.getProduct().getId();
         // shipped quantity
-        long currentAcceptedQuantity = podProductItem.getSumAcceptedQuantity();
+        long currentAcceptedQuantity = podProductItem.getSumShippedQuantity();
         Long currentProductQuantity = productIdToShippedQuantityPair.get(productId);
         if (currentProductQuantity != null) {
           productIdToShippedQuantityPair.put(

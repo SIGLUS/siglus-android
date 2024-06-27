@@ -108,7 +108,7 @@ public class ProductPresenterTest {
     stockCard
         .setProduct(new ProductBuilder().setPrimaryName("Product name").setCode("011111").build());
     when(stockRepository.listEmergencyStockCards()).thenReturn(newArrayList(stockCard));
-    when(rnrFormRepository.listInclude(Emergency.YES, "VC")).thenReturn(newArrayList());
+    when(rnrFormRepository.listInclude(Emergency.NO, "VC")).thenReturn(newArrayList());
     // when
     TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
     presenter.loadEmergencyProducts().subscribe(subscriber);
@@ -135,17 +135,17 @@ public class ProductPresenterTest {
     RnRForm rnRForm = new RnRForm();
     rnRForm.setPeriodBegin(periodBegin);
     rnRForm.setEmergency(false);
-    when(rnrFormRepository.listInclude(Emergency.YES, programCode))
+    when(rnrFormRepository.listInclude(Emergency.NO, programCode))
         .thenReturn(newArrayList(rnRForm));
 
     PodProductItem mockedPodProductItem = mock(PodProductItem.class);
     when(mockedPodProductItem.getProduct()).thenReturn(product);
-    when(mockedPodProductItem.getSumAcceptedQuantity()).thenReturn(5L);
+    when(mockedPodProductItem.getSumShippedQuantity()).thenReturn(5L);
     when(mockedPodProductItem.getOrderedQuantity()).thenReturn(10L);
 
     Pod pod = PodBuilder.generatePod();
     pod.setPodProductItemsWrapper(newArrayList(mockedPodProductItem));
-    when(podRepository.querySubmittedPodsByProgramCodeAndPeriod(
+    when(podRepository.queryRegularRemotePodsByProgramCodeAndPeriod(
             programCode, DateUtil.getFirstDayForCurrentMonthByDate(periodBegin)
         )
     ).thenReturn(newArrayList(pod));

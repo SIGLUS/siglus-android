@@ -8,17 +8,17 @@ import org.junit.Test;
 public class PodProductItemTest {
 
   @Test
-  public void test_getSumAcceptedQuantity() {
+  public void test_getSumShippedQuantity() {
     // given
     PodProductItem podProductItem = new PodProductItem();
 
     PodProductLotItem podProductLotItem = new PodProductLotItem();
-    podProductLotItem.setAcceptedQuantity(5L);
+    podProductLotItem.setShippedQuantity(5L);
 
     podProductItem.setPodProductLotItemsWrapper(newArrayList(podProductLotItem, podProductLotItem));
 
     // when
-    long actualQuantity = podProductItem.getSumAcceptedQuantity();
+    long actualQuantity = podProductItem.getSumShippedQuantity();
     // then
     assertEquals(10, actualQuantity);
   }

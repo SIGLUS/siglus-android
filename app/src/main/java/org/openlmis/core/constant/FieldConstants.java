@@ -133,4 +133,5 @@ public class FieldConstants {
   public static final String REQUISITION_START_DATE = "requisitionStartDate";
 
   public static final String REQUISITION_PROGRAM_CODE = "requisitionProgramCode";
+  public static final String REQUISITION_IS_EMERGENCY = "requisitionIsEmergency";
 }

@@ -256,23 +256,24 @@ public class PodRepositoryTest {
   }
 
   @Test
-  public void test_querySubmittedPodsByProgramCodeAndPeriod() throws Exception {
+  public void test_queryRemotePodsByProgramCodeAndPeriod() throws Exception {
     // given
     Date periodBegin = DateUtil.getCurrentDate();
     String programCode = "VC";
 
-    Pod submittedPod = generatePod("submittedPod", programCode, periodBegin, false, false);
-    Pod draftPod = generatePod("draftPod", programCode, periodBegin, true, true);
+    Pod regularPod = generatePod("regularPod", programCode, periodBegin, false, false);
+    Pod emergencyPod = generatePod("emergencyPod", programCode, periodBegin, false, true);
+    Pod localPod = generatePod("localPod", programCode, periodBegin, true, false);
     Pod otherPeriodSubmittedPod = generatePod(
         "otherPeriodSubmittedPod",
-        programCode, DateUtil.dateMinusMonth(periodBegin, 5), true, true
+        programCode, DateUtil.dateMinusMonth(periodBegin, 5), true, false
     );
 
     podRepository.batchCreatePodsWithItems(
-        newArrayList(submittedPod, draftPod, otherPeriodSubmittedPod)
+        newArrayList(regularPod, emergencyPod, localPod, otherPeriodSubmittedPod)
     );
     // when
-    List<Pod> actualPods = podRepository.querySubmittedPodsByProgramCodeAndPeriod(
+    List<Pod> actualPods = podRepository.queryRegularRemotePodsByProgramCodeAndPeriod(
         programCode, DateUtil.getFirstDayForCurrentMonthByDate(periodBegin)
     );
     // then
@@ -284,20 +285,20 @@ public class PodRepositoryTest {
         DateUtil.formatDate(pod.getRequisitionStartDate(), DateUtil.DB_DATE_FORMAT)
     );
     assertFalse(pod.isLocal());
-    assertFalse(pod.isDraft());
   }
 
   @NonNull
   private Pod generatePod(
-      String orderCode, String programCode, Date periodBegin, boolean isLocal, boolean isDraft
+      String orderCode, String programCode, Date periodBegin, boolean isLocal,
+      boolean requisitionIsEmergency
   ) throws Exception {
     Pod pod = PodBuilder.generatePod();
 
     pod.setOrderCode(orderCode);
     pod.setLocal(isLocal);
-    pod.setDraft(isDraft);
     pod.setRequisitionProgramCode(programCode);
     pod.setRequisitionStartDate(periodBegin);
+    pod.setRequisitionIsEmergency(requisitionIsEmergency);
 
     return pod;
   }
