@@ -198,8 +198,11 @@ public class RnrFormRepository {
     try {
       return null == dbUtil.withDao(RnRForm.class, dao ->
           dao.queryBuilder()
-              .where().eq(PROGRAM_ID, form.getProgram().getId())
-              .and().eq(STATUS, Status.AUTHORIZED)
+              .where().eq(STATUS, Status.AUTHORIZED)
+              .or().eq(STATUS, Status.IN_APPROVAL)
+              .or().eq(STATUS, Status.APPROVED)
+              .or().eq(STATUS, Status.REJECTED)
+              .and().eq(PROGRAM_ID, form.getProgram().getId())
               .and().eq(PERIOD_BEGIN, form.getPeriodBegin())
               .and().eq(PERIOD_END, form.getPeriodEnd())
               .queryForFirst());
@@ -236,7 +239,7 @@ public class RnrFormRepository {
     return unsyncedRnr;
   }
 
-  public RnRForm queryUnAuthorized() throws LMISException {
+  public RnRForm queryLastDraftOrSubmittedForm() throws LMISException {
     final Program program = programRepository.queryByCode(programCode);
     ReportTypeForm reportTypeForm = reportTypeFormRepository.getReportType(programCode);
     if (program == null) {
@@ -247,7 +250,10 @@ public class RnrFormRepository {
     RnRForm rnRForm = dbUtil
         .withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq(PROGRAM_ID, program.getId())
             .and().between(PERIOD_BEGIN, reportTypeForm.getStartTime(), DateUtil.getCurrentDate())
-            .and().ne(STATUS, Status.AUTHORIZED)
+            .and().eq(STATUS, Status.DRAFT)
+            .or().eq(STATUS, Status.DRAFT_MISSED)
+            .or().eq(STATUS, Status.SUBMITTED)
+            .or().eq(STATUS, Status.SUBMITTED_MISSED)
             .queryForFirst());
     assignCategoryForRnrItems(rnRForm);
     return rnRForm;
@@ -341,11 +347,6 @@ public class RnrFormRepository {
       new LMISException(e, "RnrFormRepository.hasOldDate").reportToFabric();
     }
     return false;
-  }
-
-  protected List<RnRForm> listUnsynced() throws LMISException {
-    return dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq(SYNCED, false).and()
-        .eq(STATUS, Status.AUTHORIZED).query());
   }
 
   protected RnRForm getLastSubmitRnr(long programId) throws LMISException {

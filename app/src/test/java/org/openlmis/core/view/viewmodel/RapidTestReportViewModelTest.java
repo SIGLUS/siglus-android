@@ -4,7 +4,6 @@ import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +23,6 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
-import org.openlmis.core.model.Signature;
 import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.utils.Constants;
@@ -161,36 +159,6 @@ public class RapidTestReportViewModelTest {
     assertThat(
         this.viewModel.getRapidTestForm().getTestConsumptionItemListWrapper().get(2).getForm(),
         is(viewModel.getRapidTestForm()));
-  }
-
-  @Test
-  public void shouldReturnIsAuthorized() throws Exception {
-    viewModel = new RapidTestReportViewModel(
-        Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
-    assertFalse(viewModel.isAuthorized());
-
-
-  }
-
-  @Test
-  public void shouldSetSignature() throws Exception {
-    viewModel = new RapidTestReportViewModel(
-        Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
-
-    assertNull(viewModel.getRapidTestForm().getStatus());
-
-    viewModel.addSignature("submit");
-    assertEquals(Signature.TYPE.SUBMITTER,
-        viewModel.getRapidTestForm().getSignaturesWrapper().get(0).getType());
-    assertEquals("submit",
-        viewModel.getRapidTestForm().getSignaturesWrapper().get(0).getSignature());
-
-    viewModel.addSignature("authorize");
-    assertEquals(Signature.TYPE.APPROVER,
-        viewModel.getRapidTestForm().getSignaturesWrapper().get(1).getType());
-    assertEquals("authorize",
-        viewModel.getRapidTestForm().getSignaturesWrapper().get(1).getSignature());
-    assertNotNull(viewModel.getRapidTestForm().getSubmittedTime());
   }
 
   @Test

@@ -101,18 +101,18 @@ public class MMIARequisitionPresenterTest {
   @Test
   public void shouldGetInitMMIAForm() throws LMISException, SQLException {
     presenter.rnRForm = null;
-    when(mmiaRepository.queryUnAuthorized()).thenReturn(null);
+    when(mmiaRepository.queryLastDraftOrSubmittedForm()).thenReturn(null);
     presenter.getRnrForm(0);
-    verify(mmiaRepository).queryUnAuthorized();
+    verify(mmiaRepository).queryLastDraftOrSubmittedForm();
     verify(mmiaRepository).initNormalRnrForm(null);
   }
 
   @Test
   public void shouldGetDraftMMIAForm() throws LMISException {
     presenter.rnRForm = null;
-    when(mmiaRepository.queryUnAuthorized()).thenReturn(new RnRForm());
+    when(mmiaRepository.queryLastDraftOrSubmittedForm()).thenReturn(new RnRForm());
     presenter.getRnrForm(0);
-    verify(mmiaRepository).queryUnAuthorized();
+    verify(mmiaRepository).queryLastDraftOrSubmittedForm();
     verify(mmiaRepository, never()).initNormalRnrForm(null);
   }
 
@@ -146,7 +146,7 @@ public class MMIARequisitionPresenterTest {
     presenter.rnRForm = null;
     presenter.getRnrForm(0);
 
-    verify(mmiaRepository).queryUnAuthorized();
+    verify(mmiaRepository).queryLastDraftOrSubmittedForm();
   }
 
   @Test

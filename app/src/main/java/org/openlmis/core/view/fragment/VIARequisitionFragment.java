@@ -210,7 +210,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
   }
 
   private void refreshEmergencyRnr(RnRForm rnRForm) {
-    if (!rnRForm.isAuthorized()) {
+    if (!rnRForm.isAuthorizedOrInApprovalOrApproved()) {
       SingleClickButtonListener onClickListener = new SingleClickButtonListener() {
         @Override
         public void onSingleClick(View v) {
@@ -250,7 +250,8 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
   }
 
   public void setEditable() {
-    if (presenter.getRnRForm().isAuthorized()) {
+    RnRForm rnRForm = presenter.getRnRForm();
+    if (rnRForm.isAuthorizedOrInApprovalOrApproved()) {
       vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
       actionPanelView.setVisibility(View.GONE);
     } else {
@@ -260,7 +261,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
       bodyView.setEditable(false);
     } else {
-      bodyView.setEditable(isMissedPeriod || presenter.getRnRForm().isMissed());
+      bodyView.setEditable(isMissedPeriod || rnRForm.isMissed());
     }
   }
 

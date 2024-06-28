@@ -155,7 +155,7 @@ public class RequisitionPeriodService {
     List<RnRForm> rnRForms = rnrFormRepository
         .listInclude(RnRForm.Emergency.NO, programCode, reportTypeForm);
 
-    if (rnRForms.isEmpty() || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
+    if (rnRForms.isEmpty() || rnRForms.get(rnRForms.size() - 1).isAuthorizedOrInApprovalOrApproved()) {
       DateTime nextPeriodInScheduleEnd = generateNextPeriod(rnRForms, programCode, null).getEnd();
 
       DateTime lastInventoryDateForNextPeriodInSchedule = nextPeriodInScheduleEnd
@@ -195,7 +195,7 @@ public class RequisitionPeriodService {
     for (ReportTypeForm reportTypeForm : reportTypeForms) {
       List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, reportTypeForm.getCode());
       int monthOffset;
-      if (rnRForms.isEmpty() || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
+      if (rnRForms.isEmpty() || rnRForms.get(rnRForms.size() - 1).isAuthorizedOrInApprovalOrApproved()) {
         monthOffset = getMissedPeriodOffsetMonth(reportTypeForm.getCode());
       } else {
         monthOffset = getMissedPeriodOffsetMonth(reportTypeForm.getCode()) + 1;

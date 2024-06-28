@@ -53,6 +53,9 @@ public class RnRForm extends BaseModel {
     DRAFT,
     SUBMITTED,
     AUTHORIZED,
+    IN_APPROVAL,
+    REJECTED,
+    APPROVED,
     DRAFT_MISSED,
     SUBMITTED_MISSED,
   }
@@ -146,8 +149,16 @@ public class RnRForm extends BaseModel {
     return isDraft() || isMissed() || isSubmitted();
   }
 
-  public boolean isAuthorized() {
-    return getStatus() == Status.AUTHORIZED;
+  public boolean isAuthorizedOrInApprovalOrApproved() {
+    Status currentStatus = getStatus();
+
+    return currentStatus == Status.AUTHORIZED
+        || currentStatus == Status.IN_APPROVAL
+        || currentStatus == Status.APPROVED;
+  }
+
+  public boolean isRejected() {
+    return getStatus() == Status.REJECTED;
   }
 
   public static RnRForm init(Program program, Date generateDate) {
@@ -216,7 +227,7 @@ public class RnRForm extends BaseModel {
   public List<RnrFormItem> getRnrFormItemListWrapper() {
     rnrFormItemListWrapper = ListUtil.wrapOrEmpty(rnrFormItemList, rnrFormItemListWrapper);
 
-    if (isAuthorized()) {
+    if (isAuthorizedOrInApprovalOrApproved()) {
       sortRnrItemsListBasedOnProductCode(rnrFormItemListWrapper);
       return rnrFormItemListWrapper;
     } else {
@@ -280,14 +291,24 @@ public class RnRForm extends BaseModel {
   }
 
   public void addSignature(String signature) {
-    if (isDraft()) {
-      getSignaturesWrapper().add(new RnRFormSignature(this, signature, Signature.TYPE.SUBMITTER));
-      status = isMissed() ? Status.SUBMITTED_MISSED : Status.SUBMITTED;
+    List<RnRFormSignature> signatures = getSignaturesWrapper();
+    if (isDraft() || (isRejected() && signatures.isEmpty())) {
+      submit(signature, signatures);
     } else {
-      getSignaturesWrapper().add(new RnRFormSignature(this, signature, Signature.TYPE.APPROVER));
-      status = Status.AUTHORIZED;
-      submittedTime = DateUtil.today();
+      authorize(signature, signatures);
     }
+  }
+
+  private void authorize(String signature, List<RnRFormSignature> signatures) {
+    signatures.add(new RnRFormSignature(this, signature, Signature.TYPE.APPROVER));
+    status = Status.AUTHORIZED;
+    submittedTime = DateUtil.today();
+    synced = false;
+  }
+
+  private void submit(String signature, List<RnRFormSignature> signatures) {
+    signatures.add(new RnRFormSignature(this, signature, Signature.TYPE.SUBMITTER));
+    status = isMissed() ? Status.SUBMITTED_MISSED : Status.SUBMITTED;
   }
 
   public String getTotalValueItemByName(String name) {

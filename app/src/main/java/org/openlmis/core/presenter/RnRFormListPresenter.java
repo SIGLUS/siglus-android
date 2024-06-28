@@ -18,6 +18,8 @@
 
 package org.openlmis.core.presenter;
 
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 import androidx.annotation.NonNull;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -32,7 +34,6 @@ import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.InventoryRepository;
@@ -44,7 +45,6 @@ import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -180,7 +180,7 @@ public class RnRFormListPresenter extends Presenter {
 
   protected void generateRnrViewModelByRnrFormsInDB(List<RnRFormViewModel> viewModels,
       List<RnRForm> rnRForms) {
-    viewModels.addAll(FluentIterable.from(rnRForms).transform(
+    viewModels.addAll(from(rnRForms).transform(
         form -> form.isEmergency() ? RnRFormViewModel.buildEmergencyViewModel(form)
             : RnRFormViewModel.buildNormalRnrViewModel(form)).toList());
   }
@@ -231,8 +231,17 @@ public class RnRFormListPresenter extends Presenter {
   private boolean isAllRnrFormInDBCompletedOrNoRnrFormInDB(ReportTypeForm reportTypeForm) {
     List<RnRForm> rnRForms = repository
         .listInclude(RnRForm.Emergency.NO, programCode, reportTypeForm);
-    return rnRForms.isEmpty()
-        || rnRForms.get(rnRForms.size() - 1).getStatus() == Status.AUTHORIZED;
+
+    if (rnRForms.isEmpty()) {
+      return true;
+    }
+
+    List<RnRForm> rejectedRnrForms = from(rnRForms)
+        .filter(rnRForm -> rnRForm != null && rnRForm.isRejected())
+        .toList();
+
+    return rejectedRnrForms.isEmpty()
+        && rnRForms.get(rnRForms.size() - 1).isAuthorizedOrInApprovalOrApproved();
   }
 
   @SuppressWarnings("squid:S1905")

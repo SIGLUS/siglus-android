@@ -106,6 +106,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
   private ReportTypeFormRepository mockReportTypeFormRepository;
 
   static final String comment = "DRAFT Form";
+  private static String GENERATE_DATE_STRING = "05/07/2015";
+  private static String GENERATE_DATE_STRING2 = "20/07/2015";
 
   @Before
   public void setup() throws LMISException {
@@ -132,21 +134,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .build();
 
     when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
-  }
-
-  @Test
-  public void shouldGetAllUnsyncedMMIAForms() throws LMISException {
-    for (int i = 0; i < 10; i++) {
-      RnRForm form = new RnRFormBuilder().setComments("Rnr Form" + i)
-          .setStatus(Status.AUTHORIZED)
-          .setProgram(createProgram("MMIA" + i))
-          .setSynced(i % 2 == 0)
-          .build();
-      rnrFormRepository.create(form);
-    }
-
-    List<RnRForm> unsyncedForms = rnrFormRepository.listUnsynced();
-    assertThat(unsyncedForms.size(), is(5));
   }
 
   private Program createProgram(String programCode) throws LMISException {
@@ -194,9 +181,35 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     mockProgramRepository.createOrUpdate(program);
     rnrFormRepository.create(form);
 
-    RnRForm rnRForm = rnrFormRepository.queryUnAuthorized();
+    RnRForm rnRForm = rnrFormRepository.queryLastDraftOrSubmittedForm();
 
     assertThat(rnRForm.getComments(), is(comment));
+  }
+
+  @Test
+  public void shouldGetDraftMissedForm() throws LMISException {
+    Program program = new Program();
+    program.setId(1l);
+    program.setProgramCode(MMIA_PROGRAM_CODE);
+
+    ReportTypeForm reportTypeForm = new ReportTypeBuilder()
+        .setActive(true)
+        .setStartTime(DateUtil.dateMinusMonth(new Date(), 2))
+        .build();
+
+    when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
+
+    String comments = "Draft Missed Form";
+    RnRForm form = new RnRFormBuilder().setComments(comments)
+        .setStatus(Status.DRAFT_MISSED).setProgram(program).build();
+    form.setPeriodBegin(DateUtil.dateMinusMonth(new Date(), 1));
+    when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
+    mockProgramRepository.createOrUpdate(program);
+    rnrFormRepository.create(form);
+
+    RnRForm rnRForm = rnrFormRepository.queryLastDraftOrSubmittedForm();
+
+    assertThat(rnRForm.getComments(), is(comments));
   }
 
   @Test
@@ -210,9 +223,26 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
 
     rnrFormRepository.create(form);
-    RnRForm rnRForm = rnrFormRepository.queryUnAuthorized();
+    RnRForm rnRForm = rnrFormRepository.queryLastDraftOrSubmittedForm();
 
     assertThat(rnRForm.getComments(), is("Submitted Form"));
+  }
+
+  @Test
+  public void shouldGetSubmittedMissedForm() throws LMISException {
+    Program program = new Program();
+
+    String comments = "Submitted Missed Form";
+    RnRForm form = new RnRFormBuilder().setComments(comments)
+        .setStatus(Status.SUBMITTED_MISSED)
+        .setProgram(program).build();
+    form.setPeriodBegin(DateUtil.dateMinusMonth(new Date(), 1));
+    when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
+
+    rnrFormRepository.create(form);
+    RnRForm rnRForm = rnrFormRepository.queryLastDraftOrSubmittedForm();
+
+    assertThat(rnRForm.getComments(), is(comments));
   }
 
 
@@ -221,13 +251,13 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     Program program = new Program();
     program.setId(123);
 
-    Date generateDate = DateUtil.parseString("05/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
+    Date generateDate = DateUtil.parseString(GENERATE_DATE_STRING, DateUtil.SIMPLE_DATE_FORMAT);
 
     RnRForm form = RnRForm.init(program, generateDate);
     form.setStatus(Status.AUTHORIZED);
     rnrFormRepository.create(form);
 
-    generateDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
+    generateDate = DateUtil.parseString(GENERATE_DATE_STRING2, DateUtil.SIMPLE_DATE_FORMAT);
 
     RnRForm rnRForm2 = RnRForm.init(program, generateDate);
 
@@ -235,17 +265,71 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
   }
 
   @Test
-  public void shouldReturnTrueIfThereIsNoAuthorizedFormExisted() throws Exception {
+  public void shouldReturnFalseIfThereIsAnInApprovalFormExisted() throws Exception {
     Program program = new Program();
     program.setId(123);
 
-    Date generateDate = DateUtil.parseString("05/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
+    Date generateDate = DateUtil.parseString(GENERATE_DATE_STRING, DateUtil.SIMPLE_DATE_FORMAT);
+
+    RnRForm form = RnRForm.init(program, generateDate);
+    form.setStatus(Status.IN_APPROVAL);
+    rnrFormRepository.create(form);
+
+    generateDate = DateUtil.parseString(GENERATE_DATE_STRING2, DateUtil.SIMPLE_DATE_FORMAT);
+
+    RnRForm rnRForm2 = RnRForm.init(program, generateDate);
+
+    assertThat(rnrFormRepository.isPeriodUnique(rnRForm2), is(false));
+  }
+
+  @Test
+  public void shouldReturnFalseIfThereIsARejectedFormExisted() throws Exception {
+    Program program = new Program();
+    program.setId(123);
+
+    Date generateDate = DateUtil.parseString(GENERATE_DATE_STRING, DateUtil.SIMPLE_DATE_FORMAT);
+
+    RnRForm form = RnRForm.init(program, generateDate);
+    form.setStatus(Status.REJECTED);
+    rnrFormRepository.create(form);
+
+    generateDate = DateUtil.parseString(GENERATE_DATE_STRING2, DateUtil.SIMPLE_DATE_FORMAT);
+
+    RnRForm rnRForm2 = RnRForm.init(program, generateDate);
+
+    assertThat(rnrFormRepository.isPeriodUnique(rnRForm2), is(false));
+  }
+
+  @Test
+  public void shouldReturnFalseIfThereIsAnApprovedFormExisted() throws Exception {
+    Program program = new Program();
+    program.setId(123);
+
+    Date generateDate = DateUtil.parseString(GENERATE_DATE_STRING, DateUtil.SIMPLE_DATE_FORMAT);
+
+    RnRForm form = RnRForm.init(program, generateDate);
+    form.setStatus(Status.APPROVED);
+    rnrFormRepository.create(form);
+
+    generateDate = DateUtil.parseString(GENERATE_DATE_STRING2, DateUtil.SIMPLE_DATE_FORMAT);
+
+    RnRForm rnRForm2 = RnRForm.init(program, generateDate);
+
+    assertThat(rnrFormRepository.isPeriodUnique(rnRForm2), is(false));
+  }
+
+  @Test
+  public void shouldReturnTrueIfThereIsDraftFormExisted() throws Exception {
+    Program program = new Program();
+    program.setId(123);
+
+    Date generateDate = DateUtil.parseString(GENERATE_DATE_STRING, DateUtil.SIMPLE_DATE_FORMAT);
 
     RnRForm form = RnRForm.init(program, generateDate);
     form.setStatus(Status.DRAFT);
     rnrFormRepository.create(form);
 
-    generateDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
+    generateDate = DateUtil.parseString(GENERATE_DATE_STRING2, DateUtil.SIMPLE_DATE_FORMAT);
 
     RnRForm rnRForm2 = RnRForm.init(program, generateDate);
 
@@ -656,15 +740,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     );
   }
 
-  @NonNull
-  private RnRForm generateRnRForm(Program program, Date periodBegin) {
-    RnRForm rnRForm = new RnRForm();
-    rnRForm.setProgram(program);
-    rnRForm.setPeriodBegin(periodBegin);
-
-    return rnRForm;
-  }
-
   @Test
   public void shouldDeleteExistFormWhenSaveAndDeleteDuplicatedPeriodRequisitionsAndListIsNotEmptyAndHasExistForm()
       throws LMISException {
@@ -702,8 +777,98 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     );
   }
 
+  @Test
+  public void shouldReturnAuthorizedFormsWhenExistsAuthorizedFormInDb() throws LMISException {
+    // given
+    String programCode = "programCode";
+
+    Program program = new Program();
+    program.setProgramCode(programCode);
+    long programId = 1L;
+    program.setId(programId);
+
+    Date periodBegin = DateUtil.getCurrentDate();
+    Status status = Status.AUTHORIZED;
+    RnRForm rnRForm = generateRnRForm(program, periodBegin, status, false);
+    rnrFormRepository.create(rnRForm);
+
+    when(mockProgramRepository.queryByCode(programCode)).thenReturn(program);
+    ReportTypeForm mockedReportTypeForm = mock(ReportTypeForm.class);
+    when(mockedReportTypeForm.getStartTime()).thenReturn(
+        DateUtil.dateMinusMonth(periodBegin, 1)
+    );
+    when(mockReportTypeFormRepository.getReportType(programCode))
+        .thenReturn(mockedReportTypeForm);
+    // when
+    List<RnRForm> actualRnRForms = rnrFormRepository
+        .listNotSynchronizedFromReportStartTime(programCode);
+    // then
+    assertEquals(1, actualRnRForms.size());
+    RnRForm authorizedRnRForm = actualRnRForms.get(0);
+    assertEquals(status, authorizedRnRForm.getStatus());
+  }
+
+  @Test
+  public void shouldReturnEmptyWhenDoesNotExistInApprovalOrAuthorizedFormInDb() throws LMISException {
+    // given
+    String programCode = "programCode";
+
+    Program program = new Program();
+    program.setProgramCode(programCode);
+    long programId = 1L;
+    program.setId(programId);
+
+    Date periodBegin = DateUtil.getCurrentDate();
+    RnRForm draftRnRForm = generateRnRForm(program, periodBegin, Status.DRAFT, false);
+    rnrFormRepository.create(draftRnRForm);
+    RnRForm submittedRnRForm = generateRnRForm(program, periodBegin, Status.SUBMITTED, false);
+    rnrFormRepository.create(submittedRnRForm);
+    RnRForm draftMissedRnRForm = generateRnRForm(program, periodBegin, Status.DRAFT_MISSED, false);
+    rnrFormRepository.create(draftMissedRnRForm);
+    RnRForm submittedMissedRnRForm = generateRnRForm(program, periodBegin, Status.SUBMITTED_MISSED, false);
+    rnrFormRepository.create(submittedMissedRnRForm);
+    RnRForm inApprovalRnRForm = generateRnRForm(program, periodBegin, Status.IN_APPROVAL, true);
+    rnrFormRepository.create(inApprovalRnRForm);
+    RnRForm rejectedRnRForm = generateRnRForm(program, periodBegin, Status.REJECTED, true);
+    rnrFormRepository.create(rejectedRnRForm);
+    RnRForm approvalRnRForm = generateRnRForm(program, periodBegin, Status.APPROVED, true);
+    rnrFormRepository.create(approvalRnRForm);
+
+    when(mockProgramRepository.queryByCode(programCode)).thenReturn(program);
+    ReportTypeForm mockedReportTypeForm = mock(ReportTypeForm.class);
+    when(mockedReportTypeForm.getStartTime()).thenReturn(
+        DateUtil.dateMinusMonth(periodBegin, 1)
+    );
+    when(mockReportTypeFormRepository.getReportType(programCode))
+        .thenReturn(mockedReportTypeForm);
+    // when
+    List<RnRForm> actualRnRForms = rnrFormRepository
+        .listNotSynchronizedFromReportStartTime(programCode);
+    // then
+    assertEquals(0, actualRnRForms.size());
+  }
+
   @NonNull
-  private static RnRForm generateRnRForm(Program program) {
+  private RnRForm generateRnRForm(
+      Program program, Date periodBegin, Status status, boolean isSynced
+  ) {
+    RnRForm rnRForm = generateRnRForm(program, periodBegin);
+    rnRForm.setStatus(status);
+    rnRForm.setSynced(isSynced);
+
+    return rnRForm;
+  }
+
+  @NonNull
+  private RnRForm generateRnRForm(Program program, Date periodBegin) {
+    RnRForm rnRForm = generateRnRForm(program);
+    rnRForm.setPeriodBegin(periodBegin);
+
+    return rnRForm;
+  }
+
+  @NonNull
+  private RnRForm generateRnRForm(Program program) {
     RnRForm rnRForm = new RnRForm();
     rnRForm.setProgram(program);
     Date periodBegin = new Date();

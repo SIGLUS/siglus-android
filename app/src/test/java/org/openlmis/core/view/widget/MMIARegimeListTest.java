@@ -76,17 +76,16 @@ public class MMIARegimeListTest {
   }
 
   @Test
-  public void shouldNotShowTheDelIconWhenTheFormIsAuthorised() {
-    RnRForm rnRForm = new RnRForm();
-    rnRForm.setStatus(Status.AUTHORIZED);
-
-    rnRForm.setRegimenItemListWrapper(getRegimeTypeList());
-    rnRForm.setRegimenThreeLinesWrapper(getRegimeItemThreeLines());
-
-    when(presenter.getRnRForm()).thenReturn(rnRForm);
-
+  public void shouldNotShowTheDelIconWhenTheFormIsAuthorisedOrInApprovalOrApproved() {
+    // given
+    RnRForm mockedRnRForm = mock(RnRForm.class);
+    when(mockedRnRForm.isAuthorizedOrInApprovalOrApproved()).thenReturn(true);
+    when(mockedRnRForm.getRegimenItemListWrapper()).thenReturn(getRegimeTypeList());
+    when(mockedRnRForm.getRegimenThreeLinesWrapper()).thenReturn(getRegimeItemThreeLines());
+    when(presenter.getRnRForm()).thenReturn(mockedRnRForm);
+    // when
     mmiaRegimeList.initView(totalView, totalPharmacy, tvTotalPharmacyTitle, presenter);
-
+    // then
     assertNull(mmiaRegimeList.getChildAt(1).findViewById(R.id.image_view_del));
   }
 
