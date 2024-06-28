@@ -252,9 +252,6 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       if (lotViewModel.isLocal() && lotViewModel.getShippedQuantity() == null) {
         etQuantityShipped.setError(getContext().getString(R.string.hint_error_field_required));
         etQuantityShipped.requestFocus();
-      } else if (lotViewModel.getShippedQuantity() == 0) {
-        etQuantityShipped.setError(getString(R.string.msg_shipped_quantity_can_not_be_zero));
-        etQuantityShipped.requestFocus();
       } else if (lotViewModel.getAcceptedQuantity() == null) {
         etQuantityAccepted.setError(getContext().getString(R.string.hint_error_field_required));
         etQuantityAccepted.requestFocus();

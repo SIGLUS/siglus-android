@@ -111,8 +111,7 @@ public class IssueVoucherLotViewModel implements MultiItemEntity, Comparable<Iss
 
   public boolean validateLot() {
     return !isNewAddedLotHasBlank()
-        && !existedLotHasBlank()
-        && !isShippedQuantityZero();
+        && !existedLotHasBlank();
   }
 
   public boolean isNewAddedLotHasBlank() {
@@ -124,10 +123,6 @@ public class IssueVoucherLotViewModel implements MultiItemEntity, Comparable<Iss
     return !isNewAdd
         && ((shippedQuantity != null && acceptedQuantity == null)
         || (shippedQuantity == null && acceptedQuantity != null));
-  }
-
-  public boolean isShippedQuantityZero() {
-    return shippedQuantity != null && shippedQuantity == 0;
   }
 
   public PodProductLotItem from() {

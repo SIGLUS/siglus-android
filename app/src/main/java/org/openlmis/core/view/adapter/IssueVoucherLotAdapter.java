@@ -169,9 +169,7 @@ public class IssueVoucherLotAdapter extends BaseMultiItemQuickAdapter<IssueVouch
     private void updateShippedQuantityTips() {
       if (viewModel.getShippedQuantity() == null) {
         tilShippedQuantity.setError(getString(R.string.msg_shipped_quantity_can_not_be_blank));
-      } else if (viewModel.isShippedQuantityZero()) {
-        tilShippedQuantity.setError(getString(R.string.msg_shipped_quantity_can_not_be_zero));
-      } else if (viewModel.getShippedQuantity() > 0) {
+      } else if (viewModel.getShippedQuantity() >= 0) {
         tilShippedQuantity.setError(null);
       }
     }
