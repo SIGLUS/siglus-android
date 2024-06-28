@@ -221,7 +221,7 @@ public class RnRFormTest {
   }
 
   @Test
-  public void shouldAddSignature() {
+  public void addSignature_shouldReturnSubmittedAndAuthorizedStatusWhenStatusIsDraft() {
     rnRForm.setStatus(Status.DRAFT);
     String signature1 = "signature1";
     rnRForm.addSignature(signature1);
@@ -245,6 +245,27 @@ public class RnRFormTest {
   }
 
   @Test
+  public void addSignature_shouldReturnSubmittedAndAuthorizedStatusWhenStatusIsRejected() {
+    // given
+    rnRForm.setStatus(Status.REJECTED);
+    rnRForm.setSynced(true);
+    // when
+    String signature1 = "signature1";
+    rnRForm.addSignature(signature1);
+    // then
+    assertEquals(Status.SUBMITTED, rnRForm.getStatus());
+    assertTrue(rnRForm.isSynced());
+    assertEquals(signature1, rnRForm.getSignaturesWrapper().get(0).getSignature());
+    // when
+    String signature2 = "signature2";
+    rnRForm.addSignature(signature2);
+    // then
+    assertEquals(Status.AUTHORIZED, rnRForm.getStatus());
+    assertFalse(rnRForm.isSynced());
+    assertEquals(signature2, rnRForm.getSignaturesWrapper().get(1).getSignature());
+  }
+
+  @Test
   public void isOldMMIALayoutV2_shouldReturnTrueWhenBaseInfoItemsSizeIs23() {
     rnRForm = new RnRForm();
     ForeignCollection<BaseInfoItem> mockedBaseInfoItem = mock(ForeignCollection.class);
@@ -262,5 +283,63 @@ public class RnRFormTest {
     when(mockedBaseInfoItem.size()).thenReturn(25);
 
     assertFalse(rnRForm.isOldMMIALayoutV2());
+  }
+
+  @Test
+  public void isAuthorizedOrInApprovalOrApproved_shouldReturnTrueWhenStatusIsAuthorized() {
+    // given
+    rnRForm.setStatus(Status.AUTHORIZED);
+    // when
+    boolean actualResult = rnRForm.isAuthorizedOrInApprovalOrApproved();
+    // then
+    assertTrue(actualResult);
+  }
+
+  @Test
+  public void isAuthorizedOrInApprovalOrApproved_shouldReturnTrueWhenStatusIsInApproval() {
+    // given
+    rnRForm.setStatus(Status.IN_APPROVAL);
+    // when
+    boolean actualResult = rnRForm.isAuthorizedOrInApprovalOrApproved();
+    // then
+    assertTrue(actualResult);
+  }
+
+  @Test
+  public void isAuthorizedOrInApprovalOrApproved_shouldReturnTrueWhenStatusIsApproved() {
+    // given
+    rnRForm.setStatus(Status.APPROVED);
+    // when
+    boolean actualResult = rnRForm.isAuthorizedOrInApprovalOrApproved();
+    // then
+    assertTrue(actualResult);
+  }
+
+  @Test
+  public void isAuthorizedOrInApprovalOrApproved_shouldReturnFalseWhenStatusIsRejected() {
+    // given
+    rnRForm.setStatus(Status.REJECTED);
+    // when
+    boolean actualResult = rnRForm.isAuthorizedOrInApprovalOrApproved();
+    // then
+    assertFalse(actualResult);
+  }
+
+  @Test
+  public void isRejected_shouldReturnTrueWhenStatusIsRejected() {
+    rnRForm.setStatus(Status.REJECTED);
+    // when
+    boolean actualResult = rnRForm.isRejected();
+    // then
+    assertTrue(actualResult);
+  }
+
+  @Test
+  public void isRejected_shouldReturnTrueWhenStatusIsNotRejected() {
+    rnRForm.setStatus(Status.APPROVED);
+    // when
+    boolean actualResult = rnRForm.isRejected();
+    // then
+    assertFalse(actualResult);
   }
 }

@@ -33,6 +33,7 @@ import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.builder.ReportTypeFormBuilder;
+import org.openlmis.core.model.builder.RnRFormBuilder;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -835,6 +836,33 @@ public class RnRFormListPresenterTest {
         .isEqualTo(new DateTime(DateUtil.parseString("2016-03-20", DateUtil.DB_DATE_FORMAT)));
     assertThat(rnRFormViewModels.get(3).getType())
         .isEqualTo(RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD);
+  }
+
+  @Test
+  public void buildFormListViewModels_shouldNotGenerateWhenTypeFormIsActiveAndExistsRejectedRnrForms()
+      throws LMISException {
+    Program program = new ProgramBuilder().setProgramCode("VIA").build();
+    String programCode = program.getProgramCode();
+    presenter.setProgramCode(programCode);
+    LMISTestApp.getInstance().setCurrentTimeMillis(
+        new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
+
+    ReportTypeForm typeForm = ReportTypeForm.builder().active(true).build();
+
+    when(reportTypeFormRepository.queryByCode(programCode)).thenReturn(typeForm);
+    when(rnrFormRepository.listInclude(RnRForm.Emergency.YES, programCode, typeForm))
+        .thenReturn(new ArrayList<>());
+    when(requisitionPeriodService.hasMissedPeriod(programCode, typeForm))
+        .thenReturn(false);
+    when(requisitionPeriodService.generateNextPeriod(programCode, null))
+        .thenReturn(periodFebToMar);
+    RnRForm rejectedRnRForm = new RnRFormBuilder().setStatus(Status.REJECTED).build();
+    when(rnrFormRepository.listInclude(RnRForm.Emergency.NO, programCode, typeForm))
+        .thenReturn(newArrayList(rejectedRnRForm));
+    // when
+    List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+    // then
+    assertThat(rnRFormViewModels.size()).isEqualTo(0);
   }
 
   private List<RnRForm> createRnRForms() {

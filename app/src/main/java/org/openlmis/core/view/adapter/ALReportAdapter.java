@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 import org.openlmis.core.R;
-import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.view.holder.ALReportViewHolder;
 import org.openlmis.core.view.viewmodel.ALReportItemViewModel;
 import org.openlmis.core.view.viewmodel.ALReportViewModel;
@@ -48,7 +47,7 @@ public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
   @Override
   public void onBindViewHolder(ALReportViewHolder holder, int position) {
     ALReportItemViewModel viewModel = alReportViewModel.getItemViewModelList().get(position);
-    holder.populate(viewModel, quantityChangeListener, getFormStatus(alReportViewModel));
+    holder.populate(viewModel, quantityChangeListener, shouldDisableEdit(alReportViewModel));
   }
 
   @Override
@@ -56,11 +55,11 @@ public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
     return alReportViewModel.getItemViewModelList().size();
   }
 
-  private boolean getFormStatus(ALReportViewModel alReportViewModel) {
+  private boolean shouldDisableEdit(ALReportViewModel alReportViewModel) {
     return alReportViewModel != null
         && alReportViewModel.getForm() != null
-        && (alReportViewModel.getForm().getStatus() == Status.AUTHORIZED
-        || alReportViewModel.getForm().getStatus() == Status.SUBMITTED);
+        && (alReportViewModel.getForm().isAuthorizedOrInApprovalOrApproved()
+        || alReportViewModel.getForm().isSubmitted());
   }
 
   public void updateTotal() {

@@ -43,11 +43,8 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
-import org.openlmis.core.model.Signature;
 import org.openlmis.core.model.TestConsumptionItem;
-import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @SuppressWarnings("squid:S1874")
@@ -195,7 +192,12 @@ public class RapidTestReportViewModel {
         this.status = RapidTestReportViewModel.Status.INCOMPLETE;
         break;
       case AUTHORIZED:
+      case IN_APPROVAL:
+      case APPROVED:
         this.status = RapidTestReportViewModel.Status.COMPLETED;
+        break;
+      case REJECTED:
+        // TODO - handle UI for REJECTED
         break;
       default:
         this.status = RapidTestReportViewModel.Status.MISSING;
@@ -262,24 +264,6 @@ public class RapidTestReportViewModel {
 
   public boolean validateOnlyAPES() {
     return itemRealTotal.isEmpty() && !itemAPEs.isEmpty();
-  }
-
-  public void addSignature(String signature) {
-    if (rapidTestForm.getSignaturesWrapper().isEmpty()) {
-      rapidTestForm.getSignaturesWrapper()
-          .add(new RnRFormSignature(rapidTestForm, signature, Signature.TYPE.SUBMITTER));
-      rapidTestForm.setStatus(RnRForm.Status.SUBMITTED);
-    } else {
-      rapidTestForm.getSignaturesWrapper()
-          .add(new RnRFormSignature(rapidTestForm, signature, Signature.TYPE.APPROVER));
-      rapidTestForm.setStatus(RnRForm.Status.AUTHORIZED);
-      rapidTestForm.setSubmittedTime(DateUtil.getCurrentDate());
-      status = RapidTestReportViewModel.Status.COMPLETED;
-    }
-  }
-
-  public boolean isAuthorized() {
-    return rapidTestForm.getStatus() == RnRForm.Status.AUTHORIZED;
   }
 
   public boolean isFormEmpty() {

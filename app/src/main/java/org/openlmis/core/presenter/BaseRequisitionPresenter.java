@@ -111,7 +111,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     if (isHistoryForm()) {
       return rnrFormRepository.queryRnRForm(formId);
     }
-    RnRForm draftRequisition = rnrFormRepository.queryUnAuthorized();
+    RnRForm draftRequisition = rnrFormRepository.queryLastDraftOrSubmittedForm();
     if (draftRequisition != null) {
       return draftRequisition;
     }

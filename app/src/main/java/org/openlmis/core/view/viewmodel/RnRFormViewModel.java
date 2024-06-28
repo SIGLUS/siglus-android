@@ -27,7 +27,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.utils.DateUtil;
 
 @Data
@@ -73,8 +72,10 @@ public class RnRFormViewModel {
   }
 
   public void setType(RnRForm form) {
-    if (form.getStatus() == Status.AUTHORIZED) {
+    if (form.isAuthorizedOrInApprovalOrApproved()) {
       this.type = form.isSynced() ? TYPE_SYNCED_HISTORICAL : TYPE_UNSYNCED_HISTORICAL;
+    } else if (form.isRejected()) {
+      // TODO: set a type for rejected status
     } else if (form.isDraft()) {
       this.type = TYPE_DRAFT;
     } else {
