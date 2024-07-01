@@ -114,7 +114,9 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(Date.class, new DateAdapter())
         .setDateFormat(DateFormat.LONG).registerTypeAdapter(RegimenItem.class, new RegimenItemAdapter())
         .registerTypeAdapter(RnrFormItem.class, new RnrFormItemAdapter())
-        .registerTypeAdapter(TestConsumptionItem.class, new TestConsumptionLineItemAdapter()).create();
+        .registerTypeAdapter(TestConsumptionItem.class, new TestConsumptionLineItemAdapter())
+        .registerTypeAdapter(Status.class, new RnrFormStatusAdapter())
+        .create();
     jsonParser = new JsonParser();
   }
 
@@ -144,7 +146,6 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     JsonObject jsonObject = json.getAsJsonObject();
     setPeriodTime(rnRForm, jsonObject);
     setInfoForRnR(rnRForm, jsonObject);
-    rnRForm.setStatus(Status.AUTHORIZED);
     rnRForm.setSynced(true);
 
     return rnRForm;

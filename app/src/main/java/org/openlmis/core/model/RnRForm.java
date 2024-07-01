@@ -19,6 +19,7 @@
 package org.openlmis.core.model;
 
 import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT;
+import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
@@ -39,6 +40,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.network.model.RnrFormStatusRequest;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.openlmis.core.view.widget.MMIARegimeList;
@@ -105,6 +107,7 @@ public class RnRForm extends BaseModel {
   @Include
   private String comments;
 
+  @Expose
   @DatabaseField(defaultValue = "DRAFT")
   @Include
   private Status status;
@@ -375,5 +378,13 @@ public class RnRForm extends BaseModel {
         return 0;
       }
     });
+  }
+
+  public RnrFormStatusRequest convertToRequisitionsStatusRequest() {
+    return new RnrFormStatusRequest(
+        String.valueOf(getId()),
+        DateUtil.formatDate(periodBegin, DB_DATE_FORMAT),
+        program.programCode
+    );
   }
 }

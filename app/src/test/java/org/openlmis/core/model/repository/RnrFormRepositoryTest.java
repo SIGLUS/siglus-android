@@ -83,6 +83,7 @@ import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.service.RequisitionPeriodService;
+import org.openlmis.core.network.model.RnrFormStatusEntry;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.Lists;
 import org.robolectric.RuntimeEnvironment;
@@ -846,6 +847,64 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .listNotSynchronizedFromReportStartTime(programCode);
     // then
     assertEquals(0, actualRnRForms.size());
+  }
+
+  @Test
+  public void listAllInApprovalForms_shouldOnlyReturnInApprovalFormsIfExist()
+      throws LMISException {
+    // given
+    RnRForm unSyncedAuthorizedForm = generateRnRForm(Status.AUTHORIZED, false);
+    rnrFormRepository.create(unSyncedAuthorizedForm);
+    RnRForm syncedAuthorizedForm = generateRnRForm(Status.AUTHORIZED, true);
+    rnrFormRepository.create(syncedAuthorizedForm);
+    RnRForm rejectedForm = generateRnRForm(Status.REJECTED, true);
+    rnrFormRepository.create(rejectedForm);
+    RnRForm approvedForm = generateRnRForm(Status.APPROVED, true);
+    rnrFormRepository.create(approvedForm);
+    RnRForm inApprovalForm = generateRnRForm(Status.IN_APPROVAL);
+    rnrFormRepository.create(inApprovalForm);
+    // when
+    List<RnRForm> rnRForms = rnrFormRepository.listAllInApprovalForms();
+    // then
+    assertEquals(1, rnRForms.size());
+    assertEquals(Status.IN_APPROVAL, rnRForms.get(1).getStatus());
+  }
+
+  @Test
+  public void updateFormsStatus_shouldUpdateFormsStatusWhenStatusIsChanged() throws LMISException {
+    // given
+    long id = 100L;
+    RnRForm inApprovalForm = generateRnrForm(Status.IN_APPROVAL, id);
+    rnrFormRepository.create(inApprovalForm);
+    // when
+    Status newStatus = Status.REJECTED;
+    rnrFormRepository.updateFormsStatus(
+        newArrayList(new RnrFormStatusEntry(id, newStatus))
+    );
+    // then
+    List<RnRForm> rnRForms = rnrFormRepository.list();
+    assertEquals(1, rnRForms.size());
+    assertEquals(newStatus, rnRForms.get(0).getStatus());
+  }
+
+  private RnRForm generateRnrForm(Status status, long id) {
+    RnRForm rnRForm = generateRnRForm(status);
+    rnRForm.setId(id);
+    return rnRForm;
+  }
+
+  @NonNull
+  private RnRForm generateRnRForm(Status status) {
+    RnRForm rnRForm = new RnRForm();
+    rnRForm.setStatus(status);
+    return rnRForm;
+  }
+
+  @NonNull
+  private RnRForm generateRnRForm(Status status, boolean isSynced) {
+    RnRForm rnRForm = generateRnRForm(status);
+    rnRForm.setSynced(isSynced);
+    return rnRForm;
   }
 
   @NonNull

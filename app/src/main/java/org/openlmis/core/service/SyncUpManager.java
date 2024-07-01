@@ -52,6 +52,7 @@ import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
@@ -491,6 +492,7 @@ public class SyncUpManager {
 
   private void markRnrFormSynced(RnRForm rnRForm) {
     rnRForm.setSynced(true);
+    rnRForm.setStatus(Status.IN_APPROVAL);
     try {
       for (RnrFormItem rnrFormItem : rnRForm.getRnrFormItemListWrapper()) {
         if (rnrFormItem.getValidate() != null) {

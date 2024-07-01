@@ -28,6 +28,8 @@ import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.DirtyDataItemEntry;
 import org.openlmis.core.network.model.FacilityInfoResponse;
 import org.openlmis.core.network.model.PodEntry;
+import org.openlmis.core.network.model.RnrFormStatusEntry;
+import org.openlmis.core.network.model.RnrFormStatusRequest;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
@@ -95,4 +97,8 @@ public interface LMISRestApi {
   @POST("/api/siglusapi/android/me/resync-info")
   Void recordReSyncAction() throws LMISException;
 
+  @POST("api/siglusapi/android/me/facility/requisitions/status")
+  List<RnrFormStatusEntry> fetchRequisitionsStatus(
+      @Body List<RnrFormStatusRequest> request
+  ) throws LMISException;
 }
