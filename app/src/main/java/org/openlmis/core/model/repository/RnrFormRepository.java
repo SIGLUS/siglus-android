@@ -72,6 +72,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.helper.RnrFormHelper;
 import org.openlmis.core.model.service.RequisitionPeriodService;
+import org.openlmis.core.network.model.RnrFormStatusEntry;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -812,5 +813,34 @@ public class RnrFormRepository {
             .and().eq(EMERGENCY, false)
             .queryForFirst()
     );
+  }
+
+  public List<RnRForm> listAllInApprovalForms() throws LMISException {
+    return dbUtil.withDao(
+        RnRForm.class,
+        dao -> dao.queryBuilder()
+            .where()
+            .eq(STATUS, Status.IN_APPROVAL)
+            .query()
+    );
+  }
+
+  public void updateFormsStatus(List<RnrFormStatusEntry> requisitionsStatusResponse)
+      throws LMISException {
+    try {
+      TransactionManager.callInTransaction(
+          LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+            for (RnrFormStatusEntry rnrFormStatusEntry : requisitionsStatusResponse) {
+              RnRForm form = queryRnRForm(rnrFormStatusEntry.getId());
+              if (form != null && form.getStatus() != rnrFormStatusEntry.getStatus()) {
+                form.setStatus(rnrFormStatusEntry.getStatus());
+                genericDao.update(form);
+              }
+            }
+            return null;
+          });
+    } catch (SQLException e) {
+      throw new LMISException(e);
+    }
   }
 }

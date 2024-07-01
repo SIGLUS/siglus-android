@@ -24,6 +24,7 @@ import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
+import org.openlmis.core.network.model.RnrFormStatusRequest;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
@@ -341,5 +342,22 @@ public class RnRFormTest {
     boolean actualResult = rnRForm.isRejected();
     // then
     assertFalse(actualResult);
+  }
+
+  @Test
+  public void convertToRequisitionsStatusRequest_shouldReturnRequisitionsStatusRequest() {
+    // given
+    String programCode = "programCode";
+    String startDateString = "2024-06-20";
+
+    rnRForm.setId(100L);
+    rnRForm.setProgram(Program.builder().programCode(programCode).build());
+    rnRForm.setPeriodBegin(DateUtil.parseString(startDateString, "yyyy-MM-dd"));
+    // when
+    RnrFormStatusRequest actualRnrFormStatusRequest = rnRForm.convertToRequisitionsStatusRequest();
+    // then
+    assertEquals("100", actualRnrFormStatusRequest.getId());
+    assertEquals(startDateString, actualRnrFormStatusRequest.getStartDate());
+    assertEquals(programCode, actualRnrFormStatusRequest.getProgramCode());
   }
 }

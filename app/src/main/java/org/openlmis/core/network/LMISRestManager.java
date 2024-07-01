@@ -62,9 +62,11 @@ import org.openlmis.core.network.adapter.ProgramAdapter;
 import org.openlmis.core.network.adapter.RegimenAdapter;
 import org.openlmis.core.network.adapter.ReportTypeAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
+import org.openlmis.core.network.adapter.RnrFormStatusEntryAdapter;
 import org.openlmis.core.network.adapter.ServiceAdapter;
 import org.openlmis.core.network.adapter.StockCardsResponseAdapter;
 import org.openlmis.core.network.model.ErrorHandlingResponse;
+import org.openlmis.core.network.model.RnrFormStatusEntry;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
@@ -173,6 +175,7 @@ public class LMISRestManager {
         .registerTypeAdapter(SyncDownLatestProductsResponse.class, new ProductsResponseAdapter())
         .registerTypeAdapter(SyncDownRegimensResponse.class, new RegimenAdapter())
         .registerTypeAdapter(Pod.class, new PodAdapter())
+        .registerTypeAdapter(RnrFormStatusEntry.class, new RnrFormStatusEntryAdapter())
         .create());
   }
 

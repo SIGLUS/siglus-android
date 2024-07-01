@@ -60,6 +60,8 @@ import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.FacilityInfoResponse;
+import org.openlmis.core.network.model.RnrFormStatusEntry;
+import org.openlmis.core.network.model.RnrFormStatusRequest;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
@@ -345,20 +347,51 @@ public class SyncDownManager {
 
   private void syncDownRequisition(Subscriber<? super SyncProgress> subscriber)
       throws LMISException {
+    subscriber.onNext(SyncProgress.SYNCING_REQUISITION);
+
     if (!sharedPreferenceMgr.isRequisitionDataSynced()) {
       syncDownFullRequisitions(subscriber);
     } else {
       // incremental sync down due to superior can create requisition for subordinate
-      syncDownIncrementalNonEmergencyRequisitions(subscriber);
+      syncDownIncrementalNonEmergencyRequisitions();
+      // pulling requisition status
+      syncDownRequisitionsStatus();
+      // would not update wrong data in the process of syncing up, so notifying UI here
+      EventBus.getDefault().post(new SyncRnrFinishEvent());
+    }
+
+    subscriber.onNext(SyncProgress.REQUISITION_SYNCED);
+  }
+
+  private void syncDownRequisitionsStatus() throws LMISException {
+    try {
+      List<RnRForm> inApprovalForms = rnrFormRepository.listAllInApprovalForms();
+      if (!inApprovalForms.isEmpty()) {
+        List<RnrFormStatusRequest> request = from(inApprovalForms)
+            .filter(rnRForm -> rnRForm != null)
+            .transform(RnRForm::convertToRequisitionsStatusRequest)
+            .toList();
+
+        List<RnrFormStatusEntry> requisitionStatusEntries = lmisRestApi.fetchRequisitionsStatus(request);
+        if (!requisitionStatusEntries.isEmpty()) {
+          List<RnrFormStatusEntry> validRnrFormStatusEntry = from(requisitionStatusEntries)
+              .filter(
+                  rnrFormStatusEntry -> rnrFormStatusEntry != null && rnrFormStatusEntry.isValidStatus()
+              ).toList();
+          rnrFormRepository.updateFormsStatus(validRnrFormStatusEntry);
+        }
+      }
+    } catch (LMISException e) {
+      LMISException wrappedException = new LMISException(
+          e, errorMessage(R.string.msg_sync_requisition_failed)
+      );
+      wrappedException.reportToFabric();
+      throw wrappedException;
     }
   }
 
-  private void syncDownIncrementalNonEmergencyRequisitions(
-      Subscriber<? super SyncProgress> subscriber
-  ) throws LMISException {
+  private void syncDownIncrementalNonEmergencyRequisitions() throws LMISException {
     try {
-      subscriber.onNext(SyncProgress.SYNCING_REQUISITION);
-
       String incrementalStartDate = getIncrementalStartDate();
       if (incrementalStartDate == null) {
         return;
@@ -376,10 +409,6 @@ public class SyncDownManager {
           rnrFormRepository.saveAndDeleteDuplicatedPeriodRequisitions(nonEmergencyForms);
         }
       }
-      // would not update wrong data in the process of syncing up, so notifying UI here
-      EventBus.getDefault().post(new SyncRnrFinishEvent());
-
-      subscriber.onNext(SyncProgress.REQUISITION_SYNCED);
     } catch (LMISException e) {
       LMISException wrappedException = new LMISException(
           e, errorMessage(R.string.msg_sync_requisition_failed)
@@ -413,10 +442,8 @@ public class SyncDownManager {
 
   private void syncDownFullRequisitions(Subscriber<? super SyncProgress> subscriber) throws LMISException {
     try {
-      subscriber.onNext(SyncProgress.SYNCING_REQUISITION);
       fetchAndSaveRequisition();
       sharedPreferenceMgr.setRequisitionDataSynced(true);
-      subscriber.onNext(SyncProgress.REQUISITION_SYNCED);
     } catch (LMISException e) {
       sharedPreferenceMgr.setRequisitionDataSynced(false);
       LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_requisition_failed));
