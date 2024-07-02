@@ -97,7 +97,7 @@ public interface LMISRestApi {
   @POST("/api/siglusapi/android/me/resync-info")
   Void recordReSyncAction() throws LMISException;
 
-  @POST("api/siglusapi/android/me/facility/requisitions/status")
+  @POST("/api/siglusapi/android/me/facility/requisitions/status")
   List<RnrFormStatusEntry> fetchRequisitionsStatus(
       @Body List<RnrFormStatusRequest> request
   ) throws LMISException;

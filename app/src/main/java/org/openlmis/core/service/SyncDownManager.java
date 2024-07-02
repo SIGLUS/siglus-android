@@ -378,7 +378,7 @@ public class SyncDownManager {
               .filter(
                   rnrFormStatusEntry -> rnrFormStatusEntry != null && rnrFormStatusEntry.isValidStatus()
               ).toList();
-          rnrFormRepository.updateFormsStatus(validRnrFormStatusEntry);
+          rnrFormRepository.updateFormsStatusAndDeleteRejectedFormsSignatures(validRnrFormStatusEntry);
         }
       }
     } catch (LMISException e) {

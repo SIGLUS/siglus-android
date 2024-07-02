@@ -255,7 +255,7 @@ public class RnRFormTest {
     rnRForm.addSignature(signature1);
     // then
     assertEquals(Status.SUBMITTED, rnRForm.getStatus());
-    assertTrue(rnRForm.isSynced());
+    assertFalse(rnRForm.isSynced());
     assertEquals(signature1, rnRForm.getSignaturesWrapper().get(0).getSignature());
     // when
     String signature2 = "signature2";
