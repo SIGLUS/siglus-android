@@ -108,9 +108,26 @@ public class RnRFormViewHolder extends BaseViewHolder {
       case RnRFormViewModel.TYPE_INACTIVE:
         populateRnrFormInActiveCreatedView();
         break;
+      case RnRFormViewModel.TYPE_REJECTED:
+        populateRnrFormRejectedCreatedView(model);
+        break;
       default:
         // do nothing
     }
+  }
+
+  private void populateRnrFormRejectedCreatedView(RnRFormViewModel model) {
+    configHolder(
+        model.getTitle(),
+        CompatUtil.fromHtml(
+            context.getString(R.string.label_rejected_message, model.getName())
+        ),
+        R.drawable.ic_red_close, color_white,
+        R.color.color_text_primary
+    );
+    setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
+    // should be regular requisition only for now
+    hideDrugCount();
   }
 
   private void configHolderForUnComplete(RnRFormViewModel model, int p, int p2) {

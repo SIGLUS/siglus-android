@@ -239,6 +239,7 @@ public class ReportListFragment extends BaseReportListFragment {
           selectPeriodLauncher.launch(SelectPeriodActivity.getIntentToMe(requireContext(), model.getProgramCode()));
           TrackRnREventUtil.trackRnRListEvent(TrackerActions.CREATE_RNR, programCode);
           break;
+        case RnRFormViewModel.TYPE_REJECTED:
         case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
           rnrFormId = model.getId();
           goToRequisitionPage(rnrFormId);
