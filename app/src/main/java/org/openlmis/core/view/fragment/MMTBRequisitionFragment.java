@@ -148,7 +148,17 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
 
   protected void initUI() {
     scrollView.setVisibility(View.INVISIBLE);
-    if (isHistoryForm()) {
+    setEditable(isHistoryForm());
+    rnrItemsHeaderFreezeRight.setOnTouchListener((v, event) -> true);
+    containerView.post(() -> {
+      int[] initialTopLocationOfRnrForm = new int[2];
+      containerView.getLocationOnScreen(initialTopLocationOfRnrForm);
+      actionBarHeight = initialTopLocationOfRnrForm[1];
+    });
+  }
+
+  private void setEditable(boolean disableEdit) {
+    if (disableEdit) {
       scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
       actionPanelView.setVisibility(View.GONE);
       etComment.setEnabled(false);
@@ -157,12 +167,6 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
       actionPanelView.setVisibility(View.VISIBLE);
       etComment.setEnabled(true);
     }
-    rnrItemsHeaderFreezeRight.setOnTouchListener((v, event) -> true);
-    containerView.post(() -> {
-      int[] initialTopLocationOfRnrForm = new int[2];
-      containerView.getLocationOnScreen(initialTopLocationOfRnrForm);
-      actionBarHeight = initialTopLocationOfRnrForm[1];
-    });
   }
 
   private boolean isHistoryForm() {
@@ -193,6 +197,7 @@ public class MMTBRequisitionFragment extends BaseReportFragment implements MMTBR
     // 5. set comment
     etComment.setText(form.getComments());
     bindListener();
+    setEditable(form.isAuthorizedOrInApprovalOrApproved());
   }
 
   @VisibleForTesting

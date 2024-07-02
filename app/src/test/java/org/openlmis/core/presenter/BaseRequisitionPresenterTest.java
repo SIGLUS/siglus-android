@@ -1,5 +1,6 @@
 package org.openlmis.core.presenter;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -9,9 +10,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
+import org.openlmis.core.model.builder.RnRFormBuilder;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.robolectric.RuntimeEnvironment;
-
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -38,6 +40,16 @@ public class BaseRequisitionPresenterTest {
     presenter.rnRForm = new RnRForm();
     presenter.deleteDraft();
     verify(mockRnrFormRepository).removeRnrForm(presenter.rnRForm);
+  }
+
+  @Test
+  public void validateFormPeriod_shouldReturnTrueWhenStatusIsRejected() {
+    // given
+    presenter.rnRForm = new RnRFormBuilder().setStatus(Status.REJECTED).build();
+    // when
+    boolean actualResult = presenter.validateFormPeriod();
+    // then
+    assertTrue(actualResult);
   }
 
   public class MyTestModule extends AbstractModule {

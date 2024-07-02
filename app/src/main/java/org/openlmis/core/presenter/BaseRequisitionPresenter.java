@@ -247,6 +247,9 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
   }
 
   public boolean validateFormPeriod() {
+    if (rnRForm.isRejected()) {
+      return true;
+    }
     return rnrFormRepository.isPeriodUnique(rnRForm);
   }
 

@@ -211,7 +211,14 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
   protected void initUI() {
     scrollView.setVisibility(View.INVISIBLE);
-    if (isHistoryForm()) {
+    setEditable(isHistoryForm());
+    disableFreezeHeaderScroll();
+    initActionBarHeight();
+    setRegimenListener();
+  }
+
+  private void setEditable(boolean disableEdit) {
+    if (disableEdit) {
       scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
       actionPanelView.setVisibility(View.GONE);
       etComment.setEnabled(false);
@@ -220,9 +227,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
       actionPanelView.setVisibility(View.VISIBLE);
       etComment.setEnabled(true);
     }
-    disableFreezeHeaderScroll();
-    initActionBarHeight();
-    setRegimenListener();
   }
 
   private boolean isHistoryForm() {
@@ -275,6 +279,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     etTotalMonth.setText(form.getTotalValueItemByName(getString(R.string.table_total_month_key)));
     highlightTotalDifference();
     bindListeners();
+    setEditable(form.isAuthorizedOrInApprovalOrApproved());
   }
 
   private void inflateFreezeHeaderView() {
