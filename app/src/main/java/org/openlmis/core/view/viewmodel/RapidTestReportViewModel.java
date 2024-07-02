@@ -197,12 +197,12 @@ public class RapidTestReportViewModel {
         this.status = RapidTestReportViewModel.Status.COMPLETED;
         break;
       case REJECTED:
-        // TODO - handle UI for REJECTED
+        this.status = RapidTestReportViewModel.Status.REJECTED;
         break;
       default:
         this.status = RapidTestReportViewModel.Status.MISSING;
     }
-    if (rapidTestForm.isSynced()) {
+    if (rapidTestForm.isSynced() && !rapidTestForm.isRejected()) {
       this.status = RapidTestReportViewModel.Status.SYNCED;
     }
   }
@@ -235,9 +235,12 @@ public class RapidTestReportViewModel {
   }
 
   public boolean isEditable() {
-    return status.isEditable() && (isDraft() || isReadyForCompleted());
+    return status.isEditable() && (isDraft() || isReadyForCompleted() || isRejected());
   }
 
+  private boolean isRejected() {
+    return rapidTestForm.isRejected();
+  }
 
   public boolean isDraft() {
     return rapidTestForm.getStatus() == null || rapidTestForm.isDraft();
@@ -411,7 +414,8 @@ public class RapidTestReportViewModel {
     UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD(false, 5),
     CANNOT_DO_MONTHLY_INVENTORY(false, 6),
     COMPLETE_INVENTORY(false, 7),
-    INACTIVE(false, 8);
+    INACTIVE(false, 8),
+    REJECTED(true, 9);
 
 
     @Getter

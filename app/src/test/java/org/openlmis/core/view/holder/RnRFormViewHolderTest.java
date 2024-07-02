@@ -195,6 +195,26 @@ public class RnRFormViewHolderTest {
             DateUtil.getMonthAbbrByDate(viewModel.getPeriodEndMonth().toDate()))));
   }
 
+  @Test
+  public void populate_shouldShowCompleteStyleWhenStyleIsRejected() {
+    // given
+    RnRForm form = RnRForm.init(program, DateUtil.today());
+    form.setStatus(Status.REJECTED);
+    form.setSynced(true);
+    RnRFormViewModel viewModel = RnRFormViewModel.buildNormalRnrViewModel(form);
+    viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_REJECTED);
+    // when
+    viewHolder.populate(viewModel);
+    // then
+    assertThat(viewHolder.tvPeriod.getText().toString(), is(viewModel.getTitle()));
+    assertThat(viewHolder.tvMessage.getText().toString(),
+        is(getStringResource(R.string.label_rejected_message, viewModel.getName())));
+    assertThat(viewHolder.btnView.getText().toString(),
+        is(getStringResource(R.string.btn_view_requisition, viewModel.getName())));
+    assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
+    assertNull(viewHolder.tvDrugCount);
+  }
+
   @SuppressWarnings("ConstantConditions")
   private String getStringResource(int resId, Object... param) {
     return CompatUtil.fromHtml(RuntimeEnvironment.application.getApplicationContext().getResources()

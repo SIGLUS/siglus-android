@@ -39,6 +39,7 @@ public class RnRFormViewModel {
   public static final int TYPE_DRAFT = 41;
   public static final int TYPE_UNSYNCED_HISTORICAL = 50;
   public static final int TYPE_SYNCED_HISTORICAL = 60;
+  public static final int TYPE_REJECTED = 61;
   public static final int TYPE_CANNOT_DO_MONTHLY_INVENTORY = 70;
   public static final int TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS = 71;
   public static final int TYPE_FIRST_MISSED_PERIOD = 80;
@@ -75,7 +76,7 @@ public class RnRFormViewModel {
     if (form.isAuthorizedOrInApprovalOrApproved()) {
       this.type = form.isSynced() ? TYPE_SYNCED_HISTORICAL : TYPE_UNSYNCED_HISTORICAL;
     } else if (form.isRejected()) {
-      // TODO: set a type for rejected status
+      this.type = TYPE_REJECTED;
     } else if (form.isDraft()) {
       this.type = TYPE_DRAFT;
     } else {

@@ -360,6 +360,7 @@
   <string name="label_unsynced_requisition">Esta <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de conexão à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
   <string name="label_mmia_submitted_message">MMIA enviado com sucesso no dia %1$s</string>
   <string name="label_submitted_message">%1$s enviado com sucesso no dia  %2$s</string>
+  <string name="label_rejected_message">%1$s é rejeitado</string>
   <string name="btn_view_requisition">Ver %s</string>
   <string name="label_period_date">%1$s à %2$s</string>
   <string name="label_emergency_date">Requisição de Emergência – %s</string>

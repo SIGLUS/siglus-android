@@ -24,8 +24,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
+import android.app.Application;
 import android.content.Intent;
 import android.view.View;
+import androidx.test.core.app.ApplicationProvider;
 import com.google.inject.AbstractModule;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -44,6 +46,7 @@ import org.openlmis.core.view.activity.SelectPeriodActivity;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowApplication;
 import roboguice.RoboGuice;
 import roboguice.fragment.SupportFragmentController;
@@ -176,6 +179,28 @@ public class ReportListFragmentTest {
     assertNotNull(nextStartedIntent);
     assertEquals(nextStartedIntent.getComponent().getClassName(), MMIARequisitionActivity.class.getName());
     assertEquals(0L, nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0));
+  }
+
+  @Test
+  public void shouldStartMMIAHistoryWhenBtnClickedWithTypeRejected() {
+    // given
+    View view = mock(View.class);
+    reportListFragment.programCode = Program.TARV_CODE;
+    RnRFormViewModel viewModel =
+        generateRnRFormViewModel(Program.TARV_CODE, RnRFormViewModel.TYPE_REJECTED);
+    viewModel.setId(999L);
+
+    // when
+    reportListFragment.rnRFormItemClickListener.clickBtnView(viewModel, view);
+
+    // then
+    Intent nextStartedIntent = Shadows.shadowOf(
+        (Application) ApplicationProvider.getApplicationContext()).getNextStartedActivity();
+    assertNotNull(nextStartedIntent);
+    assertNotNull(nextStartedIntent.getComponent());
+    assertEquals(MMIARequisitionActivity.class.getName(),
+        nextStartedIntent.getComponent().getClassName());
+    assertEquals(999L, nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0));
   }
 
   @Test

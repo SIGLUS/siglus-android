@@ -112,6 +112,12 @@ public class RapidTestReportViewModelTest {
     viewModel.setRapidTestForm(rapidTestForm);
     assertEquals(RapidTestReportViewModel.Status.SYNCED, viewModel.getStatus());
     assertFalse(viewModel.isEditable());
+
+    rapidTestForm.setStatus(Status.REJECTED);
+    rapidTestForm.setSynced(true);
+    viewModel.setRapidTestForm(rapidTestForm);
+    assertEquals(RapidTestReportViewModel.Status.REJECTED, viewModel.getStatus());
+    assertTrue(viewModel.isEditable());
   }
 
   @Test
