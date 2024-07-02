@@ -142,12 +142,16 @@ public class ALRequisitionFragment extends BaseReportFragment implements
   }
 
   protected void initUI() {
-    if (isHistoryForm()) {
+    hideActionPanelView(isHistoryForm());
+    bindListeners();
+  }
+
+  private void hideActionPanelView(boolean hide) {
+    if (hide) {
       actionPanelView.setVisibility(View.GONE);
     } else {
       actionPanelView.setVisibility(View.VISIBLE);
     }
-    bindListeners();
   }
 
 
@@ -264,6 +268,11 @@ public class ALRequisitionFragment extends BaseReportFragment implements
             DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
     monthTitle.setText(DateUtil.formatDateWithLongMonthAndYear(rnRForm.getPeriodEnd()));
     adapter.refresh(presenter.getAlReportViewModel());
+    setEditable(rnRForm);
+  }
+
+  private void setEditable(RnRForm rnRForm) {
+    hideActionPanelView(rnRForm.isAuthorizedOrInApprovalOrApproved());
   }
 
   @Override

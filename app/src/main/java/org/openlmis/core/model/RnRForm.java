@@ -312,6 +312,7 @@ public class RnRForm extends BaseModel {
   private void submit(String signature, List<RnRFormSignature> signatures) {
     signatures.add(new RnRFormSignature(this, signature, Signature.TYPE.SUBMITTER));
     status = isMissed() ? Status.SUBMITTED_MISSED : Status.SUBMITTED;
+    synced = false;
   }
 
   public String getTotalValueItemByName(String name) {
