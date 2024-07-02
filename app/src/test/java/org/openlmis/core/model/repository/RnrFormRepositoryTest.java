@@ -27,10 +27,13 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.NEGATIVE_ADJUST;
@@ -41,7 +44,9 @@ import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
+import android.app.Application;
 import androidx.annotation.NonNull;
+import androidx.test.core.app.ApplicationProvider;
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,7 +91,6 @@ import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.network.model.RnrFormStatusEntry;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.Lists;
-import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -106,6 +110,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
   private ReportTypeFormRepository mockReportTypeFormRepository;
 
+  private RnrFormSignatureRepository mockRnrFormSignatureRepository;
+
   static final String comment = "DRAFT Form";
   private static String GENERATE_DATE_STRING = "05/07/2015";
   private static String GENERATE_DATE_STRING2 = "20/07/2015";
@@ -119,10 +125,12 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     mockProductProgramRepository = mock(ProductProgramRepository.class);
     mockStockMovementRepository = mock(StockMovementRepository.class);
     mockReportTypeFormRepository = mock(ReportTypeFormRepository.class);
+    Application applicationContext = ApplicationProvider.getApplicationContext();
+    mockRnrFormSignatureRepository = spy(new RnrFormSignatureRepository(applicationContext));
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(applicationContext, new MyTestModule());
 
-    rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    rnrFormRepository = RoboGuice.getInjector(applicationContext)
         .getInstance(RnrFormRepository.class);
 
     Program programMMIA = createProgram(MMIA_PROGRAM_CODE);
@@ -861,35 +869,64 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     rnrFormRepository.create(rejectedForm);
     RnRForm approvedForm = generateRnRForm(Status.APPROVED, true);
     rnrFormRepository.create(approvedForm);
-    RnRForm inApprovalForm = generateRnRForm(Status.IN_APPROVAL);
-    rnrFormRepository.create(inApprovalForm);
+    RnRForm inApprovalEmergencyForm = generateRnrFormWithIsEmergency(Status.IN_APPROVAL, true);
+    rnrFormRepository.create(inApprovalEmergencyForm);
+    RnRForm inApprovalRegularForm = generateRnrFormWithIsEmergency(Status.IN_APPROVAL, false);
+    rnrFormRepository.create(inApprovalRegularForm);
     // when
     List<RnRForm> rnRForms = rnrFormRepository.listAllInApprovalForms();
     // then
     assertEquals(1, rnRForms.size());
-    assertEquals(Status.IN_APPROVAL, rnRForms.get(1).getStatus());
+    assertEquals(Status.IN_APPROVAL, rnRForms.get(0).getStatus());
   }
 
   @Test
   public void updateFormsStatus_shouldUpdateFormsStatusWhenStatusIsChanged() throws LMISException {
     // given
-    long id = 100L;
-    RnRForm inApprovalForm = generateRnrForm(Status.IN_APPROVAL, id);
+    RnRForm inApprovalForm = new RnRFormBuilder().setStatus(Status.IN_APPROVAL).build();
+    inApprovalForm.setSignaturesWrapper(null);
     rnrFormRepository.create(inApprovalForm);
     // when
     Status newStatus = Status.REJECTED;
-    rnrFormRepository.updateFormsStatus(
-        newArrayList(new RnrFormStatusEntry(id, newStatus))
+    rnrFormRepository.updateFormsStatusAndDeleteRejectedFormsSignatures(
+        newArrayList(new RnrFormStatusEntry(inApprovalForm.getId(), newStatus))
     );
     // then
     List<RnRForm> rnRForms = rnrFormRepository.list();
     assertEquals(1, rnRForms.size());
     assertEquals(newStatus, rnRForms.get(0).getStatus());
+    verifyNoMoreInteractions(mockRnrFormSignatureRepository);
   }
 
-  private RnRForm generateRnrForm(Status status, long id) {
+  @Test
+  public void updateFormsStatus_shouldDeleteSignaturesWhenStatusIsChangedToRejected()
+      throws LMISException {
+    // given
+    RnRForm inApprovalForm = new RnRFormBuilder().setStatus(Status.IN_APPROVAL).build();
+    RnRFormSignature rnRFormSignature = new RnRFormSignature();
+    rnRFormSignature.setForm(inApprovalForm);
+    List<RnRFormSignature> signaturesWrapper = newArrayList(rnRFormSignature);
+    inApprovalForm.setSignaturesWrapper(signaturesWrapper);
+    rnrFormRepository.createOrUpdateWithItems(inApprovalForm);
+    doNothing().when(mockRnrFormSignatureRepository).batchDelete(signaturesWrapper);
+    // when
+    Status newStatus = Status.REJECTED;
+    rnrFormRepository.updateFormsStatusAndDeleteRejectedFormsSignatures(
+        newArrayList(new RnrFormStatusEntry(inApprovalForm.getId(), newStatus))
+    );
+    // then
+    List<RnRForm> rnRForms = rnrFormRepository.list();
+    assertEquals(1, rnRForms.size());
+    verify(mockRnrFormSignatureRepository).batchDelete(
+        refEq(signaturesWrapper, "id", "createdAt", "updatedAt")
+    );
+    List<RnRFormSignature> signatures = rnRForms.get(0).getSignaturesWrapper();
+    assertEquals(0, signatures.size());
+  }
+
+  private RnRForm generateRnrFormWithIsEmergency(Status status, boolean isEmergency) {
     RnRForm rnRForm = generateRnRForm(status);
-    rnRForm.setId(id);
+    rnRForm.setEmergency(isEmergency);
     return rnRForm;
   }
 
@@ -955,6 +992,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
       bind(ProductProgramRepository.class).toInstance(mockProductProgramRepository);
       bind(StockMovementRepository.class).toInstance(mockStockMovementRepository);
       bind(ReportTypeFormRepository.class).toInstance(mockReportTypeFormRepository);
+      bind(RnrFormSignatureRepository.class).toInstance(mockRnrFormSignatureRepository);
     }
   }
 

@@ -67,6 +67,7 @@ import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
+import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -263,7 +264,9 @@ public class RnrFormRepository {
   public RnRForm queryRnRForm(final long id) throws LMISException {
     RnRForm rnRForm = dbUtil
         .withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq(ID, id).queryForFirst());
-    assignCategoryForRnrItems(rnRForm);
+    if (programCode != null) {
+      assignCategoryForRnrItems(rnRForm);
+    }
 
     return rnRForm;
   }
@@ -821,20 +824,30 @@ public class RnrFormRepository {
         dao -> dao.queryBuilder()
             .where()
             .eq(STATUS, Status.IN_APPROVAL)
+            .and().eq(EMERGENCY, false)
             .query()
     );
   }
 
-  public void updateFormsStatus(List<RnrFormStatusEntry> requisitionsStatusResponse)
-      throws LMISException {
+  public void updateFormsStatusAndDeleteRejectedFormsSignatures(
+      List<RnrFormStatusEntry> requisitionsStatusResponse
+  ) throws LMISException {
     try {
       TransactionManager.callInTransaction(
           LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
             for (RnrFormStatusEntry rnrFormStatusEntry : requisitionsStatusResponse) {
               RnRForm form = queryRnRForm(rnrFormStatusEntry.getId());
               if (form != null && form.getStatus() != rnrFormStatusEntry.getStatus()) {
+                // update status
                 form.setStatus(rnrFormStatusEntry.getStatus());
                 genericDao.update(form);
+                // delete signatures if status is rejected
+                if (rnrFormStatusEntry.getStatus() == Status.REJECTED) {
+                  List<RnRFormSignature> signatures = form.getSignaturesWrapper();
+                  if (signatures != null && !signatures.isEmpty()) {
+                    signatureRepository.batchDelete(signatures);
+                  }
+                }
               }
             }
             return null;

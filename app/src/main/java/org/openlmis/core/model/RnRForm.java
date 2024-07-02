@@ -295,7 +295,7 @@ public class RnRForm extends BaseModel {
 
   public void addSignature(String signature) {
     List<RnRFormSignature> signatures = getSignaturesWrapper();
-    if (isDraft() || (isRejected() && signatures.isEmpty())) {
+    if (isDraft() || isRejected()) {
       submit(signature, signatures);
     } else {
       authorize(signature, signatures);
