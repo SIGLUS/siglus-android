@@ -39,6 +39,16 @@
       android:layout_width="@dimen/px_200" />
     <TextView style="@style/Pod.list.product"
       android:layout_width="@dimen/px_608"/>
+
+    <LinearLayout
+      style="@style/Pod.list.product"
+      android:layout_width="@dimen/px_200"
+      android:layout_height="match_parent">
+      <Button
+        android:id="@+id/btn_add_lot"
+        style="@style/Pod.list.button"
+        android:text="@string/label_add_item" />
+    </LinearLayout>
   </LinearLayout>
 
   <ListView
