@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -53,6 +54,7 @@ import org.openlmis.core.utils.keyboard.KeyboardUtil;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.OnUpdatePodListener;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
@@ -224,6 +226,11 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
 
   @Override
   public void onUpdateTotalValue() {
+    // do nothing
+  }
+
+  @Override
+  public void onAddLot(IssueVoucherReportProductViewModel productViewModel) {
     // do nothing
   }
 

@@ -18,10 +18,15 @@
 
 package org.openlmis.core.view.listener;
 
+import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
+
 public interface OnUpdatePodListener {
+
   void onRemove(int position);
 
   void onRemove(int productPosition, int lotPosition);
 
   void onUpdateTotalValue();
+
+  void onAddLot(IssueVoucherReportProductViewModel productViewModel);
 }

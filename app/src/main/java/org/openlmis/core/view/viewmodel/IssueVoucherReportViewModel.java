@@ -18,15 +18,19 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
+import lombok.NonNull;
 import org.openlmis.core.enumeration.OrderStatus;
+import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.openlmis.core.utils.DateUtil;
 
 @Data
 public class IssueVoucherReportViewModel {
@@ -43,7 +47,7 @@ public class IssueVoucherReportViewModel {
     List<MultiItemEntity> productViewModels = new ArrayList<>();
     productViewModels.addAll(viewModels);
     productViewModels.remove(viewModels.size() - 1);
-    return FluentIterable.from(productViewModels)
+    return from(productViewModels)
         .transform(IssueVoucherReportProductViewModel.class::cast).toList();
   }
 
@@ -53,7 +57,7 @@ public class IssueVoucherReportViewModel {
 
   public void updateProductViewModels(Pod pod) {
     this.pod = pod;
-    List<IssueVoucherReportProductViewModel> productViewModels = FluentIterable.from(pod.getPodProductItemsWrapper())
+    List<IssueVoucherReportProductViewModel> productViewModels = from(pod.getPodProductItemsWrapper())
         .transform(podProductItem ->
             new IssueVoucherReportProductViewModel(podProductItem, pod.getOrderStatus(), pod.isLocal(), pod.isDraft()))
         .toList();
@@ -126,5 +130,14 @@ public class IssueVoucherReportViewModel {
     return pod.isLocal();
   }
 
+  public void addNewLot(
+      IssueVoucherReportProductViewModel productViewModel, @NonNull String lotNumber, String expireDate,
+      String newLotReasonForAdjustment
+  ) {
+    if (productViewModel == null) {
+      return;
+    }
 
+
+  }
 }

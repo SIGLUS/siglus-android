@@ -183,7 +183,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
   }
 
   public boolean hasIdenticalLot(List<String> existingLots) {
-    if (existingLots.contains(lotNumber)) {
+    if (existingLots != null && existingLots.contains(lotNumber)) {
       lyLotNumber.setError(getString1(R.string.error_lot_already_exists));
       etLotNumber.getBackground().setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
           ContextCompat.getColor(requireContext(), R.color.color_red), BlendModeCompat.SRC_ATOP));

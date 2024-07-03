@@ -26,9 +26,11 @@ import android.text.Editable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -112,6 +114,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     private TextView tvRejectionReason;
     private ImageView ivRejectionReason;
     private ImageView icLotClear;
+    private Button btnRemoveLot;
     private int position;
 
     public IssueVoucherReportLotViewHolder(View itemView) {
@@ -139,6 +142,24 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
         setViewForShipped();
       } else {
         setViewForReceived();
+      }
+      btnRemoveLot.setOnClickListener(getOnRemoveListenerForRemoveLotButton());
+      updateBtnRemoveNewAddedLot();
+    }
+
+    private OnClickListener getOnRemoveListenerForRemoveLotButton() {
+      return view -> {
+        if (onUpdatePodListener != null) {
+          onUpdatePodListener.onRemove(position);
+        }
+      };
+    }
+
+    private void updateBtnRemoveNewAddedLot() {
+      if (lotViewModel.isAdded()) {
+        btnRemoveLot.setVisibility(View.VISIBLE);
+      } else {
+        btnRemoveLot.setVisibility(View.GONE);
       }
     }
 
@@ -203,6 +224,16 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private void setRejectReason() {
+      if (lotViewModel.isAdded()) {
+        vRejectionReason.setOnClickListener(null);
+        vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_gray);
+        ivRejectionReason.setImageResource(R.drawable.ic_pulldown_unable);
+
+        tvRejectionReason.setError(null);
+        tvRejectionReason.setText(lotViewModel.getRejectedReasonDescription());
+        return;
+      }
+
       Long differenceQuality = lotViewModel.compareAcceptedAndShippedQuantity();
       if (differenceQuality != null && differenceQuality != 0) {
         setRejectReasonForCanSelectStatus();
@@ -330,6 +361,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
       tvTotalValue = itemView.findViewById(R.id.tv_value);
       etNote = itemView.findViewById(R.id.et_note);
       icLotClear = itemView.findViewById(R.id.iv_clear);
+      btnRemoveLot = itemView.findViewById(R.id.btn_remove_new_added_lot);
     }
 
     private String convertLongValueToString(Long value) {
@@ -340,7 +372,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private void setEditStatus(boolean isFocus) {
-      etQuantityShipped.setFocusable(isFocus);
+      etQuantityShipped.setFocusable(!lotViewModel.isAdded() && isFocus);
       etQuantityAccepted.setFocusable(isFocus);
       etNote.setFocusable(isFocus);
     }

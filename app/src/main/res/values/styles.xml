@@ -1059,7 +1059,7 @@
 
   <style name="Pod.list.button">
     <item name="android:layout_width">@dimen/px_160</item>
-    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_height">@dimen/px_36</item>
     <item name="android:textColor">@color/color_black</item>
     <item name="android:textSize">@dimen/px_14</item>
     <item name="android:gravity">center</item>

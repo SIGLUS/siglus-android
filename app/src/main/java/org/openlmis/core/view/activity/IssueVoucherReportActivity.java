@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.io.Serializable;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.LMISApp;
@@ -42,6 +43,7 @@ import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter;
@@ -55,8 +57,11 @@ import org.openlmis.core.view.adapter.IssueVoucherProductAdapter;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.OnUpdatePodListener;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.widget.ActionPanelView;
+import org.openlmis.core.view.widget.AddLotDialogFragment;
 import org.openlmis.core.view.widget.IssueVoucherSignatureDialog;
 import org.openlmis.core.view.widget.OrderInfoView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -99,6 +104,8 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   private IssueVoucherProductAdapter productAdapter;
   private IssueVoucherReportAdapter issueVoucherReportAdapter;
   private RecyclerView.OnScrollListener[] listeners;
+
+  private AddLotDialogFragment addLotDialogFragment;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -253,6 +260,75 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   public void onUpdateTotalValue() {
     presenter.getIssueVoucherReportViewModel().updateTotalViewModels();
     issueVoucherReportAdapter.notifyItemChanged(presenter.getIssueVoucherReportViewModel().getListSize() - 1);
+  }
+
+  @Override
+  public void onAddLot(IssueVoucherReportProductViewModel productViewModel) {
+      showAddLotDialogFragment(productViewModel);
+  }
+
+  private boolean showAddLotDialogFragment(IssueVoucherReportProductViewModel productViewModel) {
+    Bundle bundle = new Bundle();
+    Product product = productViewModel.getProduct();
+    bundle.putString(Constants.PARAM_STOCK_NAME, product.getFormattedProductName());
+
+    addLotDialogFragment = new AddLotDialogFragment();
+    addLotDialogFragment.setArguments(bundle);
+    addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener(productViewModel));
+    addLotDialogFragment.setAddLotWithoutNumberListener(
+        getAddLotWithoutNumberListener(productViewModel, product.getCode()));
+    addLotDialogFragment.show(getSupportFragmentManager(),
+        "IssueVoucherReportActivity_Add-New-Lot");
+    return true;
+  }
+
+  private AddLotDialogFragment.AddLotWithoutNumberListener getAddLotWithoutNumberListener(
+      IssueVoucherReportProductViewModel productViewModel, String productCode
+  ) {
+    return expiryDate -> {
+      String lotNumber = LotMovementViewModel
+          .generateLotNumberForProductWithoutLot(productCode, expiryDate);
+      List<String> existedLotNumbers = productViewModel.getLotNumbers();
+      if (existedLotNumbers != null && existedLotNumbers.contains(lotNumber)) {
+        ToastUtil.show(
+            LMISApp.getContext().getString(R.string.error_lot_without_number_already_exists));
+      } else {
+        presenter.addNewLot(productViewModel, lotNumber, expiryDate);
+
+        productAdapter.notifyDataSetChanged();
+        issueVoucherReportAdapter.notifyDataSetChanged();
+      }
+    };
+  }
+
+  @NonNull
+  private SingleClickButtonListener getAddNewLotDialogOnClickListener(
+      IssueVoucherReportProductViewModel productViewModel) {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        switch (v.getId()) {
+          case R.id.btn_complete:
+            if (addLotDialogFragment.validate()
+                && !addLotDialogFragment.hasIdenticalLot(productViewModel.getLotNumbers())) {
+              presenter.addNewLot(
+                  productViewModel, addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate()
+              );
+
+              productAdapter.notifyDataSetChanged();
+              issueVoucherReportAdapter.notifyDataSetChanged();
+
+              addLotDialogFragment.dismiss();
+            }
+            break;
+          case R.id.btn_cancel:
+            addLotDialogFragment.dismiss();
+            break;
+          default:
+            // do nothing
+        }
+      }
+    };
   }
 
   protected void showSignDialog() {
