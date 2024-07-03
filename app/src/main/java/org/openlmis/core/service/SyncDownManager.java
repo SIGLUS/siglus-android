@@ -401,8 +401,9 @@ public class SyncDownManager {
           fetchRequisition(incrementalStartDate);
       List<RnRForm> requisitionResponseList = syncDownRequisitionsResponse.getRequisitionResponseList();
       if (requisitionResponseList != null && !requisitionResponseList.isEmpty()) {
+        // supervisor can only create regular and can't reject the one which is created by supervisor for subordinate
         List<RnRForm> nonEmergencyForms = from(requisitionResponseList)
-            .filter(rnRForm -> rnRForm != null && !rnRForm.isEmergency())
+            .filter(rnRForm -> rnRForm != null && !rnRForm.isEmergency() && !rnRForm.isRejected())
             .toList();
 
         if (nonEmergencyForms != null && !nonEmergencyForms.isEmpty()) {
