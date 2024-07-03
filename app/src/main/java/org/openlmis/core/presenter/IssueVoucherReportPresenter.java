@@ -18,9 +18,13 @@
 
 package org.openlmis.core.presenter;
 
+import static org.openlmis.core.manager.MovementReasonManager.REJECTION_LOT_NOT_SPECIFIED;
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
@@ -29,6 +33,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.BaseModel;
 import org.openlmis.core.model.Lot;
@@ -50,7 +55,6 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableMap;
 import rx.Observable;
 import rx.Subscription;
@@ -73,6 +77,8 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   private ProductRepository productRepository;
 
   private String reasonCode;
+
+  private MovementReason newLotReasonForAdjustment;
 
   IssueVoucherView issueVoucherView;
 
@@ -156,7 +162,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   public void deleteIssueVoucher() {
     try {
       if (!pod.isLocal()) {
-        pod.setPodProductItemsWrapper(FluentIterable.from(issueVoucherReportViewModel.getProductViewModels())
+        pod.setPodProductItemsWrapper(from(issueVoucherReportViewModel.getProductViewModels())
             .transform(IssueVoucherReportProductViewModel::restoreToPodProductModelForRemote).toList());
         podRepository.createOrUpdateWithItems(pod);
       }
@@ -208,13 +214,13 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   }
 
   public void setPodItems() {
-    pod.setPodProductItemsWrapper(FluentIterable.from(
+    pod.setPodProductItemsWrapper(from(
         issueVoucherReportViewModel.getProductViewModels())
         .transform(IssueVoucherReportProductViewModel::convertToPodProductModel).toList());
   }
 
   public List<String> getAddedProductCodeList() {
-    return FluentIterable.from(issueVoucherReportViewModel.getProductViewModels())
+    return from(issueVoucherReportViewModel.getProductViewModels())
         .transform(viewModel -> Objects.requireNonNull(viewModel).getProduct().getCode())
         .toList();
   }
@@ -223,6 +229,28 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     issueVoucherView.loaded();
     ToastUtil.show(throwable.getMessage());
   };
+
+  public void addNewLot(int productPosition, String lotNumber, Date expireDate) {
+    initNewAddedLotAdjustmentReason();
+
+    issueVoucherReportViewModel.addNewLot(
+        productPosition,
+        lotNumber,
+        expireDate,
+        newLotReasonForAdjustment == null ? null: newLotReasonForAdjustment.getDescription()
+    );
+  }
+
+  private void initNewAddedLotAdjustmentReason() {
+    if (newLotReasonForAdjustment == null) {
+      newLotReasonForAdjustment = from(MovementReasonManager.getInstance()
+          .buildReasonListForMovementType(MovementType.REJECTION))
+          .firstMatch(reason -> reason != null
+                  && REJECTION_LOT_NOT_SPECIFIED.equals(reason.getCode())
+          )
+          .orNull();
+    }
+  }
 
   public interface IssueVoucherView extends BaseView {
 
@@ -234,7 +262,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   private void saveStockManagement(Pod pod) throws LMISException {
     List<StockCard> stockCards = stockRepository.getStockCardsAndLotsOnHandForProgram(pod.getRequisitionProgramCode());
     List<Long> needUpdatedArchived = new ArrayList<>();
-    ImmutableMap<Long, StockCard> productIdToStockCard = FluentIterable.from(stockCards)
+    ImmutableMap<Long, StockCard> productIdToStockCard = from(stockCards)
         .uniqueIndex(stockCard -> stockCard.getProduct().getId());
     List<StockCard> toUpdateStockCards = new ArrayList<>();
     List<StockCard> needInitialStockCards = new ArrayList<>();
@@ -297,10 +325,10 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     if (stockCard.getProduct().isKit()) {
       return stockMovementItem;
     }
-    ImmutableMap<Long, LotOnHand> lotIdToLotOnHands = FluentIterable.from(stockCard.getLotOnHandListWrapper())
+    ImmutableMap<Long, LotOnHand> lotIdToLotOnHands = from(stockCard.getLotOnHandListWrapper())
         .uniqueIndex(BaseModel::getId);
     stockMovementItem.setLotMovementItemListWrapper(
-        FluentIterable.from(podProductItem.getPodProductLotItemsWrapper())
+        from(podProductItem.getPodProductLotItemsWrapper())
             .filter(podLotItem -> podLotItem.getAcceptedQuantity() > 0)
             .transform(podLotItem -> buildLotMovementItem(stockMovementItem, podLotItem, lotIdToLotOnHands)).toList());
     return stockMovementItem;

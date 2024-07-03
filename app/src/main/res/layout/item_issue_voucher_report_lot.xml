@@ -126,7 +126,7 @@
     android:layout_width="@dimen/px_200">
 
     <Button
-      android:id="@+id/btn_lot_remove"
+      android:id="@+id/btn_remove_new_added_lot"
       style="@style/Pod.list.button"
       android:background="@drawable/border_black_with_dark_red_bg"
       android:text="@string/label_remove"

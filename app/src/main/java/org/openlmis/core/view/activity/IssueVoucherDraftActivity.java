@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -224,6 +225,11 @@ public class IssueVoucherDraftActivity extends BaseActivity implements IssueVouc
 
   @Override
   public void onUpdateTotalValue() {
+    // do nothing
+  }
+
+  @Override
+  public void onAddLot(int productPosition, String lotNumber, Date expireDate) {
     // do nothing
   }
 

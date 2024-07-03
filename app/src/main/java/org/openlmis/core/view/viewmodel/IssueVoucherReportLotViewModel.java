@@ -47,6 +47,7 @@ public class IssueVoucherReportLotViewModel {
   private boolean isLocal;
   private boolean isDraft;
   private boolean isValidate = true;
+  private boolean isAdded;
 
   public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, PodProductItem podProductItem,
       OrderStatus orderStatus, boolean isLocal, boolean isDraft) {

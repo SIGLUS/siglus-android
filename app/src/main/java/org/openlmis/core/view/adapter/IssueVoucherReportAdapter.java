@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import java.util.Date;
 import java.util.List;
 import lombok.Setter;
 import org.openlmis.core.R;
@@ -141,6 +142,11 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     @Override
     public void onUpdateTotalValue() {
       onUpdatePodListener.onUpdateTotalValue();
+    }
+
+    @Override
+    public void onAddLot(int productPosition, String lotNumber, Date expireDate) {
+      onUpdatePodListener.onAddLot(productPosition, lotNumber, expireDate);
     }
 
   }

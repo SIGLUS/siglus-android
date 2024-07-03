@@ -18,10 +18,14 @@
 
 package org.openlmis.core.view.listener;
 
+import java.util.Date;
+
 public interface OnUpdatePodListener {
   void onRemove(int position);
 
   void onRemove(int productPosition, int lotPosition);
 
   void onUpdateTotalValue();
+
+  void onAddLot(int productPosition, String lotNumber, Date expireDate);
 }

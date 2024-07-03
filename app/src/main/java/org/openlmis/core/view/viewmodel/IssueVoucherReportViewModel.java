@@ -18,15 +18,19 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import lombok.Data;
+import lombok.NonNull;
 import org.openlmis.core.enumeration.OrderStatus;
+import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
 public class IssueVoucherReportViewModel {
@@ -43,7 +47,7 @@ public class IssueVoucherReportViewModel {
     List<MultiItemEntity> productViewModels = new ArrayList<>();
     productViewModels.addAll(viewModels);
     productViewModels.remove(viewModels.size() - 1);
-    return FluentIterable.from(productViewModels)
+    return from(productViewModels)
         .transform(IssueVoucherReportProductViewModel.class::cast).toList();
   }
 
@@ -53,7 +57,7 @@ public class IssueVoucherReportViewModel {
 
   public void updateProductViewModels(Pod pod) {
     this.pod = pod;
-    List<IssueVoucherReportProductViewModel> productViewModels = FluentIterable.from(pod.getPodProductItemsWrapper())
+    List<IssueVoucherReportProductViewModel> productViewModels = from(pod.getPodProductItemsWrapper())
         .transform(podProductItem ->
             new IssueVoucherReportProductViewModel(podProductItem, pod.getOrderStatus(), pod.isLocal(), pod.isDraft()))
         .toList();
@@ -126,5 +130,38 @@ public class IssueVoucherReportViewModel {
     return pod.isLocal();
   }
 
+  public void addNewLot(
+      int productPosition, @NonNull String lotNumber, Date expireDate,
+      String newLotReasonForAdjustment
+  ) {
+    List<IssueVoucherReportProductViewModel> productViewModels = getProductViewModels();
+    IssueVoucherReportProductViewModel productViewModel = productViewModels.get(productPosition);
 
+    List<IssueVoucherReportLotViewModel> existedLotViewModels = new ArrayList<>(
+        productViewModel.getLotViewModelList());
+    IssueVoucherReportLotViewModel sameLotNumberViewModel = from(existedLotViewModels)
+        .firstMatch(
+            viewModel -> viewModel != null && lotNumber.equals(viewModel.getLot().getLotNumber())
+        )
+        .orNull();
+
+    if (sameLotNumberViewModel == null) {
+      // build new lotViewModel
+      IssueVoucherReportLotViewModel newLotViewModel = new IssueVoucherReportLotViewModel();
+
+      Lot lot = new Lot();
+      lot.setLotNumber(lotNumber);
+      lot.setProduct(productViewModel.getProduct());
+      lot.setExpirationDate(expireDate);
+      newLotViewModel.setLot(lot);
+
+      newLotViewModel.setRejectedReason(newLotReasonForAdjustment);
+      newLotViewModel.setOrderStatus(OrderStatus.SHIPPED);
+      newLotViewModel.setShippedQuantity(0L);
+      newLotViewModel.setLotItem(newLotViewModel.convertToModel());
+      // add new lotViewModel
+      existedLotViewModels.add(newLotViewModel);
+      productViewModel.setLotViewModelList(existedLotViewModels);
+    }
+  }
 }

@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.io.Serializable;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.LMISApp;
@@ -253,6 +254,12 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
   public void onUpdateTotalValue() {
     presenter.getIssueVoucherReportViewModel().updateTotalViewModels();
     issueVoucherReportAdapter.notifyItemChanged(presenter.getIssueVoucherReportViewModel().getListSize() - 1);
+  }
+
+  @Override
+  public void onAddLot(int productPosition, String lotNumber, Date expireDate) {
+    presenter.addNewLot(productPosition, lotNumber, expireDate);
+    issueVoucherReportAdapter.notifyDataSetChanged();
   }
 
   protected void showSignDialog() {
