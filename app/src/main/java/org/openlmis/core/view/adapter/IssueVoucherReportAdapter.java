@@ -19,6 +19,7 @@
 package org.openlmis.core.view.adapter;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ import java.util.List;
 import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.IssueVoucherItemType;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter.IssueVoucherReportViewHolder;
 import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
@@ -73,6 +75,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     private TextView tvPreparedBy;
     private TextView tvConferredBy;
     private TextView tvReceivedBy;
+    private Button btnAddLot;
 
     public IssueVoucherReportViewHolder(@NonNull View itemView) {
       super(itemView);
@@ -84,6 +87,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
         initView(productViewModel);
         tvQuantityOrdered.setText(productViewModel.getOrderedQuantity());
         tvPartialFulfilled.setText(productViewModel.getPartialFulfilledQuantity());
+        updateAddLotStatus(productViewModel);
       } else {
         IssueVoucherReportSummaryViewModel summaryViewModel = (IssueVoucherReportSummaryViewModel) viewModel;
         TextView totalValue = itemView.findViewById(R.id.tv_value);
@@ -92,6 +96,14 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
         tvReceivedBy.setText(summaryViewModel.getPod().getReceivedBy());
         tvPreparedBy.setText(summaryViewModel.getPod().getPreparedBy());
         tvConferredBy.setText(summaryViewModel.getPod().getConferredBy());
+      }
+    }
+
+    private void updateAddLotStatus(IssueVoucherReportProductViewModel productViewModel) {
+      if (productViewModel.getOrderStatus() == OrderStatus.SHIPPED) {
+        btnAddLot.setVisibility(View.VISIBLE);
+      } else {
+        btnAddLot.setVisibility(View.GONE);
       }
     }
 
@@ -112,6 +124,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
       lvLotList.setAdapter(lotAdapter);
       tvQuantityOrdered = itemView.findViewById(R.id.tv_quantity_ordered);
       tvPartialFulfilled = itemView.findViewById(R.id.tv_partial_fulfilled);
+      btnAddLot = itemView.findViewById(R.id.btn_add_lot);
     }
 
     @Override
