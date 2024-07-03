@@ -715,6 +715,9 @@
   <string name="label_qr">QR</string>
   <string name="label_qr_qf">QR-QF</string>
   <string name="label_reason_for_adjustment">Razão para ajuste</string>
+  <string name="label_actions">Ações</string>
+  <string name="label_add_item">+Adicionar Item</string>
+  <string name="label_remove">retirar</string>
   <string name="label_issue_voucher_total">Valor da remessa:</string>
   <string name="label_issue_prepared_by">Elaborado por:</string>
   <string name="label_issue_conferred_by">Conferido por:</string>

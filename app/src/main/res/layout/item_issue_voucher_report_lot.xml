@@ -3,6 +3,7 @@
   android:layout_width="@dimen/px_1692"
   android:layout_height="@dimen/px_50"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:showDividers="middle"
   android:orientation="horizontal"
   android:divider="@drawable/divider_vertical">
@@ -120,4 +121,18 @@
       app:layout_constraintRight_toRightOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
+  <LinearLayout
+    style="@style/Pod.list.lot"
+    android:layout_width="@dimen/px_200">
+
+    <Button
+      android:id="@+id/btn_lot_remove"
+      style="@style/Pod.list.button"
+      android:background="@drawable/border_black_with_dark_red_bg"
+      android:text="@string/label_remove"
+      android:textColor="@color/color_white"
+      android:visibility="gone"
+      tools:visibility="visible" />
+
+  </LinearLayout>
 </LinearLayout>

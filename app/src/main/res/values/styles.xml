@@ -1057,6 +1057,16 @@
     <item name="android:background">@color/color_eeeeee</item>
   </style>
 
+  <style name="Pod.list.button">
+    <item name="android:layout_width">@dimen/px_160</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/color_black</item>
+    <item name="android:textSize">@dimen/px_14</item>
+    <item name="android:gravity">center</item>
+    <item name="android:background">@drawable/border_black_with_grey_bg</item>
+    <item name="android:textAllCaps">false</item>
+  </style>
+
   <style name="Pod.list.lot">
     <item name="android:layout_width">@dimen/px_100</item>
     <item name="android:layout_height">@dimen/px_49</item>
