@@ -47,7 +47,9 @@ public class IssueVoucherReportLotViewModel {
   private boolean isLocal;
   private boolean isDraft;
   private boolean isValidate = true;
+
   private boolean isAdded;
+  private String rejectedReasonDescription;
 
   public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, PodProductItem podProductItem,
       OrderStatus orderStatus, boolean isLocal, boolean isDraft) {
@@ -60,6 +62,19 @@ public class IssueVoucherReportLotViewModel {
     rejectedReason = lotItem.getRejectedReason();
     notes = lotItem.getNotes();
     this.orderStatus = orderStatus;
+  }
+
+  public IssueVoucherReportLotViewModel(
+      Lot lot, String rejectedReason, String rejectedReasonDescription, OrderStatus orderStatus,
+      long shippedQuantity, PodProductLotItem lotItem, boolean isAdded
+  ) {
+    this.lot = lot;
+    this.rejectedReason = rejectedReason;
+    this.rejectedReasonDescription = rejectedReasonDescription;
+    this.orderStatus = orderStatus;
+    this.shippedQuantity = shippedQuantity;
+    this.lotItem = lotItem;
+    this.isAdded = isAdded;
   }
 
   public Long compareAcceptedAndShippedQuantity() {
@@ -88,6 +103,7 @@ public class IssueVoucherReportLotViewModel {
     lotItem.setAcceptedQuantity(acceptedQuantity);
     lotItem.setRejectedReason(rejectedReason);
     lotItem.setNotes(notes);
+    lotItem.setLot(lot);
     return lotItem;
   }
 

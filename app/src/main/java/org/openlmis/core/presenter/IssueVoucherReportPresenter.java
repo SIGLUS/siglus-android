@@ -24,7 +24,6 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
@@ -230,14 +229,15 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     ToastUtil.show(throwable.getMessage());
   };
 
-  public void addNewLot(int productPosition, String lotNumber, Date expireDate) {
+  public void addNewLot(IssueVoucherReportProductViewModel productViewModel, String lotNumber, String expireDate) {
     initNewAddedLotAdjustmentReason();
 
-    issueVoucherReportViewModel.addNewLot(
-        productPosition,
+    productViewModel.addNewLot(
         lotNumber,
-        expireDate,
-        newLotReasonForAdjustment == null ? null: newLotReasonForAdjustment.getDescription()
+        DateUtil.parseString(expireDate, DateUtil.DB_DATE_FORMAT),
+        newLotReasonForAdjustment == null ? null: newLotReasonForAdjustment.getCode(),
+        newLotReasonForAdjustment == null ? null: newLotReasonForAdjustment.getDescription(),
+        OrderStatus.SHIPPED, 0L
     );
   }
 

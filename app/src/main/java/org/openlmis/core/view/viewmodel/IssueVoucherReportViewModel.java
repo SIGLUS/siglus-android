@@ -23,7 +23,6 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import lombok.Data;
 import lombok.NonNull;
@@ -31,6 +30,7 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.utils.DateUtil;
 
 @Data
 public class IssueVoucherReportViewModel {
@@ -131,37 +131,13 @@ public class IssueVoucherReportViewModel {
   }
 
   public void addNewLot(
-      int productPosition, @NonNull String lotNumber, Date expireDate,
+      IssueVoucherReportProductViewModel productViewModel, @NonNull String lotNumber, String expireDate,
       String newLotReasonForAdjustment
   ) {
-    List<IssueVoucherReportProductViewModel> productViewModels = getProductViewModels();
-    IssueVoucherReportProductViewModel productViewModel = productViewModels.get(productPosition);
-
-    List<IssueVoucherReportLotViewModel> existedLotViewModels = new ArrayList<>(
-        productViewModel.getLotViewModelList());
-    IssueVoucherReportLotViewModel sameLotNumberViewModel = from(existedLotViewModels)
-        .firstMatch(
-            viewModel -> viewModel != null && lotNumber.equals(viewModel.getLot().getLotNumber())
-        )
-        .orNull();
-
-    if (sameLotNumberViewModel == null) {
-      // build new lotViewModel
-      IssueVoucherReportLotViewModel newLotViewModel = new IssueVoucherReportLotViewModel();
-
-      Lot lot = new Lot();
-      lot.setLotNumber(lotNumber);
-      lot.setProduct(productViewModel.getProduct());
-      lot.setExpirationDate(expireDate);
-      newLotViewModel.setLot(lot);
-
-      newLotViewModel.setRejectedReason(newLotReasonForAdjustment);
-      newLotViewModel.setOrderStatus(OrderStatus.SHIPPED);
-      newLotViewModel.setShippedQuantity(0L);
-      newLotViewModel.setLotItem(newLotViewModel.convertToModel());
-      // add new lotViewModel
-      existedLotViewModels.add(newLotViewModel);
-      productViewModel.setLotViewModelList(existedLotViewModels);
+    if (productViewModel == null) {
+      return;
     }
+
+
   }
 }

@@ -19,6 +19,7 @@
 package org.openlmis.core.view.adapter;
 
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,12 +27,10 @@ import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import java.util.Date;
 import java.util.List;
 import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.IssueVoucherItemType;
-import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter.IssueVoucherReportViewHolder;
 import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
@@ -101,11 +100,22 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     }
 
     private void updateAddLotStatus(IssueVoucherReportProductViewModel productViewModel) {
-      if (productViewModel.getOrderStatus() == OrderStatus.SHIPPED) {
+      if (productViewModel.isRemoteAndShipped()) {
         btnAddLot.setVisibility(View.VISIBLE);
+        btnAddLot.setOnClickListener(getAddLotClickListener(productViewModel));
       } else {
         btnAddLot.setVisibility(View.GONE);
       }
+    }
+
+    private OnClickListener getAddLotClickListener(
+        IssueVoucherReportProductViewModel productViewModel
+    ) {
+      return view -> {
+        if (onUpdatePodListener != null) {
+          onUpdatePodListener.onAddLot(productViewModel);
+        }
+      };
     }
 
     private void initSummaryView() {
@@ -145,8 +155,8 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     }
 
     @Override
-    public void onAddLot(int productPosition, String lotNumber, Date expireDate) {
-      onUpdatePodListener.onAddLot(productPosition, lotNumber, expireDate);
+    public void onAddLot(IssueVoucherReportProductViewModel productViewModel) {
+      onUpdatePodListener.onAddLot(productViewModel);
     }
 
   }

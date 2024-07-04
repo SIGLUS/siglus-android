@@ -18,12 +18,17 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.enumeration.IssueVoucherItemType;
 import org.openlmis.core.enumeration.OrderStatus;
+import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.model.Product;
@@ -126,5 +131,56 @@ public class IssueVoucherReportProductViewModel implements MultiItemEntity {
   @Override
   public int getItemType() {
     return IssueVoucherItemType.ISSUE_VOUCHER_PRODUCT_TYPE.getValue();
+  }
+
+  public List<String> getLotNumbers() {
+      List<IssueVoucherReportLotViewModel> lotViewModelList = getLotViewModelList();
+      if (lotViewModelList != null) {
+        return from(lotViewModelList)
+            .filter(lotViewModel -> lotViewModel != null && lotViewModel.getLot() != null)
+            .transform(lotViewModel -> lotViewModel.getLot().getLotNumber())
+            .toList();
+      }
+    return null;
+  }
+
+  public void addNewLot(
+      String lotNumber, Date expirationDate,
+      String rejectedReasonCode, String rejectedReasonDescription,
+      OrderStatus orderStatus, long shippedQuantity
+  ) {
+    // check duplicated lot number
+    if (lotViewModelList != null) {
+      IssueVoucherReportLotViewModel sameLotNumberViewModel = from(lotViewModelList)
+          .firstMatch(
+              viewModel -> viewModel != null && lotNumber.equals(viewModel.getLot().getLotNumber())
+          )
+          .orNull();
+
+      if (sameLotNumberViewModel != null) {
+        return;
+      }
+    } else {
+      lotViewModelList = new ArrayList<>();
+    }
+    // build new lotViewModel
+    Lot lot = new Lot();
+    lot.setLotNumber(lotNumber);
+    lot.setProduct(getProduct());
+    lot.setExpirationDate(expirationDate);
+
+    IssueVoucherReportLotViewModel newLotViewModel = new IssueVoucherReportLotViewModel(
+        lot, rejectedReasonCode, rejectedReasonDescription, orderStatus, shippedQuantity, new PodProductLotItem(), true
+    );
+    // add new lotViewModel
+    ArrayList<IssueVoucherReportLotViewModel> newLotViewModelList = new ArrayList<>(
+        lotViewModelList);
+    newLotViewModelList.add(newLotViewModel);
+
+    setLotViewModelList(newLotViewModelList);
+  }
+
+  public boolean isRemoteAndShipped() {
+    return !isLocal && orderStatus == OrderStatus.SHIPPED;
   }
 }

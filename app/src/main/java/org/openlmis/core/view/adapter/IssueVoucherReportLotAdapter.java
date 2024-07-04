@@ -148,12 +148,9 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private OnClickListener getOnRemoveListenerForRemoveLotButton() {
-      return new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          if (onUpdatePodListener != null) {
-            onUpdatePodListener.onRemove(position);
-          }
+      return view -> {
+        if (onUpdatePodListener != null) {
+          onUpdatePodListener.onRemove(position);
         }
       };
     }
@@ -227,6 +224,16 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private void setRejectReason() {
+      if (lotViewModel.isAdded()) {
+        vRejectionReason.setOnClickListener(null);
+        vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_gray);
+        ivRejectionReason.setImageResource(R.drawable.ic_pulldown_unable);
+
+        tvRejectionReason.setError(null);
+        tvRejectionReason.setText(lotViewModel.getRejectedReasonDescription());
+        return;
+      }
+
       Long differenceQuality = lotViewModel.compareAcceptedAndShippedQuantity();
       if (differenceQuality != null && differenceQuality != 0) {
         setRejectReasonForCanSelectStatus();
@@ -365,7 +372,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private void setEditStatus(boolean isFocus) {
-      etQuantityShipped.setFocusable(isFocus);
+      etQuantityShipped.setFocusable(!lotViewModel.isAdded() && isFocus);
       etQuantityAccepted.setFocusable(isFocus);
       etNote.setFocusable(isFocus);
     }

@@ -51,6 +51,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkIssueAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.listener.OnUpdatePodListener;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 import org.openlmis.core.view.widget.BulkEntriesSignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
@@ -217,7 +218,7 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView, On
   }
 
   @Override
-  public void onAddLot(int productPosition, String lotNumber, Date expireDate) {
+  public void onAddLot(IssueVoucherReportProductViewModel productViewModel) {
     // do nothing
   }
 
