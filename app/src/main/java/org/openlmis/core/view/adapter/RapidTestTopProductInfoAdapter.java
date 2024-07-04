@@ -30,6 +30,7 @@ import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
@@ -85,7 +86,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     tvProductName.setText(formBasicItem.getProduct().getPrimaryName());
     tvReceived.setText(String.valueOf(formBasicItem.getReceived()));
 
-    boolean isDraftOrUnknownStatus = isDraftOrUnknownStatus(formBasicItem);
+    boolean isDraftOrUnknownStatus = isDraftOrRejectedOrUnknownStatus(formBasicItem);
     // config etIssue
     CleanableEditText etIssue = itemView.findViewById(R.id.et_issue);
     etIssue.setText(getValue(formBasicItem.getIssued()));
@@ -145,8 +146,9 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     }
   }
 
-  private boolean isDraftOrUnknownStatus(RnrFormItem formBasicItem) {
-    return formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().isDraft();
+  private boolean isDraftOrRejectedOrUnknownStatus(RnrFormItem formBasicItem) {
+    RnRForm form = formBasicItem.getForm();
+    return form.getStatus() == null || form.isDraft() || form.isRejected();
   }
 
   @Override
