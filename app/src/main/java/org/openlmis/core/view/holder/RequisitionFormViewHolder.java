@@ -142,7 +142,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
       showDisabledAmount(requestAmount);
       showEnabledAmount(approvedAmount);
       approvedAmount.addTextChangedListener(mySimpleTextWatcher);
-    } else if (status == Status.DRAFT) {
+    } else if (isDraftOrRejected(status)) {
       showEnabledAmount(requestAmount);
       showDisabledAmount(approvedAmount);
       requestAmount.addTextChangedListener(mySimpleTextWatcher);
@@ -170,7 +170,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
       showEnabledAmount(approvedAmount);
       approvedAmount.addTextChangedListener(mySimpleTextWatcher);
 
-    } else if (status == Status.DRAFT) {
+    } else if (isDraftOrRejected(status)) {
       requestAmount.setEnabled(true);
       showEnabledAmount(requestAmount);
       showDisabledAmount(approvedAmount);
@@ -203,11 +203,15 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
       String value = editable.toString();
       if (status == Status.SUBMITTED) {
         entry.setApprovedAmount(value);
-      } else if (status == Status.DRAFT) {
+      } else if (isDraftOrRejected(status)) {
         approvedAmount.setText(value);
         entry.setApprovedAmount(value);
         entry.setRequestAmount(value);
       }
     }
+  }
+
+  private boolean isDraftOrRejected(Status status) {
+    return status == Status.DRAFT || status == Status.REJECTED;
   }
 }
