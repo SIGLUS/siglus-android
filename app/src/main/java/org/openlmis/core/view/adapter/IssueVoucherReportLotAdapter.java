@@ -157,7 +157,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
     }
 
     private void updateBtnRemoveNewAddedLot() {
-      if (lotViewModel.isAdded()) {
+      if (lotViewModel.shouldShowAddItem()) {
         btnRemoveLot.setVisibility(View.VISIBLE);
       } else {
         btnRemoveLot.setVisibility(View.GONE);
