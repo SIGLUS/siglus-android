@@ -20,11 +20,14 @@ package org.openlmis.core.presenter;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import androidx.annotation.NonNull;
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +35,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.builder.PodBuilder;
@@ -41,6 +45,8 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportSummaryViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import rx.Observable;
@@ -198,4 +204,34 @@ public class IssueVoucherReportPresenterTest {
     verify(stockRepository,times(1)).addStockMovementsAndUpdateStockCards(any(), any());
   }
 
+  @Test
+  public void addNewLot_shouldAddNewLotWithSpecificRejectionReason() {
+    // given
+    IssueVoucherReportProductViewModel mockedProductViewModel =
+        mock(IssueVoucherReportProductViewModel.class);
+    String lotNumber = "lotNumber";
+    String expireDateString = "2024-05-02";
+    Date expirationDate = DateUtil.parseString(expireDateString, DateUtil.DB_DATE_FORMAT);
+    OrderStatus orderStatus = OrderStatus.SHIPPED;
+    long shippedQuantity = 0L;
+    String rejectedReasonCode = "LOT_NOT_SPECIFIED";
+
+    doNothing().when(mockedProductViewModel).addNewLot(
+        lotNumber,
+        expirationDate,
+        rejectedReasonCode,
+        orderStatus,
+        shippedQuantity
+    );
+    // when
+    presenter.addNewLot(mockedProductViewModel, lotNumber, expireDateString);
+    // then
+    verify(mockedProductViewModel).addNewLot(
+        lotNumber,
+        expirationDate,
+        rejectedReasonCode,
+        orderStatus,
+        shippedQuantity
+    );
+  }
 }

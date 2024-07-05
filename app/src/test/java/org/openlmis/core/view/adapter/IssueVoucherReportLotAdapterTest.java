@@ -52,6 +52,7 @@ public class IssueVoucherReportLotAdapterTest {
   private IssueVoucherReportLotAdapter adapter;
   private IssueVoucherReportLotViewHolder holder;
   private IssueVoucherReportLotViewModel lotViewModel;
+  private final String defaultRejectionReason = "Select an option";
 
   @Before
   public void setup() {
@@ -180,5 +181,53 @@ public class IssueVoucherReportLotAdapterTest {
     assertEquals("Received less quantities than expected", (reason.getText().toString()));
     ImageView reasonLogo = holder.getView(R.id.iv_rejection_reason);
     assertEquals(View.GONE, reasonLogo.getVisibility());
+  }
+
+  @Test
+  public void populate_shouldShowRemoveButtonWhenStatusIsAddedAndShipped() {
+    // given
+    lotViewModel.setOrderStatus(OrderStatus.SHIPPED);
+    lotViewModel.setAdded(true);
+    lotViewModel.setRejectedReason("LOT_NOT_SPECIFIED");
+
+    // when
+    holder.populate(lotViewModel, 0);
+
+    // then
+    assertEquals(View.VISIBLE, holder.getView(R.id.btn_remove_new_added_lot).getVisibility());
+    assertEquals(
+        "Lot not specified on the delivery note",
+        ((TextView)holder.getView(R.id.tv_rejection_reason)).getText()
+    );
+  }
+
+  @Test
+  public void populate_shouldHideRemoveButtonWhenStatusIsNotAdded() {
+    // given
+    lotViewModel.setOrderStatus(OrderStatus.SHIPPED);
+    lotViewModel.setAdded(false);
+
+    // when
+    holder.populate(lotViewModel, 0);
+
+    // then
+    assertEquals(View.GONE, holder.getView(R.id.btn_remove_new_added_lot).getVisibility());
+    assertEquals(
+        defaultRejectionReason,
+        ((TextView)holder.getView(R.id.tv_rejection_reason)).getText()
+    );
+  }
+
+  @Test
+  public void populate_shouldHideRemoveButtonWhenStatusIsNotShipped() {
+    // given
+    lotViewModel.setOrderStatus(OrderStatus.RECEIVED);
+    lotViewModel.setAdded(true);
+
+    // when
+    holder.populate(lotViewModel, 0);
+
+    // then
+    assertEquals(View.GONE, holder.getView(R.id.btn_remove_new_added_lot).getVisibility());
   }
 }

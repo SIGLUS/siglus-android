@@ -129,7 +129,7 @@ public class IssueVoucherReportLotViewModel {
     return this.isLocal() && this.isDraft() && !this.getLot().getProduct().isKit();
   }
 
-  public boolean shouldShowAddItem() {
+  public boolean isAddedAndShipped() {
     return isAdded && orderStatus == OrderStatus.SHIPPED;
   }
 
