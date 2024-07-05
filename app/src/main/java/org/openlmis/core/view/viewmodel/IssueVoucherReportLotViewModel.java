@@ -49,7 +49,6 @@ public class IssueVoucherReportLotViewModel {
   private boolean isValidate = true;
 
   private boolean isAdded;
-  private String rejectedReasonDescription;
 
   public IssueVoucherReportLotViewModel(PodProductLotItem lotItem, PodProductItem podProductItem,
       OrderStatus orderStatus, boolean isLocal, boolean isDraft) {
@@ -62,15 +61,15 @@ public class IssueVoucherReportLotViewModel {
     rejectedReason = lotItem.getRejectedReason();
     notes = lotItem.getNotes();
     this.orderStatus = orderStatus;
+    isAdded = lotItem.isAdded();
   }
 
   public IssueVoucherReportLotViewModel(
-      Lot lot, String rejectedReason, String rejectedReasonDescription, OrderStatus orderStatus,
+      Lot lot, String rejectedReason, OrderStatus orderStatus,
       long shippedQuantity, PodProductLotItem lotItem, boolean isAdded
   ) {
     this.lot = lot;
     this.rejectedReason = rejectedReason;
-    this.rejectedReasonDescription = rejectedReasonDescription;
     this.orderStatus = orderStatus;
     this.shippedQuantity = shippedQuantity;
     this.lotItem = lotItem;
@@ -87,12 +86,14 @@ public class IssueVoucherReportLotViewModel {
   public String getRejectionReasonDesc(boolean useDefault) {
     MovementReason reason = null;
     try {
-      reason = MovementReasonManager.getInstance().queryByCode(MovementType.REJECTION, rejectedReason);
+      reason = MovementReasonManager.getInstance()
+          .queryByCode(MovementType.REJECTION, rejectedReason);
     } catch (Exception ignored) {
       // do nothing
     }
     if (reason == null) {
-      return useDefault ? LMISApp.getInstance().getString(R.string.label_default_rejection_reason) : "";
+      return useDefault ? LMISApp.getInstance().getString(R.string.label_default_rejection_reason)
+          : "";
     } else {
       return reason.getDescription();
     }
@@ -104,6 +105,8 @@ public class IssueVoucherReportLotViewModel {
     lotItem.setRejectedReason(rejectedReason);
     lotItem.setNotes(notes);
     lotItem.setLot(lot);
+    lotItem.setAdded(isAdded);
+
     return lotItem;
   }
 

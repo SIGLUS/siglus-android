@@ -264,7 +264,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
 
   @Override
   public void onAddLot(IssueVoucherReportProductViewModel productViewModel) {
-      showAddLotDialogFragment(productViewModel);
+    showAddLotDialogFragment(productViewModel);
   }
 
   private boolean showAddLotDialogFragment(IssueVoucherReportProductViewModel productViewModel) {

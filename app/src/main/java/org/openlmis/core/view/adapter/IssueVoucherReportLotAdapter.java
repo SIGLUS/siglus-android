@@ -19,6 +19,7 @@
 package org.openlmis.core.view.adapter;
 
 import static org.openlmis.core.LMISApp.getContext;
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
@@ -53,7 +55,6 @@ import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.listener.OnUpdatePodListener;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportLotViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public class IssueVoucherReportLotAdapter extends BaseAdapter {
 
@@ -230,7 +231,17 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
         ivRejectionReason.setImageResource(R.drawable.ic_pulldown_unable);
 
         tvRejectionReason.setError(null);
-        tvRejectionReason.setText(lotViewModel.getRejectedReasonDescription());
+
+        List<MovementReason> movementReasons = MovementReasonManager.getInstance()
+            .buildReasonListForMovementType(MovementType.REJECTION);
+        MovementReason rejectionReason = from(movementReasons)
+            .firstMatch(movementReason -> movementReason != null && lotViewModel.getRejectedReason()
+                .equals(movementReason.getCode()))
+            .orNull();
+        if (rejectionReason != null) {
+          tvRejectionReason.setText(rejectionReason.getDescription());
+        }
+
         return;
       }
 
@@ -244,7 +255,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
 
             List<MovementReason> movementReasons = MovementReasonManager.getInstance()
                 .buildReasonListForRejection(differenceQuality > 0);
-            String[] reasonArray = FluentIterable.from(movementReasons).transform(MovementReason::getDescription)
+            String[] reasonArray = from(movementReasons).transform(MovementReason::getDescription)
                 .toArray(String.class);
             bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonArray);
             SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();

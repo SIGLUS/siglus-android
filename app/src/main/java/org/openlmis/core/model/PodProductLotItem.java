@@ -54,4 +54,6 @@ public class PodProductLotItem extends BaseModel {
   @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false)
   private PodProductItem podProductItem;
 
+  @DatabaseField
+  private boolean isAdded;
 }

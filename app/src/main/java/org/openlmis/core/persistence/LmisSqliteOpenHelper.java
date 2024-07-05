@@ -40,6 +40,7 @@ import org.openlmis.core.persistence.migrations.AddEmergencyColumnToRnr;
 import org.openlmis.core.persistence.migrations.AddErrorMessageInPortuguese;
 import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
 import org.openlmis.core.persistence.migrations.AddInventoryTable;
+import org.openlmis.core.persistence.migrations.AddIsAddedInPodProductLotItems;
 import org.openlmis.core.persistence.migrations.AddIsArchivedToProduct;
 import org.openlmis.core.persistence.migrations.AddIsBasicColumnToProductsTable;
 import org.openlmis.core.persistence.migrations.AddIsCustomColumnToRegime;
@@ -240,6 +241,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new AddShowInReportFieldInProductProgramTable());
     MIGRATIONS.add(new AddProvinceAndDistrictFieldsInUsersTable());
     MIGRATIONS.add(new UpdateUsageColumnsMapV2());
+    MIGRATIONS.add(new AddIsAddedInPodProductLotItems());
   }
 
   private LmisSqliteOpenHelper(Context context) {
