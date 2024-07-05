@@ -25,12 +25,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
-import lombok.NonNull;
 import org.openlmis.core.enumeration.OrderStatus;
-import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.utils.DateUtil;
 
 @Data
 public class IssueVoucherReportViewModel {
@@ -130,14 +127,4 @@ public class IssueVoucherReportViewModel {
     return pod.isLocal();
   }
 
-  public void addNewLot(
-      IssueVoucherReportProductViewModel productViewModel, @NonNull String lotNumber, String expireDate,
-      String newLotReasonForAdjustment
-  ) {
-    if (productViewModel == null) {
-      return;
-    }
-
-
-  }
 }

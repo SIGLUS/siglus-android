@@ -235,8 +235,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
     productViewModel.addNewLot(
         lotNumber,
         DateUtil.parseString(expireDate, DateUtil.DB_DATE_FORMAT),
-        newLotReasonForAdjustment == null ? null: newLotReasonForAdjustment.getCode(),
-        newLotReasonForAdjustment == null ? null: newLotReasonForAdjustment.getDescription(),
+        newLotReasonForAdjustment == null ? null : newLotReasonForAdjustment.getCode(),
         OrderStatus.SHIPPED, 0L
     );
   }

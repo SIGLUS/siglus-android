@@ -34,7 +34,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Setter;

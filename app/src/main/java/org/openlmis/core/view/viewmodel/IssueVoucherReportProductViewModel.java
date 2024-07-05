@@ -134,19 +134,19 @@ public class IssueVoucherReportProductViewModel implements MultiItemEntity {
   }
 
   public List<String> getLotNumbers() {
-      List<IssueVoucherReportLotViewModel> lotViewModelList = getLotViewModelList();
-      if (lotViewModelList != null) {
-        return from(lotViewModelList)
-            .filter(lotViewModel -> lotViewModel != null && lotViewModel.getLot() != null)
-            .transform(lotViewModel -> lotViewModel.getLot().getLotNumber())
-            .toList();
-      }
+    List<IssueVoucherReportLotViewModel> lotViewModelList = getLotViewModelList();
+    if (lotViewModelList != null) {
+      return from(lotViewModelList)
+          .filter(lotViewModel -> lotViewModel != null && lotViewModel.getLot() != null)
+          .transform(lotViewModel -> lotViewModel.getLot().getLotNumber())
+          .toList();
+    }
     return null;
   }
 
   public void addNewLot(
       String lotNumber, Date expirationDate,
-      String rejectedReasonCode, String rejectedReasonDescription,
+      String rejectedReasonCode,
       OrderStatus orderStatus, long shippedQuantity
   ) {
     // check duplicated lot number
@@ -170,7 +170,7 @@ public class IssueVoucherReportProductViewModel implements MultiItemEntity {
     lot.setExpirationDate(expirationDate);
 
     IssueVoucherReportLotViewModel newLotViewModel = new IssueVoucherReportLotViewModel(
-        lot, rejectedReasonCode, rejectedReasonDescription, orderStatus, shippedQuantity, new PodProductLotItem(), true
+        lot, rejectedReasonCode, orderStatus, shippedQuantity, new PodProductLotItem(), true
     );
     // add new lotViewModel
     ArrayList<IssueVoucherReportLotViewModel> newLotViewModelList = new ArrayList<>(
