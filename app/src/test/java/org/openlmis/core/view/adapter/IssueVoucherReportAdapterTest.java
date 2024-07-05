@@ -60,4 +60,51 @@ public class IssueVoucherReportAdapterTest {
     assertEquals(View.VISIBLE, holder.getView(R.id.tv_partial_fulfilled).getVisibility());
   }
 
+  @Test
+  public void convert_shouldShowAddLotItemButtonWhenViewModelIsRemoteAndShipped() throws Exception {
+    // given
+    IssueVoucherReportViewHolder holder = adapter.new IssueVoucherReportViewHolder(
+        LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_issue_voucher_report_product, null));
+    Pod VCPod = PodBuilder.generatePod();
+    IssueVoucherReportProductViewModel model = new IssueVoucherReportProductViewModel(VCPod.getPodProductItemsWrapper()
+        .get(0), OrderStatus.SHIPPED, false, true);
+
+    // when
+    adapter.convert(holder, model);
+
+    // then
+    assertEquals(View.VISIBLE, holder.getView(R.id.btn_add_lot).getVisibility());
+  }
+
+  @Test
+  public void convert_shouldHideAddLotItemButtonWhenViewModelIsNotRemote() throws Exception {
+    // given
+    IssueVoucherReportViewHolder holder = adapter.new IssueVoucherReportViewHolder(
+        LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_issue_voucher_report_product, null));
+    Pod VCPod = PodBuilder.generatePod();
+    IssueVoucherReportProductViewModel model = new IssueVoucherReportProductViewModel(VCPod.getPodProductItemsWrapper()
+        .get(0), OrderStatus.SHIPPED, true, true);
+
+    // when
+    adapter.convert(holder, model);
+
+    // then
+    assertEquals(View.GONE, holder.getView(R.id.btn_add_lot).getVisibility());
+  }
+
+  @Test
+  public void convert_shouldHideAddLotItemButtonWhenViewModelIsNotShipped() throws Exception {
+    // given
+    IssueVoucherReportViewHolder holder = adapter.new IssueVoucherReportViewHolder(
+        LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_issue_voucher_report_product, null));
+    Pod VCPod = PodBuilder.generatePod();
+    IssueVoucherReportProductViewModel model = new IssueVoucherReportProductViewModel(VCPod.getPodProductItemsWrapper()
+        .get(0), OrderStatus.RECEIVED, false, true);
+
+    // when
+    adapter.convert(holder, model);
+
+    // then
+    assertEquals(View.GONE, holder.getView(R.id.btn_add_lot).getVisibility());
+  }
 }

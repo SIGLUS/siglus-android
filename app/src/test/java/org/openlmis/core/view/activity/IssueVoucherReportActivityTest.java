@@ -27,6 +27,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.content.Intent;
@@ -40,17 +41,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Pod;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
+import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import org.openlmis.core.view.widget.OrderInfoView;
 import org.robolectric.Robolectric;
-import org.openlmis.core.R;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
@@ -209,4 +212,25 @@ public class IssueVoucherReportActivityTest {
     assertThat(intent.getComponent().getClassName()).isEqualTo(AddProductsToBulkEntriesActivity.class.getName());
   }
 
+  @Test
+  public void onAddLot_shouldShowAddLotDialogFragment() {
+    String productCode = "productCode";
+    String formattedProductName = "formatted product name";
+    Product mockedProduct = mock(Product.class);
+    when(mockedProduct.getCode()).thenReturn(productCode);
+    when(mockedProduct.getFormattedProductName()).thenReturn(formattedProductName);
+
+    IssueVoucherReportProductViewModel mockedProductViewModel =
+        mock(IssueVoucherReportProductViewModel.class);
+    when(mockedProductViewModel.getProduct()).thenReturn(mockedProduct);
+    when(mockedProductViewModel.getLotNumbers()).thenReturn(newArrayList());
+    // when
+    reportActivity.onAddLot(mockedProductViewModel);
+    RobolectricUtils.waitLooperIdle();
+    // then
+    DialogFragment fragment = (DialogFragment) (reportActivity.getSupportFragmentManager()
+        .findFragmentByTag("IssueVoucherReportActivity_Add-New-Lot")
+    );
+    assertThat(fragment).isNotNull();
+  }
 }

@@ -1,10 +1,13 @@
 package org.openlmis.core.view.viewmodel;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openlmis.core.enumeration.OrderStatus;
 
 public class IssueVoucherReportLotViewModelTest {
 
@@ -46,5 +49,38 @@ public class IssueVoucherReportLotViewModelTest {
     Long actualResult = issueVoucherReportLotViewModel.compareAcceptedAndShippedQuantity();
     // then
     assertEquals(-1L, actualResult.longValue());
+  }
+
+  @Test
+  public void isAddedAndShipped_shouldReturnTrueWhenIsAddedAndShipped() {
+    // given
+    issueVoucherReportLotViewModel.setAdded(true);
+    issueVoucherReportLotViewModel.setOrderStatus(OrderStatus.SHIPPED);
+    // when
+    boolean actualResult = issueVoucherReportLotViewModel.isAddedAndShipped();
+    // then
+    assertTrue(actualResult);
+  }
+
+  @Test
+  public void isAddedAndShipped_shouldReturnFalseWhenIsNotAdded() {
+    // given
+    issueVoucherReportLotViewModel.setAdded(false);
+    issueVoucherReportLotViewModel.setOrderStatus(OrderStatus.SHIPPED);
+    // when
+    boolean actualResult = issueVoucherReportLotViewModel.isAddedAndShipped();
+    // then
+    assertFalse(actualResult);
+  }
+
+  @Test
+  public void isAddedAndShipped_shouldReturnFalseWhenIsReceived() {
+    // given
+    issueVoucherReportLotViewModel.setAdded(true);
+    issueVoucherReportLotViewModel.setOrderStatus(OrderStatus.RECEIVED);
+    // when
+    boolean actualResult = issueVoucherReportLotViewModel.isAddedAndShipped();
+    // then
+    assertFalse(actualResult);
   }
 }
