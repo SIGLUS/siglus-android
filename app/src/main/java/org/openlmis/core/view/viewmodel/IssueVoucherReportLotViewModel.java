@@ -129,6 +129,10 @@ public class IssueVoucherReportLotViewModel {
     return this.isLocal() && this.isDraft() && !this.getLot().getProduct().isKit();
   }
 
+  public boolean shouldShowAddItem() {
+    return isAdded && orderStatus == OrderStatus.SHIPPED;
+  }
+
   private Lot buildLot(PodProductLotItem podProductLotItem, PodProductItem podProductItem) {
     if (podProductItem.getProduct().isKit()) {
       return Lot.builder()
