@@ -26,6 +26,7 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
@@ -121,7 +122,18 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
   }
 
   private boolean getBoolean(JsonObject jsonObject, String memberName, boolean defaultValue) {
-    return jsonObject.has(memberName) ? jsonObject.get(memberName).getAsBoolean() : defaultValue;
+    if (jsonObject.has(memberName)) {
+      JsonElement jsonElement = jsonObject.get(memberName);
+      if (!jsonElement.isJsonNull()) {
+        return jsonElement.getAsBoolean();
+      }
+    } else {
+      new LMISException(
+          "ProductsResponseAdapter: " + memberName
+              + " is null, please contact the administrator to check whether this data is correct"
+      ).reportToFabric();
+    }
+    return defaultValue;
   }
 
   private String getString(JsonObject jsonObject, String memberName, String defaultValue) {
