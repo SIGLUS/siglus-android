@@ -53,6 +53,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.utils.keyboard.KeyboardUtil;
 import org.openlmis.core.view.adapter.IssueVoucherProductAdapter;
 import org.openlmis.core.view.adapter.IssueVoucherReportAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
@@ -306,11 +307,13 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
       IssueVoucherReportProductViewModel productViewModel) {
     return new SingleClickButtonListener() {
       @Override
-      public void onSingleClick(View v) {
-        switch (v.getId()) {
+      public void onSingleClick(View view) {
+        switch (view.getId()) {
           case R.id.btn_complete:
+            KeyboardUtil.hideKeyboard(view);
             if (addLotDialogFragment.validate()
                 && !addLotDialogFragment.hasIdenticalLot(productViewModel.getLotNumbers())) {
+
               presenter.addNewLot(
                   productViewModel, addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate()
               );
