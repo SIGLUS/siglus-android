@@ -9,6 +9,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import android.app.Application;
+import androidx.test.core.app.ApplicationProvider;
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +30,7 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Emergency;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
@@ -44,7 +47,6 @@ import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
-import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -81,7 +83,8 @@ public class RnRFormListPresenterTest {
     inventoryRepository = mock(InventoryRepository.class);
     reportTypeFormRepository = mock(ReportTypeFormRepository.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    Application application = ApplicationProvider.getApplicationContext();
+    RoboGuice.overrideApplicationInjector(application, new AbstractModule() {
       @Override
       protected void configure() {
         bind(SyncErrorsRepository.class).toInstance(syncErrorsRepository);
@@ -95,7 +98,7 @@ public class RnRFormListPresenterTest {
       }
     });
 
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(application)
         .getInstance(RnRFormListPresenter.class);
     rnRForms = createRnRForms();
     program = new ProgramBuilder().setProgramCode("VIA").build();
@@ -177,6 +180,10 @@ public class RnRFormListPresenterTest {
         .thenReturn(periodAplToMay);
     when(stockMovementRepository.queryEarliestStockMovementDateByProgram(program.getProgramCode())).thenReturn(
         DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT));
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(true);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -206,6 +213,10 @@ public class RnRFormListPresenterTest {
     when(requisitionPeriodService.hasMissedPeriod(program.getProgramCode())).thenReturn(false);
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodAplToMay);
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(true);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -235,9 +246,13 @@ public class RnRFormListPresenterTest {
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodAplToMay);
     when(inventoryRepository.queryPeriodInventory(periodAplToMay))
-        .thenReturn(new ArrayList<Inventory>());
+        .thenReturn(new ArrayList<>());
     when(stockMovementRepository.queryEarliestStockMovementDateByProgram(program.getProgramCode())).thenReturn(
         DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT));
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(true);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -267,7 +282,11 @@ public class RnRFormListPresenterTest {
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodAplToMay);
     when(inventoryRepository.queryPeriodInventory(periodAplToMay))
-        .thenReturn(new ArrayList<Inventory>());
+        .thenReturn(new ArrayList<>());
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(true);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -301,6 +320,10 @@ public class RnRFormListPresenterTest {
         .thenReturn(newArrayList(new Inventory()));
     when(stockMovementRepository.queryEarliestStockMovementDateByProgram(program.getProgramCode())).thenReturn(
         DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT));
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(true);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -331,6 +354,10 @@ public class RnRFormListPresenterTest {
         .thenReturn(periodAplToMay);
     when(inventoryRepository.queryPeriodInventory(periodAplToMay))
         .thenReturn(newArrayList(new Inventory()));
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(true);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -386,11 +413,15 @@ public class RnRFormListPresenterTest {
     LMISTestApp.getInstance().setCurrentTimeMillis(
         new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-    when(rnrFormRepository.list()).thenReturn(new ArrayList<RnRForm>());
+    when(rnrFormRepository.list()).thenReturn(new ArrayList<>());
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodAplToMay);
     when(stockMovementRepository.queryEarliestStockMovementDateByProgram(program.getProgramCode())).thenReturn(
         DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT));
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(true);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -403,17 +434,25 @@ public class RnRFormListPresenterTest {
   @Test
   public void shouldGenerate1CanNotDoInventoryForNoMovementsViewModelsWhenThereIsNoMissedRnrAndThereIsNoHistoricalRnrAndItIs17May()
       throws Exception {
-    Program program = new ProgramBuilder().setProgramCode("VIA").build();
-    presenter.setProgramCode(program.getProgramCode());
-    LMISTestApp.getInstance().setCurrentTimeMillis(
-        new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
+    // given
+    String programCode = "VIA";
+    presenter.setProgramCode(programCode);
 
-    when(rnrFormRepository.list()).thenReturn(new ArrayList<RnRForm>());
-    when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
+    ReportTypeForm typeForm = new ReportTypeForm();
+    typeForm.setActive(true);
+
+    when(reportTypeFormRepository.queryByCode(programCode)).thenReturn(typeForm);
+    when(rnrFormRepository.listInclude(Emergency.YES, programCode, typeForm)).thenReturn(new ArrayList<>());
+    when(requisitionPeriodService.hasMissedPeriod(programCode, null))
+        .thenReturn(false);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(programCode, typeForm))
+        .thenReturn(true);
+    when(requisitionPeriodService.generateNextPeriod(programCode, null))
         .thenReturn(periodAplToMay);
-
+    when(stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode)).thenReturn(null);
+    // when
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
-
+    // then
     assertThat(rnRFormViewModels.size()).isEqualTo(1);
     assertThat(rnRFormViewModels.get(0).getType())
         .isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY_NO_MOVEMENTS);
@@ -423,21 +462,32 @@ public class RnRFormListPresenterTest {
   @Test
   public void shouldGenerate1CanDoInventoryViewModelsWhenThereIsNoMissedRnrAndThereIsNoHistoricalRnrAndItIs18May()
       throws Exception {
-    Program program = new ProgramBuilder().setProgramCode("VIA").build();
-    presenter.setProgramCode(program.getProgramCode());
+    // given
+    String programCode = "VIA";
+    presenter.setProgramCode(programCode);
+
+    ReportTypeForm typeForm = new ReportTypeForm();
+    typeForm.setActive(true);
+
+    when(reportTypeFormRepository.queryByCode(programCode)).thenReturn(typeForm);
+    when(rnrFormRepository.listInclude(Emergency.YES, programCode, typeForm)).thenReturn(new ArrayList<>());
+    when(requisitionPeriodService.hasMissedPeriod(programCode, null))
+        .thenReturn(false);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(programCode, typeForm))
+        .thenReturn(true);
+    when(requisitionPeriodService.generateNextPeriod(programCode, null))
+        .thenReturn(periodAplToMay);
+
     LMISTestApp.getInstance().setCurrentTimeMillis(
         new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
-
-    when(rnrFormRepository.list()).thenReturn(new ArrayList<RnRForm>());
-    when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
-        .thenReturn(periodAplToMay);
-    when(inventoryRepository.queryPeriodInventory(periodAplToMay))
-        .thenReturn(new ArrayList<Inventory>());
     when(stockMovementRepository.queryEarliestStockMovementDateByProgram(program.getProgramCode())).thenReturn(
         DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT));
 
+    when(stockMovementRepository.queryMalariaStockMovementDates()).thenReturn(newArrayList("2024-07-08"));
+    when(inventoryRepository.queryPeriodInventory(periodAplToMay)).thenReturn(null);
+    // when
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
-
+    // then
     assertThat(rnRFormViewModels.size()).isEqualTo(1);
     assertThat(rnRFormViewModels.get(0).getType())
         .isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
@@ -451,12 +501,15 @@ public class RnRFormListPresenterTest {
     presenter.setProgramCode(program.getProgramCode());
     LMISTestApp.getInstance().setCurrentTimeMillis(
         new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
+    ReportTypeForm typeForm = getTypeForm(presenter);
 
-    when(rnrFormRepository.list()).thenReturn(new ArrayList<RnRForm>());
+    when(rnrFormRepository.list()).thenReturn(new ArrayList<>());
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(program.getProgramCode(), typeForm))
+        .thenReturn(true);
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodAplToMay);
     when(inventoryRepository.queryPeriodInventory(periodAplToMay))
-        .thenReturn(new ArrayList<Inventory>());
+        .thenReturn(new ArrayList<>());
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -474,13 +527,16 @@ public class RnRFormListPresenterTest {
     LMISTestApp.getInstance().setCurrentTimeMillis(
         new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-    when(rnrFormRepository.list()).thenReturn(new ArrayList<RnRForm>());
+    when(rnrFormRepository.list()).thenReturn(new ArrayList<>());
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodAplToMay);
     when(inventoryRepository.queryPeriodInventory(periodAplToMay))
         .thenReturn(newArrayList(new Inventory()));
     when(stockMovementRepository.queryEarliestStockMovementDateByProgram(program.getProgramCode())).thenReturn(
         DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT));
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(program.getProgramCode(), typeForm))
+        .thenReturn(true);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -497,11 +553,14 @@ public class RnRFormListPresenterTest {
     LMISTestApp.getInstance().setCurrentTimeMillis(
         new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-    when(rnrFormRepository.list()).thenReturn(new ArrayList<RnRForm>());
+    when(rnrFormRepository.list()).thenReturn(new ArrayList<>());
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodAplToMay);
     when(inventoryRepository.queryPeriodInventory(periodAplToMay))
         .thenReturn(newArrayList(new Inventory()));
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(program.getProgramCode(), typeForm))
+        .thenReturn(true);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -525,6 +584,10 @@ public class RnRFormListPresenterTest {
         .thenReturn(periodAplToMay);
     when(inventoryRepository.queryPeriodInventory(periodAplToMay))
         .thenReturn(newArrayList(new Inventory()));
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(false);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -552,9 +615,12 @@ public class RnRFormListPresenterTest {
     when(requisitionPeriodService.getCurrentPeriodBeginDate())
         .thenReturn(new DateTime(DateUtil.parseString("2016-04-21", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
-        .thenReturn(new ArrayList<Inventory>());
+        .thenReturn(new ArrayList<>());
     when(stockMovementRepository.queryEarliestStockMovementDateByProgram(program.getProgramCode())).thenReturn(
         DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT));
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(program.getProgramCode(), typeForm))
+        .thenReturn(true);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -588,7 +654,10 @@ public class RnRFormListPresenterTest {
     when(requisitionPeriodService.getCurrentPeriodBeginDate())
         .thenReturn(new DateTime(DateUtil.parseString("2016-04-21", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
-        .thenReturn(new ArrayList<Inventory>());
+        .thenReturn(new ArrayList<>());
+    ReportTypeForm typeForm = getTypeForm(presenter);
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(program.getProgramCode(), typeForm))
+        .thenReturn(true);
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -611,7 +680,8 @@ public class RnRFormListPresenterTest {
     LMISTestApp.getInstance().setCurrentTimeMillis(
         new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
     ReportTypeForm typeForm = getTypeForm(presenter);
-
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(program.getProgramCode(), typeForm))
+        .thenReturn(true);
     when(rnrFormRepository.listInclude(RnRForm.Emergency.YES, program.getProgramCode(), typeForm))
         .thenReturn(newArrayList(rnRForm1));
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
@@ -651,6 +721,9 @@ public class RnRFormListPresenterTest {
 
     when(rnrFormRepository.listInclude(RnRForm.Emergency.YES, program.getProgramCode(), typeForm))
         .thenReturn(newArrayList(rnRForm1));
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(true);
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodMarToApl);
     when(requisitionPeriodService.hasMissedPeriod(program.getProgramCode(), typeForm))
@@ -660,7 +733,7 @@ public class RnRFormListPresenterTest {
     when(requisitionPeriodService.getCurrentPeriodBeginDate())
         .thenReturn(new DateTime(DateUtil.parseString("2016-04-21", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
-        .thenReturn(new ArrayList<Inventory>());
+        .thenReturn(new ArrayList<>());
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -696,6 +769,9 @@ public class RnRFormListPresenterTest {
     when(rnrFormRepository
         .listInclude(any(RnRForm.Emergency.class), anyString(), any(ReportTypeForm.class)))
         .thenReturn(newArrayList(rnRForm2, rnRForm3));
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(false);
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodMayToJun);
     when(requisitionPeriodService.hasMissedPeriod(program.getProgramCode(), typeForm))
@@ -705,7 +781,7 @@ public class RnRFormListPresenterTest {
     when(requisitionPeriodService.getCurrentPeriodBeginDate())
         .thenReturn(new DateTime(DateUtil.parseString("2016-05-21", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
-        .thenReturn(new ArrayList<Inventory>());
+        .thenReturn(new ArrayList<>());
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -735,7 +811,10 @@ public class RnRFormListPresenterTest {
     ReportTypeForm typeForm = getTypeForm(presenter);
 
     when(rnrFormRepository.listInclude(RnRForm.Emergency.NO, program.getProgramCode(), typeForm))
-        .thenReturn(new ArrayList<RnRForm>());
+        .thenReturn(new ArrayList<>());
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(true);
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodFebToMar);
     when(requisitionPeriodService.hasMissedPeriod(program.getProgramCode(), typeForm))
@@ -745,7 +824,7 @@ public class RnRFormListPresenterTest {
     when(requisitionPeriodService.getCurrentPeriodBeginDate())
         .thenReturn(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
-        .thenReturn(new ArrayList<Inventory>());
+        .thenReturn(new ArrayList<>());
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -772,7 +851,10 @@ public class RnRFormListPresenterTest {
     ReportTypeForm typeForm = getTypeForm(presenter);
 
     when(rnrFormRepository.listInclude(RnRForm.Emergency.NO, program.getProgramCode(), typeForm))
-        .thenReturn(new ArrayList<RnRForm>());
+        .thenReturn(new ArrayList<>());
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(
+        program.getProgramCode(), typeForm)
+    ).thenReturn(true);
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodFebToMar);
     when(requisitionPeriodService.hasMissedPeriod(program.getProgramCode(), typeForm))
@@ -808,7 +890,9 @@ public class RnRFormListPresenterTest {
     ReportTypeForm typeForm = getTypeForm(presenter);
 
     when(rnrFormRepository.listInclude(RnRForm.Emergency.NO, program.getProgramCode(), typeForm))
-        .thenReturn(new ArrayList<RnRForm>());
+        .thenReturn(new ArrayList<>());
+    when(requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(program.getProgramCode(),
+        typeForm)).thenReturn(true);
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodFebToMar);
     when(requisitionPeriodService.hasMissedPeriod(program.getProgramCode(), typeForm))
@@ -818,7 +902,7 @@ public class RnRFormListPresenterTest {
     when(requisitionPeriodService.getCurrentPeriodBeginDate())
         .thenReturn(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)));
     when(inventoryRepository.queryPeriodInventory(any(Period.class)))
-        .thenReturn(new ArrayList<Inventory>());
+        .thenReturn(new ArrayList<>());
 
     List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 

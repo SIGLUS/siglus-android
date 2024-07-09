@@ -155,7 +155,7 @@ public class RequisitionPeriodService {
     List<RnRForm> rnRForms = rnrFormRepository
         .listInclude(RnRForm.Emergency.NO, programCode, reportTypeForm);
 
-    if (rnRForms.isEmpty() || rnRForms.get(rnRForms.size() - 1).isAuthorizedOrInApprovalOrApproved()) {
+    if (isAllRnrFormInDBCompletedOrNoRnrFormInDB(rnRForms)) {
       DateTime nextPeriodInScheduleEnd = generateNextPeriod(rnRForms, programCode, null).getEnd();
 
       DateTime lastInventoryDateForNextPeriodInSchedule = nextPeriodInScheduleEnd
@@ -169,6 +169,26 @@ public class RequisitionPeriodService {
     Date lastRnrPeriodEndDate = rnRForms.get(rnRForms.size() - 1).getPeriodEnd();
     return new DateTime(lastRnrPeriodEndDate)
         .isBefore(LMISApp.getInstance().getCurrentTimeMillis());
+  }
+
+  public boolean isAllRnrFormInDBCompletedOrNoRnrFormInDB(String programCode, ReportTypeForm reportTypeForm) {
+    List<RnRForm> rnRForms = rnrFormRepository
+        .listInclude(RnRForm.Emergency.NO, programCode, reportTypeForm);
+
+    return isAllRnrFormInDBCompletedOrNoRnrFormInDB(rnRForms);
+  }
+
+  private boolean isAllRnrFormInDBCompletedOrNoRnrFormInDB(List<RnRForm> rnRForms) {
+    if (rnRForms.isEmpty()) {
+      return true;
+    }
+
+    List<RnRForm> rejectedRnrForms = from(rnRForms)
+        .filter(rnRForm -> rnRForm != null && rnRForm.isRejected())
+        .toList();
+
+    return rejectedRnrForms.isEmpty()
+        && rnRForms.get(rnRForms.size() - 1).isAuthorizedOrInApprovalOrApproved();
   }
 
   public int getMissedPeriodOffsetMonth(String programCode) throws LMISException {

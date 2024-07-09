@@ -125,11 +125,10 @@ public class RnRFormListPresenter extends Presenter {
       ReportTypeForm typeForm) throws LMISException {
     if (requisitionPeriodService.hasMissedPeriod(programCode, typeForm)) {
       addPreviousPeriodMissedViewModels(rnRFormViewModels, typeForm);
-    } else {
+    } else if (requisitionPeriodService
+        .isAllRnrFormInDBCompletedOrNoRnrFormInDB(programCode, typeForm)) {
       Period nextPeriodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
-      if (isAllRnrFormInDBCompletedOrNoRnrFormInDB(typeForm)) {
-        rnRFormViewModels.add(generateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
-      }
+      rnRFormViewModels.add(generateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
     }
   }
 
@@ -200,7 +199,7 @@ public class RnRFormListPresenter extends Presenter {
 
   private void generateFirstMissedRnrFormViewModel(List<RnRFormViewModel> viewModels,
       DateTime inventoryBeginDate, ReportTypeForm typeForm) throws LMISException {
-    if (isAllRnrFormInDBCompletedOrNoRnrFormInDB(typeForm)) {
+    if (requisitionPeriodService.isAllRnrFormInDBCompletedOrNoRnrFormInDB(programCode, typeForm)) {
       addFirstMissedAndNotPendingRnrForm(viewModels);
     } else {
       viewModels.add(RnRFormViewModel.buildMissedPeriod(inventoryBeginDate.toDate(),
@@ -228,32 +227,4 @@ public class RnRFormListPresenter extends Presenter {
     repository.removeRnrForm(form);
   }
 
-  private boolean isAllRnrFormInDBCompletedOrNoRnrFormInDB(ReportTypeForm reportTypeForm) {
-    List<RnRForm> rnRForms = repository
-        .listInclude(RnRForm.Emergency.NO, programCode, reportTypeForm);
-
-    if (rnRForms.isEmpty()) {
-      return true;
-    }
-
-    List<RnRForm> rejectedRnrForms = from(rnRForms)
-        .filter(rnRForm -> rnRForm != null && rnRForm.isRejected())
-        .toList();
-
-    return rejectedRnrForms.isEmpty()
-        && rnRForms.get(rnRForms.size() - 1).isAuthorizedOrInApprovalOrApproved();
-  }
-
-  @SuppressWarnings("squid:S1905")
-  public Observable<Boolean> hasMissedPeriod() {
-    return Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
-      try {
-        subscriber.onNext(requisitionPeriodService.hasMissedPeriod(programCode));
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "hasMissedPeriod").reportToFabric();
-        subscriber.onError(e);
-      }
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-  }
 }
