@@ -66,7 +66,7 @@ public class SelectPeriodPresenter extends Presenter {
   @SuppressWarnings("squid:S1905")
   public Observable<Constants.Program> correctDirtyObservable(Constants.Program from) {
     return Observable.create((Observable.OnSubscribe<Constants.Program>) subscriber -> {
-      List<StockCard> deletedStockCards = dirtyDataManager.correctData();
+      List<StockCard> deletedStockCards = dirtyDataManager.checkAndGetDirtyData();
       if (!CollectionUtils.isEmpty(deletedStockCards)) {
         subscriber.onNext(from);
       } else {

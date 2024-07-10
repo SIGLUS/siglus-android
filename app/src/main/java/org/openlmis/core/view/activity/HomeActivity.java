@@ -247,12 +247,16 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         initialDirtyDataCheckDialog.dismiss();
       }
       if (event.isExistingDirtyData()) {
-        showDeletedWarningDialog(dirtyDataManager::deleteAndReset);
+        showDeleteDirtyDataWarningDialog();
       }
     } else {
       showInitialDirtyDataCheckDialog();
     }
 
+  }
+
+  private void showDeleteDirtyDataWarningDialog() {
+    showDeletedWarningDialog(dirtyDataManager::deleteAndReset);
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
@@ -571,7 +575,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private boolean isHaveDirtyData() {
     if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
         || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
-      showDeletedWarningDialog(dirtyDataManager::deleteAndReset);
+      showDeleteDirtyDataWarningDialog();
       return true;
     }
     return false;

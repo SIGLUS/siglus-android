@@ -749,4 +749,19 @@ public class StockRepository {
     }
     return result;
   }
+
+  public List<StockCard> queryStockCardsByProductCodes(
+      List<String> productsCodeList
+  ) throws LMISException {
+    ArrayList<Long> productIds = new ArrayList<>();
+    for (String productCode : productsCodeList) {
+      Product product = productRepository.getByCode(productCode);
+      if (product != null) {
+        productIds.add(product.getId());
+      }
+    }
+
+    return dbUtil.withDao(StockCard.class,
+        dao -> dao.queryBuilder().where().in(PRODUCT_ID, productIds).query());
+  }
 }

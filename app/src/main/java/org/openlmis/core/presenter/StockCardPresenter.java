@@ -93,7 +93,7 @@ public class StockCardPresenter extends Presenter {
   private void checkDataAndEmitter(Subscriber<? super List<StockCard>> subscriber, ArchiveStatus status) {
     List<StockCard> allStockCards = stockRepository.list();
     if (sharedPreferenceMgr.shouldStartHourlyDirtyDataCheck()) {
-      dirtyDataManager.correctDataForStockCardOverView(allStockCards, lotsOnHands);
+      dirtyDataManager.checkAndGetDirtyData(allStockCards, lotsOnHands);
     }
     stockService.monthlyUpdateAvgMonthlyConsumption();
     subscriber.onNext(from(allStockCards).filter(stockCard -> {

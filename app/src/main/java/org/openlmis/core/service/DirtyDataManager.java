@@ -18,10 +18,12 @@
 
 package org.openlmis.core.service;
 
+import static org.openlmis.core.manager.MovementReasonManager.INVENTORY;
 import static org.openlmis.core.utils.DateUtil.calculateDateOffsetToNow;
 
 import android.text.TextUtils;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -30,6 +32,7 @@ import com.google.inject.Singleton;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +47,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.event.InitialDirtyDataCheckEvent;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.LotMovementItem;
@@ -57,6 +61,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.model.StockMovementEntry;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -114,39 +119,149 @@ public class DirtyDataManager {
     RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
   }
 
-  public List<StockCard> correctData() {
-    lotsOnHands.putAll(stockRepository.lotOnHands());
-    return doCorrectDirtyData(stockRepository.list());
+  public List<StockCard> checkAndGetDirtyData() {
+    return checkAndGetDirtyData(stockRepository.list(), stockRepository.lotOnHands());
   }
 
-  public List<StockCard> correctDataForStockCardOverView(List<StockCard> stockCards,
-      Map<String, String> inputLotsOnHands) {
+  public List<StockCard> checkAndGetDirtyData(
+      List<StockCard> inputStockCards,
+      Map<String, String> inputLotsOnHands
+  ) {
     lotsOnHands.putAll(inputLotsOnHands);
-    return doCorrectDirtyData(stockCards);
+    return doCheckAndGetDirtyData(inputStockCards);
   }
 
-  private List<StockCard> doCorrectDirtyData(List<StockCard> stockCards) {
-    List<StockCard> deletedStockCards = new ArrayList<>();
+  private List<StockCard> doCheckAndGetDirtyData(List<StockCard> stockCards) {
+    List<StockCard> dirtyDataOfStockCards = new ArrayList<>();
     if (sharedPreferenceMgr.shouldInitialDataCheck()) {
-      return deletedStockCards;
+      return dirtyDataOfStockCards;
     }
+    // update the check data date
     sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
-    List<StockCard> lastTwoMovementAndLotSOHWrong = checkTheLastTwoMovementAndLotSOH(stockCards);
-    deletedStockCards.addAll(lastTwoMovementAndLotSOHWrong);
-    saveFullyDeletedInfo(deletedStockCards);
-    Set<String> productCodes = getCodeFromStockCard(deletedStockCards);
+    // check and cache the dirty data
+    List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
+    HashMap<StockCard, List<StockMovementItem>> dirtyDataOfStockCardToLastTwoStockMovementItems =
+        checkTheLastTwoMovementAndLotSOH(stockCards, cardIdsLotOnHandLessZero);
+//    correctAndSaveDirtyData(dirtyDataOfStockCardToLastTwoStockMovementItems,
+//        cardIdsLotOnHandLessZero);
+    // save wrong product codes
+    dirtyDataOfStockCards.addAll(dirtyDataOfStockCardToLastTwoStockMovementItems.keySet());
+    Set<String> productCodes = getCodeFromStockCard(dirtyDataOfStockCards);
     if (!productCodes.isEmpty()) {
       sharedPreferenceMgr.setDeletedProduct(productCodes);
     }
-    return deletedStockCards;
+
+    return dirtyDataOfStockCards;
+  }
+
+  /**
+   * correct dirty data when `StockCard`.stockOnHand < 0
+   * 1. set `StockCard`.stockOnHand = 0
+   * 2. create or update last one `StockMovementItem`
+   *
+   * @param stockCard stockCard
+   * @param lastTwoStockMovementItems last two stock movement items
+   * @throws LMISException db error
+   */
+  private void correctStockCardWhenStockOnHandIsLessThan0(
+      StockCard stockCard,
+      @Nullable List<StockMovementItem> lastTwoStockMovementItems
+  ) throws LMISException {
+    // update latestStockMovementItem and stockCard
+    StockMovementItem latestStockMovementItem;
+
+    if (lastTwoStockMovementItems != null && !lastTwoStockMovementItems.isEmpty()) {
+      int dirtyDataOfStockMovementItemsSize = lastTwoStockMovementItems.size();
+      if (dirtyDataOfStockMovementItemsSize == 1) {
+        latestStockMovementItem = correctLastOneMovementItemWhenOnlyOneItem(lastTwoStockMovementItems);
+      } else {
+        latestStockMovementItem = correctLastOneMovementItemWhenHaveLeastTwoItems(lastTwoStockMovementItems);
+      }
+    } else {
+      latestStockMovementItem = createNewInventoryStockMovementItem(stockCard);
+    }
+    // save latestStockMovementItem into db
+    stockMovementRepository.createOrUpdateStockMovementAndLotMovementItems(latestStockMovementItem);
+    stockCard.setStockOnHand(latestStockMovementItem.getStockOnHand());
+    // save stockCard into db
+    stockRepository.createOrUpdate(stockCard);
+  }
+
+  @NonNull
+  private StockMovementItem correctLastOneMovementItemWhenHaveLeastTwoItems(
+      @NonNull List<StockMovementItem> lastTwoStockMovementItems) {
+    StockMovementItem latestStockMovementItem;
+    StockMovementItem previousStockMovementItem = lastTwoStockMovementItems.get(0);
+    latestStockMovementItem = lastTwoStockMovementItems.get(1);
+
+    if (!isCorrectMovements(previousStockMovementItem, latestStockMovementItem)) {
+      if (latestStockMovementItem.isNegativeMovement()) {
+        long diff = previousStockMovementItem.getStockOnHand()
+            - latestStockMovementItem.getMovementQuantity();
+        if (diff >= 0) {
+          latestStockMovementItem.setStockOnHand(diff);
+        } else {
+          latestStockMovementItem.setStockOnHand(0L);
+        }
+      } else if (latestStockMovementItem.isPositiveMovement()) {
+        long diff = previousStockMovementItem.getStockOnHand()
+            + latestStockMovementItem.getMovementQuantity();
+        if (diff >= 0) {
+          latestStockMovementItem.setStockOnHand(diff);
+        } else {
+          latestStockMovementItem.setStockOnHand(0L);
+        }
+      }
+    }
+
+    long stockOnHand = latestStockMovementItem.getStockOnHand();
+    if (stockOnHand < 0) {
+      latestStockMovementItem.setStockOnHand(0L);
+    }
+    return latestStockMovementItem;
+  }
+
+  @NonNull
+  private static StockMovementItem correctLastOneMovementItemWhenOnlyOneItem(
+      @NonNull List<StockMovementItem> lastTwoStockMovementItems) {
+    StockMovementItem latestStockMovementItem;
+    latestStockMovementItem = lastTwoStockMovementItems.get(0);
+
+    long stockOnHand = latestStockMovementItem.getStockOnHand();
+    if (stockOnHand < 0) {
+      latestStockMovementItem.setStockOnHand(0L);
+    }
+    return latestStockMovementItem;
+  }
+
+  @NonNull
+  private StockMovementItem createNewInventoryStockMovementItem(StockCard stockCard) {
+    StockMovementItem newStockMovementItem = new StockMovementItem();
+    Date now = DateUtil.getCurrentDate();
+    newStockMovementItem.setCreatedTime(now);
+    newStockMovementItem.setStockOnHand(0);
+    newStockMovementItem.setMovementDate(now);
+    newStockMovementItem.setMovementType(
+        MovementReasonManager.MovementType.PHYSICAL_INVENTORY
+    );
+    newStockMovementItem.setReason(INVENTORY);
+    newStockMovementItem.setRequested(null);
+    newStockMovementItem.setSignature(null);
+    newStockMovementItem.setSynced(false);
+    newStockMovementItem.setCreatedAt(now);
+    newStockMovementItem.setUpdatedAt(now);
+    newStockMovementItem.setStockCard(stockCard);
+    newStockMovementItem.setMovementQuantity(0);
+
+    return newStockMovementItem;
   }
 
   @SuppressWarnings("squid:S1905")
   public void dirtyDataMonthlyCheck() {
     Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
-      scanAllStockMovements();
-      subscriber.onCompleted();
-    }).observeOn(AndroidSchedulers.mainThread())
+          scanAllStockMovements();
+          subscriber.onCompleted();
+        }).observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
         .subscribe(new Subscriber<Void>() {
           @Override
@@ -190,6 +305,12 @@ public class DirtyDataManager {
     }
   }
 
+  /**
+   * It will check `StockCard` only 1. stockOnHand < 0 2. stockOnHand != the sum of matched lots
+   * stockOnHand {@code org.openlmis.core.model.StockCard#calculateSOHFromLots(java.util.Map)}
+   *
+   * @return productCodes
+   */
   private Set<String> checkSoh() {
     lotsOnHands.putAll(stockRepository.lotOnHands());
     List<StockCard> checkedStockCards = stockRepository.queryCheckedStockCards();
@@ -209,14 +330,15 @@ public class DirtyDataManager {
     return new HashSet<>();
   }
 
-  public void scanAllStockMovements() {
+  private void scanAllStockMovements() {
     if (sharedPreferenceMgr.shouldSyncLastYearStockData()
         || sharedPreferenceMgr.isSyncingLastYearStockCards()
         || sharedPreferenceMgr.shouldInitialDataCheck()
         || isSyncedMonthCheck) {
       return;
     }
-    DateTime recordLastDirtyDataCheck = SharedPreferenceMgr.getInstance().getLatestMonthlyCheckDirtyDataTime();
+    DateTime recordLastDirtyDataCheck = SharedPreferenceMgr.getInstance()
+        .getLatestMonthlyCheckDirtyDataTime();
     if (calculateDateOffsetToNow(recordLastDirtyDataCheck) >= 30) {
       isSyncedMonthCheck = true;
       sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
@@ -237,22 +359,24 @@ public class DirtyDataManager {
     }).toSet();
   }
 
-  private void saveFullyDeletedInfo(List<StockCard> deletedStockCards) {
+  private void saveFullyDeletedInfo(
+      HashMap<StockCard, List<StockMovementItem>> wrongStockCardToLastTwoStockMovementItems
+  ) {
     Map<String, List<StockMovementItem>> codeToStockItems = new HashMap<>();
-    for (StockCard stockCard : deletedStockCards) {
-      List<StockMovementItem> stockMovementItems = null;
-      try {
-        stockMovementItems = stockMovementRepository.queryMovementByStockCardId(stockCard.getId());
-      } catch (LMISException e) {
-        Log.w(TAG, e);
+    for (StockCard stockCard : wrongStockCardToLastTwoStockMovementItems.keySet()) {
+      if (stockCard != null) {
+        codeToStockItems.put(
+            stockCard.getProduct().getCode(),
+            wrongStockCardToLastTwoStockMovementItems.get(stockCard)
+        );
       }
-      codeToStockItems.put(stockCard.getProduct().getCode(), stockMovementItems);
     }
     saveDeletedMovementToDB(codeToStockItems, true);
   }
 
-  private void saveDeletedMovementToDB(Map<String, List<StockMovementItem>> items, boolean fullyDelete) {
-    if (items.size() == 0) {
+  private void saveDeletedMovementToDB(Map<String, List<StockMovementItem>> items,
+      boolean fullyDelete) {
+    if (items.isEmpty()) {
       return;
     }
     final String facilityCode = sharedPreferenceMgr.getUserFacilityCode();
@@ -261,10 +385,82 @@ public class DirtyDataManager {
     }
     List<DirtyDataItemInfo> dirtyDataItemInfos = new ArrayList<>();
     for (Map.Entry<String, List<StockMovementItem>> entry : items.entrySet()) {
-      dirtyDataItemInfos.add(convertStockMovementItemsToStockMovementEntriesForSave(entry.getValue(),
-          entry.getKey(), fullyDelete));
+      dirtyDataItemInfos.add(
+          convertStockMovementItemsToStockMovementEntriesForSave(entry.getValue(),
+              entry.getKey(), fullyDelete));
     }
     dirtyDataRepository.saveAll(dirtyDataItemInfos);
+  }
+
+  public void correctDirtyData() {
+    EventBus.getDefault().post(DeleteDirtyDataEvent.START);
+    getCorrectDirtyDataObservable().subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(deleteDirtyDataSubscribe);
+  }
+
+  private Observable<Void> getCorrectDirtyDataObservable() {
+    return Observable.create(subscriber -> {
+        try {
+          List<String> productCodes = sharedPreferenceMgr.getDeletedProduct();
+          if (!productCodes.isEmpty()) {
+
+            correctAndSaveDirtyData(
+                stockRepository.queryStockCardsByProductCodes(productCodes),
+                stockRepository.cardIdsIfLotOnHandLessZero()
+            );
+            // TODO: to be deleted
+            stockRepository.deleteStockMovementsForDirtyData(productCodes);
+            try {
+              stockRepository.insertNewInventory(productCodes);
+            } catch (LMISException e) {
+              Log.w(TAG, e);
+            }
+            stockRepository.resetStockCard(productCodes);
+            stockRepository.resetLotsOnHand(productCodes);
+            cmmRepository.resetCmm(productCodes);
+            rnrFormRepository.deleteRnrFormDirtyData(productCodes);
+            sharedPreferenceMgr.setDeletedProduct(new HashSet<>());
+          }
+        } catch (LMISException e) {
+          e.reportToFabric();
+          subscriber.onError(e);
+        }
+      subscriber.onNext(null);
+      subscriber.onCompleted();
+    });
+  }
+
+  /**
+   * correct data by
+   * 1. adjust the `StockCard`.stockOnHand as 0 if the values is less than 0
+   * 2. adjust the `StockCard`.stockOnHand value and last one `StockMovementItem`.stockOnHand and
+   * quantity if the value is not valid in ${@code isCorrectSOHBetweenMovementAndStockCard} or
+   * ${@code isCorrectMovements}
+   *
+   * @param stockCards dirty data of stock cards
+   * @param cardIdsLotOnHandLessZero `StockCard` ids which `StockCard`.stockOnHand < 0
+   */
+  private void correctAndSaveDirtyData(
+      List<StockCard> stockCards,
+      List<String> cardIdsLotOnHandLessZero
+  ) throws LMISException {
+    HashMap<Long, List<StockMovementItem>> stockMovementItemsMap = getLastStockMovementMap();
+
+    for (StockCard stockCard : stockCards) {
+      if (stockCard == null) {
+        continue;
+      }
+      // 1. `StockCard`.stockOnHand < 0
+      if (!isPositiveOnHand(stockCard, cardIdsLotOnHandLessZero)) {
+        correctStockCardWhenStockOnHandIsLessThan0(stockCard, stockMovementItemsMap.get(stockCard.getId()));
+      }
+      // 2. `StockCard`.stockOnHand != last one `StockMovementItem`.stockOnHand
+
+      // 3. last one `StockMovementItem`.stockOnHand !=
+      // penult `StockMovementItem`.stockOnHand + `StockMovementItem`.movementQuantity
+
+    }
   }
 
   public void deleteAndReset() {
@@ -280,7 +476,8 @@ public class DirtyDataManager {
       List<StockMovementItem> deletedStockMovementItems = sharedPreferenceMgr.getDeletedMovementItems();
       Map<String, List<StockMovementItem>> keepStockMovementItemsMap = sharedPreferenceMgr.getKeepMovementItemsMap();
       List<String> productCodes = sharedPreferenceMgr.getDeletedProduct();
-      if (!deletedStockMovementItems.isEmpty() || !keepStockMovementItemsMap.isEmpty() || !productCodes.isEmpty()) {
+      if (!deletedStockMovementItems.isEmpty() || !keepStockMovementItemsMap.isEmpty()
+          || !productCodes.isEmpty()) {
         dirtyDataRepository.deleteDraftForDirtyData();
       }
       if (!deletedStockMovementItems.isEmpty()) {
@@ -328,23 +525,34 @@ public class DirtyDataManager {
     Type type = new TypeToken<List<StockMovementEntry>>() {
     }.getType();
     gson.toJson(movementEntries, type);
-    return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type), fullyDelete);
+    return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type),
+        fullyDelete);
   }
 
-  private List<StockCard> checkTheLastTwoMovementAndLotSOH(List<StockCard> stockCards) {
-    List<StockCard> deleted = new ArrayList<>();
-    HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = getLastStockMovementMap();
-    List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
+  /**
+   * It will check `StockCard` and `StockMovements` 1. stockOnHand < 0 2. stockOnHand != the sum of
+   * matched lots stockOnHand 3. last two stock_movements data is incorrect
+   * stock_movements.A.stockOnHand + movementQuantity != stock_movements.B.stockOnHand
+   *
+   * @param stockCards               stock list
+   * @param cardIdsLotOnHandLessZero stockCardIds which `StockCard`.stockOnHand is less than 0
+   * @return dirty data - map of `StockCard` to `StockMovementItem` list
+   */
+  private HashMap<StockCard, List<StockMovementItem>> checkTheLastTwoMovementAndLotSOH(
+      List<StockCard> stockCards, List<String> cardIdsLotOnHandLessZero
+  ) {
+    HashMap<StockCard, List<StockMovementItem>> stockCardToStockMovementItems = new HashMap<>();
+    HashMap<Long, List<StockMovementItem>> stockMovementItemsMap = getLastStockMovementMap();
     Map<String, List<StockMovementItem>> keepMovementItemsMap = sharedPreferenceMgr.getKeepMovementItemsMap();
-    Set<String> keepStockCardIds = keepMovementItemsMap.size() == 0 ? new HashSet<>() : keepMovementItemsMap.keySet();
+    Set<String> keepStockCardIds =
+        keepMovementItemsMap.isEmpty() ? new HashSet<>() : keepMovementItemsMap.keySet();
     for (StockCard stockCard : stockCards) {
       if (keepStockCardIds.contains(String.valueOf(stockCard.getId()))) {
         continue;
       }
-      List<StockMovementItem> stockMovementItems = stockMovementItemsMap
-          .get((int) stockCard.getId());
+      List<StockMovementItem> stockMovementItems = stockMovementItemsMap.get(stockCard.getId());
       if (!isPositiveOnHand(stockCard, cardIdsLotOnHandLessZero)) {
-        deleted.add(stockCard);
+        stockCardToStockMovementItems.put(stockCard, stockMovementItems);
       } else if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
         StockMovementRepository.SortClass sort = new StockMovementRepository.SortClass();
         Collections.sort(stockMovementItems, sort);
@@ -352,35 +560,45 @@ public class DirtyDataManager {
         StockMovementItem preStockMovement = stockMovementItems.get(0);
         if (!isCorrectMovements(preStockMovement, currentStockMovement)
             || !isCorrectSOHBetweenMovementAndStockCard(stockCard, currentStockMovement)) {
-          deleted.add(stockCard);
+          stockCardToStockMovementItems.put(stockCard, stockMovementItems);
         }
       }
     }
     Log.d("performance", "check The Last TwoMovement");
-    Log.d("dirty", "daily" + deleted.toString());
+    Log.d("dirty", "daily" + stockCardToStockMovementItems);
 
-    return deleted;
+    return stockCardToStockMovementItems;
   }
 
-  private HashMap<Integer, List<StockMovementItem>> getLastStockMovementMap() {
+  private HashMap<Long, List<StockMovementItem>> getLastStockMovementMap() {
     Log.d("TwoStockMovements", "1");
     List<StockMovementItem> stockMovements = stockMovementRepository.listLastTwoStockMovements();
-    HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = new HashMap<>();
+    HashMap<Long, List<StockMovementItem>> stockMovementItemsMap = new HashMap<>();
     for (StockMovementItem item : stockMovements) {
       long id = item.getStockCard().getId();
-      if (!stockMovementItemsMap.containsKey((int) id)) {
+      if (!stockMovementItemsMap.containsKey(id)) {
         List<StockMovementItem> list = new ArrayList<>();
         list.add(item);
 
-        stockMovementItemsMap.put((int) id, list);
+        stockMovementItemsMap.put(id, list);
       } else {
-        stockMovementItemsMap.get((int) id).add(item);
+        List<StockMovementItem> stockMovementItems = stockMovementItemsMap.get(id);
+        if (stockMovementItems != null) {
+          stockMovementItems.add(item);
+        }
 
       }
     }
     return stockMovementItemsMap;
   }
 
+  /**
+   * It will check `StockCard` and `StockMovements` 1. stockOnHand < 0 2. stockOnHand != the sum of
+   * matched lots stockOnHand 3. last two stock_movements data is incorrect
+   * stock_movements.A.stockOnHand + movementQuantity != stock_movements.B.stockOnHand
+   *
+   * @return productCodes
+   */
   @SuppressWarnings({"squid:S3776", "squid:S135"})
   private Set<String> checkAllMovementAndLotSOHAndSaveToDB() {
     List<StockCard> checkedStockCards = stockRepository.queryCheckedStockCards();
@@ -414,8 +632,9 @@ public class DirtyDataManager {
     return covertMapFromStockIdToProductCode(idToStockItemForDelete);
   }
 
-  private Set<String> covertMapFromStockIdToProductCode(Map<String, List<StockMovementItem>> idToStockItemForDelete) {
-    if (idToStockItemForDelete.size() > 0) {
+  private Set<String> covertMapFromStockIdToProductCode(
+      Map<String, List<StockMovementItem>> idToStockItemForDelete) {
+    if (!idToStockItemForDelete.isEmpty()) {
       Set<String> stockCardIds = idToStockItemForDelete.keySet();
 
       Map<String, String> stockCardIdToCode = stockMovementRepository
@@ -456,11 +675,28 @@ public class DirtyDataManager {
     return stockCard.getStockOnHand() >= 0 && !cardIds.contains(String.valueOf(stockCard.getId()));
   }
 
+  /**
+   * Check if the `StockCard`.stockOnHand == last one `StockMovementItem`.stockOnHand
+   *
+   * @param stockCard      product information - stockOnHand etc.
+   * @param newestMovement last one stockMovementItem
+   * @return `StockCard`.stockOnHand == last one `StockMovementItem`.stockOnHand
+   */
   private boolean isCorrectSOHBetweenMovementAndStockCard(StockCard stockCard,
       StockMovementItem newestMovement) {
     return stockCard.calculateSOHFromLots(lotsOnHands) == newestMovement.getStockOnHand();
   }
 
+  /**
+   * Check if the last two `StockMovementItem`.stockOnHand is valid eg. `StockMovementItem`A is the
+   * last one, and `StockMovementItem`B is the penult two. `StockMovementItem`A.stockOnHand ==
+   * `StockMovementItem`B.stockOnHand + `StockMovementItem`B.movementQuantity
+   *
+   * @param previousMovement the penult StockMovementItem
+   * @param newestMovement   last one StockMovementItem
+   * @return `StockMovementItem`A.stockOnHand == `StockMovementItem`B.stockOnHand +
+   * `StockMovementItem`B.movementQuantity
+   */
   private boolean isCorrectMovements(StockMovementItem previousMovement,
       StockMovementItem newestMovement) {
     return checkFormula(newestMovement, newestMovement.getStockOnHand(),
