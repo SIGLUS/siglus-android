@@ -3,6 +3,7 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '50'))
         timestamps ()
+        timeout(time: 60, unit: 'MINUTES')
     }
     stages {
         stage('Static Code Analysis') {
