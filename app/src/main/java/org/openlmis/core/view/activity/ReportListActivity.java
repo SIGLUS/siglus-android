@@ -151,6 +151,7 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
       public void onNext(Boolean hasMissed) {
         if (Boolean.TRUE.equals(hasMissed)) {
           ToastUtil.show(R.string.msg_create_emergency_has_missed);
+          loaded();
         } else {
           checkViaProgramEmergencyRequisitionsCount();
         }
