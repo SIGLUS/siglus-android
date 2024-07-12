@@ -46,7 +46,6 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
-import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
@@ -229,19 +228,8 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
         vRejectionReason.setOnClickListener(null);
         vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_gray);
         ivRejectionReason.setImageResource(R.drawable.ic_pulldown_unable);
-
         tvRejectionReason.setError(null);
-
-        List<MovementReason> movementReasons = MovementReasonManager.getInstance()
-            .buildReasonListForMovementType(MovementType.REJECTION);
-        MovementReason rejectionReason = from(movementReasons)
-            .firstMatch(movementReason -> movementReason != null && lotViewModel.getRejectedReason()
-                .equals(movementReason.getCode()))
-            .orNull();
-        if (rejectionReason != null) {
-          tvRejectionReason.setText(rejectionReason.getDescription());
-        }
-
+        setRejectReasonText();
         return;
       }
 
@@ -265,7 +253,6 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
             reasonsDialog.show(((BaseActivity) itemView.getContext()).getSupportFragmentManager(), "SELECT_REASONS");
           }
         });
-        setRejectReasonText();
       } else {
         vRejectionReason.setOnClickListener(null);
         vRejectionReason.setBackgroundResource(R.drawable.border_bg_corner_gray);
@@ -337,11 +324,28 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
         @Override
         public void afterTextChanged(Editable s) {
           try {
+            Long previousDiff = lotViewModel.compareAcceptedAndShippedQuantity();
+
             String acceptedQuantity = s.toString();
             Long acceptedValue = StringUtils.isEmpty(acceptedQuantity) ? null : Long.parseLong(acceptedQuantity);
+
             lotViewModel.setAcceptedQuantity(acceptedValue);
+            Long currentDiff = lotViewModel.compareAcceptedAndShippedQuantity();
             etQuantityAccepted.setError(null);
-            tvQuantityReturned.setText(convertLongValueToString(lotViewModel.compareAcceptedAndShippedQuantity()));
+            tvQuantityReturned.setText(convertLongValueToString(currentDiff));
+            // we need to clear the rejectionReason
+            // because to need to separate the positive and negative reason
+            if (!lotViewModel.isAdded()) {
+              if (currentDiff == null
+                  || previousDiff == null
+                  || (previousDiff > 0 && currentDiff <= 0)
+                  || (previousDiff < 0 && currentDiff >= 0)
+                  || (previousDiff == 0 && currentDiff != 0)
+              ) {
+                lotViewModel.setRejectedReason(null);
+              }
+            }
+
             setRejectReason();
           } catch (NumberFormatException e) {
             new LMISException(e, "issue voucher acceptedQuantity").reportToFabric();
