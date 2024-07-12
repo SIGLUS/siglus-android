@@ -78,14 +78,17 @@ public class IssueVoucherReportProductViewModel implements MultiItemEntity {
   }
 
   public PodProductItem restoreToPodProductModelForRemote() {
-    List<PodProductLotItem> lotItems = FluentIterable.from(lotViewModelList).transform(lotViewModel -> {
-      PodProductLotItem lotItem = lotViewModel.convertToModel();
-      lotItem.setPodProductItem(podProductItem);
-      lotItem.setAcceptedQuantity(null);
-      lotItem.setRejectedReason(null);
-      lotItem.setNotes(null);
-      return lotItem;
-    }).toList();
+    List<PodProductLotItem> lotItems = FluentIterable
+        .from(lotViewModelList)
+        .filter(lotViewModel -> lotViewModel != null && !lotViewModel.isAdded())
+        .transform(lotViewModel -> {
+          PodProductLotItem lotItem = lotViewModel.convertToModel();
+          lotItem.setPodProductItem(podProductItem);
+          lotItem.setAcceptedQuantity(null);
+          lotItem.setRejectedReason(null);
+          lotItem.setNotes(null);
+          return lotItem;
+        }).toList();
     podProductItem.setPodProductLotItemsWrapper(lotItems);
     return podProductItem;
   }
