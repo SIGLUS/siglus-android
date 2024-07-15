@@ -122,35 +122,41 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       syncData();
     }
   };
+
   private final SingleClickButtonListener singleClickButtonListener = new SingleClickButtonListener() {
     @Override
     public void onSingleClick(View v) {
       if (isHaveDirtyData()) {
-        return;
-      }
-      switch (v.getId()) {
-        case R.id.btn_stock_card:
-          startActivity(StockCardListActivity.class);
-          break;
-        case R.id.btn_inventory:
-          Intent inventoryIntent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
-          startActivity(inventoryIntent);
-          break;
-        case R.id.btn_requisitions:
-          Intent reportIntent = new Intent(HomeActivity.this, ReportListActivity.class);
-          startActivity(reportIntent);
-          break;
-        case R.id.btn_kits:
-          startActivity(KitStockCardListActivity.class);
-          break;
-        case R.id.btn_issue_voucher:
-          startActivity(new Intent(HomeActivity.this, IssueVoucherListActivity.class));
-          break;
-        default:
-          // do nothing
+        showDirtyDataWarningDialog(() -> onFeatureEntryClick(v));
+      } else {
+        onFeatureEntryClick(v);
       }
     }
   };
+
+  private void onFeatureEntryClick(View view) {
+    switch (view.getId()) {
+      case R.id.btn_stock_card:
+        startActivity(StockCardListActivity.class);
+        break;
+      case R.id.btn_inventory:
+        Intent inventoryIntent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
+        startActivity(inventoryIntent);
+        break;
+      case R.id.btn_requisitions:
+        Intent reportIntent = new Intent(HomeActivity.this, ReportListActivity.class);
+        startActivity(reportIntent);
+        break;
+      case R.id.btn_kits:
+        startActivity(KitStockCardListActivity.class);
+        break;
+      case R.id.btn_issue_voucher:
+        startActivity(new Intent(HomeActivity.this, IssueVoucherListActivity.class));
+        break;
+      default:
+        // do nothing
+    }
+  }
 
   public static Intent getIntentToMe(Context context) {
     Intent intent = new Intent(context, HomeActivity.class);
@@ -211,7 +217,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         && getSupportFragmentManager().findFragmentByTag("initial_dirty_data_check_dialog") != null) {
       initialDirtyDataCheckDialog.dismiss();
       if (event.isExistingDirtyData()) {
-        showDeletedWarningDialog(dirtyDataManager::deleteAndReset);
+        showDirtyDataWarningDialog(null);
       }
     } else {
       showInitialDirtyDataCheckDialog();
@@ -348,7 +354,9 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     }
 
     dirtyDataManager.dirtyDataMonthlyCheck();
-    isHaveDirtyData();
+    if (isHaveDirtyData()) {
+      showDirtyDataWarningDialog(null);
+    }
     refreshDashboard();
   }
 
@@ -461,12 +469,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   }
 
   private boolean isHaveDirtyData() {
-    if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
-        || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
-      showDeletedWarningDialog(dirtyDataManager::deleteAndReset);
-      return true;
-    }
-    return false;
+    return !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
+        || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems());
   }
 
   private void showInitialDirtyDataCheckDialog() {

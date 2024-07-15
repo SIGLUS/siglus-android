@@ -125,6 +125,10 @@ public class StockCardPresenter extends Presenter {
       view.showWarning();
       return;
     }
+    filterSpecificStatusStockCards(status);
+  }
+
+  public void filterSpecificStatusStockCards(ArchiveStatus status) {
     if (sharedPreferenceMgr.shouldStartHourlyDirtyDataCheck()) {
       Subscription subscription = correctDirtyObservable(status).subscribe(afterLoadHandler);
       subscriptions.add(subscription);

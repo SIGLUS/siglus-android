@@ -195,6 +195,7 @@
   <string name="label_adjustment_dialog_initial_amount"><![CDATA[<b>%1$s</b> é a quantidade inicial para requisitar <br/>]]></string>
   <string name="label_adjustment_dialog_adjusted_amount"><![CDATA[<b>%1$s</b> é a quantidade ajustada para requisitar <br/>]]></string>
   <string name="btn_del">Apagar</string>
+  <string name="btn_confirm">Confirmar</string>
   <string name="msg_del_requisition">Aviso!!! \ n Tem certeza de que deseja apagar? Esta requisição já está sincronizada com o servidor. Se você clicar em APAGAR, em seguida, esta requisição vai desaparecer do seu tablet, mas permanecem guardada no servidor.</string>
   <string name="msg_stock_movement_is_not_ready">Aplicativo está a sincronizar os movimentos de stock, por favor aguarde até que este processo seja concluído para continuar.</string>
 
@@ -595,6 +596,7 @@
   <string name="upgrade_download_try">Por favor tente mais tarde</string>
   <string name="upgrade_download_click_install">Clique para instalar</string>
   <string name="dirty_data_correct_warning">Há um erro de cálculo de stock no produto %s, o sistema apenas exclui os dados sujos. por favor, use receber / inventário físico / ajustes para registrar novamente o estoque do produto.</string>
+  <string name="dirty_data_warning">Há um erro de cálculo de stock no produto %s, por favor contacte o administrador.</string>
   <string name="dashboard_product_types">Total de produtos</string>
   <string name="msg_fetching_facility_info">Baixando informações da US…</string>
   <string name="msg_fetching_facility_info_failed">O download das informações da US falhou, faça login novamente.</string>
