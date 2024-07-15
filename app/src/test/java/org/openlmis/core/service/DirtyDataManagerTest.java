@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import android.app.Application;
+import androidx.test.core.app.ApplicationProvider;
 import com.google.inject.AbstractModule;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +32,6 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -71,8 +72,9 @@ public class DirtyDataManagerTest {
     programRepository = mock(ProgramRepository.class);
     dirtyDataRepository = mock(DirtyDataRepository.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    dirtyDataManager = RoboGuice.getInjector(RuntimeEnvironment.application)
+    Application application = ApplicationProvider.getApplicationContext();
+    RoboGuice.overrideApplicationInjector(application, new MyTestModule());
+    dirtyDataManager = RoboGuice.getInjector(application)
         .getInstance(DirtyDataManager.class);
     mockAllStockCard();
     User user = new User("user", "123");
@@ -101,7 +103,7 @@ public class DirtyDataManagerTest {
     when(stockRepository.lotOnHands()).thenReturn(lotsOnHands);
     //When
     SharedPreferenceMgr.getInstance().setShouldInitialDirtyDataCheck(false);
-    List<StockCard> wrongStockCards = dirtyDataManager.correctData();
+    List<StockCard> wrongStockCards = dirtyDataManager.checkAndGetDirtyData();
 
     //Then
     assertThat(wrongStockCards.size(), is(1));
@@ -112,7 +114,7 @@ public class DirtyDataManagerTest {
   public void shouldScanWrongSOHBetweenMovementAndStockCard() {
     Product product = ProductBuilder.create()
         .setCode("productCode1")
-        .setProductId(1l)
+        .setProductId(1L)
         .setIsActive(true)
         .setStrength("serious1")
         .setPrimaryName("Primary product name1").build();
@@ -127,7 +129,7 @@ public class DirtyDataManagerTest {
         .withQuantity(0)
         .withMovementType(MovementReasonManager.MovementType.INITIAL_INVENTORY)
         .build();
-    stockCard.setId(1l);
+    stockCard.setId(1L);
     stockCard.setProduct(product);
     stockCard.setStockOnHand(11);
     stockMovementItem.setStockCard(stockCard);
@@ -142,8 +144,7 @@ public class DirtyDataManagerTest {
     SharedPreferenceMgr.getInstance().setShouldInitialDirtyDataCheck(false);
     Map<String, String> lotsOnHands = new HashMap<>();
     lotsOnHands.put("1", "0");
-    List<StockCard> wrongStockCards = dirtyDataManager
-        .correctDataForStockCardOverView(list, lotsOnHands);
+    List<StockCard> wrongStockCards = dirtyDataManager.checkAndGetDirtyData(list, lotsOnHands);
     assertThat(wrongStockCards.size(), is(1));
     assertThat(wrongStockCards.get(0).getProduct().getCode(), is("productCode1"));
   }
@@ -164,7 +165,7 @@ public class DirtyDataManagerTest {
   private void mockAllStockCard() {
     product1 = ProductBuilder.create()
         .setCode("productCode1")
-        .setProductId(1l)
+        .setProductId(1L)
         .setIsActive(true)
         .setStrength("serious1")
         .setPrimaryName("Primary product name1").build();
@@ -179,7 +180,7 @@ public class DirtyDataManagerTest {
         .withQuantity(1)
         .withMovementType(MovementReasonManager.MovementType.NEGATIVE_ADJUST)
         .build();
-    stockCard1.setId(1l);
+    stockCard1.setId(1L);
     stockCard1.setProduct(product1);
     stockCard1.setStockOnHand(11);
     stockMovementItem11.setStockCard(stockCard1);
@@ -187,7 +188,7 @@ public class DirtyDataManagerTest {
 
     product2 = ProductBuilder.create()
         .setCode("productCode2")
-        .setProductId(2l)
+        .setProductId(2L)
         .setIsActive(true)
         .setStrength("serious2")
         .setPrimaryName("Primary product name2").build();
@@ -202,7 +203,7 @@ public class DirtyDataManagerTest {
         .withQuantity(2)
         .withMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST)
         .build();
-    stockCard2.setId(2l);
+    stockCard2.setId(2L);
     stockCard2.setProduct(product2);
     stockCard2.setStockOnHand(13);
     stockMovementItem21.setStockCard(stockCard2);
@@ -210,7 +211,7 @@ public class DirtyDataManagerTest {
 
     product3 = ProductBuilder.create()
         .setCode("productCode3")
-        .setProductId(3l)
+        .setProductId(3L)
         .setIsActive(true)
         .setStrength("serious3")
         .setPrimaryName("Primary product name3").build();
@@ -227,7 +228,7 @@ public class DirtyDataManagerTest {
         .withMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST)
         .build();
     stockMovementItem32.setId(32);
-    stockCard3.setId(3l);
+    stockCard3.setId(3L);
     stockCard3.setProduct(product3);
     stockCard3.setStockOnHand(13);
     stockMovementItem31.setStockCard(stockCard3);
@@ -235,7 +236,7 @@ public class DirtyDataManagerTest {
 
     product4 = ProductBuilder.create()
         .setCode("productCode4")
-        .setProductId(4l)
+        .setProductId(4L)
         .setIsActive(true)
         .setStrength("serious4")
         .setPrimaryName("Primary product name4").build();
@@ -258,7 +259,7 @@ public class DirtyDataManagerTest {
         .withMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST)
         .build();
     stockMovementItem43.setId(43);
-    stockCard4.setId(4l);
+    stockCard4.setId(4L);
     stockCard4.setProduct(product4);
     stockCard4.setStockOnHand(15);
     stockMovementItem41.setStockCard(stockCard4);
