@@ -601,7 +601,7 @@
   <string name="upgrade_download_Failed">Falha no Download</string>
   <string name="upgrade_download_try">Por favor tente mais tarde</string>
   <string name="upgrade_download_click_install">Clique para instalar</string>
-  <string name="dirty_data_correct_warning">Há um erro de cálculo de stock no produto %s, o sistema apenas ajusta os dados sujos. por favor, use receber / inventário físico / ajustes para registrar novamente o estoque do produto.</string>
+  <string name="dirty_data_correct_warning">Há um erro de cálculo de stock no produto %s, o sistema apenas exclui os dados sujos. por favor, use receber / inventário físico / ajustes para registrar novamente o estoque do produto.</string>
   <string name="dashboard_product_types">Total de produtos</string>
   <string name="msg_fetching_facility_info">Baixando informações da US…</string>
   <string name="msg_fetching_facility_info_failed">O download das informações da US falhou, faça login novamente.</string>

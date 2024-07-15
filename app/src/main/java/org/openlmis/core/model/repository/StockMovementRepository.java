@@ -480,28 +480,6 @@ public class StockMovementRepository {
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateLotMovementItemsSql);
   }
 
-  public void createOrUpdateStockMovementAndLotMovementItems(
-      StockMovementItem stockMovementItem
-  ) throws LMISException {
-    dbUtil.withDao(StockMovementItem.class, dao -> {
-      // save stockMovementItem
-      dao.createOrUpdate(stockMovementItem);
-      // save lotMovementItems
-      List<LotMovementItem> lotMovementItems = stockMovementItem.getLotMovementItemListWrapper();
-      if (lotMovementItems != null && !lotMovementItems.isEmpty()) {
-        for (LotMovementItem lotMovementItem : lotMovementItems) {
-          Lot existingLot = lotRepository.getLotByLotNumberAndProductId(
-              lotMovementItem.getLot().getLotNumber(),
-              lotMovementItem.getLot().getProduct().getId()
-          );
-          lotMovementItem.setLot(existingLot);
-          lotRepository.createLotMovementItem(lotMovementItem);
-        }
-      }
-      return null;
-    });
-  }
-
   public static class SortClass implements Comparator<StockMovementItem> {
 
     @Override

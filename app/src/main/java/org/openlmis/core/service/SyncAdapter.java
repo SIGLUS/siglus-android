@@ -77,7 +77,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
     Log.d(TAG, "===> Syncing Data to server");
     if (shouldCorrectData(extras) && sharedPreferenceMgr.shouldStartHourlyDirtyDataCheck()) {
-      List<StockCard> deleteStockCards = dirtyDataManager.checkAndGetDirtyData();
+      List<StockCard> deleteStockCards = dirtyDataManager.correctData();
       if (!CollectionUtils.isEmpty(deleteStockCards)) {
         sendDeletedProductBroadcast();
       }

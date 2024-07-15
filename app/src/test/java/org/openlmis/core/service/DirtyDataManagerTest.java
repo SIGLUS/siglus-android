@@ -101,7 +101,7 @@ public class DirtyDataManagerTest {
     when(stockRepository.lotOnHands()).thenReturn(lotsOnHands);
     //When
     SharedPreferenceMgr.getInstance().setShouldInitialDirtyDataCheck(false);
-    List<StockCard> wrongStockCards = dirtyDataManager.checkAndGetDirtyData();
+    List<StockCard> wrongStockCards = dirtyDataManager.correctData();
 
     //Then
     assertThat(wrongStockCards.size(), is(1));
@@ -143,7 +143,7 @@ public class DirtyDataManagerTest {
     Map<String, String> lotsOnHands = new HashMap<>();
     lotsOnHands.put("1", "0");
     List<StockCard> wrongStockCards = dirtyDataManager
-        .checkAndGetDirtyData(list, lotsOnHands);
+        .correctDataForStockCardOverView(list, lotsOnHands);
     assertThat(wrongStockCards.size(), is(1));
     assertThat(wrongStockCards.get(0).getProduct().getCode(), is("productCode1"));
   }

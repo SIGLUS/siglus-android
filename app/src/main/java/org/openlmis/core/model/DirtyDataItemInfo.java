@@ -18,7 +18,6 @@
 
 package org.openlmis.core.model;
 
-import androidx.annotation.Nullable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.Data;
@@ -43,26 +42,11 @@ public class DirtyDataItemInfo extends BaseModel {
   @DatabaseField
   boolean fullyDelete = true;
 
-  @Nullable
-  @DatabaseField
-  Long stockOnHand;
-
   public DirtyDataItemInfo(String productCode, boolean syncStatus, String jsonData,
       boolean fullyDelete) {
     this.productCode = productCode;
     this.synced = syncStatus;
     this.jsonData = jsonData;
     this.fullyDelete = fullyDelete;
-  }
-
-  public DirtyDataItemInfo(
-      String jsonData, boolean synced, String productCode, boolean fullyDelete,
-      @Nullable Long stockOnHand
-  ) {
-    this.jsonData = jsonData;
-    this.synced = synced;
-    this.productCode = productCode;
-    this.fullyDelete = fullyDelete;
-    this.stockOnHand = stockOnHand;
   }
 }
