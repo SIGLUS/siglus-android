@@ -199,18 +199,8 @@ public class SelectPeriodActivity extends BaseActivity implements
       public void onNext(Constants.Program from) {
         loaded();
         nextBtn.setEnabled(true);
-        showDeletedWarningDialog(buildWarningDialogFragmentDelegate(from));
+        showDirtyDataWarningDialog(() -> goNextPage());
       }
-    };
-  }
-
-
-  @NonNull
-  private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(
-      final Constants.Program program) {
-    return () -> {
-      dirtyDataManager.deleteAndReset();
-      finish();
     };
   }
 

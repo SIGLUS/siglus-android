@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.CmmCalculateEvent;
@@ -54,11 +53,11 @@ import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
+import org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InventoryUtils;
 import org.openlmis.core.view.activity.BaseActivity;
-import org.openlmis.core.view.activity.HomeActivity;
 import org.openlmis.core.view.activity.StockMovementsWithLotActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.holder.StockCardViewHolder;
@@ -162,7 +161,10 @@ public class StockCardListFragment extends BaseFragment implements
 
   @Override
   public void showWarning() {
-    ((BaseActivity) requireActivity()).showDeletedWarningDialog(buildWarningDialogFragmentDelegate());
+    ((BaseActivity) requireActivity()).showDirtyDataWarningDialog(
+        getChildFragmentManager(),
+        () -> presenter.filterSpecificStatusStockCards(getArchiveStatus())
+    );
   }
 
   @Override
@@ -227,7 +229,12 @@ public class StockCardListFragment extends BaseFragment implements
   }
 
   public void loadStockCards() {
-    presenter.loadStockCards(ACTIVE);
+    presenter.loadStockCards(getArchiveStatus());
+  }
+
+  @NonNull
+  private ArchiveStatus getArchiveStatus() {
+    return ACTIVE;
   }
 
   protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = inventoryViewModel -> {
@@ -237,16 +244,6 @@ public class StockCardListFragment extends BaseFragment implements
 
   protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
     return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, false);
-  }
-
-  @NonNull
-  private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate() {
-    return () -> {
-      dirtyDataManager.deleteAndReset();
-      Intent intent = HomeActivity.getIntentToMe(LMISApp.getContext());
-      requireActivity().startActivity(intent);
-      requireActivity().finish();
-    };
   }
 
   private void initRecycleView() {

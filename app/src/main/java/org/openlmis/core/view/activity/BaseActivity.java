@@ -358,6 +358,25 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
         .add(warningDialogFragment, "deleteProductWarningDialogFragment").commitNow();
   }
 
+  public void showDirtyDataWarningDialog(WarningDialogFragment.DialogDelegate dialogDelegate) {
+    showDirtyDataWarningDialog(getSupportFragmentManager(), dialogDelegate);
+  }
+
+  public void showDirtyDataWarningDialog(FragmentManager supportFragmentManager, WarningDialogFragment.DialogDelegate dialogDelegate) {
+    WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder
+        .build(dialogDelegate,
+            getString(R.string.dirty_data_warning,
+                getDeletedProductCodeList()),
+            getString(R.string.btn_confirm),
+            getString(R.string.dialog_cancel));
+
+    String dirtyDataWarningDialogFragmentTag = "dirtyDataWarningDialogFragment";
+    if (supportFragmentManager.findFragmentByTag(dirtyDataWarningDialogFragmentTag) == null) {
+      supportFragmentManager.beginTransaction()
+          .add(warningDialogFragment, dirtyDataWarningDialogFragmentTag).commitNow();
+    }
+  }
+
   @Override
   public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
