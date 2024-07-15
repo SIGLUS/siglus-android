@@ -324,7 +324,7 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
         @Override
         public void afterTextChanged(Editable s) {
           try {
-            Long previousDiff = lotViewModel.compareAcceptedAndShippedQuantity();
+            final Long previousDiff = lotViewModel.compareAcceptedAndShippedQuantity();
 
             String acceptedQuantity = s.toString();
             Long acceptedValue = StringUtils.isEmpty(acceptedQuantity) ? null : Long.parseLong(acceptedQuantity);
@@ -335,21 +335,23 @@ public class IssueVoucherReportLotAdapter extends BaseAdapter {
             tvQuantityReturned.setText(convertLongValueToString(currentDiff));
             // we need to clear the rejectionReason
             // because to need to separate the positive and negative reason
-            if (!lotViewModel.isAdded()) {
-              if (currentDiff == null
-                  || previousDiff == null
-                  || (previousDiff > 0 && currentDiff <= 0)
-                  || (previousDiff < 0 && currentDiff >= 0)
-                  || (previousDiff == 0 && currentDiff != 0)
-              ) {
-                lotViewModel.setRejectedReason(null);
-              }
+            if (!lotViewModel.isAdded()
+                && isPreviousDiffTypeIsSameWithNewDiff(currentDiff, previousDiff)
+            ) {
+              lotViewModel.setRejectedReason(null);
             }
 
             setRejectReason();
           } catch (NumberFormatException e) {
             new LMISException(e, "issue voucher acceptedQuantity").reportToFabric();
           }
+        }
+
+        private boolean isPreviousDiffTypeIsSameWithNewDiff(Long currentDiff, Long previousDiff) {
+          return currentDiff == null || previousDiff == null
+              || (previousDiff > 0 && currentDiff <= 0)
+              || (previousDiff < 0 && currentDiff >= 0)
+              || (previousDiff == 0 && currentDiff != 0);
         }
       };
     }
