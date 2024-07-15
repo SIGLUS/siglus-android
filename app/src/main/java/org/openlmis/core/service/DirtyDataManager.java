@@ -114,18 +114,19 @@ public class DirtyDataManager {
     RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
   }
 
-  public List<StockCard> correctData() {
-    lotsOnHands.putAll(stockRepository.lotOnHands());
-    return doCorrectDirtyData(stockRepository.list());
+  public List<StockCard> checkAndGetDirtyData() {
+    return checkAndGetDirtyData(stockRepository.list(), stockRepository.lotOnHands());
   }
 
-  public List<StockCard> correctDataForStockCardOverView(List<StockCard> stockCards,
-      Map<String, String> inputLotsOnHands) {
+  public List<StockCard> checkAndGetDirtyData(
+      List<StockCard> inputStockCards,
+      Map<String, String> inputLotsOnHands
+  ) {
     lotsOnHands.putAll(inputLotsOnHands);
-    return doCorrectDirtyData(stockCards);
+    return doCheckAndGetDirtyData(inputStockCards);
   }
 
-  private List<StockCard> doCorrectDirtyData(List<StockCard> stockCards) {
+  private List<StockCard> doCheckAndGetDirtyData(List<StockCard> stockCards) {
     List<StockCard> deletedStockCards = new ArrayList<>();
     if (sharedPreferenceMgr.shouldInitialDataCheck()) {
       return deletedStockCards;
@@ -190,6 +191,12 @@ public class DirtyDataManager {
     }
   }
 
+  /**
+   * It will check `StockCard` only 1. stockOnHand < 0 2. stockOnHand != the sum of matched lots
+   * stockOnHand {@code org.openlmis.core.model.StockCard#calculateSOHFromLots(java.util.Map)}
+   *
+   * @return productCodes
+   */
   private Set<String> checkSoh() {
     lotsOnHands.putAll(stockRepository.lotOnHands());
     List<StockCard> checkedStockCards = stockRepository.queryCheckedStockCards();
@@ -209,7 +216,7 @@ public class DirtyDataManager {
     return new HashSet<>();
   }
 
-  public void scanAllStockMovements() {
+  private void scanAllStockMovements() {
     if (sharedPreferenceMgr.shouldSyncLastYearStockData()
         || sharedPreferenceMgr.isSyncingLastYearStockCards()
         || sharedPreferenceMgr.shouldInitialDataCheck()
@@ -251,8 +258,9 @@ public class DirtyDataManager {
     saveDeletedMovementToDB(codeToStockItems, true);
   }
 
-  private void saveDeletedMovementToDB(Map<String, List<StockMovementItem>> items, boolean fullyDelete) {
-    if (items.size() == 0) {
+  private void saveDeletedMovementToDB(Map<String, List<StockMovementItem>> items,
+      boolean fullyDelete) {
+    if (items.isEmpty()) {
       return;
     }
     final String facilityCode = sharedPreferenceMgr.getUserFacilityCode();
@@ -331,18 +339,28 @@ public class DirtyDataManager {
     return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type), fullyDelete);
   }
 
-  private List<StockCard> checkTheLastTwoMovementAndLotSOH(List<StockCard> stockCards) {
+  /**
+   * It will check `StockCard` and `StockMovements` 1. stockOnHand < 0 2. stockOnHand != the sum of
+   * matched lots stockOnHand 3. last two stock_movements data is incorrect
+   * stock_movements.A.stockOnHand + movementQuantity != stock_movements.B.stockOnHand
+   *
+   * @param stockCards               stock list
+   * @return dirty data - map of `StockCard` to `StockMovementItem` list
+   */
+  private List<StockCard> checkTheLastTwoMovementAndLotSOH(
+      List<StockCard> stockCards
+  ) {
     List<StockCard> deleted = new ArrayList<>();
-    HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = getLastStockMovementMap();
+    HashMap<Long, List<StockMovementItem>> stockMovementItemsMap = getLastStockMovementMap();
     List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
     Map<String, List<StockMovementItem>> keepMovementItemsMap = sharedPreferenceMgr.getKeepMovementItemsMap();
-    Set<String> keepStockCardIds = keepMovementItemsMap.size() == 0 ? new HashSet<>() : keepMovementItemsMap.keySet();
+    Set<String> keepStockCardIds =
+        keepMovementItemsMap.isEmpty() ? new HashSet<>() : keepMovementItemsMap.keySet();
     for (StockCard stockCard : stockCards) {
       if (keepStockCardIds.contains(String.valueOf(stockCard.getId()))) {
         continue;
       }
-      List<StockMovementItem> stockMovementItems = stockMovementItemsMap
-          .get((int) stockCard.getId());
+      List<StockMovementItem> stockMovementItems = stockMovementItemsMap.get(stockCard.getId());
       if (!isPositiveOnHand(stockCard, cardIdsLotOnHandLessZero)) {
         deleted.add(stockCard);
       } else if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
@@ -357,30 +375,40 @@ public class DirtyDataManager {
       }
     }
     Log.d("performance", "check The Last TwoMovement");
-    Log.d("dirty", "daily" + deleted.toString());
+    Log.d("dirty", "daily" + deleted);
 
     return deleted;
   }
 
-  private HashMap<Integer, List<StockMovementItem>> getLastStockMovementMap() {
+  private HashMap<Long, List<StockMovementItem>> getLastStockMovementMap() {
     Log.d("TwoStockMovements", "1");
     List<StockMovementItem> stockMovements = stockMovementRepository.listLastTwoStockMovements();
-    HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = new HashMap<>();
+    HashMap<Long, List<StockMovementItem>> stockMovementItemsMap = new HashMap<>();
     for (StockMovementItem item : stockMovements) {
       long id = item.getStockCard().getId();
-      if (!stockMovementItemsMap.containsKey((int) id)) {
+      if (!stockMovementItemsMap.containsKey(id)) {
         List<StockMovementItem> list = new ArrayList<>();
         list.add(item);
 
-        stockMovementItemsMap.put((int) id, list);
+        stockMovementItemsMap.put(id, list);
       } else {
-        stockMovementItemsMap.get((int) id).add(item);
+        List<StockMovementItem> stockMovementItems = stockMovementItemsMap.get(id);
+        if (stockMovementItems != null) {
+          stockMovementItems.add(item);
+        }
 
       }
     }
     return stockMovementItemsMap;
   }
 
+  /**
+   * It will check `StockCard` and `StockMovements` 1. stockOnHand < 0 2. stockOnHand != the sum of
+   * matched lots stockOnHand 3. last two stock_movements data is incorrect
+   * stock_movements.A.stockOnHand + movementQuantity != stock_movements.B.stockOnHand
+   *
+   * @return productCodes
+   */
   @SuppressWarnings({"squid:S3776", "squid:S135"})
   private Set<String> checkAllMovementAndLotSOHAndSaveToDB() {
     List<StockCard> checkedStockCards = stockRepository.queryCheckedStockCards();
@@ -414,8 +442,10 @@ public class DirtyDataManager {
     return covertMapFromStockIdToProductCode(idToStockItemForDelete);
   }
 
-  private Set<String> covertMapFromStockIdToProductCode(Map<String, List<StockMovementItem>> idToStockItemForDelete) {
-    if (idToStockItemForDelete.size() > 0) {
+  private Set<String> covertMapFromStockIdToProductCode(
+      Map<String, List<StockMovementItem>> idToStockItemForDelete
+  ) {
+    if (!idToStockItemForDelete.isEmpty()) {
       Set<String> stockCardIds = idToStockItemForDelete.keySet();
 
       Map<String, String> stockCardIdToCode = stockMovementRepository
@@ -456,11 +486,28 @@ public class DirtyDataManager {
     return stockCard.getStockOnHand() >= 0 && !cardIds.contains(String.valueOf(stockCard.getId()));
   }
 
+  /**
+   * Check if the `StockCard`.stockOnHand == last one `StockMovementItem`.stockOnHand
+   *
+   * @param stockCard      product information - stockOnHand etc.
+   * @param newestMovement last one stockMovementItem
+   * @return `StockCard`.stockOnHand == last one `StockMovementItem`.stockOnHand
+   */
   private boolean isCorrectSOHBetweenMovementAndStockCard(StockCard stockCard,
       StockMovementItem newestMovement) {
     return stockCard.calculateSOHFromLots(lotsOnHands) == newestMovement.getStockOnHand();
   }
 
+  /**
+   * Check if the last two `StockMovementItem`.stockOnHand is valid eg. `StockMovementItem`A is the
+   * last one, and `StockMovementItem`B is the penult two. `StockMovementItem`A.stockOnHand ==
+   * `StockMovementItem`B.stockOnHand + `StockMovementItem`B.movementQuantity
+   *
+   * @param previousMovement the penult StockMovementItem
+   * @param newestMovement   last one StockMovementItem
+   * @return `StockMovementItem`A.stockOnHand == `StockMovementItem`B.stockOnHand +
+   * `StockMovementItem`B.movementQuantity
+   */
   private boolean isCorrectMovements(StockMovementItem previousMovement,
       StockMovementItem newestMovement) {
     return checkFormula(newestMovement, newestMovement.getStockOnHand(),
