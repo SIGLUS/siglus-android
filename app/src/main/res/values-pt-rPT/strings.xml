@@ -445,6 +445,9 @@
   <string name="incomplete_alert_message">"Seus relatórios: %s não foram concluídos"</string>
   <string name="incomplete_alert_message_for_single_report">"Seu relatórios: %s não foi concluído"</string>
 
+  <!-- Dirty data banner -->
+  <string name="dirty_data_alert_message">Existem alguns dados sujos, por favor contacte o administrador</string>
+
   <!--Add products to requisition form-->
   <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
   <string name="title_add_drugs_to_form">Adicione produtos para requisição</string>
