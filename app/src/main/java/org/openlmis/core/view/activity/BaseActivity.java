@@ -362,7 +362,10 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
     showDirtyDataWarningDialog(getSupportFragmentManager(), dialogDelegate);
   }
 
-  public void showDirtyDataWarningDialog(FragmentManager supportFragmentManager, WarningDialogFragment.DialogDelegate dialogDelegate) {
+  public void showDirtyDataWarningDialog(
+      FragmentManager supportFragmentManager,
+      WarningDialogFragment.DialogDelegate dialogDelegate
+  ) {
     WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder
         .build(dialogDelegate,
             getString(R.string.dirty_data_warning,
