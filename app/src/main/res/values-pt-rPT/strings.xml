@@ -452,6 +452,9 @@
   <string name="new_shipped_issue_voucher_alert_message">O pedido dos %1$s foi cumprida</string>
   <string name="new_shipped_issue_voucher_alert_message_for_single_program">O pedido do %1$s foi cumprido</string>
 
+  <!-- Dirty data banner -->
+  <string name="dirty_data_alert_message">Existem alguns dados sujos, por favor contacte o administrador</string>
+
   <!--Add products to requisition form-->
   <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
   <string name="title_add_drugs_to_form">Adicione produtos para requisição</string>

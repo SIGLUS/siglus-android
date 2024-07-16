@@ -89,6 +89,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private static final String EXPORT_DATA_PARENT_DIR = "//data//";
   private static final int PERMISSION_REQUEST_CODE = 200;
+  @InjectView(R.id.view_dirty_data_banner)
+  NotificationBanner dirtyDataBanner;
   IncompleteRequisitionBanner incompleteRequisitionBanner;
   NotificationBanner newShippedIssueVoucherBanner;
   Guideline guideline;
@@ -395,6 +397,14 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     dirtyDataManager.dirtyDataMonthlyCheck();
     if (isHaveDirtyData()) {
       showDirtyDataWarningDialog(null);
+
+      dirtyDataBanner.setNotificationMessage(
+          getString(R.string.dirty_data_alert_message)
+      );
+      dirtyDataBanner.setOnClickListener((view) -> showDirtyDataWarningDialog(null));
+      dirtyDataBanner.setVisibility(View.VISIBLE);
+    } else {
+      dirtyDataBanner.setVisibility(View.GONE);
     }
     refreshDashboard();
   }

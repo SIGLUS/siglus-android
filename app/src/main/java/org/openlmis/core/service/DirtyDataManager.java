@@ -489,7 +489,7 @@ public class DirtyDataManager {
             .append(stockMovementItem.getMovementQuantity())
             .append(", MovementType=")
             .append(stockMovementItem.getMovementType())
-            .append("\n");
+            .append('\n');
       }
     }
     // report - most 125 characters in error message
