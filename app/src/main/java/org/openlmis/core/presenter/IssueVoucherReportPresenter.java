@@ -24,9 +24,12 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
@@ -48,6 +51,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
@@ -68,6 +72,9 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
 
   @Inject
   StockRepository stockRepository;
+
+  @Inject
+  StockMovementRepository movementRepository;
 
   @Inject
   private ProgramRepository programRepository;
@@ -190,6 +197,12 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   public Observable<Void> getCompleteFormObservable(String receivedBy) {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {
+        // check current time is after latest movement created time
+        Date latestMovementCreatedTime = movementRepository.getLatestStockMovementCreatedTime();
+        if (latestMovementCreatedTime != null && DateUtil.getCurrentDate().before(latestMovementCreatedTime)) {
+          throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
+        }
+        // update pod status
         pod.setDraft(false);
         pod.setReceivedBy(receivedBy);
         pod.setReceivedDate(DateUtil.getCurrentDate());
@@ -198,7 +211,9 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
           pod.setStockManagementReason(reasonCode);
         }
         setPodItems();
+        // `pods` table
         podRepository.createOrUpdateWithItems(pod);
+        // `stock_cards` related tables
         saveStockManagement(pod);
         subscriber.onCompleted();
       } catch (LMISException e) {

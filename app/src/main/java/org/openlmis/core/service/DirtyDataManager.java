@@ -506,7 +506,7 @@ public class DirtyDataManager {
    * @param previousMovement the penult StockMovementItem
    * @param newestMovement   last one StockMovementItem
    * @return `StockMovementItem`A.stockOnHand == `StockMovementItem`B.stockOnHand +
-   * `StockMovementItem`B.movementQuantity
+   *     `StockMovementItem`B.movementQuantity
    */
   private boolean isCorrectMovements(StockMovementItem previousMovement,
       StockMovementItem newestMovement) {
