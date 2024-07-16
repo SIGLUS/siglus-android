@@ -7,11 +7,21 @@
   android:background="@color/color_white"
   android:fillViewport="true">
 
+  <org.openlmis.core.view.widget.NotificationBanner
+    android:id="@+id/view_dirty_data_banner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:visibility="visible" />
+
   <org.openlmis.core.view.widget.IncompleteRequisitionBanner
     android:id="@+id/view_incomplete_requisition_banner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/view_dirty_data_banner" />
 
   <org.openlmis.core.view.widget.NotificationBanner
     android:id="@+id/view_new_shipped_issue_voucher_banner"

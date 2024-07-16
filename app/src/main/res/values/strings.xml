@@ -461,6 +461,9 @@
   <string name="new_shipped_issue_voucher_alert_message">The order for the %1$s have been fulfilled</string>
   <string name="new_shipped_issue_voucher_alert_message_for_single_program">The order for the %1$s has been fulfilled</string>
 
+  <!-- Dirty data banner -->
+  <string name="dirty_data_alert_message">There are some dirty data, please contact your administrator</string>
+
   <!-- Add products to requisition form -->
   <string name="label_add_new_drugs_to_via">Add Products</string>
   <string name="title_add_drugs_to_form">Add products to requisition</string>
