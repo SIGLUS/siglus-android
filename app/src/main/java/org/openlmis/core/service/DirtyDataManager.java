@@ -206,6 +206,8 @@ public class DirtyDataManager {
       if (!isPositiveOnHand(stockCard, cardIdsLotOnHandLessZero)
           || stockCard.calculateSOHFromLots(lotsOnHands) != stockCard.getStockOnHand()) {
         deleteStockCardIds.add(String.valueOf(stockCard.getId()));
+        // report the dirty data to AppCentre
+        reportDirtyDataByStockOnHandError(stockCard, null);
       }
     }
     if (!deleteStockCardIds.isEmpty()) {
@@ -252,6 +254,7 @@ public class DirtyDataManager {
         stockMovementItems = stockMovementRepository.queryMovementByStockCardId(stockCard.getId());
       } catch (LMISException e) {
         Log.w(TAG, e);
+        e.reportToFabric();
       }
       codeToStockItems.put(stockCard.getProduct().getCode(), stockMovementItems);
     }
@@ -309,6 +312,7 @@ public class DirtyDataManager {
           stockRepository.insertNewInventory(productCodes);
         } catch (LMISException e) {
           Log.w(TAG, e);
+          e.reportToFabric();
         }
         stockRepository.resetStockCard(productCodes);
         stockRepository.resetLotsOnHand(productCodes);
@@ -363,6 +367,8 @@ public class DirtyDataManager {
       List<StockMovementItem> stockMovementItems = stockMovementItemsMap.get(stockCard.getId());
       if (!isPositiveOnHand(stockCard, cardIdsLotOnHandLessZero)) {
         deleted.add(stockCard);
+        // report the dirty data to AppCentre
+        reportDirtyDataByStockOnHandError(stockCard, stockMovementItems);
       } else if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
         StockMovementRepository.SortClass sort = new StockMovementRepository.SortClass();
         Collections.sort(stockMovementItems, sort);
@@ -371,6 +377,8 @@ public class DirtyDataManager {
         if (!isCorrectMovements(preStockMovement, currentStockMovement)
             || !isCorrectSOHBetweenMovementAndStockCard(stockCard, currentStockMovement)) {
           deleted.add(stockCard);
+          // report the dirty data to AppCentre
+          reportDirtyDataByStockMovementError(stockCard, stockMovementItems);
         }
       }
     }
@@ -424,6 +432,8 @@ public class DirtyDataManager {
         }
         if (isCorrectStockOnHand(cardIdsLotOnHandLessZero, stockCard, stockMovementItems)) {
           idToStockItemForDelete.put(String.valueOf(stockCard.getId()), stockMovementItems);
+          // report the dirty data to AppCentre
+          reportDirtyDataByStockOnHandError(stockCard, stockMovementItems);
           continue;
         }
         if (stockMovementItems.size() >= 2) {
@@ -431,15 +441,63 @@ public class DirtyDataManager {
             if (!isCorrectMovements(stockMovementItems.get(i), stockMovementItems.get(i + 1))) {
               debugLog(stockMovementItems.get(i), stockMovementItems.get(i + 1), stockCard);
               idToStockItemForDelete.put(String.valueOf(stockCard.getId()), stockMovementItems);
+              // report the dirty data to AppCentre
+              reportDirtyDataByStockMovementError(stockCard, stockMovementItems);
               break;
             }
           }
         }
       } catch (LMISException e) {
         Log.w(TAG, e);
+        e.reportToFabric();
       }
     }
     return covertMapFromStockIdToProductCode(idToStockItemForDelete);
+  }
+
+  private void reportDirtyDataByStockMovementError(
+      StockCard stockCard,
+      List<StockMovementItem> stockMovementItems
+  ) {
+    reportDirtyData("StockMovement", stockCard, stockMovementItems);
+  }
+
+  private void reportDirtyDataByStockOnHandError(
+      StockCard stockCard,
+      List<StockMovementItem> stockMovementItems
+  ) {
+    reportDirtyData("StockOnHand", stockCard, stockMovementItems);
+  }
+
+  private void reportDirtyData(
+      String type,
+      StockCard stockCard,
+      List<StockMovementItem> stockMovementItems
+  ) {
+    // movementItems
+    StringBuilder stockMovementItemsString = new StringBuilder();
+    if (stockMovementItems != null && !stockMovementItems.isEmpty()) {
+      int size = stockMovementItems.size();
+      int stockMovementItemsIndex = size - 1;
+      // last 2 stockMovementItems
+      for (; stockMovementItemsIndex > 0 && size - stockMovementItemsIndex < 3; stockMovementItemsIndex--) {
+        StockMovementItem stockMovementItem = stockMovementItems.get(stockMovementItemsIndex);
+        stockMovementItemsString
+            .append("SOH=")
+            .append(stockMovementItem.getStockOnHand())
+            .append(", MovementQuantity=")
+            .append(stockMovementItem.getMovementQuantity())
+            .append(", MovementType=")
+            .append(stockMovementItem.getMovementType())
+            .append("\n");
+      }
+    }
+    // report - most 125 characters in error message
+    new LMISException("dirty data, type=" + type
+        + "\nSOH=" + stockCard.getStockOnHand()
+        + ", calculatedSOH=" + stockCard.calculateSOHFromLots(lotsOnHands)
+        + "\nstockMovementItems=\n" + stockMovementItemsString)
+        .reportToFabric();
   }
 
   private Set<String> covertMapFromStockIdToProductCode(
