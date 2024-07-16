@@ -42,6 +42,7 @@ import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.presenter.IssueVoucherReportPresenter.IssueVoucherView;
 import org.openlmis.core.utils.Constants;
@@ -65,6 +66,9 @@ public class IssueVoucherReportPresenterTest {
 
   @Mock
   ProgramRepository programRepository;
+
+  @Mock
+  StockMovementRepository movementRepository;
 
   @Mock
   IssueVoucherView issueVoucherView;
@@ -187,9 +191,10 @@ public class IssueVoucherReportPresenterTest {
     // given
     Pod pod = PodBuilder.generatePod();
     pod.setLocal(false);
-    pod.getPodProductItemsWrapper().get(0).getPodProductLotItemsWrapper().get(0).setAcceptedQuantity(Long.valueOf(1));
+    pod.getPodProductItemsWrapper().get(0).getPodProductLotItemsWrapper().get(0).setAcceptedQuantity(1L);
     presenter.pod = pod;
     presenter.issueVoucherReportViewModel = new IssueVoucherReportViewModel(pod);
+    when(movementRepository.getLatestStockMovementCreatedTime()).thenReturn(DateUtil.getCurrentDate());
 
     // when
     TestSubscriber<Void> subscriber = new TestSubscriber<>();
