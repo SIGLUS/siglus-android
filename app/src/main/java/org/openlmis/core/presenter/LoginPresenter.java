@@ -200,7 +200,7 @@ public class LoginPresenter extends Presenter {
             ToastUtil.show(R.string.msg_sync_requisition_failed);
             break;
           case SYNC_LAST_DATA_SUCCESS:
-            dirtyDataManager.initialDirtyDataCheck();
+            initialDirtyDataCheck();
             goToNextPage();
             break;
           default:
@@ -208,6 +208,14 @@ public class LoginPresenter extends Presenter {
         }
       }
     };
+  }
+
+  private void initialDirtyDataCheck() {
+    try {
+      dirtyDataManager.initialDirtyDataCheck();
+    } catch (LMISException e) {
+      e.reportToFabric();
+    }
   }
 
   protected Subscriber<SyncProgress> getSyncSubscriber() {
@@ -471,8 +479,10 @@ public class LoginPresenter extends Presenter {
         sharedPreferenceMgr.setStockCardLastYearSyncError(false);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
         sharedPreferenceMgr.setStockLastSyncTime();
-        dirtyDataManager.initialDirtyDataCheck();
-        view.sendSyncFinishedBroadcast();
+        initialDirtyDataCheck();
+        if (view != null) {
+          view.sendSyncFinishedBroadcast();
+        }
       }
 
       @Override

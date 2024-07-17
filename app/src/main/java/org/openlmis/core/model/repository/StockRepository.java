@@ -653,7 +653,7 @@ public class StockRepository {
     return dbUtil.withDao(LotOnHand.class, dao -> dao.queryRaw(querySql));
   }
 
-  public List<StockCard> queryCheckedStockCards() {
+  public List<StockCard> queryCheckedStockCards() throws LMISException {
     String querySql = "select * from stock_cards";
     List<StockCard> checkedStockCards = new ArrayList<>();
 
@@ -664,6 +664,11 @@ public class StockRepository {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
         stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow(ID)));
+        stockCard.setProduct(
+            productRepository.getProductById(
+                cursor.getLong(cursor.getColumnIndexOrThrow(PRODUCT_ID))
+            )
+        );
         checkedStockCards.add(stockCard);
       } while (cursor.moveToNext());
     }
