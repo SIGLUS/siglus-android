@@ -782,6 +782,9 @@
   <string name="mmit_report_subtitle_positivo_hiv">Positivo HIV</string>
   <string name="mmit_report_subtitle_positivo_sifilis">Positivo Sifilis</string>
 
+  <!-- lot number limitation -->
+  <string name="lot_number_white_list">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-1234567890</string>
+
   <plurals name="minute_unit">
     <item quantity="one">%s minute</item>
     <item quantity="other">%s minutes</item>
