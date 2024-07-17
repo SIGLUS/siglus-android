@@ -145,7 +145,12 @@ public class DirtyDataManager {
   @SuppressWarnings("squid:S1905")
   public void dirtyDataMonthlyCheck() {
     Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
-      scanAllStockMovements();
+      try {
+        scanAllStockMovements();
+      } catch (LMISException e) {
+        e.reportToFabric();
+        subscriber.onError(e);
+      }
       subscriber.onCompleted();
     }).observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
@@ -169,7 +174,7 @@ public class DirtyDataManager {
         });
   }
 
-  public void initialDirtyDataCheck() {
+  public void initialDirtyDataCheck() throws LMISException {
     if (sharedPreferenceMgr.shouldInitialDataCheck()
         && !sharedPreferenceMgr.shouldSyncLastYearStockData()
         && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
@@ -197,7 +202,7 @@ public class DirtyDataManager {
    *
    * @return productCodes
    */
-  private Set<String> checkSoh() {
+  private Set<String> checkSoh() throws LMISException {
     lotsOnHands.putAll(stockRepository.lotOnHands());
     List<StockCard> checkedStockCards = stockRepository.queryCheckedStockCards();
     Set<String> deleteStockCardIds = new HashSet<>();
@@ -207,7 +212,7 @@ public class DirtyDataManager {
           || stockCard.calculateSOHFromLots(lotsOnHands) != stockCard.getStockOnHand()) {
         deleteStockCardIds.add(String.valueOf(stockCard.getId()));
         // report the dirty data to AppCentre
-        reportDirtyDataByStockOnHandError(stockCard, null);
+        reportDirtyDataByStockOnHandError(stockCard);
       }
     }
     if (!deleteStockCardIds.isEmpty()) {
@@ -218,7 +223,7 @@ public class DirtyDataManager {
     return new HashSet<>();
   }
 
-  private void scanAllStockMovements() {
+  private void scanAllStockMovements() throws LMISException {
     if (sharedPreferenceMgr.shouldSyncLastYearStockData()
         || sharedPreferenceMgr.isSyncingLastYearStockCards()
         || sharedPreferenceMgr.shouldInitialDataCheck()
@@ -368,7 +373,7 @@ public class DirtyDataManager {
       if (!isPositiveOnHand(stockCard, cardIdsLotOnHandLessZero)) {
         deleted.add(stockCard);
         // report the dirty data to AppCentre
-        reportDirtyDataByStockOnHandError(stockCard, stockMovementItems);
+        reportDirtyDataByStockOnHandError(stockCard);
       } else if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
         StockMovementRepository.SortClass sort = new StockMovementRepository.SortClass();
         Collections.sort(stockMovementItems, sort);
@@ -378,7 +383,7 @@ public class DirtyDataManager {
             || !isCorrectSOHBetweenMovementAndStockCard(stockCard, currentStockMovement)) {
           deleted.add(stockCard);
           // report the dirty data to AppCentre
-          reportDirtyDataByStockMovementError(stockCard, stockMovementItems);
+          reportDirtyDataByStockMovementError(stockCard);
         }
       }
     }
@@ -418,7 +423,7 @@ public class DirtyDataManager {
    * @return productCodes
    */
   @SuppressWarnings({"squid:S3776", "squid:S135"})
-  private Set<String> checkAllMovementAndLotSOHAndSaveToDB() {
+  private Set<String> checkAllMovementAndLotSOHAndSaveToDB() throws LMISException {
     List<StockCard> checkedStockCards = stockRepository.queryCheckedStockCards();
     lotsOnHands.putAll(stockRepository.lotOnHands());
     Map<String, List<StockMovementItem>> idToStockItemForDelete = new HashMap<>();
@@ -433,7 +438,7 @@ public class DirtyDataManager {
         if (isCorrectStockOnHand(cardIdsLotOnHandLessZero, stockCard, stockMovementItems)) {
           idToStockItemForDelete.put(String.valueOf(stockCard.getId()), stockMovementItems);
           // report the dirty data to AppCentre
-          reportDirtyDataByStockOnHandError(stockCard, stockMovementItems);
+          reportDirtyDataByStockOnHandError(stockCard);
           continue;
         }
         if (stockMovementItems.size() >= 2) {
@@ -442,7 +447,7 @@ public class DirtyDataManager {
               debugLog(stockMovementItems.get(i), stockMovementItems.get(i + 1), stockCard);
               idToStockItemForDelete.put(String.valueOf(stockCard.getId()), stockMovementItems);
               // report the dirty data to AppCentre
-              reportDirtyDataByStockMovementError(stockCard, stockMovementItems);
+              reportDirtyDataByStockMovementError(stockCard);
               break;
             }
           }
@@ -456,58 +461,29 @@ public class DirtyDataManager {
   }
 
   private void reportDirtyDataByStockMovementError(
-      StockCard stockCard,
-      List<StockMovementItem> stockMovementItems
+      StockCard stockCard
   ) {
-    reportDirtyData("StockMovement", stockCard, stockMovementItems);
+    reportDirtyData("StockMovement", stockCard);
   }
 
   private void reportDirtyDataByStockOnHandError(
-      StockCard stockCard,
-      List<StockMovementItem> stockMovementItems
+      StockCard stockCard
   ) {
-    reportDirtyData("StockOnHand", stockCard, stockMovementItems);
+    reportDirtyData("StockOnHand", stockCard);
   }
 
   private void reportDirtyData(
       String type,
-      StockCard stockCard,
-      List<StockMovementItem> stockMovementItems
+      StockCard stockCard
   ) {
     Product product = stockCard.getProduct();
-    // movementItems
-    StringBuilder stockMovementItemsString = new StringBuilder();
-    if (stockMovementItems != null && !stockMovementItems.isEmpty()) {
-      int size = stockMovementItems.size();
-      int stockMovementItemsIndex = size - 1;
-      // last 2 stockMovementItems
-      for (; stockMovementItemsIndex > 0 && size - stockMovementItemsIndex < 3; stockMovementItemsIndex--) {
-        StockMovementItem stockMovementItem = stockMovementItems.get(stockMovementItemsIndex);
-        stockMovementItemsString
-            .append("SOH=")
-            .append(stockMovementItem.getStockOnHand())
-            .append(", MovementQuantity=")
-            .append(stockMovementItem.getMovementQuantity())
-            .append(", MovementType=")
-            .append(stockMovementItem.getMovementType())
-            .append('\n');
-
-        if (product == null) {
-          StockCard stockMovementItemStockCard = stockMovementItem.getStockCard();
-          if (stockMovementItemStockCard != null) {
-            product = stockMovementItemStockCard.getProduct();
-          }
-        }
-      }
-    }
     // product code
     String productCode = product == null ? "" : product.getCode();
-    // report - most 125 characters in error message
+    // report - most 125 characters in error message, so we don't report movement items
     new LMISException("dirty data, type=" + type
         + "\nproductCode=" + productCode
         + "\nSOH=" + stockCard.getStockOnHand()
-        + ", calculatedSOH=" + stockCard.calculateSOHFromLots(lotsOnHands)
-        + "\nstockMovementItems=\n" + stockMovementItemsString)
+        + ", calculatedSOH=" + stockCard.calculateSOHFromLots(lotsOnHands))
         .reportToFabric();
   }
 
