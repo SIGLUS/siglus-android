@@ -129,27 +129,26 @@ public class SyncUpManager {
     Log.d(TAG, "sync Up Data start " + isSyncing());
 
     setSyncing(true);
-    boolean isSyncDeleted = syncDeleteMovement();
-    if (isSyncDeleted) {
-      boolean isSyncRnrSuccessful = syncRnr();
-      if (isSyncRnrSuccessful) {
-        sharedPreferenceMgr.setRnrLastSyncTime();
-      }
 
-      boolean isSyncPodSuccessful = syncPod();
-      if (isSyncPodSuccessful) {
-        sharedPreferenceMgr.setPodLastSyncTime();
-      }
-
-      boolean isSyncStockSuccessful = syncStockCards();
-      if (isSyncStockSuccessful) {
-        sharedPreferenceMgr.setStockLastSyncTime();
-        syncArchivedProducts();
-      }
-
-      syncAppVersion();
-      syncUpCmms();
+    boolean isSyncRnrSuccessful = syncRnr();
+    if (isSyncRnrSuccessful) {
+      sharedPreferenceMgr.setRnrLastSyncTime();
     }
+
+    boolean isSyncPodSuccessful = syncPod();
+    if (isSyncPodSuccessful) {
+      sharedPreferenceMgr.setPodLastSyncTime();
+    }
+
+    boolean isSyncStockSuccessful = syncStockCards();
+    if (isSyncStockSuccessful) {
+      sharedPreferenceMgr.setStockLastSyncTime();
+      syncArchivedProducts();
+    }
+
+    syncAppVersion();
+    syncUpCmms();
+
     Log.d(TAG, "sync Up Data end");
     setSyncing(false);
     if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && TextUtils
