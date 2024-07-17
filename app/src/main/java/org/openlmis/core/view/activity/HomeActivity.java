@@ -255,7 +255,9 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         initialDirtyDataCheckDialog.dismiss();
       }
       if (event.isExistingDirtyData()) {
-        showDirtyDataWarningDialog(null);
+        showDirtyDataWarningDialogAndNotification();
+      } else {
+        hideDirtyDataNotification();
       }
     } else {
       showInitialDirtyDataCheckDialog();
@@ -396,17 +398,25 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
     dirtyDataManager.dirtyDataMonthlyCheck();
     if (isHaveDirtyData()) {
-      showDirtyDataWarningDialog(null);
-
-      dirtyDataBanner.setNotificationMessage(
-          getString(R.string.dirty_data_alert_message)
-      );
-      dirtyDataBanner.setOnClickListener((view) -> showDirtyDataWarningDialog(null));
-      dirtyDataBanner.setVisibility(View.VISIBLE);
+      showDirtyDataWarningDialogAndNotification();
     } else {
-      dirtyDataBanner.setVisibility(View.GONE);
+      hideDirtyDataNotification();
     }
     refreshDashboard();
+  }
+
+  private void hideDirtyDataNotification() {
+    dirtyDataBanner.setVisibility(View.GONE);
+  }
+
+  private void showDirtyDataWarningDialogAndNotification() {
+    showDirtyDataWarningDialog(null);
+
+    dirtyDataBanner.setNotificationMessage(
+        getString(R.string.dirty_data_alert_message)
+    );
+    dirtyDataBanner.setOnClickListener((view) -> showDirtyDataWarningDialog(null));
+    dirtyDataBanner.setVisibility(View.VISIBLE);
   }
 
   private void checkAndTryShowNewShippedPodNotification() {
