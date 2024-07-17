@@ -474,6 +474,7 @@ public class DirtyDataManager {
       StockCard stockCard,
       List<StockMovementItem> stockMovementItems
   ) {
+    Product product = stockCard.getProduct();
     // movementItems
     StringBuilder stockMovementItemsString = new StringBuilder();
     if (stockMovementItems != null && !stockMovementItems.isEmpty()) {
@@ -490,10 +491,20 @@ public class DirtyDataManager {
             .append(", MovementType=")
             .append(stockMovementItem.getMovementType())
             .append('\n');
+
+        if (product == null) {
+          StockCard stockMovementItemStockCard = stockMovementItem.getStockCard();
+          if (stockMovementItemStockCard != null) {
+            product = stockMovementItemStockCard.getProduct();
+          }
+        }
       }
     }
+    // product code
+    String productCode = product == null ? "" : product.getCode();
     // report - most 125 characters in error message
     new LMISException("dirty data, type=" + type
+        + "\nproductCode=" + productCode
         + "\nSOH=" + stockCard.getStockOnHand()
         + ", calculatedSOH=" + stockCard.calculateSOHFromLots(lotsOnHands)
         + "\nstockMovementItems=\n" + stockMovementItemsString)
