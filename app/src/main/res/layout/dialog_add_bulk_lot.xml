@@ -54,6 +54,7 @@
           style="@style/Dialog.EditText"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:digits="@string/lot_number_white_list"
           android:textSize="@dimen/font_size_medium"
           android:hint="@string/hint_lot_number"
           android:tag="@string/hint_lot_number" />
