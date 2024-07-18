@@ -1,50 +1,73 @@
 pipeline {
-    agent { label 'docker'}
+    agent { label 'docker' }
     options {
         buildDiscarder(logRotator(numToKeepStr: '50'))
-        timestamps ()
-        timeout(time: 60, unit: 'MINUTES')
+        timestamps()
+        timeout(time: 30, unit: 'MINUTES')
+    }
+    environment {
+        DOCKER_IMAGE = 'siglusdevops/android-runner'
+        CONTAINER_NAME = 'siglus-android-runner'
     }
     stages {
+        stage('Setup Docker Container') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'KSTOREPWD', variable: 'KSTOREPWD'),string(credentialsId: 'KEYPWD', variable: 'KEYPWD')]) {
+                        sh """
+                           docker run -d --name ${CONTAINER_NAME} --network host --security-opt seccomp=unconfined \
+                           -e KSTOREPWD -e KEYPWD \
+                           -v ${pwd()}:/app -w /app ${DOCKER_IMAGE} tail -f /dev/null
+                        """
+                    }
+                }
+            }
+        }
         stage('Static Code Analysis') {
             steps {
-                executeInContainer('./gradlew clean checkstyle pmd spotbugsLocalDebug')
+                script {
+                    executeInContainer('./gradlew clean checkstyle pmd spotbugsLocalDebug')
+                }
             }
         }
         stage('Unit Test') {
             steps {
-                executeInContainer('./gradlew testLocalDebugUnitTest --debug')
+                script {
+                    executeInContainer('./gradlew testLocalDebugUnitTest --debug --daemon --build-cache')
+                }
             }
         }
         stage('Test Coverage Verification') {
             steps {
-                executeInContainer('./gradlew jacocoTestCoverageVerification')
+                script {
+                    executeInContainer('./gradlew jacocoTestCoverageVerification')
+                }
             }
         }
         stage('Sonarqube Analysis') {
             when {
-                environment name: 'GIT_BRANCH', value: 'master'
+                branch 'master'
             }
             steps {
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONARQUBE_TOKEN')]) {
-                    executeInContainer("./gradlew sonarqube -x test -Dsonar.projectKey=siglus-android -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONARQUBE_TOKEN}")
+                script {
+                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONARQUBE_TOKEN')]) {
+                        executeInContainer("./gradlew sonarqube -x test -Dsonar.projectKey=siglus-android -Dsonar.host.url=http://localhost:9000")
+                    }
                 }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                sh "docker rm -f ${CONTAINER_NAME}"
             }
         }
     }
 }
 
 def executeInContainer(cmd) {
-    withEnv(["CMD=${cmd}"]) {
-        withCredentials([string(credentialsId: 'KSTOREPWD', variable: 'KSTOREPWD'),string(credentialsId: 'KEYPWD', variable: 'KEYPWD')]) {
-            sh '''
-               docker run --rm -v `pwd`:/app -w /app --network=host \
-               --security-opt seccomp=unconfined \
-               -e KSTOREPWD \
-               -e KEYPWD \
-               siglusdevops/android-runner sh -c \
-               "${CMD}"
-            '''
-        }
-    }
+    sh """
+       docker exec ${CONTAINER_NAME} sh -c 'JAVA_OPTS="-Xmx8192m -XX:MaxPermSize=2048m" ${cmd}'
+    """
 }
