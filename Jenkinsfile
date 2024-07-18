@@ -13,13 +13,10 @@ pipeline {
         stage('Setup Docker Container') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'KSTOREPWD', variable: 'KSTOREPWD'),string(credentialsId: 'KEYPWD', variable: 'KEYPWD')]) {
-                        sh """
-                           docker run -d --name ${CONTAINER_NAME} --network host --security-opt seccomp=unconfined \
-                           -e KSTOREPWD -e KEYPWD \
-                           -v ${pwd()}:/app -w /app ${DOCKER_IMAGE} tail -f /dev/null
-                        """
-                    }
+                    sh """
+                       docker run -d --name ${CONTAINER_NAME} --network host --security-opt seccomp=unconfined \
+                       -v ${pwd()}:/app -w /app ${DOCKER_IMAGE} tail -f /dev/null
+                    """
                 }
             }
         }
@@ -44,18 +41,6 @@ pipeline {
                 }
             }
         }
-        stage('Sonarqube Analysis') {
-            when {
-                branch 'master'
-            }
-            steps {
-                script {
-                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONARQUBE_TOKEN')]) {
-                        executeInContainer("./gradlew sonarqube -x test -Dsonar.projectKey=siglus-android -Dsonar.host.url=http://localhost:9000")
-                    }
-                }
-            }
-        }
     }
     post {
         always {
@@ -68,6 +53,6 @@ pipeline {
 
 def executeInContainer(cmd) {
     sh """
-       docker exec ${CONTAINER_NAME} sh -c 'JAVA_OPTS="-Xmx8192m -XX:MaxPermSize=2048m" ${cmd}'
+       docker exec ${CONTAINER_NAME} sh -c 'JAVA_OPTS="-Xmx8192m -XX:MaxPermSize=4096m" ${cmd}'
     """
 }
