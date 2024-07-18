@@ -71,6 +71,7 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.helper.RnrFormHelper;
 import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.network.model.RnrFormStatusEntry;
@@ -126,6 +127,9 @@ public class RnrFormRepository {
 
   @Inject
   ReportTypeFormRepository reportTypeFormRepository;
+
+  @Inject
+  SyncErrorsRepository syncErrorsRepository;
 
   @Inject
   RnrFormHelper rnrFormHelper;
@@ -785,6 +789,7 @@ public class RnrFormRepository {
               );
               if (existingForm != null) {
                 removeRnrForm(existingForm);
+                syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, existingForm.getId());
               }
               createOrUpdateWithItems(form);
             }

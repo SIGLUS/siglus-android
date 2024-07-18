@@ -27,12 +27,12 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
@@ -191,7 +191,7 @@ public class SyncUpManagerTest {
 
     syncUpManager.syncStockCards();
 
-    verify(mockedSyncErrorsRepository).save(any(SyncError.class));
+    verify(mockedSyncErrorsRepository).createOrUpdate(any(SyncError.class));
   }
 
   @Test
@@ -276,13 +276,25 @@ public class SyncUpManagerTest {
         .submitRequisition(any(RnRForm.class));
     syncUpManager.syncRnr();
 
-    verify(mockedSyncErrorsRepository).save(any(SyncError.class));
+    verify(mockedSyncErrorsRepository).createOrUpdate(any(SyncError.class));
   }
 
   @Test
-  public void shouldNotSaveErrorMessageWhenSyncRnRFormFailWith409() throws Exception {
+  public void shouldSaveErrorMessageWhenSyncRnRFormFailWith409() throws Exception {
     // given
-    when(mockedRnrFormRepository.queryAllUnsyncedForms()).thenReturn(newArrayList(new RnRForm()));
+    RnRForm form = new RnRForm();
+    long formId = 100L;
+    form.setId(formId);
+    when(mockedRnrFormRepository.queryAllUnsyncedForms()).thenReturn(newArrayList(form));
+
+    SyncError syncError = new SyncError(
+        new SyncServerException(
+            "Sync failed, because supplier already created a requisition for you, please wait for approval",
+            "Sincronização falhou, porque o fornecedor já criou uma requisição para você, aguarde a aprovação"),
+        SyncType.RNR_FORM,
+        formId
+    );
+    doNothing().when(mockedSyncErrorsRepository).createOrUpdate(syncError);
 
     Response response = new Response("", 409, "", newArrayList(), null);
     RetrofitError mockedRetrofitError = mock(RetrofitError.class);
@@ -293,7 +305,7 @@ public class SyncUpManagerTest {
     // when
     syncUpManager.syncRnr();
     // then
-    verifyZeroInteractions(mockedSyncErrorsRepository);
+    verify(mockedSyncErrorsRepository).createOrUpdate(syncError);
   }
 
   @Test

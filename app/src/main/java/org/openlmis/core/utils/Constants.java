@@ -228,6 +228,12 @@ public final class Constants {
   public static final String SERVER_FAILED_MESSAGE_IN_PORTUGUESE =
       "Sincronização falhou devido à problemas técnicos no servidor. Entre em contacto com administrador do sistema.";
 
+  public static final String SERVER_CONFLICT_MESSAGE_IN_ENGLISH =
+      "Sync failed, because supplier already created a requisition for you, please wait for approval";
+
+  public static final String SERVER_CONFLICT_MESSAGE_IN_PORTUGUESE =
+      "Sincronização falhou, porque o fornecedor já criou uma requisição para você, aguarde a aprovação";
+
   private Constants() {
 
   }

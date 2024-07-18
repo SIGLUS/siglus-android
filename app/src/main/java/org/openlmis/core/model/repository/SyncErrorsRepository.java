@@ -49,8 +49,14 @@ public class SyncErrorsRepository {
     this.context = context;
   }
 
-  public void save(final SyncError syncError) {
+  public void createOrUpdate(final SyncError syncError) {
     try {
+      List<SyncError> existingSyncErrors = getBySyncTypeAndObjectId(syncError.getSyncType(),
+          syncError.getSyncObjectId());
+      if (existingSyncErrors != null && !existingSyncErrors.isEmpty()) {
+        syncError.setId(existingSyncErrors.get(0).getId());
+      }
+
       genericDao.createOrUpdate(syncError);
     } catch (LMISException e) {
       new LMISException(e, "SyncErrorsRepository.save").reportToFabric();

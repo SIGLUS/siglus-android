@@ -133,7 +133,7 @@ public class PodRepositoryTest {
   public void testHasUnmatchedPodByProgram() throws Exception {
     // given
     SyncError syncError = new SyncError(Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST, SyncType.POD, 2);
-    syncErrorRepository.save(syncError);
+    syncErrorRepository.createOrUpdate(syncError);
     Pod VCPod = PodBuilder.generatePod();
     VCPod.setId(2);
     VCPod.setOrderCode("VCPod");
@@ -171,7 +171,7 @@ public class PodRepositoryTest {
     podRepository.batchCreatePodsWithItems(pods);
 
     SyncError syncError = new SyncError(Constants.SIGLUS_API_ORDER_NUMBER_NOT_EXIST, SyncType.POD, 3);
-    syncErrorRepository.save(syncError);
+    syncErrorRepository.createOrUpdate(syncError);
 
     // then
     Assert.assertTrue(podRepository.hasUnmatchedPodByProgram(Program.VIA_PROGRAM.getCode()));

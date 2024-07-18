@@ -19,6 +19,8 @@
 package org.openlmis.core.service;
 
 import static org.openlmis.core.LMISApp.getContext;
+import static org.openlmis.core.utils.Constants.SERVER_CONFLICT_MESSAGE_IN_ENGLISH;
+import static org.openlmis.core.utils.Constants.SERVER_CONFLICT_MESSAGE_IN_PORTUGUESE;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.text.TextUtils;
@@ -45,6 +47,7 @@ import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NetWorkException;
+import org.openlmis.core.exceptions.SyncServerException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
@@ -219,7 +222,7 @@ public class SyncUpManager {
         return true;
       } catch (Exception e) {
         new LMISException(e, "SyncUpManager:fakeSyncRnr,sync failed").reportToFabric();
-        syncErrorsRepository.save(new SyncError(e, SyncType.RNR_FORM, rnRForm.getId()));
+        syncErrorsRepository.createOrUpdate(new SyncError(e, SyncType.RNR_FORM, rnRForm.getId()));
         return false;
       }
     }).subscribe(this::markRnrFormSynced);
@@ -294,7 +297,7 @@ public class SyncUpManager {
     } catch (LMISException exception) {
       new LMISException(exception, "SyncUpManager.syncStockCards").reportToFabric();
       EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR));
-      syncErrorsRepository.save(new SyncError(exception, SyncType.STOCK_CARDS, 0L));
+      syncErrorsRepository.createOrUpdate(new SyncError(exception, SyncType.STOCK_CARDS, 0L));
       Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
       return false;
     }
@@ -304,7 +307,9 @@ public class SyncUpManager {
     List<String> syncErrorProduct = FluentIterable.from(response.getErrorProductCodes()).limit(3).toList();
     EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR, syncErrorProduct.toString()));
     sharedPreferenceMgr.setStockMovementSyncError(syncErrorProduct.toString());
-    syncErrorsRepository.save(new SyncError(response.getErrorProductCodes().toString(), SyncType.SYNC_MOVEMENT, 2L));
+    syncErrorsRepository.createOrUpdate(
+        new SyncError(response.getErrorProductCodes().toString(), SyncType.SYNC_MOVEMENT, 2L)
+    );
   }
 
   public boolean fakeSyncStockCards() {
@@ -319,7 +324,7 @@ public class SyncUpManager {
       return true;
     } catch (LMISException exception) {
       new LMISException(exception, "SyncUpManager.fakeSyncStockCards").reportToFabric();
-      syncErrorsRepository.save(new SyncError(exception, SyncType.STOCK_CARDS, 0L));
+      syncErrorsRepository.createOrUpdate(new SyncError(exception, SyncType.STOCK_CARDS, 0L));
       Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
       return false;
     }
@@ -462,12 +467,18 @@ public class SyncUpManager {
         Log.w(TAG, "===> SyncRnr : sync failed -> [Ignore] due to conflict with superior provided data: "
             + e.getMessage()
         );
+
+        SyncServerException syncServerException = new SyncServerException(
+            SERVER_CONFLICT_MESSAGE_IN_ENGLISH, SERVER_CONFLICT_MESSAGE_IN_PORTUGUESE
+        );
+        syncErrorsRepository.createOrUpdate(new SyncError(syncServerException, SyncType.RNR_FORM, rnRForm.getId()));
+
         return null;
       }
 
       new LMISException(e, "SyncUpManager.submitRequisition").reportToFabric();
       Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
-      syncErrorsRepository.save(new SyncError(e, SyncType.RNR_FORM, rnRForm.getId()));
+      syncErrorsRepository.createOrUpdate(new SyncError(e, SyncType.RNR_FORM, rnRForm.getId()));
       return false;
     }
   }
@@ -513,7 +524,7 @@ public class SyncUpManager {
 
   private void markRnrFormBlocked(RnRForm form) {
     syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, form.getId());
-    syncErrorsRepository.save(new SyncError(getContext().getResources().getString(
+    syncErrorsRepository.createOrUpdate(new SyncError(getContext().getResources().getString(
         R.string.error_sync_previous_period), SyncType.RNR_FORM, form.getId()));
   }
 
@@ -529,7 +540,7 @@ public class SyncUpManager {
     } catch (LMISException e) {
       new LMISException(e, "SyncUpManager.submitPod.lmis").reportToFabric();
       syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.POD, localPod.getId());
-      syncErrorsRepository.save(new SyncError(e, SyncType.POD, localPod.getId()));
+      syncErrorsRepository.createOrUpdate(new SyncError(e, SyncType.POD, localPod.getId()));
     }
     return localPod;
   }

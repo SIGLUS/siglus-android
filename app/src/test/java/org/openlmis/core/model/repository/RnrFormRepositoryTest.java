@@ -80,6 +80,7 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.builder.ReportTypeBuilder;
@@ -112,6 +113,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
   private RnrFormSignatureRepository mockRnrFormSignatureRepository;
 
+  private SyncErrorsRepository mockSyncErrorsRepository;
+
   static final String comment = "DRAFT Form";
   private static String GENERATE_DATE_STRING = "05/07/2015";
   private static String GENERATE_DATE_STRING2 = "20/07/2015";
@@ -125,6 +128,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     mockProductProgramRepository = mock(ProductProgramRepository.class);
     mockStockMovementRepository = mock(StockMovementRepository.class);
     mockReportTypeFormRepository = mock(ReportTypeFormRepository.class);
+    mockSyncErrorsRepository = mock(SyncErrorsRepository.class);
     Application applicationContext = ApplicationProvider.getApplicationContext();
     mockRnrFormSignatureRepository = spy(new RnrFormSignatureRepository(applicationContext));
 
@@ -767,8 +771,13 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     shouldBeDeletedProgram.setId(2);
     Date shouldBeDeletedPeriodBegin = DateUtil.getFirstDayForCurrentMonthByDate(periodBegin);
     RnRForm shouldBeDeletedRnRForm = generateRnRForm(shouldBeDeletedProgram, shouldBeDeletedPeriodBegin);
+    // due to it is 2nd form
+    long shouldBeDeleteFormId = 1L;
 
-    when(mockProgramRepository.queryByCode(anyString())).thenReturn(shouldBeDeletedProgram, program);
+    when(mockProgramRepository.queryByCode(anyString()))
+        .thenReturn(shouldBeDeletedProgram, program);
+    SyncType syncType = SyncType.RNR_FORM;
+    when(mockSyncErrorsRepository.deleteBySyncTypeAndObjectId(syncType, shouldBeDeleteFormId)).thenReturn(0);
 
     rnrFormRepository.create(shouldBeDeletedRnRForm);
     rnrFormRepository.create(rnRForm);
@@ -776,6 +785,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     // when
     rnrFormRepository.saveAndDeleteDuplicatedPeriodRequisitions(inputForms);
     // then
+    verify(mockSyncErrorsRepository).deleteBySyncTypeAndObjectId(syncType, shouldBeDeleteFormId);
+
     List<RnRForm> rnRForms = rnrFormRepository.list();
     assertEquals(2, rnRForms.size());
 
@@ -993,6 +1004,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
       bind(StockMovementRepository.class).toInstance(mockStockMovementRepository);
       bind(ReportTypeFormRepository.class).toInstance(mockReportTypeFormRepository);
       bind(RnrFormSignatureRepository.class).toInstance(mockRnrFormSignatureRepository);
+      bind(SyncErrorsRepository.class).toInstance(mockSyncErrorsRepository);
     }
   }
 
