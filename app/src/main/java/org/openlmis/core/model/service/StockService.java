@@ -36,6 +36,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
@@ -65,7 +66,16 @@ public class StockService {
     if (stockMovementItem == null) {
       throw new StockMovementIsNullException(stockCard);
     }
-    return stockMovementItem.getMovementPeriod().getBegin().toDate();
+    try {
+      return stockMovementItem.getMovementPeriod().getBegin().toDate();
+    } catch (IllegalArgumentException e) {
+      throw new LMISException(
+          e,
+          "convert period by movement date failed: movementDate="
+              + stockMovementItem.getMovementDate()
+              + ", id=" + stockMovementItem.getId()
+      );
+    }
   }
 
   public void monthlyUpdateAvgMonthlyConsumption() {
@@ -100,12 +110,17 @@ public class StockService {
     try {
       firstPeriodBegin = queryFirstPeriodBegin(stockCard);
     } catch (StockMovementIsNullException e) {
+      // no stock movement item
+      reportError(e, stockCard, "stock movement item is null");
       return -1;
     } catch (LMISException e) {
-      new LMISException(e, "StockService:calculateAverage").reportToFabric();
+      // db query issue
+      reportError(e, stockCard, "queryFirstPeriodBegin db issue");
       return -1;
     }
     if (firstPeriodBegin == null) {
+      // stock movement movementData is null
+      reportError(null, stockCard, "firstPeriodBegin is null");
       return -1;
     }
 
@@ -117,6 +132,7 @@ public class StockService {
       period = period.previous();
       Long totalIssuesEachMonth = calculateTotalIssuesPerPeriod(stockCard, period);
 
+      // stock out
       if (totalIssuesEachMonth == null) {
         continue;
       }
@@ -127,10 +143,25 @@ public class StockService {
       }
     }
     if (issuePerMonths.isEmpty()) {
+      // normally
       return -1;
     }
 
     return getTotalIssues(issuePerMonths) * 1f / issuePerMonths.size();
+  }
+
+  private void reportError(Throwable e, StockCard stockCard, String errorMessage) {
+    String productCode = "";
+    if (stockCard != null) {
+      Product product = stockCard.getProduct();
+      productCode = product != null ? product.getCode() : "";
+    }
+
+    new LMISException(e,
+        "StockService:calculateAverage"
+            + "\nproductCode=" + productCode
+            + "\n" + errorMessage
+    ).reportToFabric();
   }
 
   private long getTotalIssues(List<Long> issuePerMonths) {
