@@ -22,11 +22,13 @@ import androidx.annotation.NonNull;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.Locale;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.exceptions.SyncServerException;
 import org.openlmis.core.utils.Constants;
 
+@Data
 @NoArgsConstructor
 @DatabaseTable(tableName = "sync_errors")
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)

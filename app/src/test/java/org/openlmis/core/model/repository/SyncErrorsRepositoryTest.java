@@ -1,10 +1,10 @@
 package org.openlmis.core.model.repository;
 
-import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,23 +27,46 @@ public class SyncErrorsRepositoryTest extends LMISRepositoryUnitTest {
   }
 
   @Test
-  public void shouldSaveSyncError() throws Exception {
-    SyncError expectSyncError = new SyncError("errorMessage", SyncType.RNR_FORM, 1l);
-    syncErrorsRepository.save(expectSyncError);
-
-    SyncError actualSyncError = syncErrorsRepository.getBySyncTypeAndObjectId(SyncType.RNR_FORM, 1l)
+  public void createOrUpdate_shouldSaveSyncErrorWhenNoExistingSyncError() {
+    // given
+    long syncObjectId = 1L;
+    SyncError expectSyncError = new SyncError("errorMessage", SyncType.RNR_FORM, syncObjectId);
+    // when
+    syncErrorsRepository.createOrUpdate(expectSyncError);
+    // then
+    SyncError actualSyncError = syncErrorsRepository.getBySyncTypeAndObjectId(SyncType.RNR_FORM,
+            syncObjectId)
         .get(0);
-
-    assertThat(expectSyncError.getErrorMessage(), is(actualSyncError.getErrorMessage()));
+    assertEquals(expectSyncError.getErrorMessage(), actualSyncError.getErrorMessage());
   }
 
   @Test
-  public void shouldDeleteSyncError() throws Exception {
+  public void createOrUpdate_shouldUpdateSyncErrorWhenHasExistingSyncError() {
+    // given
+    long syncObjectId = 1L;
+    SyncError existingSyncError = new SyncError("errorMessage", SyncType.RNR_FORM, syncObjectId);
+    String newErrorMessage = "newErrorMessage";
+    SyncError newSyncError = new SyncError(newErrorMessage, SyncType.RNR_FORM, syncObjectId);
+    // when
+    syncErrorsRepository.createOrUpdate(existingSyncError);
+    syncErrorsRepository.createOrUpdate(newSyncError);
+    // then
+    List<SyncError> syncErrors = syncErrorsRepository.getBySyncTypeAndObjectId(
+        SyncType.RNR_FORM, syncObjectId
+    );
+
+    assertEquals(1, syncErrors.size());
+    SyncError actualSyncError = syncErrors.get(0);
+    assertEquals(newErrorMessage, actualSyncError.getErrorMessage());
+  }
+
+  @Test
+  public void shouldDeleteSyncError() {
     saveRnRFormError();
 
     Integer deletedSize = syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, 1l);
 
-    assertThat(deletedSize, is(2));
+    assertEquals(1, deletedSize.intValue());
   }
 
   @Test
@@ -63,8 +86,8 @@ public class SyncErrorsRepositoryTest extends LMISRepositoryUnitTest {
     SyncError syncError1 = new SyncError("errorMessage1", SyncType.RNR_FORM, 1l);
     SyncError syncError2 = new SyncError("errorMessage2", SyncType.RNR_FORM, 1l);
     SyncError syncError3 = new SyncError("errorMessage3", SyncType.RNR_FORM, 2l);
-    syncErrorsRepository.save(syncError1);
-    syncErrorsRepository.save(syncError2);
-    syncErrorsRepository.save(syncError3);
+    syncErrorsRepository.createOrUpdate(syncError1);
+    syncErrorsRepository.createOrUpdate(syncError2);
+    syncErrorsRepository.createOrUpdate(syncError3);
   }
 }
