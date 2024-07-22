@@ -26,16 +26,22 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.utils.DateUtil.today;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
+import android.app.Application;
 import androidx.annotation.NonNull;
+import androidx.test.core.app.ApplicationProvider;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
@@ -49,6 +55,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.enumeration.StockOnHandStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
@@ -66,7 +73,6 @@ import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -84,17 +90,19 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
   @Before
   public void setup() throws LMISException {
-    stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    Application application = ApplicationProvider.getApplicationContext();
+
+    stockRepository = RoboGuice.getInjector(application)
         .getInstance(StockRepository.class);
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productRepository = RoboGuice.getInjector(application)
         .getInstance(ProductRepository.class);
-    programRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    programRepository = RoboGuice.getInjector(application)
         .getInstance(ProgramRepository.class);
-    productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productProgramRepository = RoboGuice.getInjector(application)
         .getInstance(ProductProgramRepository.class);
-    lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    lotRepository = RoboGuice.getInjector(application)
         .getInstance(LotRepository.class);
-    stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    stockMovementRepository = RoboGuice.getInjector(application)
         .getInstance(StockMovementRepository.class);
 
     saveTestProduct();
@@ -445,6 +453,73 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     // then
     verify(mockedStockMovementRepository).batchCreateStockMovementItemAndLotItems(
         eq(mockedStockMovementItem), anyLong());
+  }
+
+  @Test
+  public void createOrUpdateStockCardsWithCMM_shouldRollBackTransactionIfThereAreSqlExceptions()
+      throws LMISException, InterruptedException {
+    // given
+    StockCard stockCard = createStockAndProduct(1, 100, (int) 100f);
+
+    CmmRepository mockedCmmRepository = mock(CmmRepository.class);
+    stockRepository.cmmRepository = mockedCmmRepository;
+    doThrow(new LMISException("")).when(mockedCmmRepository).save(any(Cmm.class));
+    // when
+    try {
+      stockRepository.createOrUpdateStockCardsWithCMM(stockCard, Period.of(today()));
+    } catch (SQLException e) {
+      // then
+      verify(mockedCmmRepository).save(any(Cmm.class));
+
+      Thread.sleep(1_000);
+      assertEquals(0, stockRepository.list().size());
+      return;
+    }
+
+    throw new AssertionError();
+  }
+
+  @Test
+  public void createOrUpdateStockCardsWithCMM_shouldSaveBothStockCardAndCMM()
+      throws LMISException, SQLException {
+    // given
+    float avgMonthlyConsumption = 100f;
+    StockCard stockCard = createStockAndProduct(1, 100, (int) avgMonthlyConsumption);
+
+    Period cmmPeriod = Period.of(today());
+
+    CmmRepository mockedCmmRepository = mock(CmmRepository.class);
+    stockRepository.cmmRepository = mockedCmmRepository;
+    doNothing().when(mockedCmmRepository).save(any(Cmm.class));
+    // when
+    stockRepository.createOrUpdateStockCardsWithCMM(stockCard, cmmPeriod);
+    // then
+    verify(mockedCmmRepository).save(Cmm.initWith(stockCard, cmmPeriod));
+    assertEqualsWithTimeout(1, () -> stockRepository.list().size(), 2);
+  }
+
+  private <T> void assertEqualsWithTimeout(
+      T expectedValue, Callable<T> actualValue, long timeoutSeconds
+  ) {
+    long tempTime = 0L;
+    int duration = 100;
+    long timeoutMilliSeconds = timeoutSeconds * 1000;
+
+    do {
+      try {
+        assertEquals(expectedValue, actualValue.call());
+        return;
+      } catch (AssertionError e) {
+        tempTime += duration;
+        try {
+          Thread.sleep(duration);
+        } catch (InterruptedException ex) {
+          throw new RuntimeException(ex);
+        }
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    } while (tempTime < timeoutMilliSeconds);
   }
 
   private StockCard createStockAndProduct(int productId, int stockOnHand, int avg)

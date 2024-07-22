@@ -53,9 +53,11 @@ import org.openlmis.core.enumeration.StockOnHandStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
@@ -753,5 +755,19 @@ public class StockRepository {
       cursor.close();
     }
     return result;
+  }
+
+  public void createOrUpdateStockCardsWithCMM(
+      StockCard stockCard, Period cmmPeriod
+  ) throws SQLException {
+    TransactionManager.callInTransaction(
+        LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+          // `stock_cards`
+          createOrUpdate(stockCard);
+          // `cmm`
+          cmmRepository.save(Cmm.initWith(stockCard, cmmPeriod));
+
+          return null;
+        });
   }
 }
