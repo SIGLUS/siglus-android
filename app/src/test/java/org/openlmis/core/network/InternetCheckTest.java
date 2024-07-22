@@ -19,6 +19,7 @@
 package org.openlmis.core.network;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -39,6 +40,7 @@ public class InternetCheckTest {
   }
 
   @Test
+  @Ignore("should mock the constructor method, but current version test framework does not support")
   public void shouldCorrectTestInternet() {
     // given
     TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>(internetCheck.resultObserver);
