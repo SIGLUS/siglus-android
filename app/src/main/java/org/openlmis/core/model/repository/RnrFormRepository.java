@@ -380,11 +380,20 @@ public class RnrFormRepository {
     if (notFullStockItemsByCreatedData.isEmpty()) {
       rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
     } else {
-      rnrFormItem.setInitialAmount(notFullStockItemsByCreatedData.get(0).calculatePreviousSOH());
+      rnrFormItem.setInitialAmount(getInitialAmount(stockCard, notFullStockItemsByCreatedData));
       rnrFormHelper.assignTotalValues(rnrFormItem, notFullStockItemsByCreatedData);
     }
     rnrFormItem.setProduct(stockCard.getProduct());
     return rnrFormItem;
+  }
+
+  private long getInitialAmount(
+      StockCard stockCard, List<StockMovementItem> notFullStockItemsByCreatedData
+  ) {
+    Long lastRnrInventory = lastRnrInventory(stockCard.getProduct());
+
+    return lastRnrInventory != null ? lastRnrInventory
+        : notFullStockItemsByCreatedData.get(0).calculatePreviousSOH();
   }
 
   protected ArrayList<RnrFormItem> fillAllProducts(RnRForm form, List<RnrFormItem> basicItems)
