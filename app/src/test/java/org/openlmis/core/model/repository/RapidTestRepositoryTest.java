@@ -118,6 +118,32 @@ public class RapidTestRepositoryTest extends LMISRepositoryUnitTest {
   }
 
   @Test
+  public void createRnrFormItemByPeriod_initAmount() {
+    //given
+    StockCard stockCard = new StockCard();
+
+    List<StockMovementItem> stockMovementItemList = newArrayList();
+    StockMovementItem stockMovementItem = new StockMovementItem();
+    stockMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
+    stockMovementItem.setMovementQuantity(10);
+    stockMovementItem.setStockOnHand(20);
+    stockMovementItemList.add(stockMovementItem);
+
+    //when
+    RnrFormItem rnrFormItemWithNullItems = rapidTestRepository.createRnrFormItemByPeriod(stockCard,
+        null);
+    RnrFormItem rnrFormItemWithEmptyItems = rapidTestRepository.createRnrFormItemByPeriod(stockCard,
+        newArrayList());
+    RnrFormItem rnrFormItemWithItems = rapidTestRepository.createRnrFormItemByPeriod(stockCard,
+        stockMovementItemList);
+
+    //then
+    assertEquals(0L, (long) rnrFormItemWithNullItems.getInitialAmount());
+    assertEquals(0L, (long) rnrFormItemWithEmptyItems.getInitialAmount());
+    assertEquals(10L, (long) rnrFormItemWithItems.getInitialAmount());
+  }
+
+  @Test
   public void shouldUpdateInitialAmount() {
     //given
     RnrFormItem isCustomRnrFormItem = new RnrFormItem();
@@ -133,7 +159,7 @@ public class RapidTestRepositoryTest extends LMISRepositoryUnitTest {
     assertNull(isCustomRnrFormItem.getInitialAmount());
 
     assertFalse(notCustomRnrFormItem.getIsCustomAmount());
-    assertEquals(notCustomRnrFormItem.getInitialAmount(), lastInventory);
+    assertNull(notCustomRnrFormItem.getInitialAmount());
   }
 
   @Test
