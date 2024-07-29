@@ -31,6 +31,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,7 +87,8 @@ public class MMTBRepositoryTest extends LMISRepositoryUnitTest {
     stockCard.setProduct(product);
 
     //when
-    RnrFormItem resultNoLotRnrFormItem = mmtbRepository.createRnrFormItemByPeriod(stockCard, stockMovementItemList);
+    RnrFormItem resultNoLotRnrFormItem = mmtbRepository.createRnrFormItemByPeriod(
+        stockCard, stockMovementItemList, DateUtil.getCurrentDate());
 
     //then
     assertNull(resultNoLotRnrFormItem.getValidate());
@@ -111,19 +113,23 @@ public class MMTBRepositoryTest extends LMISRepositoryUnitTest {
     withListStockCard.setProduct(product);
     stockCard.setProduct(product);
 
+    Date currentDate = DateUtil.getCurrentDate();
+
     List<StockMovementItem> stockMovementItemList = newArrayList();
     StockMovementItem stockMovementItem = new StockMovementItem();
     stockMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
     stockMovementItem.setMovementQuantity(10);
-    stockMovementItem.setStockOnHand(20);
+    long itemStockOnHand = 20;
+    stockMovementItem.setStockOnHand(itemStockOnHand);
+    stockMovementItem.setMovementDate(currentDate);
     stockMovementItemList.add(stockMovementItem);
 
     long expectedReceived = stockMovementItemList.stream().mapToLong(StockMovementItem::getMovementQuantity).sum();
 
     //when
-    RnrFormItem resultRnrFormItem = mmtbRepository.createRnrFormItemByPeriod(stockCard, new ArrayList<>());
-    RnrFormItem resultNoLotRnrFormItem = mmtbRepository.createRnrFormItemByPeriod(noLotStockCard, new ArrayList<>());
-    RnrFormItem resultWithListRnrFormItem = mmtbRepository.createRnrFormItemByPeriod(withListStockCard, stockMovementItemList);
+    RnrFormItem resultRnrFormItem = mmtbRepository.createRnrFormItemByPeriod(stockCard, new ArrayList<>(), currentDate);
+    RnrFormItem resultNoLotRnrFormItem = mmtbRepository.createRnrFormItemByPeriod(noLotStockCard, new ArrayList<>(), currentDate);
+    RnrFormItem resultWithListRnrFormItem = mmtbRepository.createRnrFormItemByPeriod(withListStockCard, stockMovementItemList, currentDate);
 
     //then
     assertThat(resultRnrFormItem.getValidate(), is("01/02/2015"));
@@ -136,7 +142,7 @@ public class MMTBRepositoryTest extends LMISRepositoryUnitTest {
 
     assertNull(resultWithListRnrFormItem.getValidate());
     assertEquals(expectedReceived, resultWithListRnrFormItem.getReceived());
-    assertEquals(10L, (long) resultWithListRnrFormItem.getInitialAmount());
+    assertEquals(itemStockOnHand, (long) resultWithListRnrFormItem.getInitialAmount());
   }
   
   @Test
@@ -178,7 +184,7 @@ public class MMTBRepositoryTest extends LMISRepositoryUnitTest {
     assertTrue(customAmountRnrFormItem.getIsCustomAmount());
     assertNull(customAmountRnrFormItem.getInitialAmount());
     assertFalse(nonCustomAmountRnrFormItem.getIsCustomAmount());
-    assertNull(nonCustomAmountRnrFormItem.getInitialAmount());
+    assertEquals(initialAmount, (long) nonCustomAmountRnrFormItem.getInitialAmount());
   }
 
   public class MyTestModule extends AbstractModule {

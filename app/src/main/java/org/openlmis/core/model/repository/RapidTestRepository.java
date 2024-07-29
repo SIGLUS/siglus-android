@@ -45,22 +45,22 @@ public class RapidTestRepository extends RnrFormRepository {
   @Override
   public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards)
       throws LMISException {
-    List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
-    return fillAllProducts(form, rnrFormItems);
+    return fillAllProducts(form, super.generateRnrFormItems(form, stockCards));
   }
 
   @Override
-  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
-      List<StockMovementItem> stockMovementItems) {
-    RnrFormItem rnrFormItem = new RnrFormItem();
+  protected RnrFormItem createRnrFormItemByPeriod(
+      StockCard stockCard,
+      List<StockMovementItem> stockMovementItems,
+      Date periodBegin
+  ) {
+    RnrFormItem rnrFormItem = super.createRnrFormBaseItemByPeriod(
+        stockCard, stockMovementItems, periodBegin
+    );
 
     FormHelper.StockMovementModifiedItem modifiedItem = formHelper
             .assignTotalValues(stockMovementItems);
-    if (stockMovementItems == null || stockMovementItems.isEmpty()) {
-      rnrFormItem.setInitialAmount(lastRnrInventory(stockCard));
-    } else {
-      rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
-    }
+
     rnrFormItem.setReceived(modifiedItem.getTotalReceived());
     rnrFormItem.setIssued(modifiedItem.getTotalIssued());
     rnrFormItem.setAdjustment(modifiedItem.getTotalAdjustment());
@@ -69,12 +69,14 @@ public class RapidTestRepository extends RnrFormRepository {
     if (earliestLotExpiryDate != null) {
       rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
     }
+
     return rnrFormItem;
   }
 
   @Override
-  protected void updateInitialAmount(RnrFormItem rnrFormItem, Long lastInventory) {
-    rnrFormItem.setIsCustomAmount(lastInventory == null);
+  protected void updateInitialAmount(RnrFormItem rnrFormItem, Long initialAmount) {
+    rnrFormItem.setIsCustomAmount(initialAmount == null);
+    rnrFormItem.setInitialAmount(initialAmount);
   }
 
   @Override
