@@ -50,17 +50,24 @@ public class RapidTestRepository extends RnrFormRepository {
   }
 
   @Override
-  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
-      List<StockMovementItem> stockMovementItems) {
+  protected RnrFormItem createRnrFormItemByPeriod(
+      StockCard stockCard,
+      List<StockMovementItem> stockMovementItems,
+      Date periodBegin
+  ) {
     RnrFormItem rnrFormItem = new RnrFormItem();
 
     FormHelper.StockMovementModifiedItem modifiedItem = formHelper
             .assignTotalValues(stockMovementItems);
+
+    long initialAmount;
     if (stockMovementItems == null || stockMovementItems.isEmpty()) {
-      rnrFormItem.setInitialAmount(lastRnrInventory(stockCard));
+      initialAmount = getInitialAmountIfPeriodMovementItemsAreEmpty(stockCard, periodBegin);
     } else {
-      rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
+      initialAmount = stockMovementItems.get(0).getStockOnHand();
     }
+    updateInitialAmount(rnrFormItem, initialAmount);
+
     rnrFormItem.setReceived(modifiedItem.getTotalReceived());
     rnrFormItem.setProduct(stockCard.getProduct());
     Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
@@ -71,7 +78,8 @@ public class RapidTestRepository extends RnrFormRepository {
   }
 
   @Override
-  protected void updateInitialAmount(RnrFormItem rnrFormItem, Long lastInventory) {
-    rnrFormItem.setIsCustomAmount(lastInventory == null);
+  protected void updateInitialAmount(RnrFormItem rnrFormItem, Long initialAmount) {
+    rnrFormItem.setIsCustomAmount(initialAmount == null);
+    rnrFormItem.setInitialAmount(initialAmount);
   }
 }
