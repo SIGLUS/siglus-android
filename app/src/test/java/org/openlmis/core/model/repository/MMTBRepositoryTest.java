@@ -134,11 +134,11 @@ public class MMTBRepositoryTest extends LMISRepositoryUnitTest {
     //then
     assertThat(resultRnrFormItem.getValidate(), is("01/02/2015"));
     assertEquals(0L, resultRnrFormItem.getReceived());
-    assertEquals(0L, (long) resultRnrFormItem.getInitialAmount());
+    assertNull(resultRnrFormItem.getInitialAmount());
 
     assertNull(resultNoLotRnrFormItem.getValidate());
     assertEquals(0L, resultNoLotRnrFormItem.getReceived());
-    assertEquals(0L, (long) resultNoLotRnrFormItem.getInitialAmount());
+    assertNull(resultNoLotRnrFormItem.getInitialAmount());
 
     assertNull(resultWithListRnrFormItem.getValidate());
     assertEquals(expectedReceived, resultWithListRnrFormItem.getReceived());

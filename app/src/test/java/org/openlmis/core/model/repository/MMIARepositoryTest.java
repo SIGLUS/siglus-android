@@ -32,7 +32,6 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
-import androidx.test.core.app.ApplicationProvider;
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,6 +66,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.roboguice.shaded.goole.common.collect.Lists;
+import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 
@@ -95,7 +95,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     mockStockMovementRepository = mock(StockMovementRepository.class);
     mockReportTypeFormRepository = mock(ReportTypeFormRepository.class);
 
-    Application application = ApplicationProvider.getApplicationContext();
+    Application application = RuntimeEnvironment.application;
     RoboGuice.overrideApplicationInjector(application, new MyTestModule());
     mmiaRepository = RoboGuice.getInjector(application)
         .getInstance(MMIARepository.class);

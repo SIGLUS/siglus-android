@@ -146,8 +146,8 @@ public class RapidTestRepositoryTest extends LMISRepositoryUnitTest {
         stockMovementItemList, currentDate);
 
     //then
-    assertEquals(0L, (long) rnrFormItemWithNullItems.getInitialAmount());
-    assertEquals(0L, (long) rnrFormItemWithEmptyItems.getInitialAmount());
+    assertNull(rnrFormItemWithNullItems.getInitialAmount());
+    assertNull(rnrFormItemWithEmptyItems.getInitialAmount());
     assertEquals(itemStockOnHand, (long) rnrFormItemWithItems.getInitialAmount());
   }
 
