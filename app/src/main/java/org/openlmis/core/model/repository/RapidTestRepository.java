@@ -45,8 +45,7 @@ public class RapidTestRepository extends RnrFormRepository {
   @Override
   public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards)
       throws LMISException {
-    List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
-    return fillAllProducts(form, rnrFormItems);
+    return fillAllProducts(form, super.generateRnrFormItems(form, stockCards));
   }
 
   @Override
@@ -55,25 +54,20 @@ public class RapidTestRepository extends RnrFormRepository {
       List<StockMovementItem> stockMovementItems,
       Date periodBegin
   ) {
-    RnrFormItem rnrFormItem = new RnrFormItem();
+    RnrFormItem rnrFormItem = super.createRnrFormBaseItemByPeriod(
+        stockCard, stockMovementItems, periodBegin
+    );
 
     FormHelper.StockMovementModifiedItem modifiedItem = formHelper
             .assignTotalValues(stockMovementItems);
 
-    long initialAmount;
-    if (stockMovementItems == null || stockMovementItems.isEmpty()) {
-      initialAmount = getInitialAmountIfPeriodMovementItemsAreEmpty(stockCard, periodBegin);
-    } else {
-      initialAmount = stockMovementItems.get(0).getStockOnHand();
-    }
-    updateInitialAmount(rnrFormItem, initialAmount);
-
     rnrFormItem.setReceived(modifiedItem.getTotalReceived());
-    rnrFormItem.setProduct(stockCard.getProduct());
+
     Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
     if (earliestLotExpiryDate != null) {
       rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
     }
+
     return rnrFormItem;
   }
 

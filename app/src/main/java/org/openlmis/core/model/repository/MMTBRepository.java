@@ -135,24 +135,21 @@ public class MMTBRepository extends RnrFormRepository {
       List<StockMovementItem> stockMovementItems,
       Date periodBegin
   ) {
-    RnrFormItem rnrFormItem = new RnrFormItem();
-
-    long initialAmount;
+    RnrFormItem rnrFormItem = super.createRnrFormBaseItemByPeriod(
+        stockCard, stockMovementItems, periodBegin
+    );
 
     if (stockMovementItems == null || stockMovementItems.isEmpty()) {
       rnrFormItem.setReceived(0);
-      initialAmount = getInitialAmountIfPeriodMovementItemsAreEmpty(stockCard, periodBegin);
     } else {
       this.assignMMTBTotalValues(rnrFormItem, stockMovementItems);
-      initialAmount = stockMovementItems.get(0).getStockOnHand();
     }
-    updateInitialAmount(rnrFormItem, initialAmount);
 
-    rnrFormItem.setProduct(stockCard.getProduct());
     Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
     if (earliestLotExpiryDate != null) {
       rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
     }
+
     return rnrFormItem;
   }
 

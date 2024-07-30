@@ -289,7 +289,9 @@ public class RnrFormRepository {
     }
   }
 
-  public List<RnrFormItem> generateRnrFormItems(final RnRForm form, List<StockCard> stockCards) throws LMISException {
+  protected List<RnrFormItem> generateRnrFormItems(
+      final RnRForm form, List<StockCard> stockCards
+  ) throws LMISException {
     List<RnrFormItem> rnrFormItems = new ArrayList<>();
     RnRForm rnRForm = getLastSubmitRnr(form.getProgram().getId());
     if (rnRForm != null) {
@@ -324,13 +326,13 @@ public class RnrFormRepository {
       Date periodBegin
   ) {
     if (stockCard != null) {
-      List<StockMovementItem> previousStockMovementItems = stockMovementRepository.queryStockMovementsByStockCardIdAndPeriod(
-          String.valueOf(stockCard.getId()), null, periodBegin
-      );
+      List<StockMovementItem> previousStockMovementItems =
+          stockMovementRepository.queryStockMovementsByStockCardIdAndPeriod(
+              String.valueOf(stockCard.getId()), null, periodBegin
+          );
 
       if (previousStockMovementItems != null && !previousStockMovementItems.isEmpty()) {
-        return previousStockMovementItems.get(previousStockMovementItems.size() - 1)
-            .getStockOnHand();
+        return previousStockMovementItems.get(previousStockMovementItems.size() - 1).getStockOnHand();
       }
     }
 
@@ -464,18 +466,34 @@ public class RnrFormRepository {
       List<StockMovementItem> notFullStockItemsByCreatedData,
       Date periodBegin
   ) {
-    RnrFormItem rnrFormItem = new RnrFormItem();
+    RnrFormItem rnrFormItem = createRnrFormBaseItemByPeriod(
+        stockCard, notFullStockItemsByCreatedData, periodBegin
+    );
 
-    long initialAmount;
     if (notFullStockItemsByCreatedData == null || notFullStockItemsByCreatedData.isEmpty()) {
-      initialAmount = getInitialAmountIfPeriodMovementItemsAreEmpty(stockCard, periodBegin);
-      rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, initialAmount);
+      rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, rnrFormItem.getInitialAmount());
     } else {
-      initialAmount = notFullStockItemsByCreatedData.get(0).getStockOnHand();
       rnrFormHelper.assignTotalValues(rnrFormItem, notFullStockItemsByCreatedData);
     }
 
+    return rnrFormItem;
+  }
+
+  protected RnrFormItem createRnrFormBaseItemByPeriod(
+      StockCard stockCard,
+      List<StockMovementItem> notFullStockItemsByCreatedData,
+      Date periodBegin
+  ) {
+    RnrFormItem rnrFormItem = new RnrFormItem();
+    // initialAmount
+    long initialAmount;
+    if (notFullStockItemsByCreatedData == null || notFullStockItemsByCreatedData.isEmpty()) {
+      initialAmount = getInitialAmountIfPeriodMovementItemsAreEmpty(stockCard, periodBegin);
+    } else {
+      initialAmount = notFullStockItemsByCreatedData.get(0).getStockOnHand();
+    }
     updateInitialAmount(rnrFormItem, initialAmount);
+    // product
     rnrFormItem.setProduct(stockCard.getProduct());
 
     return rnrFormItem;
@@ -491,6 +509,7 @@ public class RnrFormRepository {
 
     for (Product product : products) {
       RnrFormItem rnrFormItem = new RnrFormItem();
+
       RnrFormItem stockFormItem = rnrFormHelper.getStockCardRnr(product, basicItems);
       if (stockFormItem == null) {
         rnrFormItem.setForm(form);
@@ -500,13 +519,15 @@ public class RnrFormRepository {
         rnrFormItem = stockFormItem;
       }
 
-      updateInitialAmount(
-          rnrFormItem, getInitialAmountIfPeriodMovementItemsAreEmpty(
-              stockRepository.queryStockCardByProductId(product.getId()),
-              form.getPeriodBegin()
-          ));
-      result.add(rnrFormItem);
+      if (rnrFormItem.getInitialAmount() == null) {
+        updateInitialAmount(
+            rnrFormItem, getInitialAmountIfPeriodMovementItemsAreEmpty(
+                stockRepository.queryStockCardByProductId(product.getId()),
+                form.getPeriodBegin()
+            ));
+      }
 
+      result.add(rnrFormItem);
     }
     return result;
   }
