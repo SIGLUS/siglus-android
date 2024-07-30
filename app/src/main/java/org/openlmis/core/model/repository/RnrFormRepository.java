@@ -348,22 +348,27 @@ public class RnrFormRepository {
       int inventoryStartIndex = 0;
       int inventoryEndIndex = size;
 
+      boolean isCaughtInventoryStartIndex = false;
+
       String beginDateString = formatDateTimeToDay(periodBegin);
       String endDateString = formatDateTimeToDay(periodEnd);
 
       for (int index = 0; index < size; index++) {
         StockMovementItem stockMovementItem = stockMovementItems.get(index);
-        if (stockMovementItem != null && isInventoryType(stockMovementItem.getMovementType())) {
+        if (stockMovementItem != null) {
           Date movementDate = stockMovementItem.getMovementDate();
           if (movementDate == null) {
             continue;
           }
 
           String movementDateString = formatDateTimeToDay(movementDate);
-          if (beginDateString.equals(movementDateString)) {
+          if (beginDateString.equals(movementDateString) && !isCaughtInventoryStartIndex) {
             inventoryStartIndex = index;
-          } else if (endDateString.equals(movementDateString)) {
-            inventoryEndIndex = index;
+            if (isInventoryType(stockMovementItem.getMovementType())) {
+              isCaughtInventoryStartIndex = true;
+            }
+          } else if (endDateString.equals(movementDateString) && isInventoryType(stockMovementItem.getMovementType())) {
+            inventoryEndIndex = index + 1;
           }
         }
       }
