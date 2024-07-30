@@ -306,7 +306,7 @@ public class RnrFormRepository {
     return rnrFormItems;
   }
 
-  public long getInitialAmountIfPeriodMovementItemsAreEmpty(
+  public Long getInitialAmountIfPeriodMovementItemsAreEmpty(
       StockCard stockCard,
       Date periodBegin
   ) {
@@ -321,7 +321,7 @@ public class RnrFormRepository {
       }
     }
 
-    return 0L;
+    return null;
   }
 
   /**
@@ -476,7 +476,7 @@ public class RnrFormRepository {
   ) {
     RnrFormItem rnrFormItem = new RnrFormItem();
     // initialAmount
-    long initialAmount;
+    Long initialAmount;
     if (notFullStockItemsByCreatedData == null || notFullStockItemsByCreatedData.isEmpty()) {
       initialAmount = getInitialAmountIfPeriodMovementItemsAreEmpty(stockCard, periodBegin);
     } else {
@@ -523,7 +523,11 @@ public class RnrFormRepository {
   }
 
   protected void updateInitialAmount(RnrFormItem rnrFormItem, Long initialAmount) {
-    rnrFormItem.setInitialAmount(initialAmount);
+    if (initialAmount == null) {
+      rnrFormItem.setInitialAmount(0L);
+    } else {
+      rnrFormItem.setInitialAmount(initialAmount);
+    }
   }
 
   protected void updateDefaultValue(RnrFormItem rnrFormItem) {
