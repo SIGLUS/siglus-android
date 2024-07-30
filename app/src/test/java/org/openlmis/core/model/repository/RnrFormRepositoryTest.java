@@ -35,6 +35,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.DEFAULT;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.NEGATIVE_ADJUST;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
@@ -65,6 +66,7 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
@@ -118,6 +120,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
   static final String comment = "DRAFT Form";
   private static String GENERATE_DATE_STRING = "05/07/2015";
   private static String GENERATE_DATE_STRING2 = "20/07/2015";
+
+  Date periodBegin = DateUtil.parseString("2024-07-20 10:10:10", DateUtil.DATE_TIME_FORMAT);
+  Date periodEnd = DateUtil.parseString("2024-08-20 10:10:10", DateUtil.DATE_TIME_FORMAT);
+  private static String beforePeriodBeginWithSameDay = "2024-07-20 9:10:10";
+  private static String afterPeriodBeginWithSameDay = "2024-08-20 11:10:10";
 
   @Before
   public void setup() throws LMISException {
@@ -937,6 +944,186 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     assertEquals(0, signatures.size());
   }
 
+  @Test
+  public void filterMovementItemsBaseOnInventory_shouldReturnListWithInventoryDataWhenStartAndEndDateHasInventory() {
+    StockMovementItem issueInventoryItem = createStockMovementItem(
+        100, ISSUE, 50,
+        DateUtil.parseString(beforePeriodBeginWithSameDay, DateUtil.DATE_TIME_FORMAT)
+    );
+    StockMovementItem startDateInventoryItem = createStockMovementItem(
+        100, PHYSICAL_INVENTORY, 0, periodBegin
+    );
+    StockMovementItem receivedDateInventoryItem = createStockMovementItem(
+        200, RECEIVE, 100, periodBegin
+    );
+    StockMovementItem endDateInventoryItem = createStockMovementItem(
+        200, PHYSICAL_INVENTORY, 0, periodEnd
+    );
+    StockMovementItem positiveAdjustDateInventoryItem = createStockMovementItem(
+        300, POSITIVE_ADJUST, 100,
+        DateUtil.parseString(afterPeriodBeginWithSameDay, DateUtil.DATE_TIME_FORMAT)
+    );
+
+    List<StockMovementItem> stockMovementItems = newArrayList(
+        issueInventoryItem, startDateInventoryItem, receivedDateInventoryItem,
+        endDateInventoryItem, positiveAdjustDateInventoryItem
+    );
+    // when
+    List<StockMovementItem> actualStockMovementItems =
+        rnrFormRepository.filterMovementItemsBaseOnInventory(stockMovementItems, periodBegin, periodEnd);
+    // then
+    assertEquals(3, actualStockMovementItems.size());
+
+    StockMovementItem actualStartDateMovementItem = actualStockMovementItems.get(0);
+    assertEquals(
+        startDateInventoryItem.getMovementDate(),
+        actualStartDateMovementItem.getMovementDate()
+    );
+    assertEquals(PHYSICAL_INVENTORY, actualStartDateMovementItem.getMovementType());
+
+    StockMovementItem actualEndDateMovementItem = actualStockMovementItems.get(2);
+    assertEquals(
+        endDateInventoryItem.getMovementDate(),
+        actualEndDateMovementItem.getMovementDate()
+    );
+    assertEquals(PHYSICAL_INVENTORY, actualEndDateMovementItem.getMovementType());
+  }
+
+  @Test
+  public void filterMovementItemsBaseOnInventory_shouldReturnListWithStartInventoryDataWhenOnlyStartDateHasInventory() {
+    StockMovementItem issueInventoryItem = createStockMovementItem(
+        100, ISSUE, 50,
+        DateUtil.parseString(beforePeriodBeginWithSameDay, DateUtil.DATE_TIME_FORMAT)
+    );
+    StockMovementItem startDateInventoryItem = createStockMovementItem(
+        100, PHYSICAL_INVENTORY, 0, periodBegin
+    );
+    StockMovementItem receivedDateInventoryItem = createStockMovementItem(
+        200, RECEIVE, 100, periodBegin
+    );
+    StockMovementItem negativeAdjustInventoryItem = createStockMovementItem(
+        200, NEGATIVE_ADJUST, 0, periodEnd
+    );
+    StockMovementItem positiveAdjustDateInventoryItem = createStockMovementItem(
+        300, POSITIVE_ADJUST, 100,
+        DateUtil.parseString(afterPeriodBeginWithSameDay, DateUtil.DATE_TIME_FORMAT)
+    );
+
+    List<StockMovementItem> stockMovementItems = newArrayList(
+        issueInventoryItem, startDateInventoryItem, receivedDateInventoryItem,
+        negativeAdjustInventoryItem, positiveAdjustDateInventoryItem
+    );
+    // when
+    List<StockMovementItem> actualStockMovementItems =
+        rnrFormRepository.filterMovementItemsBaseOnInventory(stockMovementItems, periodBegin, periodEnd);
+    // then
+    assertEquals(4, actualStockMovementItems.size());
+
+    StockMovementItem actualStartDateInventoryItem = actualStockMovementItems.get(0);
+    assertEquals(
+        startDateInventoryItem.getMovementDate(),
+        actualStartDateInventoryItem.getMovementDate()
+    );
+    assertEquals(PHYSICAL_INVENTORY, actualStartDateInventoryItem.getMovementType());
+
+    StockMovementItem actualPositiveAdjustDateInventoryItem = actualStockMovementItems.get(3);
+    assertEquals(
+        positiveAdjustDateInventoryItem.getMovementDate(),
+        actualPositiveAdjustDateInventoryItem.getMovementDate()
+    );
+    assertEquals(POSITIVE_ADJUST, actualPositiveAdjustDateInventoryItem.getMovementType());
+  }
+
+  @Test
+  public void filterMovementItemsBaseOnInventory_shouldReturnListWithEndInventoryDataWhenOnlyEndDateHasInventory() {
+    StockMovementItem issueInventoryItem = createStockMovementItem(
+        100, ISSUE, 50,
+        DateUtil.parseString(beforePeriodBeginWithSameDay, DateUtil.DATE_TIME_FORMAT)
+    );
+    StockMovementItem negativeAdjustInventoryItem = createStockMovementItem(
+        100, NEGATIVE_ADJUST, 0, periodBegin
+    );
+    StockMovementItem receivedDateInventoryItem = createStockMovementItem(
+        200, RECEIVE, 100, periodBegin
+    );
+    StockMovementItem endDateInventoryItem = createStockMovementItem(
+        200, PHYSICAL_INVENTORY, 0, periodEnd
+    );
+    StockMovementItem positiveAdjustDateInventoryItem = createStockMovementItem(
+        300, POSITIVE_ADJUST, 100,
+        DateUtil.parseString(afterPeriodBeginWithSameDay, DateUtil.DATE_TIME_FORMAT)
+    );
+
+    List<StockMovementItem> stockMovementItems = newArrayList(
+        issueInventoryItem, negativeAdjustInventoryItem, receivedDateInventoryItem,
+        endDateInventoryItem, positiveAdjustDateInventoryItem
+    );
+    // when
+    List<StockMovementItem> actualStockMovementItems =
+        rnrFormRepository.filterMovementItemsBaseOnInventory(stockMovementItems, periodBegin, periodEnd);
+    // then
+    assertEquals(2, actualStockMovementItems.size());
+
+    StockMovementItem actualReceivedDateInventoryItem = actualStockMovementItems.get(0);
+    assertEquals(
+        receivedDateInventoryItem.getMovementDate(),
+        actualReceivedDateInventoryItem.getMovementDate()
+    );
+    assertEquals(RECEIVE, actualReceivedDateInventoryItem.getMovementType());
+
+    StockMovementItem actualEndDateInventoryItem = actualStockMovementItems.get(1);
+    assertEquals(
+        endDateInventoryItem.getMovementDate(),
+        actualEndDateInventoryItem.getMovementDate()
+    );
+    assertEquals(PHYSICAL_INVENTORY, actualEndDateInventoryItem.getMovementType());
+  }
+
+  @Test
+  public void filterMovementItemsBaseOnInventory_shouldReturnListWithoutInventoryDataWhenNoInventory() {
+    StockMovementItem issueInventoryItem = createStockMovementItem(
+        100, ISSUE, 50,
+        DateUtil.parseString(beforePeriodBeginWithSameDay, DateUtil.DATE_TIME_FORMAT)
+    );
+    StockMovementItem negativeAdjustInventoryItem = createStockMovementItem(
+        100, NEGATIVE_ADJUST, 0, periodBegin
+    );
+    StockMovementItem receivedDateInventoryItem = createStockMovementItem(
+        200, RECEIVE, 100, periodBegin
+    );
+    StockMovementItem defaultDateInventoryItem = createStockMovementItem(
+        200, DEFAULT, 0, periodEnd
+    );
+    StockMovementItem positiveAdjustDateInventoryItem = createStockMovementItem(
+        300, POSITIVE_ADJUST, 100,
+        DateUtil.parseString(afterPeriodBeginWithSameDay, DateUtil.DATE_TIME_FORMAT)
+    );
+
+    List<StockMovementItem> stockMovementItems = newArrayList(
+        issueInventoryItem, negativeAdjustInventoryItem, receivedDateInventoryItem,
+        defaultDateInventoryItem, positiveAdjustDateInventoryItem
+    );
+    // when
+    List<StockMovementItem> actualStockMovementItems =
+        rnrFormRepository.filterMovementItemsBaseOnInventory(stockMovementItems, periodBegin, periodEnd);
+    // then
+    assertEquals(3, actualStockMovementItems.size());
+
+    StockMovementItem actualReceivedDateInventoryItem = actualStockMovementItems.get(0);
+    assertEquals(
+        issueInventoryItem.getMovementDate(),
+        actualReceivedDateInventoryItem.getMovementDate()
+    );
+    assertEquals(RECEIVE, actualReceivedDateInventoryItem.getMovementType());
+
+    StockMovementItem actualPositiveAdjustDateInventoryItem = actualStockMovementItems.get(2);
+    assertEquals(
+        positiveAdjustDateInventoryItem.getMovementDate(),
+        actualPositiveAdjustDateInventoryItem.getMovementDate()
+    );
+    assertEquals(POSITIVE_ADJUST, actualPositiveAdjustDateInventoryItem.getMovementType());
+  }
+
   private RnRForm generateRnrFormWithIsEmergency(Status status, boolean isEmergency) {
     RnRForm rnRForm = generateRnRForm(status);
     rnRForm.setEmergency(isEmergency);
@@ -1017,6 +1204,23 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     rnrFormItem.setProduct(product);
     rnrFormItem.setInventory(inventory);
     return rnrFormItem;
+  }
+
+  private StockMovementItem createStockMovementItem(
+      int stockOnHand,
+      MovementType movementType,
+      int movementQuantity,
+      Date movementDate
+  ) {
+    StockMovementItemBuilder stockMovementItemBuilder = new StockMovementItemBuilder();
+    return stockMovementItemBuilder
+        .withDocumentNo("1")
+        .withMovementReason("reason")
+        .withMovementDate(DateUtil.formatDateTime(movementDate))
+        .withMovementType(movementType)
+        .withStockOnHand(stockOnHand)
+        .withQuantity(movementQuantity)
+        .build();
   }
 
   private StockMovementItem createStockMovementItemBySOH(StockMovementItemBuilder stockMovementItemBuilder,
