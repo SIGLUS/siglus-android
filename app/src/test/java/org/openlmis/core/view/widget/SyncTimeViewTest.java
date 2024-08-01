@@ -21,7 +21,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -36,9 +36,9 @@ public class SyncTimeViewTest {
   public void setUp() throws Exception {
     syncErrorsRepository = mock(SyncErrorsRepository.class);
     sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyMode());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyMode());
     syncTimeView = new SyncTimeView(LMISTestApp.getContext());
-    sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application)
+    sharedPreferenceMgr = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(SharedPreferenceMgr.class);
     nowDateTime = new DateTime();
   }

@@ -15,7 +15,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Service;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -27,7 +27,7 @@ public class ServiceFormRepositoryTest extends LMISRepositoryUnitTest {
   @Before
   public void setup() throws LMISException {
     serviceFormRepository = RoboGuice
-        .getInjector(RuntimeEnvironment.application)
+        .getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ServiceFormRepository.class);
     service = new Service();
     service.setCode("serviceCode");

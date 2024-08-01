@@ -45,7 +45,7 @@ import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.MMTBRequisitionActivity;
 import org.openlmis.core.view.widget.MMTBPatientInfoList;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Observable;
 
@@ -60,7 +60,7 @@ public class MMTBRequisitionFragmentTest {
   @Before
   public void setUp() throws Exception {
     mmtbFormPresenter = mock(MMTBRequisitionPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(MMTBRequisitionPresenter.class).toInstance(mmtbFormPresenter);

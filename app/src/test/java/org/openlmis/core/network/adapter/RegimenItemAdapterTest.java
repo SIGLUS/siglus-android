@@ -18,7 +18,7 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.utils.JsonFileReader;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -29,7 +29,7 @@ public class RegimenItemAdapterTest {
   @Before
   public void setUp() throws Exception {
     regimenRepository = mock(RegimenRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
   }
 
 

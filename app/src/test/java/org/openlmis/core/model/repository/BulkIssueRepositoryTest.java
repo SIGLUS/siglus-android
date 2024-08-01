@@ -44,7 +44,7 @@ import org.openlmis.core.model.builder.LotBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -64,17 +64,17 @@ public class BulkIssueRepositoryTest {
 
   @Before
   public void setUp() throws Exception {
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
-    stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
-    lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LotRepository.class);
+    productRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(ProductRepository.class);
+    stockRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(StockRepository.class);
+    lotRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(LotRepository.class);
     mockStockRepository = Mockito.mock(StockRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(StockRepository.class).toInstance(mockStockRepository);
       }
     });
-    bulkIssueRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(BulkIssueRepository.class);
+    bulkIssueRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(BulkIssueRepository.class);
     prepareData();
   }
 

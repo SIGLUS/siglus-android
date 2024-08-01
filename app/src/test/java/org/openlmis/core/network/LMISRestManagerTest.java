@@ -11,7 +11,7 @@ import javax.net.ssl.SSLSession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import retrofit.client.Client;
 
 @RunWith(LMISTestRunner.class)
@@ -32,7 +32,7 @@ public class LMISRestManagerTest {
 
     LMISRestManagerMock.mockClient = mock(Client.class);
     LMISRestManagerMock lmisRestManagerMock = new LMISRestManagerMock(
-        RuntimeEnvironment.application);
+        ApplicationProvider.getApplicationContext());
     lmisRestManagerMock.superGetSSLClient();
     assertTrue(
         lmisRestManagerMock.okHttpClient.getHostnameVerifier().verify("whateverName", sslSession));

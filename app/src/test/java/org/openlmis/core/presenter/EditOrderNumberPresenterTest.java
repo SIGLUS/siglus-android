@@ -39,7 +39,7 @@ import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.presenter.EditOrderNumberPresenter.EditOrderNumberView;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -57,7 +57,7 @@ public class EditOrderNumberPresenterTest {
   public void setup() {
     mockView = mock(EditOrderNumberView.class);
     mockPodRepository = mock(PodRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(PodRepository.class).toInstance(mockPodRepository);

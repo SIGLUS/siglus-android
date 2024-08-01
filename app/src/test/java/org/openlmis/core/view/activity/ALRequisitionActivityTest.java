@@ -13,7 +13,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
@@ -38,7 +38,7 @@ public class ALRequisitionActivityTest {
   @Test
   public void shouldGetIntentToMe() {
     Date endDate = DateUtil.parseString("02/02/2021", DateUtil.SIMPLE_DATE_FORMAT);
-    Intent intent = ALRequisitionActivity.getIntentToMe(RuntimeEnvironment.application, endDate);
+    Intent intent = ALRequisitionActivity.getIntentToMe(ApplicationProvider.getApplicationContext(), endDate);
     Assert.assertEquals(endDate, intent.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
   }
 }

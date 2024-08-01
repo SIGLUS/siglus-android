@@ -33,7 +33,7 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.RobolectricUtils;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -50,11 +50,11 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
 
   @Before
   public void setup() throws LMISException {
-    stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    stockRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(StockRepository.class);
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductRepository.class);
-    lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    lotRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(LotRepository.class);
     product = ProductBuilder.buildAdultProduct();
     productRepository.createOrUpdate(product);

@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowApplication;
 import roboguice.RoboGuice;
@@ -62,7 +62,7 @@ public class StockCardListActivityTest {
 
   @Test
   public void shouldGetIntentToMe() {
-    Intent intent = StockCardListActivity.getIntentToMe(RuntimeEnvironment.application);
+    Intent intent = StockCardListActivity.getIntentToMe(ApplicationProvider.getApplicationContext());
 
     assertThat(intent.getComponent().getClassName())
         .isEqualTo(StockCardListActivity.class.getName());

@@ -12,7 +12,7 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -22,7 +22,7 @@ public class SyncErrorsRepositoryTest extends LMISRepositoryUnitTest {
 
   @Before
   public void setUp() throws Exception {
-    syncErrorsRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    syncErrorsRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(SyncErrorsRepository.class);
   }
 

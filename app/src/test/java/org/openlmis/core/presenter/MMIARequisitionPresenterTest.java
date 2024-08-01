@@ -58,7 +58,7 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenItemRepository;
 import org.openlmis.core.service.SyncUpManager;
 import org.openlmis.core.utils.Constants;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -84,10 +84,10 @@ public class MMIARequisitionPresenterTest {
     mockMMIAformView = mock(MMIARequisitionPresenter.MMIARequisitionView.class);
     syncUpManager = mock(SyncUpManager.class);
     regimenItemRepository = mock(RegimenItemRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
     MockitoAnnotations.initMocks(this);
 
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(MMIARequisitionPresenter.class);
     presenter.attachView(mockMMIAformView);
     rnRForm = new RnRForm();

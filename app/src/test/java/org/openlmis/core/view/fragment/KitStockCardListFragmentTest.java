@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.view.adapter.KitStockCardListAdapter;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import roboguice.fragment.SupportFragmentController;
 
@@ -26,7 +26,7 @@ public class KitStockCardListFragmentTest {
   @Before
   public void setUp() throws Exception {
     mockStockCardPresenter = mock(StockCardPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(StockCardPresenter.class).toInstance(mockStockCardPresenter);

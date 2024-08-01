@@ -15,7 +15,7 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -31,8 +31,8 @@ public class SharedPreferenceMgrTest {
   public void setUp() throws Exception {
     stockRepository = mock(StockRepository.class);
     rnrFormRepository = mock(RnrFormRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
+    sharedPreferenceMgr = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(SharedPreferenceMgr.class);
     sharedPreferenceMgr.stockRepository = stockRepository;
     nowDateTime = new DateTime();
   }
@@ -106,7 +106,7 @@ public class SharedPreferenceMgrTest {
 
   @Test
   public void shouldReturnTrueIfLastSyncUpDateIsToday() throws Exception {
-    ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(System.currentTimeMillis());
+    ((LMISTestApp) ApplicationProvider.getApplicationContext()).setCurrentTimeMillis(System.currentTimeMillis());
     sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
 
     boolean hasSyncedUpLatestMovementToday = sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay();

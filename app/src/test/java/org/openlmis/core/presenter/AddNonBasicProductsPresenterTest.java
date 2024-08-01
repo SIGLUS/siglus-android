@@ -18,7 +18,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.view.viewmodel.NonBasicProductsViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -57,8 +57,8 @@ public class AddNonBasicProductsPresenterTest {
     product3.setBasic(false);
     product4.setBasic(false);
     productRepository = mock(ProductRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(AddNonBasicProductsPresenter.class);
   }
 

@@ -37,7 +37,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
@@ -53,7 +53,7 @@ public class LoginActivityTest {
   @Before
   public void setUp() {
     mockedPresenter = mock(LoginPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(LoginPresenter.class).toInstance(mockedPresenter);

@@ -58,7 +58,7 @@ import org.openlmis.core.view.widget.DashboardView;
 import org.openlmis.core.view.widget.NotificationBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
@@ -79,13 +79,13 @@ public class HomeActivityTest {
 
   @Before
   public void setUp() {
-    testApp = (LMISTestApp) RuntimeEnvironment.application;
+    testApp = (LMISTestApp) ApplicationProvider.getApplicationContext();
     mockSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
     syncService = mock(SyncService.class);
     syncTimeView = mock(SyncTimeView.class);
     dashboardView = mock(DashboardView.class);
     UserInfoMgr.getInstance().setUser(new User("user", "password"));
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(SharedPreferenceMgr.class).toInstance(mockSharedPreferenceMgr);

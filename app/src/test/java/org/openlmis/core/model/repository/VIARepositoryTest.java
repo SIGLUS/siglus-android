@@ -13,7 +13,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -24,7 +24,7 @@ public class VIARepositoryTest {
 
   @Before
   public void setup() throws LMISException {
-    viaRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    viaRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(VIARepository.class);
 
     viaProgram = new Program("VIA", "VIA", null, false, null, null);

@@ -19,7 +19,7 @@ import org.openlmis.core.presenter.AddProductsToBulkEntriesPresenter;
 import org.openlmis.core.view.adapter.AddProductsToBulkEntriesAdapter;
 import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -37,7 +37,7 @@ public class AddProductsToBulkEntriesActivityTest {
   public void setUp() throws Exception {
     mockedPresenter = mock(AddProductsToBulkEntriesPresenter.class);
     mockedAdapter = mock(AddProductsToBulkEntriesAdapter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(AddProductsToBulkEntriesPresenter.class).toInstance(mockedPresenter);

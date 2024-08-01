@@ -31,7 +31,7 @@ import org.mockito.Mockito;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.enumeration.StockOnHandStatus;
 import org.openlmis.core.model.repository.StockRepository;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Subscription;
 import rx.observers.TestSubscriber;
@@ -48,9 +48,9 @@ public class HomePresenterTest {
     // given
     view = Mockito.mock(HomePresenter.HomeView.class);
     mockStockRepository = Mockito.mock(StockRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application,
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(),
         binder -> binder.bind(StockRepository.class).toInstance(mockStockRepository));
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(HomePresenter.class);
     presenter.attachView(view);
 

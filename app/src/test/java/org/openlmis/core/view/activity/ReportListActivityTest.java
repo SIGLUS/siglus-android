@@ -45,7 +45,7 @@ import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.presenter.ReportListPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowIntent;
@@ -63,7 +63,7 @@ public class ReportListActivityTest {
   @Before
   public void setUp() throws Exception {
     mockedPresenter = mock(ReportListPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(ReportListPresenter.class).toInstance(mockedPresenter);

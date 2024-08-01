@@ -15,7 +15,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.utils.Constants;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -27,13 +27,13 @@ public class RegimenRepositoryTest {
   @Before
   public void setUp() throws Exception {
     mockProgramRepository = mock(ProgramRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(ProgramRepository.class).toInstance(mockProgramRepository);
       }
     });
-    repository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    repository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(RegimenRepository.class);
   }
 

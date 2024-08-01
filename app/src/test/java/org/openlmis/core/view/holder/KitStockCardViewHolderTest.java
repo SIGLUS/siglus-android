@@ -14,7 +14,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.view.holder.StockCardViewHolder.OnItemViewClickListener;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 @RunWith(LMISTestRunner.class)
 public class KitStockCardViewHolderTest {
@@ -23,7 +23,7 @@ public class KitStockCardViewHolderTest {
 
   @Before
   public void setUp() throws Exception {
-    View view = LayoutInflater.from(RuntimeEnvironment.application)
+    View view = LayoutInflater.from(ApplicationProvider.getApplicationContext())
         .inflate(R.layout.item_stockcard, null, false);
     viewHolder = new KitStockCardViewHolder(view, mock(OnItemViewClickListener.class));
   }

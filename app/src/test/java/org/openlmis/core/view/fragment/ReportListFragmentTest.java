@@ -45,7 +45,6 @@ import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.activity.SelectPeriodActivity;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowApplication;
 import roboguice.RoboGuice;
@@ -65,7 +64,7 @@ public class ReportListFragmentTest {
     mockedPresenter = mock(RnRFormListPresenter.class);
     Observable observable = Observable.just(newArrayList());
     when(mockedPresenter.loadRnRFormList()).thenReturn(observable);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(RnRFormListPresenter.class).toInstance(mockedPresenter);

@@ -40,7 +40,7 @@ import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.Constants.Program;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -52,8 +52,8 @@ public class PodRepositoryTest {
 
   @Before
   public void setUp() throws Exception {
-    podRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PodRepository.class);
-    syncErrorRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncErrorsRepository.class);
+    podRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(PodRepository.class);
+    syncErrorRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(SyncErrorsRepository.class);
 
     // given
     ArrayList<Pod> pods = new ArrayList<>();

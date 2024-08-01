@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
@@ -44,7 +44,7 @@ public class StockMovementHistoryActivityTest {
   @Test
   public void shouldGetIntentToMeWithStockIdAndStockName() {
     Intent intent = StockMovementHistoryActivity
-        .getIntentToMe(RuntimeEnvironment.application, 100L, "StockName", false, true);
+        .getIntentToMe(ApplicationProvider.getApplicationContext(), 100L, "StockName", false, true);
 
     assertThat(intent).isNotNull();
     assertThat(intent.getComponent().getClassName())

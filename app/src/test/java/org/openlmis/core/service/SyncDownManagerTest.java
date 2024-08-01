@@ -64,7 +64,7 @@ import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
@@ -107,8 +107,8 @@ public class SyncDownManagerTest {
     reset(rnrFormRepository);
     reset(lmisRestApi);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    syncDownManager = RoboGuice.getInjector(RuntimeEnvironment.application)
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
+    syncDownManager = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(SyncDownManager.class);
 
     syncDownManager.lmisRestApi = lmisRestApi;

@@ -50,7 +50,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.presenter.BulkIssuePresenter.BulkIssueView;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.BulkIssueProductViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -77,7 +77,7 @@ public class BulkIssuePresenterTest {
     mockLotOnHand = mock(LotOnHand.class);
     when(mockLotOnHand.getLot()).thenReturn(mockLot);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(BulkIssueRepository.class).toInstance(mockBulkIssueRepository);
@@ -85,7 +85,7 @@ public class BulkIssuePresenterTest {
         bind(BulkIssueView.class).toInstance(mockView);
       }
     });
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(BulkIssuePresenter.class);
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(BulkIssuePresenter.class);
     presenter.attachView(mockView);
   }
 

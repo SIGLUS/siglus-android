@@ -12,7 +12,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 @RunWith(LMISTestRunner.class)
 public class RnRFormListAdapterTest {
@@ -32,7 +32,7 @@ public class RnRFormListAdapterTest {
     List<RnRFormViewModel> models = newArrayList(RnRFormViewModel.buildNormalRnrViewModel(form),
         RnRFormViewModel.buildNormalRnrViewModel(form));
 
-    rnRFormListAdapter = new RnRFormListAdapter(RuntimeEnvironment.application, models, null);
+    rnRFormListAdapter = new RnRFormListAdapter(ApplicationProvider.getApplicationContext(), models, null);
   }
 
   @Test

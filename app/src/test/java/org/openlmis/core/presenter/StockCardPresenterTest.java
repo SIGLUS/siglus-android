@@ -32,7 +32,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.collect.ImmutableMap;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -51,7 +51,7 @@ public class StockCardPresenterTest {
     productRepository = mock(ProductRepository.class);
     stockCardListView = mock(StockCardPresenter.StockCardListView.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(StockRepository.class).toInstance(stockRepository);
@@ -59,7 +59,7 @@ public class StockCardPresenterTest {
       }
     });
 
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(StockCardPresenter.class);
     presenter.attachView(stockCardListView);
 

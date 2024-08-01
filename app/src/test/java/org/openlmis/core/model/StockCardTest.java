@@ -23,7 +23,7 @@ import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -43,7 +43,7 @@ public class StockCardTest {
     mockProductRepository = mock(ProductRepository.class);
     mockProgramRepository = mock(ProgramRepository.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
 
     stockCard = StockCardBuilder.buildStockCard();
 

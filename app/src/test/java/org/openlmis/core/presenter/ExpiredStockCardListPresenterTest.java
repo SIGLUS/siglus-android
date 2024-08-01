@@ -27,7 +27,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.presenter.StockCardPresenter.StockCardListView;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -43,13 +43,13 @@ public class ExpiredStockCardListPresenterTest {
     stockRepository = mock(StockRepository.class);
     expiredStockCardListView = mock(ExpiredStockCardListPresenter.ExpiredStockCardListView.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(StockRepository.class).toInstance(stockRepository);
       }
     });
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ExpiredStockCardListPresenter.class);
     presenter.attachView(expiredStockCardListView);
   }

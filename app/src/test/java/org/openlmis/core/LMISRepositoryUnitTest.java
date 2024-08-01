@@ -21,12 +21,12 @@ package org.openlmis.core;
 
 import org.junit.After;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 public abstract class LMISRepositoryUnitTest {
 
   @After
   public void tearDown() throws Exception {
-    LmisSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
+    LmisSqliteOpenHelper.getInstance(ApplicationProvider.getApplicationContext()).close();
   }
 }

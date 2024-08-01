@@ -46,7 +46,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -75,9 +75,9 @@ public class RapidTestRepositoryTest extends LMISRepositoryUnitTest {
     mockStockMovementRepository = mock(StockMovementRepository.class);
     mockReportTypeFormRepository = mock(ReportTypeFormRepository.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    mmiaRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARepository.class);
-    rapidTestRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RapidTestRepository.class);
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
+    mmiaRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(MMIARepository.class);
+    rapidTestRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(RapidTestRepository.class);
   }
 
   @Test

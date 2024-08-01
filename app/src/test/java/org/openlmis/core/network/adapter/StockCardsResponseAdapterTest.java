@@ -29,7 +29,7 @@ import org.openlmis.core.network.adapter.StockCardsResponseAdapter.NetworkMoveme
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -42,8 +42,8 @@ public class StockCardsResponseAdapterTest {
   @Before
   public void setUp() throws Exception {
     mockProductRepository = mock(ProductRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    adapter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
+    adapter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(StockCardsResponseAdapter.class);
   }
 

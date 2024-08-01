@@ -76,7 +76,7 @@ import org.openlmis.core.view.fragment.VIARequisitionFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.roboguice.shaded.goole.common.collect.Lists;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
@@ -107,10 +107,10 @@ public class VIARequisitionPresenterTest {
 
     VIARequisitionFragment = mock(org.openlmis.core.view.fragment.VIARequisitionFragment.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
     MockitoAnnotations.initMocks(this);
 
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(VIARequisitionPresenter.class);
     presenter.attachView(VIARequisitionFragment);
   }

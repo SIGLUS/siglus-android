@@ -52,7 +52,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.MMIARepository.ReportType;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 
@@ -69,8 +69,8 @@ public class MMTBRepositoryTest extends LMISRepositoryUnitTest {
     mockProductRepository = mock(ProductRepository.class);
     mockProgramRepository = mock(ProgramRepository.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    mmtbRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMTBRepository.class);
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
+    mmtbRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(MMTBRepository.class);
 
     program = new Program("ART", "ART", null, false, null, null);
     when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);

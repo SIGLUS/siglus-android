@@ -66,7 +66,7 @@ import org.openlmis.core.view.widget.MMIARegimeListWrap;
 import org.openlmis.core.view.widget.MMIARnrFormProductList;
 import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -90,7 +90,7 @@ public class MMIARequisitionFragmentTest {
   @Before
   public void setUp() throws Exception {
     mmiaFormPresenter = mock(MMIARequisitionPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(MMIARequisitionPresenter.class).toInstance(mmiaFormPresenter);

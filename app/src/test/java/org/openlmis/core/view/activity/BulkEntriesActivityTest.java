@@ -22,7 +22,7 @@ import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.presenter.BulkEntriesPresenter;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.fakes.RoboMenuItem;
 import roboguice.RoboGuice;
@@ -38,7 +38,7 @@ public class BulkEntriesActivityTest {
   @Before
   public void setUp() throws Exception {
     mockedPresenter = mock(BulkEntriesPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(BulkEntriesPresenter.class).toInstance(mockedPresenter);

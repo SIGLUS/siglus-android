@@ -24,7 +24,7 @@ import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.holder.SelectEmergencyProductsViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
@@ -43,7 +43,7 @@ public class SelectEmergencyProductsActivityTest {
   public void setUp() throws Exception {
     productPresenter = mock(ProductPresenter.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(ProductPresenter.class).toInstance(productPresenter);

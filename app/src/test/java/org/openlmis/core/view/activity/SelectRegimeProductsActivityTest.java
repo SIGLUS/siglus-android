@@ -29,7 +29,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowToast;
@@ -48,7 +48,7 @@ public class SelectRegimeProductsActivityTest {
   public void setUp() throws Exception {
     presenter = mock(ProductPresenter.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application,
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(),
         binder -> binder.bind(ProductPresenter.class).toInstance(presenter));
 
     Observable<List<RegimeProductViewModel>> value = Observable.create(subscriber -> {

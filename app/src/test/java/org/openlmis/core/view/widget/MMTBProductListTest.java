@@ -19,7 +19,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 @RunWith(LMISTestRunner.class)
 public class MMTBProductListTest {
@@ -30,7 +30,7 @@ public class MMTBProductListTest {
 
   @Before
   public void setUp() {
-    mmtbProductListTest = new MMTBRnrFormProductList(RuntimeEnvironment.application);
+    mmtbProductListTest = new MMTBRnrFormProductList(ApplicationProvider.getApplicationContext());
     mmtbProductListTest.setLayoutParams(new ViewGroup.MarginLayoutParams(100, 100));
     dataList = new ArrayList<>();
     formItem = new RnrFormItem();

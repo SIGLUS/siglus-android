@@ -16,7 +16,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.presenter.SyncErrorsPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.RobolectricUtils;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import roboguice.fragment.SupportDialogFragmentController;
 
@@ -30,7 +30,7 @@ public class SyncDateBottomSheetTest {
   @Before
   public void setUp() throws Exception {
     presenter = mock(SyncErrorsPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(SyncErrorsPresenter.class).toInstance(presenter);

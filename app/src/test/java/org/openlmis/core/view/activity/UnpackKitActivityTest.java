@@ -25,7 +25,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -51,7 +51,7 @@ public class UnpackKitActivityTest {
     mockedPresenter = mock(UnpackKitPresenter.class);
     when(mockedPresenter.getKitProductsObservable(anyString(), anyByte()))
         .thenReturn(Observable.empty());
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(UnpackKitPresenter.class).toInstance(mockedPresenter);

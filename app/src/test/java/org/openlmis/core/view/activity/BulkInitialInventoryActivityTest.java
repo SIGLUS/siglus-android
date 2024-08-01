@@ -43,7 +43,7 @@ import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -65,7 +65,7 @@ public class BulkInitialInventoryActivityTest {
     mockedAdapter = mock(BulkInitialInventoryAdapter.class);
     mockedPresenter = mock(BulkInitialInventoryPresenter.class);
     mockSearchView = mock(SearchView.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
     when(mockedPresenter.getInflatedInventoryOnMainThread()).thenReturn(Observable.empty());
     activityController = Robolectric.buildActivity(BulkInitialInventoryActivity.class);
     bulkInventoryActivity = activityController.create().start().resume().get();

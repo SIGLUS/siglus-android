@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -24,9 +24,9 @@ public class SyncErrorsPresenterTest {
   @Before
   public void setup() throws Exception {
     errorsRepository = mock(SyncErrorsRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
 
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(SyncErrorsPresenter.class);
   }
 

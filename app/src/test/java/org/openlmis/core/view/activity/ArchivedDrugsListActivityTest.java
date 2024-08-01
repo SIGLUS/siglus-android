@@ -17,7 +17,7 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowApplication;
 import roboguice.RoboGuice;
@@ -33,7 +33,7 @@ public class ArchivedDrugsListActivityTest {
   @Before
   public void setUp() {
     mockedPresenter = mock(StockCardPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(StockCardPresenter.class).toInstance(mockedPresenter);
