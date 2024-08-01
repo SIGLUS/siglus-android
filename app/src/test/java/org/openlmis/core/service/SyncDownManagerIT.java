@@ -3,8 +3,9 @@ package org.openlmis.core.service;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
+import android.app.Application;
+import androidx.test.core.app.ApplicationProvider;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -41,12 +41,10 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManagerMock;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
-import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -60,52 +58,45 @@ public class SyncDownManagerIT {
   private ReportTypeFormRepository reportTypeFormRepository;
   private ProductRepository productRepository;
   private ProductProgramRepository productProgramRepository;
-  private UserRepository userRepository;
   private StockRepository stockRepository;
   private LotRepository lotRepository;
   private RegimenRepository regimenRepository;
   private PodRepository podRepository;
-  private User defaultUser1;
   private SharedPreferenceMgr sharedPreferenceMgr;
   private StockMovementRepository stockMovementRepository;
   private RnrFormRepository rnrFormRepository;
-  private LMISTestApp appInject;
-  private LMISRestApi mockedApi;
-
+  private final Application application = ApplicationProvider.getApplicationContext();
 
   @Before
   public void setup() {
-    userRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    UserRepository userRepository = RoboGuice.getInjector(application)
         .getInstance(UserRepository.class);
-    programRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    programRepository = RoboGuice.getInjector(application)
         .getInstance(ProgramRepository.class);
-    reportTypeFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    reportTypeFormRepository = RoboGuice.getInjector(application)
         .getInstance(ReportTypeFormRepository.class);
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productRepository = RoboGuice.getInjector(application)
         .getInstance(ProductRepository.class);
-    productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productProgramRepository = RoboGuice.getInjector(application)
         .getInstance(ProductProgramRepository.class);
-    stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    stockRepository = RoboGuice.getInjector(application)
         .getInstance(StockRepository.class);
-    lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    lotRepository = RoboGuice.getInjector(application)
         .getInstance(LotRepository.class);
-    regimenRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    regimenRepository = RoboGuice.getInjector(application)
         .getInstance(RegimenRepository.class);
-    podRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    podRepository = RoboGuice.getInjector(application)
         .getInstance(PodRepository.class);
-    stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    stockMovementRepository = RoboGuice.getInjector(application)
         .getInstance(StockMovementRepository.class);
-    rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    rnrFormRepository = RoboGuice.getInjector(application)
         .getInstance(RnrFormRepository.class);
-    syncDownManager = RoboGuice.getInjector(RuntimeEnvironment.application)
+    syncDownManager = RoboGuice.getInjector(application)
         .getInstance(SyncDownManager.class);
-    sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application)
+    sharedPreferenceMgr = RoboGuice.getInjector(application)
         .getInstance(SharedPreferenceMgr.class);
-    appInject = (LMISTestApp) RuntimeEnvironment.application;
-    mockedApi = mock(LMISRestApi.class);
-    appInject.setRestApi(mockedApi);
 
-    defaultUser1 = new User();
+    User defaultUser1 = new User();
     defaultUser1.setUsername("cs_gelo");
     defaultUser1.setPassword("password");
     defaultUser1.setFacilityId("808");
@@ -184,7 +175,7 @@ public class SyncDownManagerIT {
     String facilityInfoJson = JsonFileReader.readJson(getClass(), "fetchFacilityInfoResponse.json");
     LMISRestManagerMock lmisRestManager = LMISRestManagerMock
         .getRestManagerWithMockClient("/api/siglusapi/android/me/facility", 200, "OK",
-            facilityInfoJson, RuntimeEnvironment.application);
+            facilityInfoJson, application);
     mockResponse(lmisRestManager);
     syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
@@ -207,7 +198,7 @@ public class SyncDownManagerIT {
     String facilityInfoJson = JsonFileReader.readJson(getClass(), "fetchFacilityInfoResponse.json");
     LMISRestManagerMock lmisRestManager = LMISRestManagerMock
         .getRestManagerWithMockClient("/api/siglusapi/android/regimens", 200, "OK", regimenJson,
-            RuntimeEnvironment.application);
+            application);
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility", 200, "OK",
         facilityInfoJson);
     mockResponse(lmisRestManager);
@@ -230,7 +221,7 @@ public class SyncDownManagerIT {
     String facilityInfoJson = JsonFileReader.readJson(getClass(), "fetchFacilityInfoResponse.json");
     LMISRestManagerMock lmisRestManager = LMISRestManagerMock
         .getRestManagerWithMockClient("/api/siglusapi/android/me/facility/pods?shippedOnly=false", 200, "OK", podJson,
-            RuntimeEnvironment.application);
+            application);
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility", 200, "OK",
         facilityInfoJson);
     mockResponse(lmisRestManager);
@@ -253,7 +244,7 @@ public class SyncDownManagerIT {
     String requisitionsJson = JsonFileReader.readJson(getClass(), "fetchRequisitionsData.json");
     LMISRestManagerMock lmisRestManagerMock = LMISRestManagerMock.getRestManagerWithMockClient(
         "/api/siglusapi/v2/android/me/facility/requisitions?" + "startDate=" + getStartDateWithDB_DATE_FORMAT(), 200,
-        "OK", requisitionsJson, RuntimeEnvironment.application);
+        "OK", requisitionsJson, application);
     lmisRestManagerMock.addNewMockedResponse("/api/siglusapi/android/me/facility", 200, "OK",
         facilityInfoJson);
     mockResponse(lmisRestManagerMock);
@@ -277,7 +268,7 @@ public class SyncDownManagerIT {
         .readJson(getClass(), "facilityInfoResponseWithIsAndroidFalse.json");
     LMISRestManagerMock lmisRestManager = LMISRestManagerMock
         .getRestManagerWithMockClient("/api/siglusapi/android/me/facility", 403, "Forbidden",
-            facilityInfoJsonWithIsAndroidFalse, RuntimeEnvironment.application);
+            facilityInfoJsonWithIsAndroidFalse, application);
     mockResponse(lmisRestManager);
     syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
     LMISException exception = new LMISException(errorMessage(R.string.msg_isAndroid_False));
@@ -299,7 +290,7 @@ public class SyncDownManagerIT {
     String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
     LMISRestManagerMock lmisRestManager = LMISRestManagerMock
         .getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857",
-            200, "OK", json, RuntimeEnvironment.application);
+            200, "OK", json, application);
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility", 200, "OK",
         facilityInfoJson);
     mockResponse(lmisRestManager);
@@ -352,7 +343,7 @@ public class SyncDownManagerIT {
     String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
     LMISRestManagerMock lmisRestManager = LMISRestManagerMock
         .getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857",
-            200, "OK", productJson, RuntimeEnvironment.application);
+            200, "OK", productJson, application);
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility", 200, "OK",
         facilityInfoJson);
     mockResponse(lmisRestManager);

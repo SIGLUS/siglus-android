@@ -266,17 +266,17 @@ public class RequisitionPeriodServiceTest {
       throws LMISException {
     // given
     String programCode = "programCode";
-    Date currentDate = DateUtil.getCurrentDate();
 
     RnRForm rnRForm = new RnRForm();
     rnRForm.setEmergency(true);
-    rnRForm.setPeriodEnd(currentDate);
+    rnRForm.setPeriodEnd(DateUtil.parseString("2024-08-01", DateUtil.DB_DATE_FORMAT));
 
     when(mockRnrFormRepository.listInclude(Emergency.YES, programCode))
         .thenReturn(newArrayList(rnRForm));
     // when
     boolean actualResult = requisitionPeriodService.hasOverLimit(
-        programCode, 1, DateUtil.getFirstDayForCurrentMonthByDate(currentDate)
+        programCode, 1, DateUtil.getFirstDayForCurrentMonthByDate(
+            DateUtil.parseString("2024-07-31", DateUtil.DB_DATE_FORMAT))
     );
     // then
     assertTrue(actualResult);
