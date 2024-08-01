@@ -44,7 +44,7 @@ import org.openlmis.core.constant.IntentConstants;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.presenter.IssueVoucherListPresenter;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.fakes.RoboMenu;
 import roboguice.RoboGuice;
@@ -59,7 +59,7 @@ public class IssueVoucherListActivityTest {
   @Before
   public void setUp() {
     mockedPresenter = mock(IssueVoucherListPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(IssueVoucherListPresenter.class).toInstance(mockedPresenter);

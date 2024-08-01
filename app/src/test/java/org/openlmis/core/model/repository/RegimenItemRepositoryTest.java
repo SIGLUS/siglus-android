@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.RegimenItem;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -21,7 +21,7 @@ public class RegimenItemRepositoryTest {
 
   @Before
   public void setUp() throws Exception {
-    regimenItemRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    regimenItemRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(RegimenItemRepository.class);
   }
 

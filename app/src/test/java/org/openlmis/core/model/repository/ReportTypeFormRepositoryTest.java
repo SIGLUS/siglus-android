@@ -31,7 +31,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.builder.ReportTypeFormBuilder;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -41,7 +41,7 @@ public class ReportTypeFormRepositoryTest {
 
   @Before
   public void setup() {
-    repository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ReportTypeFormRepository.class);
+    repository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(ReportTypeFormRepository.class);
   }
 
   @Test

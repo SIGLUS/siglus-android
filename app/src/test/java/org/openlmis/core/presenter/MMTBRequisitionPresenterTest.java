@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMTBRequisitionPresenter.MMTBRequisitionView;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Observable;
 
@@ -40,7 +40,7 @@ public class MMTBRequisitionPresenterTest {
 
   @Before
   public void setup() throws Exception {
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(MMTBRequisitionPresenter.class);
     mockMMTBFormView = mock(MMTBRequisitionView.class);
     presenter.attachView(mockMMTBFormView);

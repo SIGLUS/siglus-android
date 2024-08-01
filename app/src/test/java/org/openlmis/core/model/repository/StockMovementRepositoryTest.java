@@ -31,7 +31,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -51,15 +51,15 @@ public class StockMovementRepositoryTest {
 
   @Before
   public void setup() throws LMISException {
-    stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    stockRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(StockRepository.class);
-    stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    stockMovementRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(StockMovementRepository.class);
-    programRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    programRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProgramRepository.class);
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductRepository.class);
-    productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productProgramRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductProgramRepository.class);
 
     stockMovementItem = new StockMovementItem();

@@ -16,7 +16,7 @@ import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.builder.PodBuilder;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -25,7 +25,7 @@ public class OrderInfoViewTest {
 
   @Before
   public void setUp() throws Exception {
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyMode());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyMode());
     orderInfoView = new OrderInfoView(LMISTestApp.getContext());
   }
 

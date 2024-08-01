@@ -18,7 +18,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.utils.Constants;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -30,7 +30,7 @@ public class SyncStockCardsLastYearSilentlyTest {
 
   @Before
   public void setUp() {
-    syncStockCardsLastYearSilently = RoboGuice.getInjector(RuntimeEnvironment.application)
+    syncStockCardsLastYearSilently = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(SyncStockCardsLastYearSilently.class);
   }
 

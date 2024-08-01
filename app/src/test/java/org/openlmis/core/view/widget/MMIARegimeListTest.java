@@ -29,7 +29,7 @@ import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import rx.Observable;
 
 @RunWith(LMISTestRunner.class)
@@ -178,15 +178,15 @@ public class MMIARegimeListTest {
     List<RegimenItemThreeLines> list = new ArrayList<>();
     RegimenItemThreeLines firtLine = new RegimenItemThreeLines();
     firtLine.setRegimeTypes(
-        RuntimeEnvironment.application.getResources().getString(R.string.mmia_1stline));
+        ApplicationProvider.getApplicationContext().getResources().getString(R.string.mmia_1stline));
     list.add(firtLine);
     RegimenItemThreeLines secondLine = new RegimenItemThreeLines();
     secondLine.setRegimeTypes(
-        RuntimeEnvironment.application.getResources().getString(R.string.mmia_2ndline));
+        ApplicationProvider.getApplicationContext().getResources().getString(R.string.mmia_2ndline));
     list.add(secondLine);
     RegimenItemThreeLines thirdLine = new RegimenItemThreeLines();
     thirdLine.setRegimeTypes(
-        RuntimeEnvironment.application.getResources().getString(R.string.mmia_3rdline));
+        ApplicationProvider.getApplicationContext().getResources().getString(R.string.mmia_3rdline));
     list.add(thirdLine);
     return list;
   }

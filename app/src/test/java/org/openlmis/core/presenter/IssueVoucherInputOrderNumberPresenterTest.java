@@ -21,7 +21,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.utils.Constants;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -40,14 +40,14 @@ public class IssueVoucherInputOrderNumberPresenterTest {
     mockProgramRepository = mock(ProgramRepository.class);
     mockPodRepository = mock(PodRepository.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(ProgramRepository.class).toInstance(mockProgramRepository);
         bind(PodRepository.class).toInstance(mockPodRepository);
       }
     });
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(IssueVoucherInputOrderNumberPresenter.class);
   }
 

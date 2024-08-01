@@ -50,7 +50,7 @@ import org.openlmis.core.presenter.StockMovementsPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.widget.LotInfoGroup;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
@@ -65,7 +65,7 @@ public class StockMovementsWithLotActivityTest {
   @Before
   public void setUp() throws Exception {
     mockPresenter = mock(StockMovementsPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(StockMovementsPresenter.class).toInstance(mockPresenter);

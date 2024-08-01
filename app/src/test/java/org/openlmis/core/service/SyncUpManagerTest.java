@@ -38,6 +38,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.test.core.app.ApplicationProvider;
 import com.google.inject.AbstractModule;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -82,7 +83,6 @@ import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
-import org.robolectric.RuntimeEnvironment;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import roboguice.RoboGuice;
@@ -118,12 +118,12 @@ public class SyncUpManagerTest {
     mockedDirtyDataRepository = mock(DirtyDataRepository.class);
     mockedPodRepository = mock(PodRepository.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
 
-    syncUpManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncUpManager.class);
+    syncUpManager = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(SyncUpManager.class);
     syncUpManager.lmisRestApi = mockedLmisRestApi;
 
-    stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    stockRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(StockRepository.class);
 
     User user = new User("user", "123");
@@ -219,7 +219,7 @@ public class SyncUpManagerTest {
 
   @NonNull
   private StockCard createTestStockCardData() throws LMISException, ParseException {
-    ProductRepository productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    ProductRepository productRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductRepository.class);
     StockCard stockCard = StockCardBuilder
         .saveStockCardWithOneMovement(stockRepository, productRepository);

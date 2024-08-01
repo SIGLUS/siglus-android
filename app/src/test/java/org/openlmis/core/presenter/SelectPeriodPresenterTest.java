@@ -24,7 +24,7 @@ import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -45,14 +45,14 @@ public class SelectPeriodPresenterTest {
     inventoryRepository = mock(InventoryRepository.class);
     mockRequisitionPeriodService = mock(RequisitionPeriodService.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(InventoryRepository.class).toInstance(inventoryRepository);
         bind(RequisitionPeriodService.class).toInstance(mockRequisitionPeriodService);
       }
     });
-    selectPeriodPresenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    selectPeriodPresenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(SelectPeriodPresenter.class);
     selectPeriodPresenter.attachView(view);
   }

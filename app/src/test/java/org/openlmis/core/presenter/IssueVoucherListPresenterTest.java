@@ -47,7 +47,7 @@ import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.presenter.IssueVoucherListPresenter.IssueVoucherListView;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -73,7 +73,7 @@ public class IssueVoucherListPresenterTest {
     mockPodRepository = mock(PodRepository.class);
     mockProgramRepository = mock(ProgramRepository.class);
     mockSyncErrorsRepository = mock(SyncErrorsRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(PodRepository.class).toInstance(mockPodRepository);

@@ -18,7 +18,7 @@ import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder.ViewHistoryListener;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 @RunWith(LMISTestRunner.class)
 public class InitialInventoryViewHolderTest {
@@ -30,7 +30,7 @@ public class InitialInventoryViewHolderTest {
 
   @Before
   public void setUp() {
-    View itemView = LayoutInflater.from(RuntimeEnvironment.application)
+    View itemView = LayoutInflater.from(ApplicationProvider.getApplicationContext())
         .inflate(R.layout.item_initial_inventory, null, false);
     viewHolder = new InitialInventoryViewHolder(itemView);
     product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").build();

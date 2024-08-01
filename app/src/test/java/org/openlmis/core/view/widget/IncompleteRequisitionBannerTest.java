@@ -19,7 +19,7 @@ import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.builder.ReportTypeBuilder;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -33,7 +33,7 @@ public class IncompleteRequisitionBannerTest {
   public void setUp() throws Exception {
     requisitionPeriodService = mock(RequisitionPeriodService.class);
     mockReportTypeFormRepository = mock(ReportTypeFormRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, binder -> {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), binder -> {
       binder.bind(RequisitionPeriodService.class).toInstance(requisitionPeriodService);
       binder.bind(ReportTypeFormRepository.class).toInstance(mockReportTypeFormRepository);
     });

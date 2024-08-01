@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.BaseInfoItem;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -19,7 +19,7 @@ public class BaseInfoItemRepositoryTest {
 
   @Before
   public void setUp() throws Exception {
-    baseInfoItemRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    baseInfoItemRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(BaseInfoItemRepository.class);
   }
 

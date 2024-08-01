@@ -30,7 +30,7 @@ import org.openlmis.core.presenter.ALRequisitionPresenter.ALRequisitionView;
 import org.openlmis.core.view.viewmodel.ALGridViewModel;
 import org.openlmis.core.view.viewmodel.ALReportItemViewModel;
 import org.roboguice.shaded.goole.common.collect.Lists;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -43,11 +43,11 @@ public class ALRequisitionPresenterTest {
 
   @Before
   public void setUp() throws ViewNotMatchException {
-    alRequisitionPresenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    alRequisitionPresenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ALRequisitionPresenter.class);
     mockALRepository = mock(ALRepository.class);
     mockRnrFormRepository = mock(RnrFormRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
     MockitoAnnotations.initMocks(this);
     alRequisitionPresenter.attachView(mock(ALRequisitionView.class));
   }

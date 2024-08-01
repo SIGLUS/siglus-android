@@ -13,7 +13,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
@@ -42,7 +42,7 @@ public class MMTBRequisitionActivityTest {
     Date endDate = DateUtil.parseString("02/02/2021", DateUtil.SIMPLE_DATE_FORMAT);
 
     //when
-    Intent intent = MMTBRequisitionActivity.getIntentToMe(RuntimeEnvironment.application, endDate);
+    Intent intent = MMTBRequisitionActivity.getIntentToMe(ApplicationProvider.getApplicationContext(), endDate);
 
     //then
     Assert.assertEquals(MMTBRequisitionActivity.class.getName(), intent.getComponent().getClassName());
@@ -55,7 +55,7 @@ public class MMTBRequisitionActivityTest {
     long formId = 100L;
 
     //when
-    Intent intent = MMTBRequisitionActivity.getIntentToMe(RuntimeEnvironment.application, formId);
+    Intent intent = MMTBRequisitionActivity.getIntentToMe(ApplicationProvider.getApplicationContext(), formId);
 
     //then
     Assert.assertEquals(MMTBRequisitionActivity.class.getName(), intent.getComponent().getClassName());

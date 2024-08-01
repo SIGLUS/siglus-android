@@ -37,7 +37,7 @@ import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -63,8 +63,8 @@ public class RequisitionPeriodServiceTest {
     mockStockMovementRepository = mock(StockMovementRepository.class);
     mockReportTypeFormRepository = mock(ReportTypeFormRepository.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    requisitionPeriodService = RoboGuice.getInjector(RuntimeEnvironment.application)
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
+    requisitionPeriodService = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(RequisitionPeriodService.class);
 
     programMMIA = new Program("MMIA", "MMIA", null, false, null, null);

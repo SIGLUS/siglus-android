@@ -13,7 +13,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.builder.RnRFormBuilder;
 import org.openlmis.core.model.repository.MMIARepository;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -26,10 +26,10 @@ public class BaseRequisitionPresenterTest {
   @Before
   public void setUp() throws Exception {
     mockRnrFormRepository = mock(MMIARepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
     MMIARequisitionPresenter.MMIARequisitionView mock = mock(
         MMIARequisitionPresenter.MMIARequisitionView.class);
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(MMIARequisitionPresenter.class);
     presenter.attachView(mock);
   }

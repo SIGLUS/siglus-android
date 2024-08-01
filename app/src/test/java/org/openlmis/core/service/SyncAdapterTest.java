@@ -19,7 +19,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @Ignore
@@ -37,9 +37,9 @@ public class SyncAdapterTest {
     mockSyncUpManager = mock(SyncUpManager.class);
     mockSyncDownManager = mock(SyncDownManager.class);
     mockupgradeManager = mock(UpgradeManager.class);
-    sharedPreferenceMgr = new SharedPreferenceMgr(RuntimeEnvironment.application);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    syncAdapter = new SyncAdapter(RuntimeEnvironment.application, true);
+    sharedPreferenceMgr = new SharedPreferenceMgr(ApplicationProvider.getApplicationContext());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
+    syncAdapter = new SyncAdapter(ApplicationProvider.getApplicationContext(), true);
     syncAdapter.sharedPreferenceMgr = this.sharedPreferenceMgr;
     sharedPreferenceMgr.getPreference().edit().clear();
     UserInfoMgr.getInstance().setUser(new User());

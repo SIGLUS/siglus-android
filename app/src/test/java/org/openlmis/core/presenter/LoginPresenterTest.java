@@ -45,7 +45,7 @@ import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.view.activity.LoginActivity;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Subscriber;
@@ -71,8 +71,8 @@ public class LoginPresenterTest {
     mockActivity = mock(LoginActivity.class);
     syncService = mock(SyncService.class);
     syncDownManager = mock(SyncDownManager.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LoginPresenter.class);
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(LoginPresenter.class);
     presenter.attachView(mockActivity);
     syncSubscriber = presenter.getSyncSubscriber();
     presenter = spy(presenter);
@@ -188,7 +188,7 @@ public class LoginPresenterTest {
     syncSubscriber.onNext(SyncProgress.SYNCING_STOCK_CARDS_LAST_MONTH);
 
     // then
-    verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_stock_movements_data));
+    verify(mockActivity).loading(ApplicationProvider.getApplicationContext().getString(R.string.msg_sync_stock_movements_data));
   }
 
   @Test

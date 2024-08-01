@@ -27,7 +27,7 @@ import org.mockito.Mockito;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.repository.BulkIssueRepository;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -40,13 +40,13 @@ public class StockCardListPresenterTest {
   @Before
   public void setUp() throws Exception {
     repository = Mockito.mock(BulkIssueRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(BulkIssueRepository.class).toInstance(repository);
       }
     });
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockCardListPresenter.class);
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(StockCardListPresenter.class);
   }
 
   @Test

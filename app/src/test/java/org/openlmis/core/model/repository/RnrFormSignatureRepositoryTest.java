@@ -15,7 +15,7 @@ import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.builder.RnRFormBuilder;
 import org.openlmis.core.utils.Constants;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -26,9 +26,9 @@ public class RnrFormSignatureRepositoryTest {
 
   @Before
   public void setUp() throws Exception {
-    rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    rnrFormRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(RnrFormRepository.class);
-    signatureRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    signatureRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(RnrFormSignatureRepository.class);
   }
 

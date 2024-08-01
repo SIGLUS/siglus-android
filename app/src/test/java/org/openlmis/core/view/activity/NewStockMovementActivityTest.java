@@ -25,7 +25,7 @@ import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
@@ -67,7 +67,7 @@ public class NewStockMovementActivityTest {
     when(mockedPresenter.getStockCard()).thenReturn(stockcard);
     when(mockedPresenter.getMovementType()).thenReturn(MovementReasonManager.MovementType.ISSUE);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(NewStockMovementPresenter.class).toInstance(mockedPresenter);

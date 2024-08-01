@@ -37,7 +37,7 @@ import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.presenter.EditOrderNumberPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
@@ -54,7 +54,7 @@ public class EditOrderNumberActivityTest {
   @Before
   public void setUp() {
     mockedPresenter = mock(EditOrderNumberPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(EditOrderNumberPresenter.class).toInstance(mockedPresenter);

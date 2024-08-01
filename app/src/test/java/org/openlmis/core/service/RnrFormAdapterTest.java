@@ -64,7 +64,7 @@ import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -84,8 +84,8 @@ public class RnrFormAdapterTest {
     mockRnrFormRepository = mock(RnrFormRepository.class);
     mockRnrFormSignatureRepository = mock(RnrFormSignatureRepository.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    rnrFormAdapter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
+    rnrFormAdapter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(RnrFormAdapter.class);
     rnRForm = new RnRForm();
     rnRForm.setPeriodBegin(DateUtil.parseString("2020-05-15 01:01:11", DATE_TIME_FORMAT));

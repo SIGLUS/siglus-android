@@ -47,7 +47,7 @@ import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -73,9 +73,9 @@ public class StockMovementsPresenterTest extends LMISRepositoryUnitTest {
     mockStockMovementRepository = mock(StockMovementRepository.class);
 
     view = mock(StockMovementsPresenter.StockMovementView.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
 
-    stockMovementsPresenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    stockMovementsPresenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(StockMovementsPresenter.class);
     stockMovementsPresenter.attachView(view);
     stockMovementsPresenter.stockCard = StockCardBuilder.buildStockCard();

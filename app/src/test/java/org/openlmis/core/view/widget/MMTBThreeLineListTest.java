@@ -37,7 +37,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 @RunWith(LMISTestRunner.class)
 public class MMTBThreeLineListTest {
@@ -47,7 +47,7 @@ public class MMTBThreeLineListTest {
 
   @Before
   public void setUp() {
-    mmtbThreeLineList = new MMTBPatientThreeLineList(RuntimeEnvironment.application);
+    mmtbThreeLineList = new MMTBPatientThreeLineList(ApplicationProvider.getApplicationContext());
     mmtbThreeLineList.setLayoutParams(new ViewGroup.MarginLayoutParams(100, 100));
     dataList = new ArrayList<>();
     RegimenItemThreeLines line1 = new RegimenItemThreeLines();

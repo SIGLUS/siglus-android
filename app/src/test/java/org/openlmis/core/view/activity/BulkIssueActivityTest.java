@@ -46,7 +46,7 @@ import org.openlmis.core.presenter.BulkIssuePresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.adapter.BulkIssueAdapter;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
@@ -63,7 +63,7 @@ public class BulkIssueActivityTest {
   public void setUp() throws Exception {
     mockedPresenter = mock(BulkIssuePresenter.class);
     mockAdapter = mock(BulkIssueAdapter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(BulkIssuePresenter.class).toInstance(mockedPresenter);

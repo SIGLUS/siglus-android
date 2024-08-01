@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.KitStockCardViewHolder;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 @RunWith(LMISTestRunner.class)
 public class KitStockCardListAdapterTest {
@@ -18,7 +18,7 @@ public class KitStockCardListAdapterTest {
   @Test
   public void shouldUseKitStockCardViewHolder() throws Exception {
     KitStockCardListAdapter kitStockCardListAdapter = new KitStockCardListAdapter(new ArrayList<>(), null);
-    View view = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_stockcard, null, false);
+    View view = LayoutInflater.from(ApplicationProvider.getApplicationContext()).inflate(R.layout.item_stockcard, null, false);
     assertThat(kitStockCardListAdapter.createViewHolder(view)).isInstanceOf(KitStockCardViewHolder.class);
   }
 }

@@ -18,7 +18,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -35,14 +35,14 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
   public void setUp() throws Exception {
     stockRepository = mock(StockRepository.class);
     sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(StockRepository.class).toInstance(stockRepository);
       }
     });
 
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductRepository.class);
   }
 

@@ -27,7 +27,7 @@ import org.openlmis.core.utils.CompatUtil;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 @RunWith(LMISTestRunner.class)
 public class RnRFormViewHolderTest {
@@ -47,10 +47,10 @@ public class RnRFormViewHolderTest {
   private RnRFormViewHolder getViewHolderByType(int viewType) {
     if (viewType == RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL
         || viewType == RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY) {
-      return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application)
+      return new RnRFormViewHolder(LayoutInflater.from(ApplicationProvider.getApplicationContext())
           .inflate(R.layout.item_report_no_button, null, false), mockedListener);
     } else {
-      return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application)
+      return new RnRFormViewHolder(LayoutInflater.from(ApplicationProvider.getApplicationContext())
           .inflate(R.layout.item_report, null, false), mockedListener);
     }
   }
@@ -217,11 +217,11 @@ public class RnRFormViewHolderTest {
 
   @SuppressWarnings("ConstantConditions")
   private String getStringResource(int resId, Object... param) {
-    return CompatUtil.fromHtml(RuntimeEnvironment.application.getApplicationContext().getResources()
+    return CompatUtil.fromHtml(ApplicationProvider.getApplicationContext().getApplicationContext().getResources()
         .getString(resId, param)).toString();
   }
 
   private int getColorResource(int resId) {
-    return RuntimeEnvironment.application.getApplicationContext().getResources().getColor(resId);
+    return ApplicationProvider.getApplicationContext().getApplicationContext().getResources().getColor(resId);
   }
 }

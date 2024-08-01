@@ -54,7 +54,7 @@ import org.openlmis.core.view.viewmodel.IssueVoucherReportProductViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherReportViewModel;
 import org.openlmis.core.view.widget.OrderInfoView;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
@@ -70,7 +70,7 @@ public class IssueVoucherReportActivityTest {
   @Before
   public void setUp() {
     mockedPresenter = mock(IssueVoucherReportPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(IssueVoucherReportPresenter.class).toInstance(mockedPresenter);

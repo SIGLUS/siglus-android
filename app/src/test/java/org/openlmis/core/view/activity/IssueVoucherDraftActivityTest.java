@@ -30,7 +30,7 @@ import org.openlmis.core.presenter.IssueVoucherDraftPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.adapter.IssueVoucherDraftProductAdapter;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
@@ -46,7 +46,7 @@ public class IssueVoucherDraftActivityTest {
   public void setUp() throws Exception {
     mockedPresenter = mock(IssueVoucherDraftPresenter.class);
     mockAdapter = mock(IssueVoucherDraftProductAdapter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(IssueVoucherDraftPresenter.class).toInstance(mockedPresenter);

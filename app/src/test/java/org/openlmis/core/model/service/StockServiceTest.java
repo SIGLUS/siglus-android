@@ -35,7 +35,7 @@ import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -57,9 +57,9 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
   public void setup() throws LMISException {
     mockedStockRepository = mock(StockRepository.class);
     mockedCmmRepository = mock(CmmRepository.class);
-    stockService = RoboGuice.getInjector(RuntimeEnvironment.application)
+    stockService = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(StockService.class);
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductRepository.class);
 
     Date today = DateUtil.today();

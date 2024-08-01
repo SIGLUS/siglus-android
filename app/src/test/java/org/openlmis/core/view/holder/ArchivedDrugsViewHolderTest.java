@@ -16,7 +16,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 @RunWith(LMISTestRunner.class)
 public class ArchivedDrugsViewHolderTest {
@@ -28,7 +28,7 @@ public class ArchivedDrugsViewHolderTest {
 
   @Before
   public void setUp() {
-    View itemView = LayoutInflater.from(RuntimeEnvironment.application)
+    View itemView = LayoutInflater.from(ApplicationProvider.getApplicationContext())
         .inflate(R.layout.item_archived_drug, null, false);
     viewHolder = new ArchivedDrugsViewHolder(itemView);
 
@@ -70,7 +70,7 @@ public class ArchivedDrugsViewHolderTest {
 
   @Test
   public void shouldNotShowMoveBackToStockCardButtonIfProductIsInactive() {
-    View itemView = LayoutInflater.from(RuntimeEnvironment.application)
+    View itemView = LayoutInflater.from(ApplicationProvider.getApplicationContext())
         .inflate(R.layout.item_archived_drug, null, false);
     viewHolder = new ArchivedDrugsViewHolder(itemView);
 

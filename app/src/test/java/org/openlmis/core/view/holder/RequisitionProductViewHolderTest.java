@@ -31,7 +31,7 @@ import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -46,7 +46,7 @@ public class RequisitionProductViewHolderTest {
 
   @Before
   public void setUp() {
-    View itemView = LayoutInflater.from(RuntimeEnvironment.application)
+    View itemView = LayoutInflater.from(ApplicationProvider.getApplicationContext())
         .inflate(R.layout.item_requisition_body_left, null, false);
     viewHolder = new RequisitionProductViewHolder(itemView);
     program = new Program();
@@ -65,7 +65,7 @@ public class RequisitionProductViewHolderTest {
         .build();
 
     presenter = mock(VIARequisitionPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new Module() {
       @Override
       public void configure(Binder binder) {
         binder.bind(VIARequisitionPresenter.class).toInstance(presenter);

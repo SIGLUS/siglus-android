@@ -19,7 +19,7 @@ import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -33,11 +33,11 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
   @Before
   public void setup() throws LMISException {
-    programRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    programRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProgramRepository.class);
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductRepository.class);
-    reportTypeFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    reportTypeFormRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ReportTypeFormRepository.class);
 
     Product product = new Product();

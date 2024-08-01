@@ -31,7 +31,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.network.InternetCheckListener;
 import org.openlmis.core.service.SyncService;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -50,8 +50,8 @@ public class NetworkChangeReceiverTest {
   @Test
   public void shouldKickOffSyncServiceWhenInternetConnectionIsAvailable() {
     // given
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new NetworkChangeReceiverTest.MyTestModule());
-    receiver = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(NetworkChangeReceiver.class);
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new NetworkChangeReceiverTest.MyTestModule());
+    receiver = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(NetworkChangeReceiver.class);
     InternetCheckListener internetCheckListener = receiver.synchronizeListener(syncService);
 
     // when
@@ -64,8 +64,8 @@ public class NetworkChangeReceiverTest {
   @Test
   public void shouldShutdownSyncServiceWhenInternetConnectionIsNotAvailable() {
     // given
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new NetworkChangeReceiverTest.MyTestModule());
-    receiver = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(NetworkChangeReceiver.class);
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new NetworkChangeReceiverTest.MyTestModule());
+    receiver = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(NetworkChangeReceiver.class);
     InternetCheckListener internetCheckListener = receiver.synchronizeListener(syncService);
 
     // when

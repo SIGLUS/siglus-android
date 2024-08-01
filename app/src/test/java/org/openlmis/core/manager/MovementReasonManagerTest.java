@@ -21,7 +21,7 @@ import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.annotation.Config;
 import roboguice.RoboGuice;
 
@@ -33,7 +33,7 @@ public class MovementReasonManagerTest {
 
   @Before
   public void setUp() throws Exception {
-    reasonManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MovementReasonManager.class);
+    reasonManager = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(MovementReasonManager.class);
   }
 
   @Test

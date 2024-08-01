@@ -46,7 +46,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Scheduler;
@@ -80,9 +80,9 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
 
     view = mock(InventoryPresenter.InventoryView.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
 
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(PhysicalInventoryPresenter.class);
     presenter.attachView(view);
 

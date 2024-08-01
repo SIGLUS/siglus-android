@@ -13,7 +13,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 @RunWith(LMISTestRunner.class)
 public class AddProductsToBulkEntriesViewHolderTest {
@@ -24,7 +24,7 @@ public class AddProductsToBulkEntriesViewHolderTest {
 
   @Before
   public void setUp() {
-    View itemView = LayoutInflater.from(RuntimeEnvironment.application)
+    View itemView = LayoutInflater.from(ApplicationProvider.getApplicationContext())
         .inflate(R.layout.item_add_product_bulk_entries, null, false);
     viewHolder = new AddProductsToBulkEntriesViewHolder(itemView);
     product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").build();

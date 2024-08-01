@@ -17,7 +17,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
@@ -54,8 +54,8 @@ public class MMIARequisitionActivityTest {
     viewModel.setId(viewModelId);
 
     //when
-    Intent emptyViewModelIntent = MMIARequisitionActivity.getIntentToMe(RuntimeEnvironment.application, endDate, null);
-    Intent withViewModelIntent = MMIARequisitionActivity.getIntentToMe(RuntimeEnvironment.application, endDate, viewModel);
+    Intent emptyViewModelIntent = MMIARequisitionActivity.getIntentToMe(ApplicationProvider.getApplicationContext(), endDate, null);
+    Intent withViewModelIntent = MMIARequisitionActivity.getIntentToMe(ApplicationProvider.getApplicationContext(), endDate, viewModel);
 
     //then
     Assert.assertEquals(MMIARequisitionActivity.class.getName(), emptyViewModelIntent.getComponent().getClassName());

@@ -16,7 +16,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -31,13 +31,13 @@ public class AddProductsToBulkEntriesPresenterTest {
   @Before
   public void setup() throws Exception {
     productRepository = mock(ProductRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(ProductRepository.class).toInstance(productRepository);
       }
     });
-    addProductsToBulkEntriesPresenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    addProductsToBulkEntriesPresenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(AddProductsToBulkEntriesPresenter.class);
   }
 

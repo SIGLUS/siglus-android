@@ -63,7 +63,7 @@ import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
@@ -81,7 +81,7 @@ public class VIARequisitionFragmentTest {
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     DateTimeZone.setDefault(DateTimeZone.UTC);
     presenter = mock(VIARequisitionPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application,
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(),
         binder -> binder.bind(VIARequisitionPresenter.class).toInstance(presenter));
     program = new Program();
     program.setProgramCode("ESS_MEDS");
@@ -120,7 +120,7 @@ public class VIARequisitionFragmentTest {
 
   @Test
   public void shouldSetEmergencyViewWhenRnrIsEmergency() {
-    ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(
+    ((LMISTestApp) ApplicationProvider.getApplicationContext()).setCurrentTimeMillis(
         DateUtil.parseString("2015-04-21 17:30:00 UTC", DateUtil.DATE_TIME_FORMAT).getTime());
     RnRForm rnRForm = viaRequisitionFragment.presenter.getRnRForm();
     rnRForm.setEmergency(true);

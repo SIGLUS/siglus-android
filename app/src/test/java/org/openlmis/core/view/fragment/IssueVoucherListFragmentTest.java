@@ -46,7 +46,7 @@ import org.openlmis.core.view.activity.IssueVoucherReportActivity;
 import org.openlmis.core.view.adapter.IssueVoucherListAdapter;
 import org.openlmis.core.view.viewmodel.IssueVoucherListViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowToast;
@@ -65,7 +65,7 @@ public class IssueVoucherListFragmentTest {
   @Before
   public void setup() {
     mockPresenter = mock(IssueVoucherListPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(IssueVoucherListPresenter.class).toInstance(mockPresenter);

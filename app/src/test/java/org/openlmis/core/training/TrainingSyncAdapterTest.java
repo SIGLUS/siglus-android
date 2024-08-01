@@ -19,7 +19,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.service.SyncUpManager;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 @RunWith(LMISTestRunner.class)
 public class TrainingSyncAdapterTest {
@@ -31,7 +31,7 @@ public class TrainingSyncAdapterTest {
   @Before
   public void setUp() throws Exception {
     mockSyncUpManager = mock(SyncUpManager.class);
-    sharedPreferenceMgr = new SharedPreferenceMgr(RuntimeEnvironment.application);
+    sharedPreferenceMgr = new SharedPreferenceMgr(ApplicationProvider.getApplicationContext());
     trainingSyncAdapter = new TrainingSyncAdapter();
     trainingSyncAdapter.sharedPreferenceMgr = sharedPreferenceMgr;
     trainingSyncAdapter.syncUpManager = mockSyncUpManager;

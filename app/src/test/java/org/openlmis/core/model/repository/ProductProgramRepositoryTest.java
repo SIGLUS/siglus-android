@@ -22,7 +22,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -38,14 +38,14 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
   public void setUp() throws Exception {
     productRepository = mock(ProductRepository.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(ProductRepository.class).toInstance(productRepository);
       }
     });
 
-    repository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    repository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductProgramRepository.class);
   }
 

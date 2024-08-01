@@ -30,7 +30,7 @@ import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
@@ -50,7 +50,7 @@ public class InitialInventoryActivityTest {
     mockedPresenter = mock(InitialInventoryPresenter.class);
     when(mockedPresenter.getInflatedInventoryOnMainThread()).thenReturn(Observable.empty());
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(InitialInventoryPresenter.class).toInstance(mockedPresenter);
@@ -113,7 +113,7 @@ public class InitialInventoryActivityTest {
 
   @Test
   public void shouldGetAddNewDrugActivity() {
-    Intent intent = InitialInventoryActivity.getIntentToMe(RuntimeEnvironment.application, true);
+    Intent intent = InitialInventoryActivity.getIntentToMe(ApplicationProvider.getApplicationContext(), true);
 
     assertNotNull(intent);
     assertEquals(intent.getComponent().getClassName(), InitialInventoryActivity.class.getName());

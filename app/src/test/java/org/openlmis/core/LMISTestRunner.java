@@ -18,13 +18,14 @@
 
 package org.openlmis.core;
 
+import android.app.Application;
+import androidx.test.core.app.ApplicationProvider;
 import java.lang.reflect.Method;
 import org.junit.runners.model.InitializationError;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.training.TrainingSqliteOpenHelper;
 import org.robolectric.DefaultTestLifecycle;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.TestLifecycle;
 import org.robolectric.annotation.Config;
 import roboguice.RoboGuice;
@@ -77,8 +78,9 @@ public class LMISTestRunner extends RobolectricTestRunner {
     @Override
     public void afterTest(Method method) {
       super.afterTest(method);
-      LmisSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
-      TrainingSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
+      Application application = ApplicationProvider.getApplicationContext();
+      LmisSqliteOpenHelper.getInstance(application).close();
+      TrainingSqliteOpenHelper.getInstance(application).close();
       RoboGuice.Util.reset();
     }
   }

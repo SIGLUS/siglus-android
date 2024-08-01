@@ -40,7 +40,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.presenter.IssueVoucherDraftPresenter.IssueVoucherDraftView;
 import org.openlmis.core.view.viewmodel.IssueVoucherLotViewModel;
 import org.openlmis.core.view.viewmodel.IssueVoucherProductViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
@@ -73,7 +73,7 @@ public class IssueVoucherDraftPresenterTest {
         .code("22A07")
         .build();
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(StockRepository.class).toInstance(mockStockRepository);
@@ -82,7 +82,7 @@ public class IssueVoucherDraftPresenterTest {
         bind(IssueVoucherDraftView.class).toInstance(mockView);
       }
     });
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(IssueVoucherDraftPresenter.class);
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext()).getInstance(IssueVoucherDraftPresenter.class);
     presenter.attachView(mockView);
   }
 

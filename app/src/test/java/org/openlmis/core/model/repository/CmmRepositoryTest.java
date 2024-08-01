@@ -12,7 +12,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.StockCard;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -23,7 +23,7 @@ public class CmmRepositoryTest {
 
   @Before
   public void setup() throws LMISException {
-    cmmRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    cmmRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(CmmRepository.class);
   }
 

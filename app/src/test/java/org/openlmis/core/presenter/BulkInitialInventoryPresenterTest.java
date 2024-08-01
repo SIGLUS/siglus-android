@@ -34,7 +34,7 @@ import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Scheduler;
@@ -68,9 +68,9 @@ public class BulkInitialInventoryPresenterTest extends LMISRepositoryUnitTest {
     sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
 
     view = mock(InventoryPresenter.InventoryView.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyTestModule());
 
-    bulkInitialInventoryPresenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    bulkInitialInventoryPresenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(BulkInitialInventoryPresenter.class);
     bulkInitialInventoryPresenter.attachView(view);
 

@@ -16,7 +16,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
@@ -45,7 +45,7 @@ public class VIARequisitionActivityTest {
     boolean isMissedPeriod = false;
 
     //when
-    Intent newRequisitionIntent = VIARequisitionActivity.getIntentToMe(RuntimeEnvironment.application, inventoryDate, isMissedPeriod);
+    Intent newRequisitionIntent = VIARequisitionActivity.getIntentToMe(ApplicationProvider.getApplicationContext(), inventoryDate, isMissedPeriod);
 
     //then
     Assert.assertEquals(VIARequisitionActivity.class.getName(), newRequisitionIntent.getComponent().getClassName());
@@ -63,7 +63,7 @@ public class VIARequisitionActivityTest {
     stockCards.add(stockCard2);
 
     //when
-    Intent emergencyRequisitionIntent = VIARequisitionActivity.getIntentToMe(RuntimeEnvironment.application, stockCards);
+    Intent emergencyRequisitionIntent = VIARequisitionActivity.getIntentToMe(ApplicationProvider.getApplicationContext(), stockCards);
 
     //then
     Assert.assertEquals(stockCards, emergencyRequisitionIntent.getSerializableExtra(Constants.PARAM_SELECTED_EMERGENCY));

@@ -39,7 +39,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 import rx.Scheduler;
@@ -68,7 +68,7 @@ public class SelectPeriodActivityTest {
     stockMovementRepository = mock(StockMovementRepository.class);
     stockRepository = mock(StockRepository.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(SelectPeriodPresenter.class).toInstance(mockedPresenter);
@@ -109,7 +109,7 @@ public class SelectPeriodActivityTest {
 
   @Test
   public void shouldShowFormattedInstrumentTextAndLoadDataWhenActivityStarts() throws Exception {
-    Spanned expectedFormattedText = CompatUtil.fromHtml(RuntimeEnvironment.application.getString(
+    Spanned expectedFormattedText = CompatUtil.fromHtml(ApplicationProvider.getApplicationContext().getString(
         R.string.label_select_close_of_period,
         currentDateTime.monthOfYear().getAsShortText(),
         currentDateTime.toString("dd MMM")));

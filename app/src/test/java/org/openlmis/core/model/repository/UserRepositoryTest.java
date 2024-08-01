@@ -30,7 +30,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.User;
 import org.openlmis.core.utils.HashUtil;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -41,7 +41,7 @@ public class UserRepositoryTest extends LMISRepositoryUnitTest {
 
   @Before
   public void setup() {
-    userRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    userRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(UserRepository.class);
   }
 

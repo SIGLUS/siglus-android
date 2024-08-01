@@ -17,7 +17,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import rx.functions.Action1;
 
 @RunWith(LMISTestRunner.class)
@@ -35,7 +35,7 @@ public class UnpackKitWithLotViewHolderTest {
 
   @Before
   public void setUp() throws Exception {
-    viewHolder = new UnpackKitWithLotViewHolder(LayoutInflater.from(RuntimeEnvironment.application)
+    viewHolder = new UnpackKitWithLotViewHolder(LayoutInflater.from(ApplicationProvider.getApplicationContext())
         .inflate(R.layout.item_unpack_kit_with_lots, null, false));
     product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40")
         .setStrength("10mg").setType("VIA").build();

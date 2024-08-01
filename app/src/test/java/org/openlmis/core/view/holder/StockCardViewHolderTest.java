@@ -21,7 +21,7 @@ import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.adapter.StockcardListLotAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 
 @RunWith(LMISTestRunner.class)
 @SuppressWarnings("PMD")
@@ -35,7 +35,7 @@ public class StockCardViewHolderTest {
   @Before
   public void setUp() {
     mockedListener = mock(StockCardViewHolder.OnItemViewClickListener.class);
-    View view = LayoutInflater.from(RuntimeEnvironment.application)
+    View view = LayoutInflater.from(ApplicationProvider.getApplicationContext())
         .inflate(R.layout.item_stockcard, null, false);
 
     viewHolder = new StockCardViewHolder(view, mockedListener);

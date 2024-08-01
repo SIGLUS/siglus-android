@@ -31,7 +31,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Subscription;
 import rx.observers.TestSubscriber;
@@ -65,7 +65,7 @@ public class UnpackKitPresenterTest {
     viewModel = new InventoryViewModelBuilder(product).setChecked(true).setKitExpectQuantity(300)
         .build();
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(ProductRepository.class).toInstance(productRepository);
@@ -73,7 +73,7 @@ public class UnpackKitPresenterTest {
       }
     });
 
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(UnpackKitPresenter.class);
   }
 

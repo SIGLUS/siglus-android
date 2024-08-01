@@ -50,7 +50,7 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -69,18 +69,18 @@ public class InventoryRepositoryTest {
   @Before
   public void setup() throws LMISException {
     MockitoAnnotations.initMocks(this);
-    repository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    repository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(InventoryRepository.class);
-    repositoryWithMockDao = RoboGuice.getInjector(RuntimeEnvironment.application)
+    repositoryWithMockDao = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(InventoryRepository.class);
     repositoryWithMockDao.genericDao = inventoryDaoMock;
-    stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    stockRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(StockRepository.class);
-    programRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    programRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProgramRepository.class);
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductRepository.class);
-    productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productProgramRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductProgramRepository.class);
   }
 

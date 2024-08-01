@@ -26,7 +26,7 @@ import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.AddDrugsToViaInventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -52,7 +52,7 @@ public class AddDrugsToVIAPresenterTest {
     stockRepository = mock(StockRepository.class);
     rnrFormHelper = mock(RnrFormHelper.class);
 
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(ProductRepository.class).toInstance(productRepository);
@@ -63,7 +63,7 @@ public class AddDrugsToVIAPresenterTest {
         bind(RnrFormHelper.class).toInstance(rnrFormHelper);
       }
     });
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    presenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(AddDrugsToVIAPresenter.class);
   }
 

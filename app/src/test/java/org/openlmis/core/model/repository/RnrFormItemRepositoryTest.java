@@ -18,7 +18,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.builder.ProductBuilder;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -33,15 +33,15 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
 
   @Before
   public void setUp() throws LMISException {
-    rnrFormItemRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    rnrFormItemRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(RnrFormItemRepository.class);
-    rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    rnrFormRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(RnrFormRepository.class);
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductRepository.class);
-    programRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    programRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProgramRepository.class);
-    productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    productProgramRepository = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(ProductProgramRepository.class);
   }
 

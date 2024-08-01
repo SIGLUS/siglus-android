@@ -13,7 +13,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.RapidTestReportFormPresenter;
 import org.openlmis.core.view.activity.RapidTestReportFormActivity;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -26,7 +26,7 @@ public class RapidTestReportFormFragmentTest {
   public void setUp() {
     presenter = mock(RapidTestReportFormPresenter.class);
     rapidTestReportFormFragment = mock(RapidTestReportFormFragment.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyModule());
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new MyModule());
   }
 
 //    @Test

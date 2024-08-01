@@ -26,7 +26,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.BulkEntriesRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
-import org.robolectric.RuntimeEnvironment;
+import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -45,14 +45,14 @@ public class BulkEntriesPresenterTest {
   public void setup() throws Exception {
     bulkEntriesRepository = mock(BulkEntriesRepository.class);
     stockRepository = mock(StockRepository.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+    RoboGuice.overrideApplicationInjector(ApplicationProvider.getApplicationContext(), new AbstractModule() {
       @Override
       protected void configure() {
         bind(BulkEntriesRepository.class).toInstance(bulkEntriesRepository);
         bind(StockRepository.class).toInstance(stockRepository);
       }
     });
-    bulkEntriesPresenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+    bulkEntriesPresenter = RoboGuice.getInjector(ApplicationProvider.getApplicationContext())
         .getInstance(BulkEntriesPresenter.class);
   }
 
