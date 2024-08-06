@@ -100,7 +100,7 @@ public class IssueVoucherReportAdapter extends BaseMultiItemQuickAdapter<MultiIt
     }
 
     private void updateAddLotStatus(IssueVoucherReportProductViewModel productViewModel) {
-      if (productViewModel.isRemoteAndShipped()) {
+      if (productViewModel.isRemoteAndShipped() && !productViewModel.isKit()) {
         btnAddLot.setVisibility(View.VISIBLE);
         btnAddLot.setOnClickListener(getAddLotClickListener(productViewModel));
       } else {

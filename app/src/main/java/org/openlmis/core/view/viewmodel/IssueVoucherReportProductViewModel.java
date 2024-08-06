@@ -186,4 +186,11 @@ public class IssueVoucherReportProductViewModel implements MultiItemEntity {
   public boolean isRemoteAndShipped() {
     return !isLocal && orderStatus == OrderStatus.SHIPPED;
   }
+
+  public boolean isKit() {
+    if (product != null) {
+      return product.isKit();
+    }
+    return true;
+  }
 }
