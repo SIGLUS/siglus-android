@@ -22,12 +22,9 @@ import static org.openlmis.core.utils.DateUtil.calculateDateOffsetToNow;
 
 import android.text.TextUtils;
 import android.util.Log;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -230,14 +227,14 @@ public class DirtyDataManager {
       Map<String, List<StockMovementItem>> idToStockItemsForDelete = stockMovementRepository
           .queryStockMovement(deleteStockCardIds, null, null);
 
-      saveFullyDeletedInfo(deleteStockCardIds);
+      saveFullyDeletedInfoByStockCardIds(deleteStockCardIds);
 
       return covertMapFromStockIdToProductCode(idToStockItemsForDelete);
     }
     return new HashSet<>();
   }
 
-  private void saveFullyDeletedInfo(Set<String> deleteStockCardIds) throws LMISException {
+  private void saveFullyDeletedInfoByStockCardIds(Set<String> deleteStockCardIds) throws LMISException {
     ImmutableList<Long> stockCardIds = FluentIterable
         .from(deleteStockCardIds)
         .filter(id -> id != null)
@@ -512,7 +509,7 @@ public class DirtyDataManager {
       }
     }
 
-    saveFullyDeletedInfo(idToStockItemForDelete.keySet());
+    saveFullyDeletedInfoByStockCardIds(idToStockItemForDelete.keySet());
 
     return covertMapFromStockIdToProductCode(idToStockItemForDelete);
   }
