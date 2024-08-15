@@ -145,6 +145,8 @@ public class DirtyDataManager {
     Set<String> productCodes = getCodeFromStockCard(deletedStockCards);
     if (!productCodes.isEmpty()) {
       sharedPreferenceMgr.setDeletedProduct(productCodes);
+    } else {
+      clearDeletedProductFromSP();
     }
     return deletedStockCards;
   }
@@ -200,6 +202,8 @@ public class DirtyDataManager {
   private void saveToSharePreferenceMgr(Set<String> deleteProducts) {
     if (!deleteProducts.isEmpty()) {
       sharedPreferenceMgr.setDeletedProduct(deleteProducts);
+    } else {
+      clearDeletedProductFromSP();
     }
   }
 
@@ -363,11 +367,15 @@ public class DirtyDataManager {
         stockRepository.resetLotsOnHand(productCodes);
         cmmRepository.resetCmm(productCodes);
         rnrFormRepository.deleteRnrFormDirtyData(productCodes);
-        sharedPreferenceMgr.setDeletedProduct(new HashSet<>());
+        clearDeletedProductFromSP();
       }
       subscriber.onNext(null);
       subscriber.onCompleted();
     });
+  }
+
+  private void clearDeletedProductFromSP() {
+    sharedPreferenceMgr.setDeletedProduct(new HashSet<>());
   }
 
   private DirtyDataItemInfo convertStockMovementItemsToStockMovementEntriesForSave(
