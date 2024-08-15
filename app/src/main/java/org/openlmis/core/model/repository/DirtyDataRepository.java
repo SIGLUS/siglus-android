@@ -72,6 +72,8 @@ public class DirtyDataRepository {
             dbItem.setFullyDelete(item.isFullyDelete());
             dbItem.setSynced(false);
             dbItem.setJsonData(item.getJsonData());
+            dbItem.setStockOnHand(item.getStockOnHand());
+            dbItem.setUpdatedAt(DateUtil.getCurrentDate());
             dao.createOrUpdate(dbItem);
           } else {
             dao.createOrUpdate(item);

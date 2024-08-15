@@ -68,6 +68,7 @@ import org.openlmis.core.persistence.migrations.AddRnrBaseInfoItem;
 import org.openlmis.core.persistence.migrations.AddServiceItemTable;
 import org.openlmis.core.persistence.migrations.AddShowInReportFieldInProductProgramTable;
 import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovementItemTable;
+import org.openlmis.core.persistence.migrations.AddStockOnHandColumnToDirtyData;
 import org.openlmis.core.persistence.migrations.AddSubmittedDateToRnRForm;
 import org.openlmis.core.persistence.migrations.AddSyncErrorsMessageTable;
 import org.openlmis.core.persistence.migrations.AddSyncTagToStockMovementItem;
@@ -237,6 +238,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new DropRegimenShortCodeTable());
     MIGRATIONS.add(new DropProgramDataFormTables());
     MIGRATIONS.add(new AddShowInReportFieldInProductProgramTable());
+    MIGRATIONS.add(new AddStockOnHandColumnToDirtyData());
   }
 
   private LmisSqliteOpenHelper(Context context) {

@@ -235,6 +235,10 @@ public class StockRepository {
     return dbUtil.withDao(StockCard.class, dao -> dao.queryBuilder().where().in(PRODUCT_ID, productIds).query());
   }
 
+  public List<StockCard> listStockCardsByIds(final List<Long> stockCardIds) throws LMISException {
+    return dbUtil.withDao(StockCard.class, dao -> dao.queryBuilder().where().in(ID, stockCardIds).query());
+  }
+
   public List<StockCard> listEmergencyStockCards() throws LMISException {
     List<Program> programs = programRepository.listEmergencyPrograms();
 
@@ -362,7 +366,7 @@ public class StockRepository {
     stockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(stockCard));
   }
 
-  private List<LotOnHand> getLotOnHandByStockCard(final long stockCardId) throws LMISException {
+  public List<LotOnHand> getLotOnHandByStockCard(final long stockCardId) throws LMISException {
     return dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
         .where().eq(STOCK_CARD_ID, stockCardId)
         .query());

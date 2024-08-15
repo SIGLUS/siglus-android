@@ -16,41 +16,22 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.model;
+package org.openlmis.core.network.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.List;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@DatabaseTable(tableName = "dirty_data")
-@EqualsAndHashCode(callSuper = false)
-public class DirtyDataItemInfo extends BaseModel {
+public class DirtyDataEntry {
 
-  @DatabaseField
-  String jsonData;
+  private List<StockMovementEntry> stockMovementEntries;
+  private List<LotOnHandEntry> lotOnHandEntries;
 
-  @DatabaseField
-  boolean synced = false;
-
-  @DatabaseField
-  String productCode;
-
-  @DatabaseField
-  boolean fullyDelete = true;
-
-  @DatabaseField
-  long stockOnHand;
-
-  public DirtyDataItemInfo(String productCode, boolean syncStatus, String jsonData,
-      boolean fullyDelete, long stockOnHand) {
-    this.productCode = productCode;
-    this.synced = syncStatus;
-    this.jsonData = jsonData;
-    this.fullyDelete = fullyDelete;
-    this.stockOnHand = stockOnHand;
+  public DirtyDataEntry(List<StockMovementEntry> stockMovementEntries,
+      List<LotOnHandEntry> lotOnHandEntries) {
+    this.stockMovementEntries = stockMovementEntries;
+    this.lotOnHandEntries = lotOnHandEntries;
   }
 }
