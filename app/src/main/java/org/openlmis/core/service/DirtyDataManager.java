@@ -122,7 +122,7 @@ public class DirtyDataManager {
       List<StockCard> inputStockCards,
       Map<String, String> inputLotsOnHands
   ) {
-    lotsOnHands.putAll(inputLotsOnHands);
+    updateStockCardIdToLotOnHandsMap(inputLotsOnHands);
     return doCheckAndGetDirtyData(inputStockCards);
   }
 
@@ -203,7 +203,7 @@ public class DirtyDataManager {
    * @return productCodes
    */
   private Set<String> checkSoh() throws LMISException {
-    lotsOnHands.putAll(stockRepository.lotOnHands());
+    initialStockCardIdToLotOnHandsMap();
     List<StockCard> checkedStockCards = stockRepository.queryCheckedStockCards();
     Set<String> deleteStockCardIds = new HashSet<>();
     List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
@@ -425,7 +425,7 @@ public class DirtyDataManager {
   @SuppressWarnings({"squid:S3776", "squid:S135"})
   private Set<String> checkAllMovementAndLotSOHAndSaveToDB() throws LMISException {
     List<StockCard> checkedStockCards = stockRepository.queryCheckedStockCards();
-    lotsOnHands.putAll(stockRepository.lotOnHands());
+    initialStockCardIdToLotOnHandsMap();
     Map<String, List<StockMovementItem>> idToStockItemForDelete = new HashMap<>();
     List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
     for (StockCard stockCard : checkedStockCards) {
@@ -458,6 +458,15 @@ public class DirtyDataManager {
       }
     }
     return covertMapFromStockIdToProductCode(idToStockItemForDelete);
+  }
+
+  private void initialStockCardIdToLotOnHandsMap() {
+    updateStockCardIdToLotOnHandsMap(stockRepository.lotOnHands());
+  }
+
+  private void updateStockCardIdToLotOnHandsMap(Map<String, String> inputLotsOnHands) {
+    lotsOnHands.clear();
+    lotsOnHands.putAll(inputLotsOnHands);
   }
 
   private void reportDirtyDataByStockMovementError(
