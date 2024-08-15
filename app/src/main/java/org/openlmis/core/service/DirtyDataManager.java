@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -47,6 +48,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.LotMovementItem;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -55,13 +57,18 @@ import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
+import org.openlmis.core.model.repository.StockMovementRepository.SortClass;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.network.model.DirtyDataEntry;
+import org.openlmis.core.network.model.LotOnHandEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.utils.ToastUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import roboguice.RoboGuice;
 import rx.Observable;
+import rx.Observable.OnSubscribe;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -144,7 +151,7 @@ public class DirtyDataManager {
 
   @SuppressWarnings("squid:S1905")
   public void dirtyDataMonthlyCheck() {
-    Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+    Observable.create((OnSubscribe<Void>) subscriber -> {
       try {
         scanAllStockMovements();
       } catch (LMISException e) {
@@ -218,9 +225,21 @@ public class DirtyDataManager {
     if (!deleteStockCardIds.isEmpty()) {
       Map<String, List<StockMovementItem>> idToStockItemsForDelete = stockMovementRepository
           .queryStockMovement(deleteStockCardIds, null, null);
+
+      saveFullyDeletedInfo(deleteStockCardIds);
+
       return covertMapFromStockIdToProductCode(idToStockItemsForDelete);
     }
     return new HashSet<>();
+  }
+
+  private void saveFullyDeletedInfo(Set<String> deleteStockCardIds) throws LMISException {
+    ImmutableList<Long> stockCardIds = FluentIterable
+        .from(deleteStockCardIds)
+        .filter(id -> id != null)
+        .transform(Long::valueOf)
+        .toList();
+    saveFullyDeletedInfo(stockRepository.listStockCardsByIds(stockCardIds));
   }
 
   private void scanAllStockMovements() throws LMISException {
@@ -253,21 +272,35 @@ public class DirtyDataManager {
 
   private void saveFullyDeletedInfo(List<StockCard> deletedStockCards) {
     Map<String, List<StockMovementItem>> codeToStockItems = new HashMap<>();
+    Map<String, List<LotOnHand>> codeToLotOnHands = new HashMap<>();
+    Map<String, Long> codeToStockOnHand = new HashMap<>();
     for (StockCard stockCard : deletedStockCards) {
       List<StockMovementItem> stockMovementItems = null;
+      List<LotOnHand> lotOnHands = null;
       try {
-        stockMovementItems = stockMovementRepository.queryMovementByStockCardId(stockCard.getId());
+        long id = stockCard.getId();
+
+        stockMovementItems = stockMovementRepository.queryMovementByStockCardId(id);
+        lotOnHands = stockRepository.getLotOnHandByStockCard(id);
       } catch (LMISException e) {
         Log.w(TAG, e);
         e.reportToFabric();
       }
-      codeToStockItems.put(stockCard.getProduct().getCode(), stockMovementItems);
+
+      String code = stockCard.getProduct().getCode();
+      codeToStockItems.put(code, stockMovementItems);
+      codeToLotOnHands.put(code, lotOnHands);
+      codeToStockOnHand.put(code, stockCard.getStockOnHand());
     }
-    saveDeletedMovementToDB(codeToStockItems, true);
+    saveDeletedMovementToDB(codeToStockItems, codeToLotOnHands, codeToStockOnHand, true);
   }
 
-  private void saveDeletedMovementToDB(Map<String, List<StockMovementItem>> items,
-      boolean fullyDelete) {
+  private void saveDeletedMovementToDB(
+      Map<String, List<StockMovementItem>> items,
+      Map<String, List<LotOnHand>> codeToLotOnHands,
+      Map<String, Long> codeToStockOnHand,
+      boolean fullyDelete
+  ) {
     if (items.isEmpty()) {
       return;
     }
@@ -276,9 +309,16 @@ public class DirtyDataManager {
       return;
     }
     List<DirtyDataItemInfo> dirtyDataItemInfos = new ArrayList<>();
-    for (Map.Entry<String, List<StockMovementItem>> entry : items.entrySet()) {
-      dirtyDataItemInfos.add(convertStockMovementItemsToStockMovementEntriesForSave(entry.getValue(),
-          entry.getKey(), fullyDelete));
+    for (Entry<String, List<StockMovementItem>> entry : items.entrySet()) {
+      String key = entry.getKey();
+
+      dirtyDataItemInfos.add(
+          convertStockMovementItemsToStockMovementEntriesForSave(
+              entry.getValue(), key, fullyDelete,
+              codeToLotOnHands.get(key),
+              codeToStockOnHand.get(key)
+          )
+      );
     }
     dirtyDataRepository.saveAll(dirtyDataItemInfos);
   }
@@ -331,7 +371,8 @@ public class DirtyDataManager {
   }
 
   private DirtyDataItemInfo convertStockMovementItemsToStockMovementEntriesForSave(
-      List<StockMovementItem> stockMovementItems, String productCode, boolean fullyDelete) {
+      List<StockMovementItem> stockMovementItems, String productCode, boolean fullyDelete,
+      List<LotOnHand> lotOnHands, Long stockOnHand) {
     Product product = Product.builder().code(productCode).build();
     List<StockMovementEntry> movementEntries = FluentIterable.from(stockMovementItems)
         .transform(stockMovementItem -> {
@@ -341,11 +382,16 @@ public class DirtyDataManager {
         .transform(StockMovementEntry::new)
         .toList();
 
-    Gson gson = new GsonBuilder().create();
-    Type type = new TypeToken<List<StockMovementEntry>>() {
-    }.getType();
-    gson.toJson(movementEntries, type);
-    return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type), fullyDelete);
+    List<LotOnHandEntry> lotOnHandEntries = FluentIterable.from(lotOnHands)
+        .filter(lotOnHand -> lotOnHand != null)
+        .transform(LotOnHandEntry::new)
+        .toList();
+
+    DirtyDataEntry dirtyDataEntry = new DirtyDataEntry(movementEntries, lotOnHandEntries);
+
+    return new DirtyDataItemInfo(
+        productCode, false, new GsonBuilder().create().toJson(dirtyDataEntry), fullyDelete, stockOnHand
+    );
   }
 
   /**
@@ -375,7 +421,7 @@ public class DirtyDataManager {
         // report the dirty data to AppCentre
         reportDirtyDataByStockOnHandError(stockCard);
       } else if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
-        StockMovementRepository.SortClass sort = new StockMovementRepository.SortClass();
+        SortClass sort = new SortClass();
         Collections.sort(stockMovementItems, sort);
         StockMovementItem currentStockMovement = stockMovementItems.get(1);
         StockMovementItem preStockMovement = stockMovementItems.get(0);
@@ -457,6 +503,9 @@ public class DirtyDataManager {
         e.reportToFabric();
       }
     }
+
+    saveFullyDeletedInfo(idToStockItemForDelete.keySet());
+
     return covertMapFromStockIdToProductCode(idToStockItemForDelete);
   }
 
@@ -508,7 +557,7 @@ public class DirtyDataManager {
       for (Map.Entry<String, List<StockMovementItem>> entry : idToStockItemForDelete.entrySet()) {
         codeToStockItems.put(stockCardIdToCode.get(entry.getKey()), entry.getValue());
       }
-      saveDeletedMovementToDB(codeToStockItems, true);
+
       return codeToStockItems.keySet();
     }
     return new HashSet<>();

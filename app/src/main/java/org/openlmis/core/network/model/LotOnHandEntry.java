@@ -16,41 +16,27 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.model;
+package org.openlmis.core.network.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.openlmis.core.model.LotOnHand;
+import org.openlmis.core.utils.DateUtil;
 
 @Data
 @NoArgsConstructor
-@DatabaseTable(tableName = "dirty_data")
-@EqualsAndHashCode(callSuper = false)
-public class DirtyDataItemInfo extends BaseModel {
+public class LotOnHandEntry {
 
-  @DatabaseField
-  String jsonData;
+  long lotId;
+  long stockCardId;
+  Long quantityOnHand;
+  private String updatedDate;
 
-  @DatabaseField
-  boolean synced = false;
-
-  @DatabaseField
-  String productCode;
-
-  @DatabaseField
-  boolean fullyDelete = true;
-
-  @DatabaseField
-  long stockOnHand;
-
-  public DirtyDataItemInfo(String productCode, boolean syncStatus, String jsonData,
-      boolean fullyDelete, long stockOnHand) {
-    this.productCode = productCode;
-    this.synced = syncStatus;
-    this.jsonData = jsonData;
-    this.fullyDelete = fullyDelete;
-    this.stockOnHand = stockOnHand;
+  public LotOnHandEntry(LotOnHand lotOnHand) {
+    this.lotId = lotOnHand.getLot().getId();
+    this.stockCardId = lotOnHand.getStockCard().getId();
+    this.quantityOnHand = lotOnHand.getQuantityOnHand();
+    this.updatedDate = DateUtil
+        .formatDate(lotOnHand.getUpdatedAt(), DateUtil.DB_DATE_FORMAT);
   }
 }
