@@ -38,7 +38,6 @@ import androidx.annotation.NonNull;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import java.util.concurrent.TimeUnit;
-import lombok.SneakyThrows;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
