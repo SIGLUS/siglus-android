@@ -12,6 +12,7 @@
   <string name="title_issue_voucher">Guia de remessa eletrônica %1$s</string>
 
   <string name="hint_network_error">Falha na conexão, verifique sua conexão a rede</string>
+  <string name="hint_token_expired_error">O token expirou, faça o login novamente</string>
 
   <!--Login Page-->
   <string name="hint_username">Usuário</string>
