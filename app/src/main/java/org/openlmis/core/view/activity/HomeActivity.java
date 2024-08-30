@@ -52,9 +52,11 @@ import org.openlmis.core.annotation.BindEventBus;
 import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.DeleteDirtyDataEvent;
 import org.openlmis.core.event.InitialDirtyDataCheckEvent;
+import org.openlmis.core.event.RefreshTokenFailedEvent;
 import org.openlmis.core.event.SyncPercentEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -276,6 +278,16 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     }
   }
 
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveRefreshTokenFailedEvent(RefreshTokenFailedEvent event) {
+    if (event.getException() instanceof NetWorkException) {
+      ToastUtil.show(R.string.hint_network_error);
+    } else {
+      ToastUtil.show(R.string.hint_token_expired_error);
+      goToLoginActivity();
+    }
+  }
+
   @Override
   public void onBackPressed() {
     if (exitPressedOnce) {
@@ -304,8 +316,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.action_sign_out:
-        startActivity(LoginActivity.class);
-        finish();
+        goToLoginActivity();
         return true;
       case R.id.action_sync_data:
         syncData();
@@ -319,6 +330,11 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       default:
         return super.onOptionsItemSelected(item);
     }
+  }
+
+  private void goToLoginActivity() {
+    startActivity(LoginActivity.class);
+    finish();
   }
 
   @Override

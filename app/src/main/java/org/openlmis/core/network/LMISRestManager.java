@@ -44,6 +44,7 @@ import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.enumeration.LoginErrorType;
+import org.openlmis.core.event.RefreshTokenFailedEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.exceptions.SyncServerException;
@@ -239,11 +240,11 @@ public class LMISRestManager {
   public void refreshAccessToken(User user, RetrofitError cause) {
     LMISApp.getInstance().getRestApi()
         .login(GRANT_TYPE, user.getUsername(), user.getPassword(), new Callback<UserResponse>() {
-          @SneakyThrows
+
           @Override
           public void success(UserResponse userResponse, Response response) {
             if (userResponse == null || userResponse.getAccessToken() == null) {
-              throw new UnauthorizedException(cause);
+              EventBus.getDefault().post(new RefreshTokenFailedEvent(new UnauthorizedException(cause)));
             } else {
               user.setAccessToken(userResponse.getAccessToken());
               user.setTokenType(userResponse.getTokenType());
@@ -253,13 +254,12 @@ public class LMISRestManager {
             }
           }
 
-          @SneakyThrows
           @Override
           public void failure(RetrofitError error) {
             if (error.getCause() instanceof NetWorkException) {
-              throw new NetWorkException(cause);
+              EventBus.getDefault().post(new RefreshTokenFailedEvent(new NetWorkException(cause)));
             } else {
-              throw new UnauthorizedException(cause);
+              EventBus.getDefault().post(new RefreshTokenFailedEvent(new UnauthorizedException(cause)));
             }
           }
         });

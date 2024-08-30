@@ -12,6 +12,7 @@
   <string name="title_issue_voucher">Issue Voucher for %1$s</string>
 
   <string name="hint_network_error">NetWork error please check you network connection</string>
+  <string name="hint_token_expired_error">Token is expired, please login again</string>
 
   <!-- Login Page -->
   <string name="hint_username">User Name</string>
