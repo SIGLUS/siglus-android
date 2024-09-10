@@ -321,7 +321,7 @@ public class RnrFormRepository {
     return rnrFormItems;
   }
 
-  public Long getInitialAmountIfPeriodMovementItemsAreEmpty(
+  public Long getPreviousPeriodLastMovementItemSOH(
       StockCard stockCard,
       Date periodBegin
   ) {
@@ -475,7 +475,7 @@ public class RnrFormRepository {
         stockCard, notFullStockItemsByCreatedData, periodBegin
     );
 
-    if (notFullStockItemsByCreatedData == null || notFullStockItemsByCreatedData.isEmpty()) {
+    if (isStockMovementItemsEmpty(notFullStockItemsByCreatedData)) {
       rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, rnrFormItem.getInitialAmount());
     } else {
       rnrFormHelper.assignTotalValues(rnrFormItem, notFullStockItemsByCreatedData);
@@ -492,8 +492,10 @@ public class RnrFormRepository {
     RnrFormItem rnrFormItem = new RnrFormItem();
     // initialAmount
     Long initialAmount;
-    if (notFullStockItemsByCreatedData == null || notFullStockItemsByCreatedData.isEmpty()) {
-      initialAmount = getInitialAmountIfPeriodMovementItemsAreEmpty(stockCard, periodBegin);
+    if (isStockMovementItemsEmpty(notFullStockItemsByCreatedData)
+        || (!isInventoryType(notFullStockItemsByCreatedData.get(0).getMovementType()))
+    ) {
+      initialAmount = getPreviousPeriodLastMovementItemSOH(stockCard, periodBegin);
     } else {
       initialAmount = notFullStockItemsByCreatedData.get(0).getStockOnHand();
     }
@@ -502,6 +504,10 @@ public class RnrFormRepository {
     rnrFormItem.setProduct(stockCard.getProduct());
 
     return rnrFormItem;
+  }
+
+  private boolean isStockMovementItemsEmpty(List<StockMovementItem> notFullStockItemsByCreatedData) {
+    return notFullStockItemsByCreatedData == null || notFullStockItemsByCreatedData.isEmpty();
   }
 
   protected ArrayList<RnrFormItem> fillAllProducts(RnRForm form, List<RnrFormItem> basicItems)
@@ -526,7 +532,7 @@ public class RnrFormRepository {
 
       if (rnrFormItem.getInitialAmount() == null) {
         updateInitialAmount(
-            rnrFormItem, getInitialAmountIfPeriodMovementItemsAreEmpty(
+            rnrFormItem, getPreviousPeriodLastMovementItemSOH(
                 stockRepository.queryStockCardByProductId(product.getId()),
                 form.getPeriodBegin()
             ));
