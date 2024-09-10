@@ -341,7 +341,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         );
 
     Long initialAmount;
-    if (stockMovementItems == null || stockMovementItems.isEmpty()) {
+    if (isStockMovementItemsEmpty(stockMovementItems) || firstItemsTypeIsNotInventory(stockMovementItems)) {
       initialAmount = rnrFormRepository.getPreviousPeriodLastMovementItemSOH(stockCard, periodBegin);
     } else {
       initialAmount = stockMovementItems.get(0).getStockOnHand();
@@ -349,6 +349,15 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     rnrFormItem.setInitialAmount(initialAmount);
+  }
+
+  private boolean firstItemsTypeIsNotInventory(List<StockMovementItem> stockMovementItems) {
+    return stockMovementItems != null && !stockMovementItems.isEmpty()
+        && !stockMovementItems.get(0).getMovementType().isInventoryType();
+  }
+
+  private boolean isStockMovementItemsEmpty(List<StockMovementItem> stockMovementItems) {
+    return stockMovementItems == null || stockMovementItems.isEmpty();
   }
 
 

@@ -27,8 +27,6 @@ import static org.openlmis.core.constant.FieldConstants.PROGRAM_ID;
 import static org.openlmis.core.constant.FieldConstants.STATUS;
 import static org.openlmis.core.constant.FieldConstants.SUBMITTED_TIME;
 import static org.openlmis.core.constant.FieldConstants.SYNCED;
-import static org.openlmis.core.manager.MovementReasonManager.MovementType.INITIAL_INVENTORY;
-import static org.openlmis.core.manager.MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
 import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMTB_PROGRAM_CODE;
@@ -396,7 +394,7 @@ public class RnrFormRepository {
   }
 
   private boolean isInventoryType(MovementType movementType) {
-    return PHYSICAL_INVENTORY == movementType || INITIAL_INVENTORY == movementType;
+    return movementType.isInventoryType();
   }
 
   @NonNull
@@ -493,7 +491,7 @@ public class RnrFormRepository {
     // initialAmount
     Long initialAmount;
     if (isStockMovementItemsEmpty(notFullStockItemsByCreatedData)
-        || (!isInventoryType(notFullStockItemsByCreatedData.get(0).getMovementType()))
+        || firstItemsTypeIsNotInventory(notFullStockItemsByCreatedData)
     ) {
       initialAmount = getPreviousPeriodLastMovementItemSOH(stockCard, periodBegin);
     } else {
@@ -504,6 +502,11 @@ public class RnrFormRepository {
     rnrFormItem.setProduct(stockCard.getProduct());
 
     return rnrFormItem;
+  }
+
+  private boolean firstItemsTypeIsNotInventory(List<StockMovementItem> notFullStockItemsByCreatedData) {
+    return notFullStockItemsByCreatedData != null && !notFullStockItemsByCreatedData.isEmpty()
+        && !isInventoryType(notFullStockItemsByCreatedData.get(0).getMovementType());
   }
 
   private boolean isStockMovementItemsEmpty(List<StockMovementItem> notFullStockItemsByCreatedData) {
