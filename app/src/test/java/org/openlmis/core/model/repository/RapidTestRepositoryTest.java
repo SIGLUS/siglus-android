@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import com.google.inject.AbstractModule;
@@ -122,9 +123,11 @@ public class RapidTestRepositoryTest extends LMISRepositoryUnitTest {
   }
 
   @Test
-  public void createRnrFormItemByPeriod_initAmount() {
+  public void createRnrFormItemByPeriod_initAmount_shouldReturnNull() {
     //given
     StockCard stockCard = new StockCard();
+    long stockCardId = 100L;
+    stockCard.setId(stockCardId);
 
     Date currentDate = DateUtil.getCurrentDate();
 
@@ -133,8 +136,7 @@ public class RapidTestRepositoryTest extends LMISRepositoryUnitTest {
     stockMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
     stockMovementItem.setMovementQuantity(10);
     stockMovementItem.setMovementDate(currentDate);
-    long itemStockOnHand = 20;
-    stockMovementItem.setStockOnHand(itemStockOnHand);
+    stockMovementItem.setStockOnHand(20);
     stockMovementItemList.add(stockMovementItem);
 
     //when
@@ -146,9 +148,51 @@ public class RapidTestRepositoryTest extends LMISRepositoryUnitTest {
         stockMovementItemList, currentDate);
 
     //then
-    assertNull(rnrFormItemWithNullItems.getInitialAmount());
     assertNull(rnrFormItemWithEmptyItems.getInitialAmount());
-    assertEquals(itemStockOnHand, (long) rnrFormItemWithItems.getInitialAmount());
+    assertNull(rnrFormItemWithNullItems.getInitialAmount());
+    assertNull(rnrFormItemWithItems.getInitialAmount());
+  }
+
+  @Test
+  public void createRnrFormItemByPeriod_initAmount_shouldReturnPreviousSOH() {
+    //given
+    StockCard stockCard = new StockCard();
+    long stockCardId = 100L;
+    stockCard.setId(stockCardId);
+
+    Date currentDate = DateUtil.getCurrentDate();
+
+    List<StockMovementItem> stockMovementItemList = newArrayList();
+    StockMovementItem stockMovementItem = new StockMovementItem();
+    stockMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
+    stockMovementItem.setMovementQuantity(10);
+    stockMovementItem.setMovementDate(currentDate);
+    stockMovementItem.setStockOnHand(20);
+    stockMovementItemList.add(stockMovementItem);
+
+    StockMovementItem previousStockMovementItem = new StockMovementItem();
+    previousStockMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
+    previousStockMovementItem.setMovementQuantity(10);
+    previousStockMovementItem.setMovementDate(DateUtil.minusDayOfMonth(currentDate, 1));
+    long previousItemStockOnHand = 200;
+    previousStockMovementItem.setStockOnHand(previousItemStockOnHand);
+
+    when(mockStockMovementRepository.queryStockMovementsByStockCardIdAndPeriod(
+        String.valueOf(stockCardId), null, currentDate
+    )).thenReturn(newArrayList(previousStockMovementItem));
+
+    //when
+    RnrFormItem rnrFormItemWithNullItems = rapidTestRepository.createRnrFormItemByPeriod(stockCard,
+        null, currentDate);
+    RnrFormItem rnrFormItemWithEmptyItems = rapidTestRepository.createRnrFormItemByPeriod(stockCard,
+        newArrayList(), currentDate);
+    RnrFormItem rnrFormItemWithItems = rapidTestRepository.createRnrFormItemByPeriod(stockCard,
+        stockMovementItemList, currentDate);
+
+    //then
+    assertEquals(previousItemStockOnHand, (long) rnrFormItemWithEmptyItems.getInitialAmount());
+    assertEquals(previousItemStockOnHand, (long) rnrFormItemWithNullItems.getInitialAmount());
+    assertEquals(previousItemStockOnHand, (long) rnrFormItemWithItems.getInitialAmount());
   }
 
   @Test
