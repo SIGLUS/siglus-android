@@ -276,6 +276,10 @@ public final class MovementReasonManager {
           || this == MovementType.RECEIVE
           || (this == MovementType.ISSUE && MovementReasonManager.UNPACK_KIT.equalsIgnoreCase(movementReason));
     }
+
+    public boolean isInventoryType() {
+      return PHYSICAL_INVENTORY == this || INITIAL_INVENTORY == this;
+    }
   }
 
   @Data

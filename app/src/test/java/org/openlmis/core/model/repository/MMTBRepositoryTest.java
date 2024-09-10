@@ -142,7 +142,7 @@ public class MMTBRepositoryTest extends LMISRepositoryUnitTest {
 
     assertNull(resultWithListRnrFormItem.getValidate());
     assertEquals(expectedReceived, resultWithListRnrFormItem.getReceived());
-    assertEquals(itemStockOnHand, (long) resultWithListRnrFormItem.getInitialAmount());
+    assertNull(resultWithListRnrFormItem.getInitialAmount());
   }
   
   @Test
