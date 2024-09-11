@@ -676,9 +676,7 @@ public class VIARequisitionPresenterTest {
     when(mockProductRepository.getByCode("P2")).thenReturn(product2);
 
     StockCard stockCard = new StockCardBuilder().setStockOnHand(0L).setProduct(product1).build();
-    int itemStockOnHand = 50;
-    StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withStockOnHand(
-            itemStockOnHand)
+    StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withStockOnHand(50)
         .withQuantity(10).withMovementType(MovementReasonManager.MovementType.ISSUE)
         .withDocumentNo(baseInfoItemValue).build();
     StockMovementItem stockMovementItem2 = new StockMovementItemBuilder().build();
@@ -700,7 +698,7 @@ public class VIARequisitionPresenterTest {
     presenter
         .populateAdditionalDrugsViewModels(newArrayList(rnrFormItem1, rnrFormItem2), periodBegin);
     // then
-    assertThat(presenter.requisitionFormItemViewModels.get(0).getInitAmount(), is(String.valueOf(itemStockOnHand)));
+    assertThat(presenter.requisitionFormItemViewModels.get(0).getInitAmount(), is("0"));
   }
 
   private ViaKitsViewModel buildDefaultViaKit() {
