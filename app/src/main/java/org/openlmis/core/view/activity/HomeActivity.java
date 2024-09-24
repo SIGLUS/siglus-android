@@ -71,6 +71,7 @@ import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.DashboardView;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.NonCancelableDialog;
+import org.openlmis.core.view.widget.NotificationBanner;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.SyncTimeView;
 import roboguice.inject.ContentView;
