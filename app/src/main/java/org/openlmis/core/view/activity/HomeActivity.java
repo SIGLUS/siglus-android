@@ -427,20 +427,31 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     File currentXML = new File(Environment.getDataDirectory(),
         EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
             + "//shared_prefs//LMISPreference.xml");
+    File currentAppCenterDB = new File(Environment.getDataDirectory(),
+        EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
+            + "//databases//com.microsoft.appcenter.persistence");
+
     File tempBackup = new File(Environment.getDataDirectory(),
         EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
             + "//databases//lmis_copy");
     File currentXMLBackup = new File(Environment.getDataDirectory(),
         EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
             + "//shared_prefs//LMISPreferenceBackup.xml");
+    File tempAppCenterDB = new File(Environment.getDataDirectory(),
+        EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
+            + "//databases//appcenter_copy");
+
     File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
     File xmlExternalBackup = new File(Environment.getExternalStorageDirectory(), "LMISPreferenceBackup.xml");
+    File externalAppCenterDbBackup = new File(Environment.getExternalStorageDirectory(), "appcenter_backup");
     try {
       FileUtil.copy(currentDB, tempBackup);
       FileUtil.copy(currentXML, currentXMLBackup);
+      FileUtil.copy(currentAppCenterDB, tempAppCenterDB);
       ExportSqliteOpenHelper.removePrivateUserInfo(this);
       FileUtil.copy(tempBackup, externalBackup);
       FileUtil.copy(currentXMLBackup, xmlExternalBackup);
+      FileUtil.copy(tempAppCenterDB, externalAppCenterDbBackup);
       ToastUtil.show(CompatUtil.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
     } catch (Exception e) {
       new LMISException(e, "HomeActivity.exportDB").reportToFabric();
