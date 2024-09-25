@@ -278,17 +278,20 @@ public class MMIARepository extends RnrFormRepository {
   @Override
   public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards)
       throws LMISException {
-    List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
-    return fillAllProducts(form, rnrFormItems);
+    return fillAllProducts(form, super.generateRnrFormItems(form, stockCards));
   }
 
   @SuppressWarnings("squid:S1130")
   @Override
-  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
-      List<StockMovementItem> notFullStockItemsByCreatedData) {
-    RnrFormItem rnrFormItem = this.createMMIARnrFormItemByPeriod(stockCard, notFullStockItemsByCreatedData);
+  protected RnrFormItem createRnrFormItemByPeriod(
+      StockCard stockCard,
+      List<StockMovementItem> notFullStockItemsByCreatedData,
+      Date periodBegin
+  ) {
+    RnrFormItem rnrFormItem = this.createMMIARnrFormItemByPeriod(
+        stockCard, notFullStockItemsByCreatedData, periodBegin
+    );
 
-    rnrFormItem.setProduct(stockCard.getProduct());
     Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
     if (earliestLotExpiryDate != null) {
       rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
@@ -297,29 +300,22 @@ public class MMIARepository extends RnrFormRepository {
     return rnrFormItem;
   }
 
-  protected RnrFormItem createMMIARnrFormItemByPeriod(StockCard stockCard, List<StockMovementItem> stockMovementItems) {
-    RnrFormItem rnrFormItem = new RnrFormItem();
+  private RnrFormItem createMMIARnrFormItemByPeriod(
+      StockCard stockCard,
+      List<StockMovementItem> stockMovementItems,
+      Date periodBegin
+  ) {
+    RnrFormItem rnrFormItem = super.createRnrFormBaseItemByPeriod(
+        stockCard, stockMovementItems, periodBegin
+    );
 
-    if (stockMovementItems.isEmpty()) {
-      this.initMMiARnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
+    if (stockMovementItems == null || stockMovementItems.isEmpty()) {
+      this.initMMiARnrFormItemWithoutMovement(rnrFormItem);
     } else {
-      rnrFormItem.setInitialAmount(getMMiAInitialAmount(stockCard, stockMovementItems));
       this.assignMMIATotalValues(rnrFormItem, stockMovementItems);
     }
 
-    rnrFormItem.setProduct(stockCard.getProduct());
     return rnrFormItem;
-  }
-
-  protected long getMMiAInitialAmount(StockCard stockCard,
-      List<StockMovementItem> stockMovementItems) {
-    List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.NO, programCode);
-    if (rnRForms.size() == 1) {
-      return stockMovementItems.get(0).calculatePreviousSOH();
-    }
-    Long lastRnrInventory = lastRnrInventory(stockCard.getProduct());
-    return lastRnrInventory != null ? lastRnrInventory
-        : stockMovementItems.get(0).calculatePreviousSOH();
   }
 
   private void assignMMIATotalValues(RnrFormItem rnrFormItem,
@@ -334,10 +330,10 @@ public class MMIARepository extends RnrFormRepository {
     rnrFormItem.setReceived(totalReceived);
   }
 
-  private void initMMiARnrFormItemWithoutMovement(RnrFormItem rnrFormItem, long lastRnrInventory) {
+  private void initMMiARnrFormItemWithoutMovement(RnrFormItem rnrFormItem) {
     rnrFormItem.setReceived(0);
     rnrFormItem.setCalculatedOrderQuantity(0L);
-    rnrFormItem.setInitialAmount(lastRnrInventory);
+    rnrFormItem.setInitialAmount(0L);
   }
 
 }

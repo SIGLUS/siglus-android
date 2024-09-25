@@ -130,18 +130,26 @@ public class MMTBRepository extends RnrFormRepository {
   }
 
   @Override
-  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, List<StockMovementItem> stockMovementItems) {
-    RnrFormItem rnrFormItem = new RnrFormItem();
-    if (stockMovementItems.isEmpty()) {
+  protected RnrFormItem createRnrFormItemByPeriod(
+      StockCard stockCard,
+      List<StockMovementItem> stockMovementItems,
+      Date periodBegin
+  ) {
+    RnrFormItem rnrFormItem = super.createRnrFormBaseItemByPeriod(
+        stockCard, stockMovementItems, periodBegin
+    );
+
+    if (stockMovementItems == null || stockMovementItems.isEmpty()) {
       rnrFormItem.setReceived(0);
     } else {
       this.assignMMTBTotalValues(rnrFormItem, stockMovementItems);
     }
-    rnrFormItem.setProduct(stockCard.getProduct());
+
     Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
     if (earliestLotExpiryDate != null) {
       rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
     }
+
     return rnrFormItem;
   }
 
@@ -179,9 +187,9 @@ public class MMTBRepository extends RnrFormRepository {
   }
 
   @Override
-  protected void updateInitialAmount(RnrFormItem rnrFormItem, Long lastInventory) {
-    rnrFormItem.setIsCustomAmount(lastInventory == null);
-    rnrFormItem.setInitialAmount(lastInventory);
+  protected void updateInitialAmount(RnrFormItem rnrFormItem, Long initialAmount) {
+    rnrFormItem.setIsCustomAmount(initialAmount == null);
+    rnrFormItem.setInitialAmount(initialAmount);
   }
 
   @AllArgsConstructor

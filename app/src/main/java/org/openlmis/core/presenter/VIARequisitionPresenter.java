@@ -330,12 +330,25 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
       Date periodEnd) throws LMISException {
     StockCard stockCard = stockRepository
         .queryStockCardByProductId(rnrFormItem.getProduct().getId());
-    List<StockMovementItem> stockMovementItems = stockMovementRepository
-        .queryStockItemsByCreatedDate(stockCard.getId(), periodBegin, periodEnd);
-    if (!stockMovementItems.isEmpty()) {
-      rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
+
+    List<StockMovementItem> stockMovementItems =
+        rnrFormRepository.filterMovementItemsBaseOnInventory(
+            stockMovementRepository.queryStockItemsByCreatedDate(
+                stockCard.getId(), periodBegin, periodEnd
+            ),
+            periodBegin,
+            periodEnd
+        );
+
+    Long initialAmount;
+    if (stockMovementItems == null || stockMovementItems.isEmpty()) {
+      initialAmount = rnrFormRepository.getInitialAmountIfPeriodMovementItemsAreEmpty(stockCard, periodBegin);
+    } else {
+      initialAmount = stockMovementItems.get(0).getStockOnHand();
       rnrFormHelper.assignTotalValues(rnrFormItem, stockMovementItems);
     }
+
+    rnrFormItem.setInitialAmount(initialAmount);
   }
 
 
