@@ -29,13 +29,13 @@ public class RnrFormHelper {
   @Inject
   FormHelper formHelper;
 
-  public void initRnrFormItemWithoutMovement(RnrFormItem rnrFormItem, long lastMovementSOH) {
+  public void initRnrFormItemWithoutMovement(RnrFormItem rnrFormItem, long lastRnrInventory) {
     rnrFormItem.setReceived(0);
     rnrFormItem.setIssued((long) 0);
     rnrFormItem.setAdjustment((long) 0);
     rnrFormItem.setCalculatedOrderQuantity(0L);
-    rnrFormItem.setInitialAmount(lastMovementSOH);
-    rnrFormItem.setInventory(lastMovementSOH);
+    rnrFormItem.setInitialAmount(lastRnrInventory);
+    rnrFormItem.setInventory(lastRnrInventory);
   }
 
   public void assignTotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {

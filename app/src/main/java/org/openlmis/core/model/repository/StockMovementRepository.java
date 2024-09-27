@@ -31,7 +31,6 @@ import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 
 import android.content.Context;
 import android.database.Cursor;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
@@ -321,38 +320,6 @@ public class StockMovementRepository {
     );
   }
 
-  @Nullable
-  public List<StockMovementItem> queryStockMovementsByStockCardIdAndPeriod(
-      String stockCardId,
-      final Date periodBeginDate,
-      final Date periodEndDate
-  ) {
-    String limitQueryPeriod = "";
-    if (periodBeginDate != null) {
-      limitQueryPeriod =
-          " AND movementDate >= '" + DateUtil.formatDateTimeToDay(periodBeginDate) + "'";
-    }
-    if (periodEndDate != null) {
-      limitQueryPeriod +=
-          " AND movementDate <= '" + DateUtil.formatDateTimeToDay(periodEndDate) + "'";
-    }
-
-    String rawSql = SELECT_RESULT
-        + "from stock_items where stockCard_id = " + stockCardId
-        + limitQueryPeriod;
-
-    try (Cursor cursor =
-        LmisSqliteOpenHelper.getInstance(
-            LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null)
-    ) {
-      if (cursor.moveToFirst()) {
-        return getStockMovementItems(cursor, stockCardId);
-      }
-    }
-
-    return null;
-  }
-
   public Map<String, List<StockMovementItem>> queryStockMovement(Set<String> stockCardIds, final Date periodBeginDate,
       final Date periodEndDate) {
     String ids = StringUtils.join(stockCardIds != null ? stockCardIds : new HashSet<>(), ',');
@@ -441,22 +408,9 @@ public class StockMovementRepository {
   private void getStockMovementItems(Map<String, List<StockMovementItem>> stockCardsMovements,
       Cursor cursor) {
     String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow(STOCK_CARD_ID));
-    List<StockMovementItem> stockMovementItems = getStockMovementItems(cursor, stockCardId);
-
-    stockCardsMovements.put(stockCardId, stockMovementItems);
-  }
-
-  private @NonNull List<StockMovementItem> getStockMovementItems(Cursor cursor,
-      String stockCardId) {
     List<StockMovementItem> stockMovementItems = new ArrayList<>();
-
     String strMovementItems = cursor.getString(cursor.getColumnIndexOrThrow("movementItems"));
-    if (strMovementItems == null || strMovementItems.isEmpty()) {
-      return stockMovementItems;
-    }
-
     String[] listMovementItems = strMovementItems.split(";");
-
     for (String strMovementItem : listMovementItems) {
       String[] listMovementItem = strMovementItem.split(",");
       StockMovementItem movementItem = new StockMovementItem();
@@ -469,16 +423,14 @@ public class StockMovementRepository {
       movementItem.setStockOnHand(Long.parseLong(listMovementItem[3]));
       Date movementDate = DateUtil.parseString(listMovementItem[4], DateUtil.DB_DATE_FORMAT);
       movementItem.setMovementDate(movementDate);
-      Date createTime = DateUtil.parseString(listMovementItem[5],
-          DateUtil.DATE_TIME_FORMAT_WITH_MS);
+      Date createTime = DateUtil.parseString(listMovementItem[5], DateUtil.DATE_TIME_FORMAT_WITH_MS);
       movementItem.setCreatedTime(createTime);
       movementItem.setReason(listMovementItem[6]);
       stockMovementItems.add(movementItem);
     }
     SortClass sort = new SortClass();
     Collections.sort(stockMovementItems, sort);
-
-    return stockMovementItems;
+    stockCardsMovements.put(stockCardId, stockMovementItems);
   }
 
   public List<String> queryMalariaStockMovementDates() {

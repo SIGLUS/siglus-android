@@ -460,10 +460,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .queryStockMovementsByMovementDate(anyLong(), any(Date.class), any(Date.class)))
         .thenReturn(new ArrayList<StockMovementItem>());
 
-    Date currentDate = DateUtil.getCurrentDate();
-
     RnrFormItem rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, Collections.emptyList(), currentDate);
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
 
     assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
@@ -472,7 +470,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     stockCard.setLotOnHandListWrapper(Lists.newArrayList());
     rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, Collections.emptyList(), currentDate);
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
     assertNull(rnrFormItemByPeriod.getValidate());
   }
 
@@ -487,7 +485,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .listInclude(any(RnRForm.Emergency.class), anyString());
 
     RnrFormItem rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, Collections.emptyList(), DateUtil.getCurrentDate());
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
 
     assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
