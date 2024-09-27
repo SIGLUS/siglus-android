@@ -340,7 +340,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             periodEnd
         );
 
-    Long initialAmount;
+    long initialAmount;
     if (stockMovementItems == null || stockMovementItems.isEmpty()) {
       initialAmount = rnrFormRepository.getInitialAmountIfPeriodMovementItemsAreEmpty(stockCard, periodBegin);
     } else {
