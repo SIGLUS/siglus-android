@@ -551,16 +551,17 @@ public class VIARequisitionPresenterTest {
 
   @Test
   public void shouldInitEmergencyRnr() throws Exception {
-    // given
     ArrayList<StockCard> stockCards = newArrayList();
     Date periodEndDate = new Date();
     RnRForm rnRForm = new RnRForm();
     when(mockRnrFormRepository.initEmergencyRnrForm(periodEndDate, stockCards)).thenReturn(rnRForm);
-    // when
-    RnRForm actualForm = presenter.initEmergencyRnr(stockCards, periodEndDate);
-    // then
+    ArrayList<RnrFormItem> rnrFormItems = new ArrayList<>();
+    when(mockRnrFormRepository.generateRnrFormItems(rnRForm, stockCards)).thenReturn(rnrFormItems);
+
+    RnRForm rnRForm1 = presenter.initEmergencyRnr(stockCards, periodEndDate);
+
+    assertEquals(rnrFormItems, rnRForm1.getRnrFormItemListWrapper());
     verify(mockRnrFormRepository, never()).createRnRsWithItems(newArrayList(rnRForm));
-    assertEquals(rnRForm, actualForm);
   }
 
   @Test
@@ -657,7 +658,6 @@ public class VIARequisitionPresenterTest {
 
   @Test
   public void shouldAssignValuesToSelectedArchivedProducts() throws Exception {
-    // given
     Date periodBegin = DateUtil.parseString("2016-01-21", DateUtil.DB_DATE_FORMAT);
     Date periodEnd = DateUtil.parseString("2016-02-20", DateUtil.DB_DATE_FORMAT);
 
@@ -675,31 +675,24 @@ public class VIARequisitionPresenterTest {
     when(mockProductRepository.getByCode("P2")).thenReturn(product2);
 
     StockCard stockCard = new StockCardBuilder().setStockOnHand(0L).setProduct(product1).build();
-    int itemStockOnHand = 50;
-    StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withStockOnHand(
-            itemStockOnHand)
+    StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withStockOnHand(50)
         .withQuantity(10).withMovementType(MovementReasonManager.MovementType.ISSUE)
         .withDocumentNo(baseInfoItemValue).build();
     StockMovementItem stockMovementItem2 = new StockMovementItemBuilder().build();
     StockMovementItem stockMovementItem3 = new StockMovementItemBuilder().build();
 
     when(mockStockRepository.queryStockCardByProductId(product1.getId())).thenReturn(stockCard);
-    ArrayList<StockMovementItem> stockMovementItems = newArrayList(stockMovementItem1, stockMovementItem2,
-        stockMovementItem3);
     when(mockStockMovementRepository
         .queryStockItemsByCreatedDate(stockCard.getId(), periodBegin, periodEnd))
-        .thenReturn(stockMovementItems);
+        .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
 
     presenter.requisitionFormItemViewModels = new ArrayList<>();
     presenter.periodEndDate = periodEnd;
 
-    when(mockRnrFormRepository.filterMovementItemsBaseOnInventory(stockMovementItems, periodBegin, periodEnd))
-        .thenReturn(stockMovementItems);
-    // when
     presenter
         .populateAdditionalDrugsViewModels(newArrayList(rnrFormItem1, rnrFormItem2), periodBegin);
-    // then
-    assertThat(presenter.requisitionFormItemViewModels.get(0).getInitAmount(), is(String.valueOf(itemStockOnHand)));
+
+    assertThat(presenter.requisitionFormItemViewModels.get(0).getInitAmount(), is("60"));
   }
 
   private ViaKitsViewModel buildDefaultViaKit() {

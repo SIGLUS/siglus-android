@@ -31,7 +31,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.manager.MovementReasonManager.MovementType.DEFAULT;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.NEGATIVE_ADJUST;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
@@ -59,7 +58,6 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
@@ -106,11 +104,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
   private ReportTypeFormRepository mockReportTypeFormRepository;
 
   static final String comment = "DRAFT Form";
-
-  Date periodBegin = DateUtil.parseString("2024-07-20 10:10:10", DateUtil.DATE_TIME_FORMAT);
-  Date periodEnd = DateUtil.parseString("2024-08-20 10:10:10", DateUtil.DATE_TIME_FORMAT);
-  private static String beforePeriodBeginWithSameDay = "2024-07-20 9:10:10";
-  private static String afterPeriodBeginWithSameDay = "2024-08-20 11:10:10";
 
   @Before
   public void setup() throws LMISException {
@@ -467,10 +460,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .queryStockMovementsByMovementDate(anyLong(), any(Date.class), any(Date.class)))
         .thenReturn(new ArrayList<StockMovementItem>());
 
-    Date currentDate = DateUtil.getCurrentDate();
-
     RnrFormItem rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, Collections.emptyList(), currentDate);
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
 
     assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
@@ -479,7 +470,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     stockCard.setLotOnHandListWrapper(Lists.newArrayList());
     rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, Collections.emptyList(), currentDate);
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
     assertNull(rnrFormItemByPeriod.getValidate());
   }
 
@@ -494,7 +485,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         .listInclude(any(RnRForm.Emergency.class), anyString());
 
     RnrFormItem rnrFormItemByPeriod = rnrFormRepository
-        .createRnrFormItemByPeriod(stockCard, Collections.emptyList(), DateUtil.getCurrentDate());
+        .createRnrFormItemByPeriod(stockCard, Collections.emptyList());
 
     assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
     assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
@@ -606,23 +597,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     rnrFormItem.setProduct(product);
     rnrFormItem.setInventory(inventory);
     return rnrFormItem;
-  }
-
-  private StockMovementItem createStockMovementItem(
-      int stockOnHand,
-      MovementType movementType,
-      int movementQuantity,
-      Date movementDate
-  ) {
-    StockMovementItemBuilder stockMovementItemBuilder = new StockMovementItemBuilder();
-    return stockMovementItemBuilder
-        .withDocumentNo("1")
-        .withMovementReason("reason")
-        .withMovementDate(DateUtil.formatDateTime(movementDate))
-        .withMovementType(movementType)
-        .withStockOnHand(stockOnHand)
-        .withQuantity(movementQuantity)
-        .build();
   }
 
   private StockMovementItem createStockMovementItemBySOH(StockMovementItemBuilder stockMovementItemBuilder,
