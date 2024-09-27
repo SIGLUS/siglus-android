@@ -658,7 +658,6 @@ public class VIARequisitionPresenterTest {
 
   @Test
   public void shouldAssignValuesToSelectedArchivedProducts() throws Exception {
-    // given
     Date periodBegin = DateUtil.parseString("2016-01-21", DateUtil.DB_DATE_FORMAT);
     Date periodEnd = DateUtil.parseString("2016-02-20", DateUtil.DB_DATE_FORMAT);
 
@@ -683,21 +682,16 @@ public class VIARequisitionPresenterTest {
     StockMovementItem stockMovementItem3 = new StockMovementItemBuilder().build();
 
     when(mockStockRepository.queryStockCardByProductId(product1.getId())).thenReturn(stockCard);
-    ArrayList<StockMovementItem> stockMovementItems = newArrayList(stockMovementItem1, stockMovementItem2,
-        stockMovementItem3);
     when(mockStockMovementRepository
         .queryStockItemsByCreatedDate(stockCard.getId(), periodBegin, periodEnd))
-        .thenReturn(stockMovementItems);
+        .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
 
     presenter.requisitionFormItemViewModels = new ArrayList<>();
     presenter.periodEndDate = periodEnd;
 
-    when(mockRnrFormRepository.filterMovementItemsBaseOnInventory(stockMovementItems, periodBegin, periodEnd))
-        .thenReturn(stockMovementItems);
-    // when
     presenter
         .populateAdditionalDrugsViewModels(newArrayList(rnrFormItem1, rnrFormItem2), periodBegin);
-    // then
+
     assertThat(presenter.requisitionFormItemViewModels.get(0).getInitAmount(), is("60"));
   }
 

@@ -51,16 +51,11 @@ public class RapidTestRepository extends RnrFormRepository {
 
   @Override
   protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
-      List<StockMovementItem> stockMovementItems) {
+      List<StockMovementItem> notFullStockItemsByCreatedData) {
+    List<StockMovementItem> stockMovementItems = notFullStockItemsByCreatedData;
     RnrFormItem rnrFormItem = new RnrFormItem();
-
     FormHelper.StockMovementModifiedItem modifiedItem = formHelper
             .assignTotalValues(stockMovementItems);
-    if (stockMovementItems == null || stockMovementItems.isEmpty()) {
-      rnrFormItem.setInitialAmount(lastRnrInventory(stockCard));
-    } else {
-      rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
-    }
     rnrFormItem.setReceived(modifiedItem.getTotalReceived());
     rnrFormItem.setIssued(modifiedItem.getTotalIssued());
     rnrFormItem.setAdjustment(modifiedItem.getTotalAdjustment());
@@ -75,6 +70,7 @@ public class RapidTestRepository extends RnrFormRepository {
   @Override
   protected void updateInitialAmount(RnrFormItem rnrFormItem, Long lastInventory) {
     rnrFormItem.setIsCustomAmount(lastInventory == null);
+    rnrFormItem.setInitialAmount(lastInventory);
   }
 
   @Override

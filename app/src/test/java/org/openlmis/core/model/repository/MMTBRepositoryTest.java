@@ -115,7 +115,6 @@ public class MMTBRepositoryTest extends LMISRepositoryUnitTest {
     StockMovementItem stockMovementItem = new StockMovementItem();
     stockMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
     stockMovementItem.setMovementQuantity(10);
-    stockMovementItem.setStockOnHand(20);
     stockMovementItemList.add(stockMovementItem);
 
     long expectedReceived = stockMovementItemList.stream().mapToLong(StockMovementItem::getMovementQuantity).sum();
@@ -128,15 +127,12 @@ public class MMTBRepositoryTest extends LMISRepositoryUnitTest {
     //then
     assertThat(resultRnrFormItem.getValidate(), is("01/02/2015"));
     assertEquals(0L, resultRnrFormItem.getReceived());
-    assertEquals(0L, (long) resultRnrFormItem.getInitialAmount());
 
     assertNull(resultNoLotRnrFormItem.getValidate());
     assertEquals(0L, resultNoLotRnrFormItem.getReceived());
-    assertEquals(0L, (long) resultNoLotRnrFormItem.getInitialAmount());
 
     assertNull(resultWithListRnrFormItem.getValidate());
     assertEquals(expectedReceived, resultWithListRnrFormItem.getReceived());
-    assertEquals(10L, (long) resultWithListRnrFormItem.getInitialAmount());
   }
   
   @Test
@@ -178,7 +174,7 @@ public class MMTBRepositoryTest extends LMISRepositoryUnitTest {
     assertTrue(customAmountRnrFormItem.getIsCustomAmount());
     assertNull(customAmountRnrFormItem.getInitialAmount());
     assertFalse(nonCustomAmountRnrFormItem.getIsCustomAmount());
-    assertNull(nonCustomAmountRnrFormItem.getInitialAmount());
+    assertEquals(initialAmount, (long) nonCustomAmountRnrFormItem.getInitialAmount());
   }
 
   public class MyTestModule extends AbstractModule {

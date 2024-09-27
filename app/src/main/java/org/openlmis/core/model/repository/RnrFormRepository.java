@@ -27,8 +27,6 @@ import static org.openlmis.core.constant.FieldConstants.PROGRAM_ID;
 import static org.openlmis.core.constant.FieldConstants.STATUS;
 import static org.openlmis.core.constant.FieldConstants.SUBMITTED_TIME;
 import static org.openlmis.core.constant.FieldConstants.SYNCED;
-import static org.openlmis.core.manager.MovementReasonManager.MovementType.INITIAL_INVENTORY;
-import static org.openlmis.core.manager.MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
 import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMTB_PROGRAM_CODE;
@@ -58,7 +56,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Period;
@@ -151,12 +148,14 @@ public class RnrFormRepository {
   }
 
   public RnRForm initNormalRnrForm(Date periodEndDate) throws LMISException {
-    RnRForm rnrForm = initRnRForm(periodEndDate, RnRForm.Emergency.NO);
-    return createInitRnrForm(rnrForm);
+    Period period = requisitionPeriodService.generateNextPeriod(programCode, periodEndDate);
+    RnRForm rnrForm = initRnRForm(period, RnRForm.Emergency.NO);
+    return createInitRnrForm(rnrForm, period);
   }
 
   public RnRForm initEmergencyRnrForm(Date periodEndDate, List<StockCard> stockCards) throws LMISException {
-    RnRForm rnRForm = initRnRForm(periodEndDate, RnRForm.Emergency.YES);
+    Period period = requisitionPeriodService.generateNextPeriod(programCode, periodEndDate);
+    RnRForm rnRForm = initRnRForm(period, RnRForm.Emergency.YES);
     rnRForm.setRnrFormItemListWrapper(generateRnrFormItems(rnRForm, stockCards));
     return rnRForm;
   }
@@ -282,83 +281,16 @@ public class RnrFormRepository {
     HashMap<String, String> stringToCategory = getProductCodeToCategory();
     Set<String> stockCardIds = from(stockCards)
         .transform(stockCard -> String.valueOf(stockCard.getId())).toSet();
-
-    Date periodBegin = form.getPeriodBegin();
-    Date periodEnd = form.getPeriodEnd();
     Map<String, List<StockMovementItem>> idToStockMovements = stockMovementRepository
-        .queryStockMovement(stockCardIds, periodBegin, periodEnd);
-
+        .queryStockMovement(stockCardIds, form.getPeriodBegin(), form.getPeriodEnd());
     for (StockCard stockCard : stockCards) {
-      List<StockMovementItem> filteredStockMovementItems = filterMovementItemsBaseOnInventory(
-          idToStockMovements.get(String.valueOf(stockCard.getId())),
-          periodBegin, periodEnd
-      );
-
-      RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, filteredStockMovementItems);
+      RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard,
+          idToStockMovements.get(String.valueOf(stockCard.getId())));
       rnrFormItem.setForm(form);
       rnrFormItems.add(rnrFormItem);
       rnrFormItem.setCategory(stringToCategory.get(rnrFormItem.getProduct().getCode()));
     }
     return rnrFormItems;
-  }
-
-  /**
-   * The movement items should be in the range of
-   * 1. [period begin date's last INVENTORY item, period end date's last INVENTORY item]
-   * 2. [period begin date's last INVENTORY item, last one item]
-   * 3. [oldest one item, period end date's last INVENTORY item]
-   * 4. [oldest one item, last one item]
-   *
-   * @param stockMovementItems movementItems
-   * @param periodBegin        periodBegin
-   * @param periodEnd          periodEnd
-   * @return StockMovementItems
-   */
-  public List<StockMovementItem> filterMovementItemsBaseOnInventory(
-      List<StockMovementItem> stockMovementItems,
-      Date periodBegin,
-      Date periodEnd
-  ) {
-    List<StockMovementItem> filteredStockMovementItems = stockMovementItems;
-    // the range between inventory movement data is valid data for this period
-    if (stockMovementItems != null) {
-      int size = stockMovementItems.size();
-      int inventoryStartIndex = 0;
-      int inventoryEndIndex = size;
-
-      String beginDateString = formatDateToStringWithDBFormat(periodBegin);
-      String endDateString = formatDateToStringWithDBFormat(periodEnd);
-
-      for (int index = 0; index < size; index++) {
-        StockMovementItem stockMovementItem = stockMovementItems.get(index);
-        if (stockMovementItem != null && isInventoryType(stockMovementItem.getMovementType())) {
-          Date movementDate = stockMovementItem.getMovementDate();
-          if (movementDate == null) {
-            continue;
-          }
-
-          String movementDateString = formatDateToStringWithDBFormat(movementDate);
-          if (beginDateString.equals(movementDateString)) {
-            inventoryStartIndex = index;
-          } else if (endDateString.equals(movementDateString)) {
-            inventoryEndIndex = index;
-          }
-        }
-      }
-
-      filteredStockMovementItems =
-          stockMovementItems.subList(inventoryStartIndex, inventoryEndIndex);
-    }
-
-    return filteredStockMovementItems;
-  }
-
-  private @NonNull String formatDateToStringWithDBFormat(Date date) {
-    return DateUtil.formatDate(date, DateUtil.DB_DATE_FORMAT);
-  }
-
-  private boolean isInventoryType(MovementType movementType) {
-    return PHYSICAL_INVENTORY == movementType || INITIAL_INVENTORY == movementType;
   }
 
   @NonNull
@@ -436,7 +368,7 @@ public class RnrFormRepository {
   protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard,
       List<StockMovementItem> notFullStockItemsByCreatedData) {
     RnrFormItem rnrFormItem = new RnrFormItem();
-    if (notFullStockItemsByCreatedData == null || notFullStockItemsByCreatedData.isEmpty()) {
+    if (notFullStockItemsByCreatedData.isEmpty()) {
       rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
     } else {
       rnrFormItem.setInitialAmount(notFullStockItemsByCreatedData.get(0).calculatePreviousSOH());
@@ -473,7 +405,9 @@ public class RnrFormRepository {
   }
 
   protected void updateInitialAmount(RnrFormItem rnrFormItem, Long lastInventory) {
-    // do nothing
+    if (rnrFormItem.getInitialAmount() == null) {
+      rnrFormItem.setInitialAmount(lastInventory != null ? lastInventory : 0);
+    }
   }
 
   protected void updateDefaultValue(RnrFormItem rnrFormItem) {
@@ -492,7 +426,7 @@ public class RnrFormRepository {
     return new ArrayList<>();
   }
 
-  private RnRForm initRnRForm(Date periodEndDate, RnRForm.Emergency emergency)
+  private RnRForm initRnRForm(Period period, RnRForm.Emergency emergency)
       throws LMISException {
     final Program program = programRepository.queryByCode(programCode);
 
@@ -502,25 +436,33 @@ public class RnrFormRepository {
       throw e;
     }
 
-    Period period = requisitionPeriodService.generateNextPeriod(programCode, periodEndDate);
-
     return RnRForm.init(program, period, emergency.isEmergency());
   }
 
-  private RnRForm createInitRnrForm(final RnRForm rnrForm) throws LMISException {
+  private RnRForm createInitRnrForm(final RnRForm rnrForm, Period period) throws LMISException {
     try {
       TransactionManager
           .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
               () -> {
                 create(rnrForm);
-                List<StockCard> stockCards;
+                List<StockCard> stockCardWithMovement;
+                List<RnrFormItem> rnrFormItemList;
                 if (Constants.VIA_PROGRAM_CODE.equals(rnrForm.getProgram().getProgramCode())) {
-                  stockCards = stockRepository.getStockCardsBelongToProgram(Constants.VIA_PROGRAM_CODE);
+                  stockCardWithMovement = stockRepository.getStockCardsBelongToProgram(Constants.VIA_PROGRAM_CODE);
+
                 } else {
-                  stockCards = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
+                  stockCardWithMovement = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
                 }
 
-                rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCards));
+                if (this instanceof VIARepository) {
+                  rnrFormItemList = ((VIARepository) this).generateRnrFormItems(
+                      rnrForm, stockCardWithMovement, period
+                  );
+                } else {
+                  rnrFormItemList = generateRnrFormItems(rnrForm, stockCardWithMovement);
+                }
+
+                rnrFormItemRepository.batchCreateOrUpdate(rnrFormItemList);
                 saveInitialRegimenItems(rnrForm);
                 saveInitialRegimenThreeLines(rnrForm);
                 saveInitialBaseInfo(rnrForm);

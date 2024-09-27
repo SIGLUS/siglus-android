@@ -47,24 +47,21 @@ public class FormHelper {
   public StockMovementModifiedItem assignTotalValues(List<StockMovementItem> stockMovementItems) {
     StockMovementModifiedItem modifiedItem = new StockMovementModifiedItem();
 
-    if (stockMovementItems != null) {
-      for (StockMovementItem item : stockMovementItems) {
-        MovementType movementType = item.getMovementType();
-        String reason = item.getReason();
-        if (MovementType.RECEIVE == movementType) {
-          modifiedItem.totalReceived += item.getMovementQuantity();
-        } else if (MovementType.ISSUE == movementType) {
-          modifiedItem.totalIssued += item.getMovementQuantity();
-        } else if (MovementType.NEGATIVE_ADJUST == movementType
-            || MovementReasonManager.INVENTORY_NEGATIVE.equalsIgnoreCase(reason)) {
-          modifiedItem.totalAdjustment -= item.getMovementQuantity();
-        } else if (MovementType.POSITIVE_ADJUST == movementType
-            || MovementReasonManager.INVENTORY_POSITIVE.equalsIgnoreCase(reason)) {
-          modifiedItem.totalAdjustment += item.getMovementQuantity();
-        }
+    for (StockMovementItem item : stockMovementItems) {
+      MovementType movementType = item.getMovementType();
+      String reason = item.getReason();
+      if (MovementType.RECEIVE == movementType) {
+        modifiedItem.totalReceived += item.getMovementQuantity();
+      } else if (MovementType.ISSUE == movementType) {
+        modifiedItem.totalIssued += item.getMovementQuantity();
+      } else if (MovementType.NEGATIVE_ADJUST == movementType
+          || MovementReasonManager.INVENTORY_NEGATIVE.equalsIgnoreCase(reason)) {
+        modifiedItem.totalAdjustment -= item.getMovementQuantity();
+      } else if (MovementType.POSITIVE_ADJUST == movementType
+          || MovementReasonManager.INVENTORY_POSITIVE.equalsIgnoreCase(reason)) {
+        modifiedItem.totalAdjustment += item.getMovementQuantity();
       }
     }
-
     return modifiedItem;
   }
 }
