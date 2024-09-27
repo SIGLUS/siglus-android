@@ -32,7 +32,6 @@ import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMTB_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
-import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -77,6 +76,7 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @SuppressWarnings({"squid:S3776", "squid:S1172"})
 public class RnrFormRepository {
@@ -148,14 +148,12 @@ public class RnrFormRepository {
   }
 
   public RnRForm initNormalRnrForm(Date periodEndDate) throws LMISException {
-    Period period = requisitionPeriodService.generateNextPeriod(programCode, periodEndDate);
-    RnRForm rnrForm = initRnRForm(period, RnRForm.Emergency.NO);
-    return createInitRnrForm(rnrForm, period);
+    RnRForm rnrForm = initRnRForm(periodEndDate, RnRForm.Emergency.NO);
+    return createInitRnrForm(rnrForm);
   }
 
   public RnRForm initEmergencyRnrForm(Date periodEndDate, List<StockCard> stockCards) throws LMISException {
-    Period period = requisitionPeriodService.generateNextPeriod(programCode, periodEndDate);
-    RnRForm rnRForm = initRnRForm(period, RnRForm.Emergency.YES);
+    RnRForm rnRForm = initRnRForm(periodEndDate, RnRForm.Emergency.YES);
     rnRForm.setRnrFormItemListWrapper(generateRnrFormItems(rnRForm, stockCards));
     return rnRForm;
   }
@@ -265,7 +263,8 @@ public class RnrFormRepository {
   protected void deleteDeactivatedAndUnsupportedProductItems(List<RnRForm> rnRForms)
       throws LMISException {
     for (RnRForm rnRForm : rnRForms) {
-      List<String> supportedProductCodes = from(productProgramRepository
+      List<String> supportedProductCodes = FluentIterable
+          .from(productProgramRepository
               .listActiveProductProgramsByProgramCodes(Arrays.asList(rnRForm.getProgram().getProgramCode())))
           .transform(ProductProgram::getProductCode).toList();
       rnrFormItemRepository.deleteFormItems(rnRForm.getDeactivatedAndUnsupportedProductItems(supportedProductCodes));
@@ -279,7 +278,7 @@ public class RnrFormRepository {
       rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
     }
     HashMap<String, String> stringToCategory = getProductCodeToCategory();
-    Set<String> stockCardIds = from(stockCards)
+    Set<String> stockCardIds = FluentIterable.from(stockCards)
         .transform(stockCard -> String.valueOf(stockCard.getId())).toSet();
     Map<String, List<StockMovementItem>> idToStockMovements = stockMovementRepository
         .queryStockMovement(stockCardIds, form.getPeriodBegin(), form.getPeriodEnd());
@@ -294,7 +293,7 @@ public class RnrFormRepository {
   }
 
   @NonNull
-  protected HashMap<String, String> getProductCodeToCategory() throws LMISException {
+  private HashMap<String, String> getProductCodeToCategory() throws LMISException {
     List<ProductProgram> productPrograms = productProgramRepository
         .listActiveProductProgramsByProgramCodes(Arrays.asList(programCode));
     HashMap<String, String> codeToCategory = new HashMap<>();
@@ -426,43 +425,32 @@ public class RnrFormRepository {
     return new ArrayList<>();
   }
 
-  private RnRForm initRnRForm(Period period, RnRForm.Emergency emergency)
+  private RnRForm initRnRForm(Date periodEndDate, RnRForm.Emergency emergency)
       throws LMISException {
     final Program program = programRepository.queryByCode(programCode);
-
     if (program == null) {
       LMISException e = new LMISException("Program cannot be null !");
       e.reportToFabric();
       throw e;
     }
 
+    Period period = requisitionPeriodService.generateNextPeriod(programCode, periodEndDate);
     return RnRForm.init(program, period, emergency.isEmergency());
   }
 
-  private RnRForm createInitRnrForm(final RnRForm rnrForm, Period period) throws LMISException {
+  private RnRForm createInitRnrForm(final RnRForm rnrForm) throws LMISException {
     try {
       TransactionManager
           .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
               () -> {
                 create(rnrForm);
                 List<StockCard> stockCardWithMovement;
-                List<RnrFormItem> rnrFormItemList;
                 if (Constants.VIA_PROGRAM_CODE.equals(rnrForm.getProgram().getProgramCode())) {
                   stockCardWithMovement = stockRepository.getStockCardsBelongToProgram(Constants.VIA_PROGRAM_CODE);
-
                 } else {
                   stockCardWithMovement = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
                 }
-
-                if (this instanceof VIARepository) {
-                  rnrFormItemList = ((VIARepository) this).generateRnrFormItems(
-                      rnrForm, stockCardWithMovement, period
-                  );
-                } else {
-                  rnrFormItemList = generateRnrFormItems(rnrForm, stockCardWithMovement);
-                }
-
-                rnrFormItemRepository.batchCreateOrUpdate(rnrFormItemList);
+                rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCardWithMovement));
                 saveInitialRegimenItems(rnrForm);
                 saveInitialRegimenThreeLines(rnrForm);
                 saveInitialBaseInfo(rnrForm);
