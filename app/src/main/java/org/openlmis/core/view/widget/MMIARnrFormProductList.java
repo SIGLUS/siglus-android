@@ -33,7 +33,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -293,20 +292,9 @@ public class MMIARnrFormProductList extends LinearLayout {
       boolean isArchived = item.getProduct().isArchived();
       tvInitialAmount.setText(getValue(isArchived, item.getInitialAmount()));
       tvReceived.setText(getValue(isArchived, item.getReceived()));
-
-      String issuedValue = getValue(isArchived, item.getIssued());
-      String adjustmentValue = getValue(isArchived, item.getAdjustment());
-      String inventoryValue = getValue(isArchived, item.getInventory());
-      // should initialize ViewModel value if the product is archived
-      if (isArchived) {
-        item.setIssued(convertLongFromLongString(issuedValue));
-        item.setAdjustment(convertLongFromLongString(adjustmentValue));
-        item.setInventory(convertLongFromLongString(inventoryValue));
-      }
-
-      editTexts.add(configEditText(item, etIssued, issuedValue));
-      editTexts.add(configEditText(item, etAdjustment, adjustmentValue));
-      editTexts.add(configEditText(item, etInventory, inventoryValue));
+      editTexts.add(configEditText(item, etIssued, getValue(isArchived, item.getIssued())));
+      editTexts.add(configEditText(item, etAdjustment, getValue(isArchived, item.getAdjustment())));
+      editTexts.add(configEditText(item, etInventory, getValue(isArchived, item.getInventory())));
       rightViewGroup.addView(inflate);
 
       try {
@@ -420,19 +408,14 @@ public class MMIARnrFormProductList extends LinearLayout {
     }
 
     private Long getEditValue(Editable etText) {
-      return convertLongFromLongString(etText.toString());
+      Long editTextValue;
+      try {
+        editTextValue = Long.valueOf(etText.toString());
+      } catch (NumberFormatException e) {
+        editTextValue = null;
+      }
+      return editTextValue;
     }
-  }
-
-  @Nullable
-  private Long convertLongFromLongString(String longString) {
-    Long editTextValue;
-    try {
-      editTextValue = Long.valueOf(longString);
-    } catch (NumberFormatException e) {
-      editTextValue = null;
-    }
-    return editTextValue;
   }
 
   public void removeOriginalTable() {
