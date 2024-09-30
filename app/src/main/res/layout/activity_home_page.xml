@@ -8,11 +8,20 @@
   android:fillViewport="true">
 
   <org.openlmis.core.view.widget.NotificationBanner
+    android:id="@+id/view_rejected_requisition_banner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <org.openlmis.core.view.widget.NotificationBanner
     android:id="@+id/view_dirty_data_banner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:visibility="gone"
-    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/view_rejected_requisition_banner"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
     tools:visibility="visible" />
 
   <org.openlmis.core.view.widget.IncompleteRequisitionBanner

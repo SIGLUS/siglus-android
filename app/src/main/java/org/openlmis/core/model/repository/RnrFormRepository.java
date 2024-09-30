@@ -972,6 +972,21 @@ public class RnrFormRepository {
     );
   }
 
+  public List<RnRForm> queryAllRejectedRequisitions() {
+    try {
+      List<RnRForm> rejectedRnrList = dbUtil.withDao(RnRForm.class,
+          dao -> dao.queryBuilder()
+              .where()
+              .eq(STATUS, Status.REJECTED)
+              .query()
+          );
+      return rejectedRnrList;
+    } catch (LMISException e) {
+      new LMISException(e, "RnrFormRepository.hasRejectedRequisition").reportToFabric();
+    }
+    return new ArrayList<>();
+  }
+
   public void updateFormsStatusAndDeleteRejectedFormsSignatures(
       List<RnrFormStatusEntry> requisitionsStatusResponse
   ) throws LMISException {

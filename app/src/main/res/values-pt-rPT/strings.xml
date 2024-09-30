@@ -455,6 +455,8 @@
 
   <!-- Dirty data banner -->
   <string name="dirty_data_alert_message">Existem alguns dados sujos, por favor contacte o administrador</string>
+  <!-- Dirty data banner -->
+  <string name="rejected_requisition_alert_message">Existem requisições rejeitadas</string>
 
   <!--Add products to requisition form-->
   <string name="label_add_new_drugs_to_via">Adicionar produtos</string>

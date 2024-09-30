@@ -464,6 +464,8 @@
 
   <!-- Dirty data banner -->
   <string name="dirty_data_alert_message">There are some dirty data, please contact your administrator</string>
+  <!-- Reject requisition banner -->
+  <string name="rejected_requisition_alert_message">There are rejected requisition(s)</string>
 
   <!-- Add products to requisition form -->
   <string name="label_add_new_drugs_to_via">Add Products</string>
