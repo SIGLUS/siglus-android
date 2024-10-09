@@ -93,6 +93,7 @@ public class StockCardPresenter extends Presenter {
   private void checkDataAndEmitter(Subscriber<? super List<StockCard>> subscriber, ArchiveStatus status) {
     List<StockCard> allStockCards = stockRepository.list();
     if (sharedPreferenceMgr.shouldStartHourlyDirtyDataCheck()) {
+      refreshLotsOnHands();
       dirtyDataManager.checkAndGetDirtyData(allStockCards, lotsOnHands);
     }
     stockService.monthlyUpdateAvgMonthlyConsumption();
@@ -119,13 +120,18 @@ public class StockCardPresenter extends Presenter {
     if (showLoading) {
       view.loading();
     }
-    lotsOnHands.putAll(stockRepository.lotOnHands());
+    refreshLotsOnHands();
     if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
         || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
       view.showWarning();
       return;
     }
     filterSpecificStatusStockCards(status);
+  }
+
+  private void refreshLotsOnHands() {
+    lotsOnHands.clear();
+    lotsOnHands.putAll(stockRepository.lotOnHands());
   }
 
   public void filterSpecificStatusStockCards(ArchiveStatus status) {
