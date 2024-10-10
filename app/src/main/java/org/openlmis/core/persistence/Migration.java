@@ -21,7 +21,6 @@ package org.openlmis.core.persistence;
 import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.util.Log;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
