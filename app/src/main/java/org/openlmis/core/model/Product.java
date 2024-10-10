@@ -114,7 +114,7 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
 
   public String getProductNameWithoutStrengthAndType() {
     if (getPrimaryName() == null) {
-      Log.d("error product", getCode());
+      Log.e("error product", getCode());
     }
     return getPrimaryName().replace(getStrength() + getType(), "");
   }

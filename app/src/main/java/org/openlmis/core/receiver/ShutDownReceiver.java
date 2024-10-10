@@ -31,7 +31,6 @@ public class ShutDownReceiver extends BroadcastReceiver {
   @Override
   public void onReceive(Context context, Intent intent) {
     if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
-      Log.d("ShutDownReceiver: ", "shut down");
       AnalyticsTracker.getInstance().trackEvent(TrackerCategories.SWITCH, TrackerActions.SWITCH_POWER_OFF);
     }
   }

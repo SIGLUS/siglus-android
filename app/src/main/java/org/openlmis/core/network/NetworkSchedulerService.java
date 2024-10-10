@@ -102,8 +102,7 @@ public class NetworkSchedulerService extends JobService {
     }
 
     private void shutDownImmediately() {
-      Log.d(TAG, "there is no internet connection in network receiver");
-      Log.d(TAG, "network disconnect, stop sync service...");
+      Log.i(TAG, "network disconnect, stop sync service...");
       AnalyticsTracker.getInstance()
           .trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_DISCONNECTED);
       syncService.shutDown();

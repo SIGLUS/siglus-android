@@ -177,7 +177,7 @@ public class AutoUpdateApk {
           .header("Content-Type", "application/x-www-form-urlencoded")
           .post(getApkLinkBody)
           .build();
-      Log.d(TAG, "getApkLinkBody:" + getApkLinkBody);
+      Log.i(TAG, "getApkLinkBody:" + getApkLinkBody);
       Call getApkLinkCall = okHttpClient.newCall(getApkLinkRequest);
       try {
         Response response = getApkLinkCall.execute();
@@ -186,7 +186,7 @@ public class AutoUpdateApk {
           str = response.body().string();
           resultGetApkInfo = str.split("\n");
         }
-        Log.d(TAG, "first response:" + str);
+        Log.i(TAG, "first response:" + str);
       } catch (IOException e) {
         Log.w(TAG, e);
       }
@@ -206,7 +206,7 @@ public class AutoUpdateApk {
             Call call = httpClient
                 .newCall(new Request.Builder().url((server != null) ? server + resultGetApkInfo[1]
                     : resultGetApkInfo[1]).get().build());
-            Log.d(TAG, "server + result[1]=" + (server + resultGetApkInfo[1]));
+            Log.i(TAG, "server + result[1]=" + (server + resultGetApkInfo[1]));
             try {
               showInitialNotification();
               Response response = call.execute();
@@ -215,8 +215,8 @@ public class AutoUpdateApk {
               Log.w(TAG, e);
               Log.e(TAG, "response download Apk Filed = " + e.getMessage());
             } finally {
-              Log.d(TAG, "finally server + result[1]=" + (server + resultGetApkInfo[1]));
-              Log.d(TAG, "finally server + result[2]=" + resultGetApkInfo[2]);
+              Log.i(TAG, "finally server + result[1]=" + (server + resultGetApkInfo[1]));
+              Log.i(TAG, "finally server + result[2]=" + resultGetApkInfo[2]);
             }
           }
         }
@@ -269,7 +269,7 @@ public class AutoUpdateApk {
           }
           return resultGetApkInfo;
         } catch (IOException ignore) {
-          Log.d(TAG, "ignore  = ", ignore);
+          Log.e(TAG, "ignore  = ", ignore);
         } finally {
           if (inputStream != null) {
             inputStream.close();

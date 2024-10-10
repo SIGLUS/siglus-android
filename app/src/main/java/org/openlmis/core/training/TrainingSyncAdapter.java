@@ -80,10 +80,11 @@ public class TrainingSyncAdapter {
   }
 
   public void requestSync() {
-    Single.create((Single.OnSubscribe<String>) singleSubscriber -> singleSubscriber
-        .onSuccess(onPerformSync()))
+    Single.create(
+            (Single.OnSubscribe<String>) singleSubscriber -> singleSubscriber.onSuccess(onPerformSync())
+        )
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(message -> Log.d("training sync", message));
+        .subscribe(message -> Log.i("training sync", message));
   }
 }

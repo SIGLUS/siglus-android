@@ -383,7 +383,7 @@ public class IssueVoucherReportActivity extends BaseActivity implements IssueVou
       if (internet) {
         syncService.requestSyncImmediatelyByTask();
       } else {
-        Log.d("Internet", "No hay conexion");
+        Log.w("Internet", "No hay conexion");
       }
       loaded();
       ToastUtil.show(R.string.msg_complete_successfully);

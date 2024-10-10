@@ -600,7 +600,7 @@ public class StockRepository {
         lotsOnHands.put(resultArray[0], resultArray[1]);
       }
       rawResults.close();
-      Log.d("lotOnHands", rawResults.toString());
+      Log.i("lotOnHands", rawResults.toString());
     } catch (LMISException | SQLException e) {
       new LMISException(e, "StockRepository.getLotOnHands").reportToFabric();
     }

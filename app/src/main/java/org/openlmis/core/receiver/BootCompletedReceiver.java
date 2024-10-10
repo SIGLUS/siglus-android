@@ -31,7 +31,6 @@ public class BootCompletedReceiver extends BroadcastReceiver {
   @Override
   public void onReceive(Context context, Intent intent) {
     if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-      Log.d("BootCompletedReceiver: ", "boot completed");
       AnalyticsTracker.getInstance().trackEvent(TrackerCategories.SWITCH, TrackerActions.SWITCH_POWER_ON);
     }
   }
