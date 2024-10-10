@@ -287,14 +287,14 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
         loadingDialog = null;
         isLoading = false;
         if (isPageLoadTimerInProgress) {
-          Log.d(this.getTitle() + " page",
+          Log.i(this.getTitle() + " page",
               " load time " + (LMISApp.getInstance().getCurrentTimeMillis() - onCreateStartMili)
                   + " ms" + " in " + BuildConfig.VERSION_CODE);
           isPageLoadTimerInProgress = false;
         }
       }
     } catch (IllegalArgumentException e) {
-      Log.d("View", "loaded -> dialog already dismissed");
+      Log.w("View", "loaded -> dialog already dismissed");
     }
   }
 

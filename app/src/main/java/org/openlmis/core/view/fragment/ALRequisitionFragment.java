@@ -298,7 +298,6 @@ public class ALRequisitionFragment extends BaseReportFragment implements
 
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveMalariaRequisitionEvent(DebugMalariaRequisitionEvent event) {
-    Log.d(TAG, "onReceiveMalariaRequisitionEvent: Malaria");
     final long malariaHfNum = event.getMalariaHfNum();
     final long malariaChwNum = event.getMalariaChwNum();
     final long malariaTotalNum = malariaHfNum + malariaChwNum;

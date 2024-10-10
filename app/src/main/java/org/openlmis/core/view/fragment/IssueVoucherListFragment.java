@@ -242,7 +242,7 @@ public class IssueVoucherListFragment extends BaseFragment implements IssueVouch
       if (internet) {
         syncService.requestSyncImmediatelyByTask();
       } else {
-        Log.d("Internet", "No hay conexion");
+        Log.e("Internet", "No hay conexion");
       }
     };
   }

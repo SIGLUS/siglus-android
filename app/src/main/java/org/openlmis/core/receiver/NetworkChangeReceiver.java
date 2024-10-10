@@ -51,12 +51,12 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
   protected InternetCheckListener synchronizeListener(final SyncService syncService) {
     return internet -> {
       if (internet) {
-        Log.d(TAG, "network connected, start sync service...");
+        Log.i(TAG, "network connected, start sync service...");
         AnalyticsTracker.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_CONNECTED);
         syncService.requestSyncImmediatelyByTask();
         syncService.kickOff();
       } else {
-        Log.d(TAG, "there is no internet connection in network receiver");
+        Log.w(TAG, "there is no internet connection in network receiver");
         AnalyticsTracker.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_DISCONNECTED);
         syncService.shutDown();
       }

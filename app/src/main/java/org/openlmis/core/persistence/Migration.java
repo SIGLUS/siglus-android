@@ -47,7 +47,6 @@ public abstract class Migration {
 
   protected void execSQL(String sql) {
     if (db != null) {
-      Log.d(TAG, "exec sql :" + sql);
       db.execSQL(sql);
     }
   }

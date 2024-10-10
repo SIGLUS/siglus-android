@@ -174,8 +174,8 @@ public class BulkEntriesPresenter extends Presenter {
         draftBulkEntriesProduct -> new BulkEntriesViewModel(
             Objects.requireNonNull(draftBulkEntriesProduct).getProduct(),
             draftBulkEntriesProduct.isDone(), draftBulkEntriesProduct.getQuantity(),
-            convertDraftLotMovementToLotMovement(draftBulkEntriesProduct.getDraftLotItemListWrapper())))
-        .transform(this::setLotViewModels).toList());
+            convertDraftLotMovementToLotMovement(draftBulkEntriesProduct.getDraftLotItemListWrapper()))
+    ).transform(this::setLotViewModels).toList());
   }
 
   private StockMovementItem buildStockMovementItem(BulkEntriesViewModel bulkEntriesViewModel, StockCard stockCard) {
@@ -210,7 +210,7 @@ public class BulkEntriesPresenter extends Presenter {
     try {
       stockCard = stockRepository.queryStockCardByProductId(bulkEntriesViewModel.getProductId());
     } catch (LMISException e) {
-      Log.d(TAG, e.toString());
+      Log.e(TAG, e.toString());
     }
     if (stockCard == null) {
       bulkEntriesViewModel.setNewLotMovementViewModelList(

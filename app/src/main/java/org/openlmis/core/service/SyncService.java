@@ -77,7 +77,7 @@ public class SyncService extends Service {
   public void createSyncAccount(User user) {
     Account account = new Account(user.getUsername(), syncAccountType);
     accountManager.addAccountExplicitly(account, user.getPassword(), null);
-    Log.d(TAG, "sync account created");
+    Log.i(TAG, "sync account created");
   }
 
   public void kickOff() {
@@ -87,7 +87,7 @@ public class SyncService extends Service {
       setSyncAutomatically(account, syncContentAuthority, true);
       addPeriodicSync(account, syncContentAuthority, periodicSyncParams(), syncInterval);
     }
-    Log.d(TAG, "sync service kicked off");
+    Log.i(TAG, "sync service kicked off");
   }
 
   public void requestSyncImmediatelyFromUserTrigger() {
@@ -102,7 +102,7 @@ public class SyncService extends Service {
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
       trainingSyncAdapter.requestSync();
     } else {
-      Log.d(TAG, "immediate sync up requested");
+      Log.i(TAG, "immediate sync up requested");
       Account account = findFirstLmisAccount();
       if (account != null) {
         Bundle bundle = new Bundle();
@@ -121,7 +121,7 @@ public class SyncService extends Service {
       cancelSync(account, syncContentAuthority);
       setSyncAutomatically(account, syncContentAuthority, false);
     }
-    Log.d(TAG, "sync service stopped");
+    Log.i(TAG, "sync service stopped");
   }
 
   private Bundle periodicSyncParams() {

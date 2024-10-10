@@ -249,7 +249,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
   private LmisSqliteOpenHelper(Context context) {
     super(context, "lmis_db", null, MIGRATIONS.size());
     ++instanceCount;
-    Log.d(TAG, "Instance Created : total count : " + instanceCount);
+    Log.i(TAG, "Instance Created : total count : " + instanceCount);
   }
 
   public static synchronized LmisSqliteOpenHelper getInstance(Context context) {
@@ -262,7 +262,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
   public static void closeHelper() {
     helperInstance = null;
     --instanceCount;
-    Log.d(TAG, "Instance Destroyed : total count : " + instanceCount);
+    Log.i(TAG, "Instance Destroyed : total count : " + instanceCount);
   }
 
   public static int getDBVersion() {
@@ -283,7 +283,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
   @Override
   public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion,
       int newVersion) {
-    Log.d(TAG, "onUpgrade oldVersion=" + oldVersion + ",newVersion=" + newVersion);
+    Log.i(TAG, "onUpgrade oldVersion=" + oldVersion + ",newVersion=" + newVersion);
     for (int currentVersion = oldVersion; currentVersion < newVersion; currentVersion++) {
       Migration migration = MIGRATIONS.get(currentVersion);
       Log.i(TAG, "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
@@ -315,6 +315,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
   public void checkDatabaseVersion() {
     int version = this.getWritableDatabase().getVersion();
-    Log.d("database version: ", String.valueOf(version));
+    Log.i("database version: ", String.valueOf(version));
   }
 }
