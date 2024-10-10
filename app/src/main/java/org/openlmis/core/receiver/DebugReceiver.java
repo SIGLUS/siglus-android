@@ -72,7 +72,6 @@ import org.openlmis.core.event.DebugPhysicalInventoryEvent;
  * - report: each report number in report list (HIV Detemine, HIV Unigold, Syphillis, Malaria)
  */
 public class DebugReceiver extends BroadcastReceiver {
-  private static final String TAG = "DebugReceiver";
   private static final String ACTION_INITIAL_INVENTORY = "org.openlmis.core.debug.initial_inventory";
   private static final String PARAM_BASIC_PRODUCT_AVAILABLE = "basicProduct";
   private static final String PARAM_NON_BASIC_PRODUCT_AVAILABLE = "nonBasicProduct";
