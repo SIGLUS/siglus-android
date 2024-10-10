@@ -124,7 +124,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private boolean exitPressedOnce = false;
   private boolean isCmmCalculating = false;
   private int syncedCount = 0;
-  @Nullable private NonCancelableDialog initialDirtyDataCheckDialog;
+  @Nullable
+  private NonCancelableDialog initialDirtyDataCheckDialog;
   private NonCancelableDialog autoSyncDataBeforeResyncDialog;
   private static final String AUTO_SYNC_DATA_BEFORE_RESYNC_DIALOG_NAME = "autoSyncDataBeforeResyncDialog";
   protected final InternetCheckListener validateConnectionListener = internet -> {
@@ -415,7 +416,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     }
 
     boolean hasRejectedRequisition = homePresenter.hasRejectedRequisition();
-    if(hasRejectedRequisition) {
+    if (hasRejectedRequisition) {
       showRejectedRequisitionNotification();
     } else {
       hideRejectedRequisitionNotification();
