@@ -151,14 +151,14 @@ public class DirtyDataManager {
   @SuppressWarnings("squid:S1905")
   public void dirtyDataMonthlyCheck() {
     Observable.create((OnSubscribe<Void>) subscriber -> {
-          try {
-            scanAllStockMovements();
-          } catch (LMISException e) {
-            e.reportToFabric();
-            subscriber.onError(e);
-          }
-          subscriber.onCompleted();
-        }).observeOn(AndroidSchedulers.mainThread())
+      try {
+        scanAllStockMovements();
+      } catch (LMISException e) {
+        e.reportToFabric();
+        subscriber.onError(e);
+      }
+      subscriber.onCompleted();
+    }).observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
         .subscribe(new Subscriber<Void>() {
           @Override
@@ -611,8 +611,7 @@ public class DirtyDataManager {
    *
    * @param previousMovement the penult StockMovementItem
    * @param newestMovement   last one StockMovementItem
-   * @return `StockMovementItem`A.stockOnHand == `StockMovementItem`B.stockOnHand +
-   * `StockMovementItem`B.movementQuantity
+   * @return A.stockOnHand == B.stockOnHand + B.movementQuantity
    */
   private boolean isCorrectMovements(StockMovementItem previousMovement,
       StockMovementItem newestMovement) {
