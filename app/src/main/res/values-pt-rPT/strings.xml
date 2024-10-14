@@ -762,7 +762,7 @@
   <!-- Stock - Expired Products -->
   <string name="action_expired_products">Produtos Expirados</string>
   <string name="title_expired_products">Produtos Expirados</string>
-  <string name="expired_products_confirm_return_or_remove">Confirmar o Retorno/Remover</string>
+  <string name="expired_products_confirm_return_or_remove">Remover/Devolver</string>
   <string name="expired_products_select_notice">Por favor, selecione pelo menos um item</string>
   <string name="expired_products_request_storage_permission_title">Solicitar permissão de armazenamento</string>
   <string name="expired_products_request_storage_permission_message">Precisamos de permissão de armazenamento para gerar relatório do Excel de remoção de produtos expirados, você pode precisar conceder a permissão na configurações</string>
