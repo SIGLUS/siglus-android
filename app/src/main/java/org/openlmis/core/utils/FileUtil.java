@@ -41,7 +41,6 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.util.DocumentFormatException;
 import org.openlmis.core.exceptions.LMISException;
 
 public final class FileUtil {
@@ -150,8 +149,8 @@ public final class FileUtil {
       }
 
       pdfDocument.close();
-    } catch (IOException | DocumentFormatException e) {
-      e.printStackTrace();
+    } catch (IOException e) {
+      reportException(e);
     }
   }
 

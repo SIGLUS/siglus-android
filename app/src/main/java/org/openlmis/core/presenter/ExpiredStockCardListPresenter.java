@@ -168,8 +168,8 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
         // 2. generate excel
         excelFilePath = generateExcelReport(checkedLots, sign, currentDate);
         // 3. generate pdf from excel
-        int lastSlashIndex = excelFilePath.lastIndexOf("/");
-        int lastDotIndex = excelFilePath.lastIndexOf(".");
+        int lastSlashIndex = excelFilePath.lastIndexOf('/');
+        int lastDotIndex = excelFilePath.lastIndexOf('.');
         String fileName = excelFilePath.substring(lastSlashIndex + 1, lastDotIndex);
         transExcelToPdf(excelFilePath, fileName);
       } catch (LMISException e) {
