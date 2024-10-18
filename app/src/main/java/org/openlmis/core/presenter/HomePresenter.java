@@ -19,8 +19,11 @@
 package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
+import java.util.List;
 import java.util.Map;
 import org.openlmis.core.enumeration.StockOnHandStatus;
+import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import rx.Observable;
@@ -35,6 +38,8 @@ public class HomePresenter extends Presenter {
 
   @Inject
   StockRepository stockRepository;
+  @Inject
+  RnrFormRepository rnrFormRepository;
 
   @Override
   public void attachView(BaseView v) {
@@ -89,8 +94,12 @@ public class HomePresenter extends Presenter {
     subscriptions.add(previousSubscribe);
   }
 
-  public interface HomeView extends BaseView {
+  public boolean hasRejectedRequisition() {
+    List<RnRForm> rejectedRequisitions = rnrFormRepository.queryAllRejectedRequisitions();
+    return !rejectedRequisitions.isEmpty();
+  }
 
+  public interface HomeView extends BaseView {
     void updateDashboard(int regularAmount, int outAmount, int lowAmount, int overAmount);
   }
 }

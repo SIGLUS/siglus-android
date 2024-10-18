@@ -21,7 +21,6 @@ package org.openlmis.core.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
@@ -31,7 +30,6 @@ public class ShutDownReceiver extends BroadcastReceiver {
   @Override
   public void onReceive(Context context, Intent intent) {
     if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
-      Log.d("ShutDownReceiver: ", "shut down");
       AnalyticsTracker.getInstance().trackEvent(TrackerCategories.SWITCH, TrackerActions.SWITCH_POWER_OFF);
     }
   }

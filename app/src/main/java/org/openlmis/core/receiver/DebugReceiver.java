@@ -22,7 +22,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -73,7 +72,6 @@ import org.openlmis.core.event.DebugPhysicalInventoryEvent;
  * - report: each report number in report list (HIV Detemine, HIV Unigold, Syphillis, Malaria)
  */
 public class DebugReceiver extends BroadcastReceiver {
-  private static final String TAG = "DebugReceiver";
   private static final String ACTION_INITIAL_INVENTORY = "org.openlmis.core.debug.initial_inventory";
   private static final String PARAM_BASIC_PRODUCT_AVAILABLE = "basicProduct";
   private static final String PARAM_NON_BASIC_PRODUCT_AVAILABLE = "nonBasicProduct";
@@ -120,18 +118,15 @@ public class DebugReceiver extends BroadcastReceiver {
     final int DEFAULT_NUM = 0;
     switch (intent.getAction()) {
       case ACTION_INITIAL_INVENTORY:
-        Log.d(TAG, ACTION_INITIAL_INVENTORY);
         int basicProduct = intent.getIntExtra(PARAM_BASIC_PRODUCT_AVAILABLE, (int) DEFAULT_NUM);
         int nonBasicProduct = intent.getIntExtra(PARAM_NON_BASIC_PRODUCT_AVAILABLE, (int) DEFAULT_NUM);
         int lotPerProduct = intent.getIntExtra(PARAM_LOT_AMOUNT_PER_PRODUCT, (int) DEFAULT_NUM);
         EventBus.getDefault().post(new DebugInitialInventoryEvent(basicProduct, nonBasicProduct, lotPerProduct));
         break;
       case ACTION_PHYSICAL_INVENTORY:
-        Log.d(TAG, ACTION_PHYSICAL_INVENTORY);
         EventBus.getDefault().post(new DebugPhysicalInventoryEvent());
         break;
       case ACTION_REQUISITION_MMTB:
-        Log.d(TAG, ACTION_REQUISITION_MMTB);
         long mmtbProductNum = intent.getIntExtra(PARAM_MMTB_PRODUCT_NUM, DEFAULT_NUM);
         long mmtbPatientInfoNum = intent.getIntExtra(PARAM_MMTB_PATIENT_INFO_NUM, DEFAULT_NUM);
         long mmtbThreeLineNum = intent.getIntExtra(PARAM_MMTB_THREE_LINE_NUM, DEFAULT_NUM);
@@ -139,7 +134,6 @@ public class DebugReceiver extends BroadcastReceiver {
             mmtbPatientInfoNum, mmtbThreeLineNum));
         break;
       case ACTION_REQUISITION_MMIA:
-        Log.d(TAG, ACTION_REQUISITION_MMIA);
         long mmiaProductNum = intent.getIntExtra(PARAM_MMIA_PRODUCT_NUM, DEFAULT_NUM);
         long mmiaRegimeNum = intent.getIntExtra(PARAM_MMIA_REGIME_NUM, DEFAULT_NUM);
         long mmiaThreeLineNum = intent.getIntExtra(PARAM_MMIA_THREE_LINE_NUM, DEFAULT_NUM);
@@ -149,13 +143,11 @@ public class DebugReceiver extends BroadcastReceiver {
             mmiaRegimeNum, mmiaThreeLineNum, mmiaPatientInfoNum, mmiaTotal));
         break;
       case ACTION_REQUISITION_MALARIA:
-        Log.d(TAG, ACTION_REQUISITION_MALARIA);
         long malariaHfNum = intent.getIntExtra(PARAM_MALARIA_HF_NUM, DEFAULT_NUM);
         long malariaChwNum = intent.getIntExtra(PARAM_MALARIA_CHW_NUM, DEFAULT_NUM);
         EventBus.getDefault().post(new DebugMalariaRequisitionEvent(malariaHfNum, malariaChwNum));
         break;
       case ACTION_REQUISITION_MMIT:
-        Log.d(TAG, ACTION_REQUISITION_MMIT);
         int mmitProductNum = intent.getIntExtra(PARAM_MMIT_PRODUCT_NUM, (int) DEFAULT_NUM);
         int mmitReportNum = intent.getIntExtra(PARAM_MMIT_REPORT_NUM, (int) DEFAULT_NUM);
         EventBus.getDefault().post(new DebugMMITRequisitionEvent(mmitProductNum, mmitReportNum));

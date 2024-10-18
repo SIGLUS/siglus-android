@@ -18,8 +18,15 @@
 
 package org.openlmis.core.utils;
 
+import android.os.Environment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,6 +36,11 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.openlmis.core.exceptions.LMISException;
 
 public final class FileUtil {
@@ -99,6 +111,64 @@ public final class FileUtil {
       }
     }
     return null;
+  }
+
+  public static void transExcelToPdf(String excelFilePath, String fileName) {
+    String pdfFileName = fileName + ".pdf";
+    try {
+      File pdfFilePath = createNewFileWithoutDuplication(
+          Environment.getExternalStorageDirectory().getAbsolutePath(), pdfFileName
+      );
+
+      FileOutputStream pdfFile = new FileOutputStream(pdfFilePath);
+      Document pdfDocument = new Document(PageSize.A4);
+      pdfDocument.setMargins(20, 20, 50, 50);
+      PdfWriter.getInstance(pdfDocument, pdfFile);
+      pdfDocument.open();
+
+      FileInputStream excelFile = new FileInputStream(excelFilePath);
+      Workbook workbook = new HSSFWorkbook(excelFile);
+      Sheet sheet = workbook.getSheetAt(0);
+
+      for (Row row : sheet) {
+        int columnNum = row.getPhysicalNumberOfCells();
+        if (columnNum == 0) {
+          continue;
+        }
+
+        PdfPTable pdfTable = new PdfPTable(columnNum);
+        pdfTable.setWidthPercentage(100);
+        for (Cell cell : row) {
+          String cellValue = getCellValueString(cell);
+          PdfPCell pdfCell = new PdfPCell(new Phrase(cellValue));
+          pdfCell.setBorder(PdfPCell.BOX);
+          pdfTable.addCell(pdfCell);
+        }
+
+        pdfDocument.add(pdfTable);
+      }
+
+      pdfDocument.close();
+    } catch (IOException e) {
+      reportException(e);
+    }
+  }
+
+  private static String getCellValueString(Cell cell) {
+    switch (cell.getCellType()) {
+      case STRING:
+        return cell.getStringCellValue();
+      case NUMERIC:
+        return DateUtil.isCellDateFormatted(cell) ? cell.getDateCellValue().toString() :
+            String.valueOf(cell.getNumericCellValue());
+      case BOOLEAN:
+        return String.valueOf(cell.getBooleanCellValue());
+      case FORMULA:
+        return cell.getCellFormula();
+      case BLANK:
+      default:
+        return "";
+    }
   }
 
   private static void reportException(IOException e) {

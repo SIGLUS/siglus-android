@@ -124,7 +124,7 @@ public final class MovementReasonManager {
       String[] values = s.split(RES_DIVIDER);
 
       if (values.length < 3) {
-        Log.d(MovementReasonManager.class.getSimpleName(), "Invalid Config =>" + s);
+        Log.w(MovementReasonManager.class.getSimpleName(), "Invalid Config =>" + s);
         continue;
       }
 

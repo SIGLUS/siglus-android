@@ -174,7 +174,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
       public void onNext(Void aVoid) {
         view.loaded();
         view.completeSuccess();
-        Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
+        Log.i("BaseReqPresenter", "Signature signed, requesting immediate sync");
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.AUTHORISE_RNR, rnRForm.getProgram().getProgramCode());
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
           syncService.requestSyncImmediatelyByTask();
@@ -191,7 +191,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
       if (result) {
         syncService.requestSyncImmediatelyByTask();
       } else {
-        Log.d("Internet", "No hay conexion");
+        Log.i("Internet", "No hay conexion");
       }
     };
   }

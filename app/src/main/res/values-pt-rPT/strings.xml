@@ -450,11 +450,13 @@
   <string name="incomplete_alert_message_for_single_report">"Seu relatórios: %s não foi concluído"</string>
 
   <!-- New shipped issue voucher banner -->
-  <string name="new_shipped_issue_voucher_alert_message">O pedido dos %1$s foi cumprida</string>
-  <string name="new_shipped_issue_voucher_alert_message_for_single_program">O pedido do %1$s foi cumprido</string>
+  <string name="new_shipped_issue_voucher_alert_message">As Guias de Remessa de %1$s foram recebidas, por favor confirme!</string>
+  <string name="new_shipped_issue_voucher_alert_message_for_single_program">A Guia de Remessa de %1$s foi recebida, por favor confirme!</string>
 
   <!-- Dirty data banner -->
   <string name="dirty_data_alert_message">Existem alguns dados sujos, por favor contacte o administrador</string>
+  <!-- Dirty data banner -->
+  <string name="rejected_requisition_alert_message">Existem requisições rejeitadas</string>
 
   <!--Add products to requisition form-->
   <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
@@ -760,7 +762,7 @@
   <!-- Stock - Expired Products -->
   <string name="action_expired_products">Produtos Expirados</string>
   <string name="title_expired_products">Produtos Expirados</string>
-  <string name="expired_products_confirm_return_or_remove">Confirmar o Retorno/Remover</string>
+  <string name="expired_products_confirm_return_or_remove">Remover/Devolver</string>
   <string name="expired_products_select_notice">Por favor, selecione pelo menos um item</string>
   <string name="expired_products_request_storage_permission_title">Solicitar permissão de armazenamento</string>
   <string name="expired_products_request_storage_permission_message">Precisamos de permissão de armazenamento para gerar relatório do Excel de remoção de produtos expirados, você pode precisar conceder a permissão na configurações</string>

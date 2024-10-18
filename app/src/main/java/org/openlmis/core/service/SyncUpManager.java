@@ -124,14 +124,14 @@ public class SyncUpManager {
   }
 
   public void syncUpData() {
-    Log.d(TAG, "sync Up Data start");
+    Log.i(TAG, "sync Up Data start");
     synchronized (SyncUpManager.class) {
       if (isSyncing()) {
         return;
       }
       setSyncing(true);
     }
-    Log.d(TAG, "sync Up Data start " + isSyncing());
+    Log.i(TAG, "sync Up Data start " + isSyncing());
 
     setSyncing(true);
 
@@ -154,7 +154,7 @@ public class SyncUpManager {
     syncAppVersion();
     syncUpCmms();
 
-    Log.d(TAG, "sync Up Data end");
+    Log.i(TAG, "sync Up Data end");
     setSyncing(false);
     if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && TextUtils
         .isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
@@ -165,10 +165,10 @@ public class SyncUpManager {
   public boolean syncRnr() {
     List<RnRForm> forms;
     try {
-      Log.d(TAG, "===> Preparing RnrForm for Syncing: Delete Deactivated Products...");
+      Log.i(TAG, "===> Preparing RnrForm for Syncing: Delete Deactivated Products...");
       forms = rnrFormRepository.queryAllUnsyncedForms();
 
-      Log.d(TAG, "===> SyncRnR :" + forms.size() + " RnrForm ready to sync...");
+      Log.i(TAG, "===> SyncRnR :" + forms.size() + " RnrForm ready to sync...");
 
       if (forms.isEmpty()) {
         return false;
@@ -292,7 +292,7 @@ public class SyncUpManager {
         return false;
       }
       sharedPreferenceMgr.setStockMovementSyncError("");
-      Log.d(TAG, "===> SyncStockMovement : synced");
+      Log.i(TAG, "===> SyncStockMovement : synced");
       return true;
     } catch (LMISException exception) {
       new LMISException(exception, "SyncUpManager.syncStockCards").reportToFabric();
@@ -320,7 +320,7 @@ public class SyncUpManager {
       }
       markStockDataSynced(stockMovementItems);
       syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.STOCK_CARDS, 0L);
-      Log.d(TAG, "===> SyncStockMovement : synced");
+      Log.i(TAG, "===> SyncStockMovement : synced");
       return true;
     } catch (LMISException exception) {
       new LMISException(exception, "SyncUpManager.fakeSyncStockCards").reportToFabric();
@@ -452,7 +452,7 @@ public class SyncUpManager {
     try {
       lmisRestApi.submitRequisition(rnRForm);
       syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, rnRForm.getId());
-      Log.d(TAG, "===> SyncRnr : synced ->");
+      Log.i(TAG, "===> SyncRnr : synced ->");
       return true;
     } catch (NetWorkException e) {
       new LMISException(e, "SyncUpManager.submitRequisition").reportToFabric();

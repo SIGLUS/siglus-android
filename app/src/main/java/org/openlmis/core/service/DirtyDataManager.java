@@ -165,7 +165,7 @@ public class DirtyDataManager {
           public void onCompleted() {
             EventBus.getDefault().post(new InitialDirtyDataCheckEvent(false,
                 !sharedPreferenceMgr.getDeletedProduct().isEmpty()));
-            Log.d("dirty data", "monthly check finished");
+            Log.i("dirty data", "monthly check finished");
           }
 
           @Override
@@ -186,9 +186,9 @@ public class DirtyDataManager {
         && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
       sharedPreferenceMgr.setKeyIsInitialDirtyDataChecking(true);
       EventBus.getDefault().post(new InitialDirtyDataCheckEvent(true, false));
-      Log.d("check", "start");
+      Log.i("check", "start");
       Set<String> deleteProducts = checkSoh();
-      Log.d("check", "end");
+      Log.i("check", "end");
       saveToSharePreferenceMgr(deleteProducts);
       sharedPreferenceMgr.setKeyIsInitialDirtyDataChecking(false);
       sharedPreferenceMgr.setShouldInitialDirtyDataCheck(false);
@@ -205,8 +205,8 @@ public class DirtyDataManager {
   }
 
   /**
-   * It will check `StockCard` only 1. stockOnHand < 0 2. stockOnHand != the sum of matched lots
-   * stockOnHand {@code org.openlmis.core.model.StockCard#calculateSOHFromLots(java.util.Map)}
+   * It will check `StockCard` only 1. stockOnHand < 0 2. stockOnHand != the sum of matched lots stockOnHand
+   * {@code org.openlmis.core.model.StockCard#calculateSOHFromLots(java.util.Map)}
    *
    * @return productCodes
    */
@@ -400,11 +400,11 @@ public class DirtyDataManager {
   }
 
   /**
-   * It will check `StockCard` and `StockMovements` 1. stockOnHand < 0 2. stockOnHand != the sum of
-   * matched lots stockOnHand 3. last two stock_movements data is incorrect
-   * stock_movements.A.stockOnHand + movementQuantity != stock_movements.B.stockOnHand
+   * It will check `StockCard` and `StockMovements` 1. stockOnHand < 0 2. stockOnHand != the sum of matched lots
+   * stockOnHand 3. last two stock_movements data is incorrect stock_movements.A.stockOnHand + movementQuantity !=
+   * stock_movements.B.stockOnHand
    *
-   * @param stockCards               stock list
+   * @param stockCards stock list
    * @return dirty data - map of `StockCard` to `StockMovementItem` list
    */
   private List<StockCard> checkTheLastTwoMovementAndLotSOH(
@@ -438,14 +438,12 @@ public class DirtyDataManager {
         }
       }
     }
-    Log.d("performance", "check The Last TwoMovement");
-    Log.d("dirty", "daily" + deleted);
+    Log.i("dirty", "daily" + deleted);
 
     return deleted;
   }
 
   private HashMap<Long, List<StockMovementItem>> getLastStockMovementMap() {
-    Log.d("TwoStockMovements", "1");
     List<StockMovementItem> stockMovements = stockMovementRepository.listLastTwoStockMovements();
     HashMap<Long, List<StockMovementItem>> stockMovementItemsMap = new HashMap<>();
     for (StockMovementItem item : stockMovements) {
@@ -467,9 +465,9 @@ public class DirtyDataManager {
   }
 
   /**
-   * It will check `StockCard` and `StockMovements` 1. stockOnHand < 0 2. stockOnHand != the sum of
-   * matched lots stockOnHand 3. last two stock_movements data is incorrect
-   * stock_movements.A.stockOnHand + movementQuantity != stock_movements.B.stockOnHand
+   * It will check `StockCard` and `StockMovements` 1. stockOnHand < 0 2. stockOnHand != the sum of matched lots
+   * stockOnHand 3. last two stock_movements data is incorrect stock_movements.A.stockOnHand + movementQuantity !=
+   * stock_movements.B.stockOnHand
    *
    * @return productCodes
    */
@@ -607,14 +605,13 @@ public class DirtyDataManager {
   }
 
   /**
-   * Check if the last two `StockMovementItem`.stockOnHand is valid eg. `StockMovementItem`A is the
-   * last one, and `StockMovementItem`B is the penult two. `StockMovementItem`A.stockOnHand ==
-   * `StockMovementItem`B.stockOnHand + `StockMovementItem`B.movementQuantity
+   * Check if the last two `StockMovementItem`.stockOnHand is valid eg. `StockMovementItem`A is the last one, and
+   * `StockMovementItem`B is the penult two. `StockMovementItem`A.stockOnHand == `StockMovementItem`B.stockOnHand +
+   * `StockMovementItem`B.movementQuantity
    *
    * @param previousMovement the penult StockMovementItem
    * @param newestMovement   last one StockMovementItem
-   * @return `StockMovementItem`A.stockOnHand == `StockMovementItem`B.stockOnHand +
-   *     `StockMovementItem`B.movementQuantity
+   * @return A.stockOnHand == B.stockOnHand + B.movementQuantity
    */
   private boolean isCorrectMovements(StockMovementItem previousMovement,
       StockMovementItem newestMovement) {

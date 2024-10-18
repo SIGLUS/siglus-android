@@ -24,6 +24,7 @@ import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 import static org.openlmis.core.utils.DateUtil.DOCUMENT_NO_DATE_TIME_FORMAT;
 import static org.openlmis.core.utils.DateUtil.SIMPLE_DATE_FORMAT;
 import static org.openlmis.core.utils.FileUtil.createNewExcel;
+import static org.openlmis.core.utils.FileUtil.transExcelToPdf;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
@@ -166,6 +167,11 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
         );
         // 2. generate excel
         excelFilePath = generateExcelReport(checkedLots, sign, currentDate);
+        // 3. generate pdf from excel
+        int lastSlashIndex = excelFilePath.lastIndexOf('/');
+        int lastDotIndex = excelFilePath.lastIndexOf('.');
+        String fileName = excelFilePath.substring(lastSlashIndex + 1, lastDotIndex);
+        transExcelToPdf(excelFilePath, fileName);
       } catch (LMISException e) {
         subscriber.onError(e);
       }
@@ -251,10 +257,10 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
 
   @NonNull
   private String generateExcelFileName(Date currentDate, String facilityName) {
-    return facilityName
+    return facilityName.replace(" ", "_")
         + "_"
         + DateUtil.formatDate(currentDate, DB_DATE_FORMAT)
-        + ".xlsx";
+        + ".xls";
   }
 
   private void generateExcelDate(int rowStartIndex, Date currentDate, HSSFSheet hssfSheet) {
@@ -397,9 +403,6 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     HSSFCell templateTitleOfRemovedLotsColumn = templateTitleOfRemovedLotsRow.createCell(0);
     templateTitleOfRemovedLotsColumn.setCellValue("Filled in by the supplier");
 
-    HSSFRow titleOfRemovedLotsRow = hssfSheet.createRow(rowStartIndex++);
-    HSSFRow titleOfRemovedLotsRow2 = hssfSheet.createRow(rowStartIndex++);
-
     ArrayList<List<String>> templateForRemovedLots = new ArrayList<>();
     templateForRemovedLots.add(newArrayList());
     templateForRemovedLots.add(newArrayList("FNM"));
@@ -412,6 +415,8 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     templateForRemovedLots.add(newArrayList("Price", "PU"));
     templateForRemovedLots.add(newArrayList("Value", "QF X PU"));
 
+    HSSFRow titleOfRemovedLotsRow = hssfSheet.createRow(rowStartIndex++);
+    HSSFRow titleOfRemovedLotsRow2 = hssfSheet.createRow(rowStartIndex++);
     int lotsColumnStartIndex = 0;
     for (List<String> titles : templateForRemovedLots) {
       HSSFCell titleOfRemovedLotsCell = titleOfRemovedLotsRow.createCell(lotsColumnStartIndex);

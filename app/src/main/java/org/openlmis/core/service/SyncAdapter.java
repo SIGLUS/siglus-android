@@ -72,10 +72,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
       ContentProviderClient provider, SyncResult syncResult) {
     User user = UserInfoMgr.getInstance().getUser();
     if (user == null) {
-      Log.d(TAG, "No user login, skip sync....");
       return;
     }
-    Log.d(TAG, "===> Syncing Data to server");
+    Log.i(TAG, "===> Syncing Data to server");
     if (shouldCorrectData(extras) && sharedPreferenceMgr.shouldStartHourlyDirtyDataCheck()) {
       List<StockCard> deleteStockCards = dirtyDataManager.checkAndGetDirtyData();
       if (!CollectionUtils.isEmpty(deleteStockCards)) {

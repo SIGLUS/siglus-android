@@ -93,6 +93,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private static final int PERMISSION_REQUEST_CODE = 200;
   @InjectView(R.id.view_dirty_data_banner)
   NotificationBanner dirtyDataBanner;
+  @InjectView(R.id.view_rejected_requisition_banner)
+  NotificationBanner rejectedRequisitionBanner;
   IncompleteRequisitionBanner incompleteRequisitionBanner;
   NotificationBanner newShippedIssueVoucherBanner;
   Guideline guideline;
@@ -122,7 +124,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private boolean exitPressedOnce = false;
   private boolean isCmmCalculating = false;
   private int syncedCount = 0;
-  @Nullable private NonCancelableDialog initialDirtyDataCheckDialog;
+  @Nullable
+  private NonCancelableDialog initialDirtyDataCheckDialog;
   private NonCancelableDialog autoSyncDataBeforeResyncDialog;
   private static final String AUTO_SYNC_DATA_BEFORE_RESYNC_DIALOG_NAME = "autoSyncDataBeforeResyncDialog";
   protected final InternetCheckListener validateConnectionListener = internet -> {
@@ -412,6 +415,13 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       setSyncedTime();
     }
 
+    boolean hasRejectedRequisition = homePresenter.hasRejectedRequisition();
+    if (hasRejectedRequisition) {
+      showRejectedRequisitionNotification();
+    } else {
+      hideRejectedRequisitionNotification();
+    }
+
     dirtyDataManager.dirtyDataMonthlyCheck();
     if (isHaveDirtyData()) {
       showDirtyDataWarningDialogAndNotification();
@@ -419,6 +429,22 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       hideDirtyDataNotification();
     }
     refreshDashboard();
+  }
+
+  private void hideRejectedRequisitionNotification() {
+    rejectedRequisitionBanner.setVisibility(View.GONE);
+  }
+
+  private void showRejectedRequisitionNotification() {
+    rejectedRequisitionBanner.setNotificationMessage(
+        getString(R.string.rejected_requisition_alert_message)
+    );
+    rejectedRequisitionBanner.setOnClickListener((view) -> {
+      rejectedRequisitionBanner.setVisibility(View.GONE);
+      Intent reportIntent = new Intent(HomeActivity.this, ReportListActivity.class);
+      startActivity(reportIntent);
+    });
+    rejectedRequisitionBanner.setVisibility(View.VISIBLE);
   }
 
   private void hideDirtyDataNotification() {

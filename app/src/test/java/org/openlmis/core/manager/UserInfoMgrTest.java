@@ -66,7 +66,7 @@ public class UserInfoMgrTest {
       userInfoMgr.setUser(null);
     } catch (NullPointerException e) {
       // do nothing, just for testing
-      Log.d(this.getClass().getName(), "just for testing:" + e.getMessage());
+      Log.e(this.getClass().getName(), "just for testing:" + e.getMessage());
     }
   }
 }
