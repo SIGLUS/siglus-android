@@ -112,10 +112,22 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     });
     adjustmentEditTexts.add(etAdjustment);
     //config etStock
+    boolean isInitialAmountNull = Boolean.TRUE.equals(formBasicItem.getIsCustomAmount());
+    boolean isFirstlyFillRequisition = isFirstlyFillRequisition(productInfos);
+    boolean isInitialAmountEditable = false;
     CleanableEditText etStock = itemView.findViewById(R.id.et_stock);
     etStock.setText(getValue(formBasicItem.getInitialAmount()));
-    etStock.setEnabled(Boolean.TRUE.equals(formBasicItem.getIsCustomAmount()) && isDraftOrUnknownStatus);
-    if (Boolean.TRUE.equals(formBasicItem.getIsCustomAmount())) {
+
+    if (isInitialAmountNull && isDraftOrUnknownStatus) {
+      if (!isFirstlyFillRequisition) {
+        isInitialAmountEditable = false;
+        etStock.setText("0");
+      } else {
+        isInitialAmountEditable = true;
+      }
+    }
+    etStock.setEnabled(isInitialAmountEditable);
+    if (isInitialAmountNull) {
       etStock.addTextChangedListener(new SimpleTextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
@@ -255,4 +267,12 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     return productInfos == null ? 0 : productInfos.size();
   }
 
+  private boolean isFirstlyFillRequisition(List<RnrFormItem> formItems) {
+    for (RnrFormItem item : formItems) {
+      if (item.getInitialAmount() != null) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
