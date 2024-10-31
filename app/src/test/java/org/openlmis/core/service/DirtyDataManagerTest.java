@@ -7,7 +7,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import android.app.Application;
-import androidx.test.core.app.ApplicationProvider;
 import com.google.inject.AbstractModule;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +31,7 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -72,7 +72,7 @@ public class DirtyDataManagerTest {
     programRepository = mock(ProgramRepository.class);
     dirtyDataRepository = mock(DirtyDataRepository.class);
 
-    Application application = ApplicationProvider.getApplicationContext();
+    Application application = RuntimeEnvironment.application;
     RoboGuice.overrideApplicationInjector(application, new MyTestModule());
     dirtyDataManager = RoboGuice.getInjector(application)
         .getInstance(DirtyDataManager.class);

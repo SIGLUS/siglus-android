@@ -27,6 +27,7 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -36,11 +37,14 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.openlmis.core.exceptions.LMISException;
 
 public final class FileUtil {
@@ -139,9 +143,15 @@ public final class FileUtil {
         PdfPTable pdfTable = new PdfPTable(columnNum);
         pdfTable.setWidthPercentage(100);
         for (Cell cell : row) {
+          CellStyle cellStyle = cell.getCellStyle();
+          Color backgroundColor = getCellBackgroundColor(cellStyle);
+
           String cellValue = getCellValueString(cell);
           PdfPCell pdfCell = new PdfPCell(new Phrase(cellValue));
           pdfCell.setBorder(PdfPCell.BOX);
+          if (backgroundColor != null) {
+            pdfCell.setBackgroundColor(backgroundColor);
+          }
           pdfTable.addCell(pdfCell);
         }
 
@@ -151,6 +161,41 @@ public final class FileUtil {
       pdfDocument.close();
     } catch (IOException e) {
       reportException(e);
+    }
+  }
+
+  private static Color getCellBackgroundColor(CellStyle cellStyle) {
+    org.apache.poi.ss.usermodel.Color color = cellStyle.getFillForegroundColorColor();
+    if (color == null) {
+      return Color.WHITE;
+    }
+
+    if (color instanceof XSSFColor) {
+      XSSFColor xssfColor = (XSSFColor) color;
+      if (xssfColor.isAuto() || xssfColor.getRGB() == null) {
+        return Color.WHITE;
+      }
+      byte[] rgb = xssfColor.getRGB();
+      if (rgb != null) {
+        return new Color(rgb[0] & 0xFF, rgb[1] & 0xFF, rgb[2] & 0xFF);
+      }
+    } else if (color instanceof HSSFColor) {
+      HSSFColor hssfColor = (HSSFColor) color;
+      if (hssfColor.getIndex() == HSSFColor.HSSFColorPredefined.AUTOMATIC.getIndex()) {
+        return Color.WHITE;
+      }
+      short[] rgb = hssfColor.getTriplet();
+      if (rgb != null) {
+        return new Color(rgb[0], rgb[1], rgb[2]);
+      }
+    }
+    return Color.WHITE;
+  }
+
+  public static void deleteFile(String path) {
+    File file = new File(path);
+    if (file.exists()) {
+      file.delete();
     }
   }
 
