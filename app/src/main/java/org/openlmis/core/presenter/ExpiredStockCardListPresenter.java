@@ -24,6 +24,7 @@ import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 import static org.openlmis.core.utils.DateUtil.DOCUMENT_NO_DATE_TIME_FORMAT;
 import static org.openlmis.core.utils.DateUtil.SIMPLE_DATE_FORMAT;
 import static org.openlmis.core.utils.FileUtil.createNewExcel;
+import static org.openlmis.core.utils.FileUtil.deleteFile;
 import static org.openlmis.core.utils.FileUtil.transExcelToPdf;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -37,6 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -79,6 +81,10 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
 
     Subscription subscription = loadExpiredStockCardsObservable().subscribe(afterLoadHandler);
     subscriptions.add(subscription);
+  }
+
+  private boolean isDeviceInPortuguese() {
+    return Locale.getDefault().getLanguage().equals(new Locale("pt").getLanguage());
   }
 
   private Observable<List<StockCard>> loadExpiredStockCardsObservable() {
@@ -172,6 +178,7 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
         int lastDotIndex = excelFilePath.lastIndexOf('.');
         String fileName = excelFilePath.substring(lastSlashIndex + 1, lastDotIndex);
         transExcelToPdf(excelFilePath, fileName);
+        deleteFile(excelFilePath);
       } catch (LMISException e) {
         subscriber.onError(e);
       }
@@ -276,26 +283,27 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
       HSSFSheet hssfSheet,
       HSSFCellStyle borderStyle
   ) {
+    boolean isPortuguese = isDeviceInPortuguese();
     // by row
     HSSFRow byRow = hssfSheet.createRow(rowStartIndex++);
     HSSFCell preparedByCell = byRow.createCell(0);
-    preparedByCell.setCellValue("Prepared by: ");
+    preparedByCell.setCellValue(isPortuguese ? "Elaborado por:" : "Prepared by:");
     preparedByCell.setCellStyle(borderStyle);
     HSSFCell preparedByValueCell = byRow.createCell(1);
     preparedByValueCell.setCellValue(signature);
     preparedByValueCell.setCellStyle(borderStyle);
     HSSFCell conferredByCell = byRow.createCell(2);
-    conferredByCell.setCellValue("Conferred by:");
+    conferredByCell.setCellValue(isPortuguese ? "Conferido por:" : "Conferred by:");
     conferredByCell.setCellStyle(borderStyle);
     byRow.createCell(3).setCellStyle(borderStyle);
     HSSFCell receivedByCell = byRow.createCell(4);
-    receivedByCell.setCellValue("Received by:");
+    receivedByCell.setCellValue(isPortuguese ? "Recebido por:" : "Received by:");
     receivedByCell.setCellStyle(borderStyle);
     byRow.createCell(5).setCellStyle(borderStyle);
     // signature row
     HSSFRow signatureRow = hssfSheet.createRow(rowStartIndex++);
     HSSFCell preparedSignatureCell = signatureRow.createCell(0);
-    String signatureTitle = "Signature:";
+    String signatureTitle = isPortuguese ? "Assinatura:" : "Signature:";
     preparedSignatureCell.setCellValue(signatureTitle);
     preparedSignatureCell.setCellStyle(borderStyle);
     signatureRow.createCell(1).setCellStyle(borderStyle);
@@ -320,7 +328,9 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
     // title
     HSSFRow totalValueTitleRow = hssfSheet.createRow(rowStartIndex++);
     HSSFCell totalTitleCell = totalValueTitleRow.createCell(0);
-    totalTitleCell.setCellValue("Total value of the issue voucher");
+    boolean isPortuguese = isDeviceInPortuguese();
+    String totalValueStr = isPortuguese ? "Valor total da Guia de Remessa" : "Total value of the issue voucher";
+    totalTitleCell.setCellValue(totalValueStr);
     totalTitleCell.setCellStyle(borderStyle);
     // value
     BigDecimal totalValue = BigDecimal.ZERO;
@@ -339,14 +349,16 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
       HSSFSheet hssfSheet,
       HSSFCellStyle borderStyle
   ) {
-    hssfSheet.createRow(rowStartIndex++).createCell(0).setCellValue("Filled in by the supplier");
+    boolean isPortuguese = isDeviceInPortuguese();
+    String titleStr = isPortuguese ? "Preenchido pelo cliente" : "Filled in by the supplier";
+    hssfSheet.createRow(rowStartIndex++).createCell(0).setCellValue(titleStr);
 
     HSSFRow clientTitleRow = hssfSheet.createRow(rowStartIndex++);
     HSSFCell receivedQuantityCell = clientTitleRow.createCell(0);
-    receivedQuantityCell.setCellValue("Received Quantity");
+    receivedQuantityCell.setCellValue(isPortuguese ? "Quantidade aceite" : "Received Quantity");
     receivedQuantityCell.setCellStyle(borderStyle);
     HSSFCell differenceCell = clientTitleRow.createCell(1);
-    differenceCell.setCellValue("Difference");
+    differenceCell.setCellValue(isPortuguese ? "Diferença" : "Difference");
     differenceCell.setCellStyle(borderStyle);
 
     HSSFRow clientTitleRow2 = hssfSheet.createRow(rowStartIndex++);
@@ -399,21 +411,32 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
 
   private int generateExcelTitleOfLots(int rowStartIndex, HSSFSheet hssfSheet,
       CellStyle borderStyle) {
+    boolean isPortuguese = isDeviceInPortuguese();
     HSSFRow templateTitleOfRemovedLotsRow = hssfSheet.createRow(rowStartIndex++);
     HSSFCell templateTitleOfRemovedLotsColumn = templateTitleOfRemovedLotsRow.createCell(0);
-    templateTitleOfRemovedLotsColumn.setCellValue("Filled in by the supplier");
+    String titleStr = isPortuguese ? "Preenchido pelo fornecedor" : "Filled in by the supplier";
+    templateTitleOfRemovedLotsColumn.setCellValue(titleStr);
+
+    String productStr = isPortuguese ? "Produto" : "Product";
+    String lotStr = isPortuguese ? "Lote" : "Lot";
+    String expiringDateStr = isPortuguese ? "Prazo de validade" : "Expiring Date";
+    String approvedQuantityStr = isPortuguese ? "Quantidade Aprovada" : "Approved Quantity";
+    String partialFulfilledStr = isPortuguese ? "Quantidade Aviada anteriormente" : "Partial Fulfilled";
+    String suppliedQuantityStr = isPortuguese ? "Quantidade Enviada" : "Supplied Quantity";
+    String priceStr = isPortuguese ? "Preço" : "Price";
+    String valueStr = isPortuguese ? "Valor" : "Value";
 
     ArrayList<List<String>> templateForRemovedLots = new ArrayList<>();
     templateForRemovedLots.add(newArrayList());
     templateForRemovedLots.add(newArrayList("FNM"));
-    templateForRemovedLots.add(newArrayList("Product"));
-    templateForRemovedLots.add(newArrayList("Lot Number"));
-    templateForRemovedLots.add(newArrayList("Expiring Date"));
-    templateForRemovedLots.add(newArrayList("Ordered Quantity", ""));
-    templateForRemovedLots.add(newArrayList("Partial Fulfilled", ""));
-    templateForRemovedLots.add(newArrayList("Supplied Quantity", "QF"));
-    templateForRemovedLots.add(newArrayList("Price", "PU"));
-    templateForRemovedLots.add(newArrayList("Value", "QF X PU"));
+    templateForRemovedLots.add(newArrayList(productStr));
+    templateForRemovedLots.add(newArrayList(lotStr));
+    templateForRemovedLots.add(newArrayList(expiringDateStr));
+    templateForRemovedLots.add(newArrayList(approvedQuantityStr, ""));
+    templateForRemovedLots.add(newArrayList(partialFulfilledStr, ""));
+    templateForRemovedLots.add(newArrayList(suppliedQuantityStr, "QF"));
+    templateForRemovedLots.add(newArrayList(priceStr, "PU"));
+    templateForRemovedLots.add(newArrayList(valueStr, "QF X PU"));
 
     HSSFRow titleOfRemovedLotsRow = hssfSheet.createRow(rowStartIndex++);
     HSSFRow titleOfRemovedLotsRow2 = hssfSheet.createRow(rowStartIndex++);
@@ -494,24 +517,40 @@ public class ExpiredStockCardListPresenter extends StockCardPresenter {
       String provinceName,
       String districtName
   ) {
+    boolean isPortuguese = isDeviceInPortuguese();
+    String documentNumberStr = isPortuguese ? "Número do documento" : "Document number";
+    String supplierStr = isPortuguese ? "Fornecedor" : "Supplier";
+    String clientStr = isPortuguese ? "Cliente" : "Client";
+    String districtStr = isPortuguese ? "Distrito" : "District";
+    String provinceStr = isPortuguese ? "Província" : "Province";
+    String issueVoucherDate = isPortuguese ? "Data da Guia de Remessa" : "Issue voucher date";
+    String requisitionNr = isPortuguese ? "Requisição Nr" : "Requisition Nr";
+    String totalVolumeStr = isPortuguese ? "Volume Total" : "Total of volume";
+    String requisitionDateStr = isPortuguese ? "Data da requisição" : "Requisition date";
+    String supplyStr = isPortuguese ? "Fornecer" : "Supply";
+    String returnedStr = isPortuguese ? "Devolvido" : "Returned";
+    String expiredStr = isPortuguese ? "Expirado" : "Expired";
+    String overstocked = isPortuguese ? "Stock acumulado" : "Overstocked";
+    String receptionDateStr = isPortuguese ? "Data de recepção" : "Reception date";
+
     LinkedHashMap<String, String> templateForSupplier = new LinkedHashMap<>();
-    templateForSupplier.put("Document number:", generateDocumentNumber(currentDate));
-    templateForSupplier.put("Supplier:", facilityName);
-    templateForSupplier.put("Client:", "");
-    templateForSupplier.put("District: ", districtName);
-    templateForSupplier.put("Province:", provinceName);
+    templateForSupplier.put(documentNumberStr + ":", generateDocumentNumber(currentDate));
+    templateForSupplier.put(supplierStr + ":", facilityName);
+    templateForSupplier.put(clientStr + ":", "");
+    templateForSupplier.put(districtStr + ":", districtName);
+    templateForSupplier.put(provinceStr + ":", provinceName);
     templateForSupplier.put(
-        "Issue voucher date:", DateUtil.formatDate(currentDate, SIMPLE_DATE_FORMAT)
+        issueVoucherDate + ":", DateUtil.formatDate(currentDate, SIMPLE_DATE_FORMAT)
     );
-    String requisitionNumberKey = "Requisition Nr:";
+    String requisitionNumberKey = requisitionNr + ":";
     templateForSupplier.put(requisitionNumberKey, "");
-    templateForSupplier.put("Total of volume:", "");
-    templateForSupplier.put("Requisition date:", "");
-    templateForSupplier.put("Supply", "");
-    templateForSupplier.put("Returned", "");
-    templateForSupplier.put("Expired", "");
-    templateForSupplier.put("Overstocked", "");
-    templateForSupplier.put("Reception date:", "");
+    templateForSupplier.put(totalVolumeStr + ":", "");
+    templateForSupplier.put(requisitionDateStr + ":", "");
+    templateForSupplier.put(supplyStr, "");
+    templateForSupplier.put(returnedStr, "");
+    templateForSupplier.put(expiredStr, "");
+    templateForSupplier.put(overstocked, "");
+    templateForSupplier.put(receptionDateStr + ":", "");
 
     HSSFCellStyle backgroundAndBoarderStyle = createBoarderStyle(hssfWorkbook);
     backgroundAndBoarderStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
