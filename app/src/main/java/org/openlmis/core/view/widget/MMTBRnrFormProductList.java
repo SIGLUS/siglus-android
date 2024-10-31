@@ -113,7 +113,7 @@ public class MMTBRnrFormProductList extends LinearLayout {
 
   private void generateHeaderView() {
     leftHeaderView = generateLeftView(null, true);
-    rightHeaderView = generateRightView(null, true);
+    rightHeaderView = generateRightView(null, true, false);
     post(() -> {
       setRightItemWidth(rightHeaderView);
       ViewUtil.syncViewHeight(leftHeaderView, rightHeaderView);
@@ -124,9 +124,10 @@ public class MMTBRnrFormProductList extends LinearLayout {
   }
 
   private void generateItemView(List<RnrFormItem> rnrFormItemList) {
+    boolean isFirstlyFillRequisition = isFirstlyFillRequisition(rnrFormItemList);
     for (RnrFormItem item : rnrFormItemList) {
       View leftView = generateLeftView(item, false);
-      ViewGroup rightView = generateRightView(item, false);
+      ViewGroup rightView = generateRightView(item, false, isFirstlyFillRequisition);
       leftViewGroup.addView(leftView);
       rightViewGroup.addView(rightView);
       post(() -> {
@@ -168,7 +169,7 @@ public class MMTBRnrFormProductList extends LinearLayout {
     return view;
   }
 
-  private ViewGroup generateRightView(RnrFormItem item, boolean isHeaderView) {
+  private ViewGroup generateRightView(RnrFormItem item, boolean isHeaderView, boolean isFirstlyFillRequisition) {
     ViewGroup view = (ViewGroup) layoutInflater.inflate(R.layout.item_mmtb_product, this, false);
     TextView tvIssuedUnit = view.findViewById(R.id.tv_issued_unit);
     EditText etInitialAmount = view.findViewById(R.id.et_initial_amount);
@@ -196,8 +197,18 @@ public class MMTBRnrFormProductList extends LinearLayout {
       boolean isArchived = item.getProduct().isArchived();
       tvReceived.setText(getValue(isArchived, item.getReceived()));
       editTexts.add(configEditText(item, etInitialAmount, getValue(isArchived, item.getInitialAmount())));
-      etInitialAmount.setEnabled(Boolean.TRUE.equals(item.getIsCustomAmount()
-          && (item.getForm().getStatus() == null || item.getForm().isDraft())));
+
+      boolean isInitialAmountEditable = false;
+      boolean isInitialAmountNull = Boolean.TRUE.equals(item.getIsCustomAmount());
+      if (isInitialAmountNull && (item.getForm().getStatus() == null || item.getForm().isDraft())) {
+        if (isFirstlyFillRequisition) {
+          isInitialAmountEditable = true;
+        } else {
+          etInitialAmount.setText("0");
+        }
+      }
+      etInitialAmount.setEnabled(isInitialAmountEditable);
+
       editTexts.add(configEditText(item, etIssued, getValue(isArchived, item.getIssued())));
       editTexts.add(configEditText(item, etAdjustment, getValue(isArchived, item.getAdjustment())));
       editTexts.add(configEditText(item, etInventory, getValue(isArchived, item.getInventory())));
@@ -249,6 +260,15 @@ public class MMTBRnrFormProductList extends LinearLayout {
         }
       }
     }
+  }
+
+  private boolean isFirstlyFillRequisition(List<RnrFormItem> formItems) {
+    for (RnrFormItem item : formItems) {
+      if (item.getInitialAmount() != null) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static class EditTextWatcher extends SimpleTextWatcher {
