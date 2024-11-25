@@ -122,6 +122,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
       if (!isFirstlyFillRequisition) {
         isInitialAmountEditable = false;
         etStock.setText("0");
+        formBasicItem.setInitialAmount(0L);
       } else {
         isInitialAmountEditable = true;
       }
