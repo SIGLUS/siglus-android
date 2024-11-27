@@ -52,6 +52,20 @@ public class RapidTestReport4ColumnsGridViewHolder extends RapidTestReportGridVi
   }
 
   @Override
+  public void setBlankForPositiveTextView() {
+    setCellBlankAndDisabled(etPositiveHivTotal);
+    setCellBlankAndDisabled(etPositiveSyphilisTotal);
+  }
+
+  @Override
+  public void setBlankForPositiveEditText() {
+    setCellBlankAndDisabled(etPositiveHiv);
+    viewModel.setPositiveHivValue("0");
+    setCellBlankAndDisabled(etPositiveSyphilis);
+    viewModel.setPositiveSyphilisValue("0");
+  }
+
+  @Override
   public void setEditTableForPositiveEditText() {
     setEditableForEditText(etPositiveHiv);
     setEditableForEditText(etPositiveSyphilis);

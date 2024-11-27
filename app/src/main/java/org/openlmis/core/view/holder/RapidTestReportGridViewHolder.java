@@ -64,6 +64,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
   RapidTestFormGridViewModel viewModel;
   boolean editable;
   private QuantityChangeListener quantityChangeListener;
+  private static String MALARIA_CODE = "MALARIA";
 
   public RapidTestReportGridViewHolder(View itemView) {
     super(itemView);
@@ -77,6 +78,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
     populateData(viewModel);
     setEditable(editable);
+    setBlank(viewModel.getIsAPE());
     setTextWatcher();
     updateAlert();
     updateGridViewHaveValueAlert();
@@ -87,6 +89,46 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     if (viewModel.isNeedAddGridViewWarning()) {
       warningLinerLayout.setBackground(ContextCompat.getDrawable(context, R.drawable.border_bg_red));
     }
+  }
+
+  public void setBlank(boolean isAPE) {
+    boolean isMalaria = viewModel.getColumnCode().name().equals(MALARIA_CODE);
+    if (isAPE && !isMalaria) {
+      if (editable) {
+        setAllEditTextBlank();
+      } else {
+        setAllTextViewBlank();
+      }
+    }
+  }
+
+  private void setAllTextViewBlank() {
+    setCellBlankAndDisabled(etConsumeTotal);
+    setBlankForPositiveTextView();
+    setCellBlankAndDisabled(etUnjustifiedTotal);
+  }
+
+  private void setAllEditTextBlank() {
+    setCellBlankAndDisabled(etConsume);
+    viewModel.setConsumptionValue("0");
+    setBlankForPositiveEditText();
+    setCellBlankAndDisabled(etUnjustified);
+    viewModel.setUnjustifiedValue("0");
+  }
+
+  public void setBlankForPositiveTextView() {
+    setCellBlankAndDisabled(etPositiveTotal);
+  }
+
+  public void setBlankForPositiveEditText() {
+    setCellBlankAndDisabled(etPositive);
+    viewModel.setPositiveValue("0");
+  }
+
+  protected void setCellBlankAndDisabled(TextView view) {
+    view.setText("");
+    view.setBackground(null);
+    view.setEnabled(false);
   }
 
   public void setEditable(Boolean editable) {
