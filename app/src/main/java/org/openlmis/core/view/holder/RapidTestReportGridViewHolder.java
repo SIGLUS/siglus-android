@@ -35,6 +35,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
+import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 import roboguice.inject.InjectView;
 
@@ -77,6 +78,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
     populateData(viewModel);
     setEditable(editable);
+    setBlank(viewModel.getIsAPE());
     setTextWatcher();
     updateAlert();
     updateGridViewHaveValueAlert();
@@ -87,6 +89,46 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     if (viewModel.isNeedAddGridViewWarning()) {
       warningLinerLayout.setBackground(ContextCompat.getDrawable(context, R.drawable.border_bg_red));
     }
+  }
+
+  public void setBlank(boolean isAPE) {
+    boolean isMalaria = viewModel.getColumnCode() == ColumnCode.MALARIA;
+    if (isAPE && !isMalaria) {
+      if (editable) {
+        setAllEditTextBlank();
+      } else {
+        setAllTextViewBlank();
+      }
+    }
+  }
+
+  private void setAllTextViewBlank() {
+    setCellBlankAndDisabled(etConsumeTotal);
+    setBlankForPositiveTextView();
+    setCellBlankAndDisabled(etUnjustifiedTotal);
+  }
+
+  private void setAllEditTextBlank() {
+    setCellBlankAndDisabled(etConsume);
+    viewModel.setConsumptionValue("0");
+    setBlankForPositiveEditText();
+    setCellBlankAndDisabled(etUnjustified);
+    viewModel.setUnjustifiedValue("0");
+  }
+
+  public void setBlankForPositiveTextView() {
+    setCellBlankAndDisabled(etPositiveTotal);
+  }
+
+  public void setBlankForPositiveEditText() {
+    setCellBlankAndDisabled(etPositive);
+    viewModel.setPositiveValue("0");
+  }
+
+  protected void setCellBlankAndDisabled(TextView view) {
+    view.setBackground(null);
+    view.setEnabled(false);
+    view.setVisibility(View.INVISIBLE);
   }
 
   public void setEditable(Boolean editable) {

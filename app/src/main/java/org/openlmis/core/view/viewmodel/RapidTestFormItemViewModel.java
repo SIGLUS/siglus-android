@@ -114,8 +114,16 @@ public class RapidTestFormItemViewModel {
 
   public boolean isEmpty() {
     for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
-      if (!gridViewModel.isEmpty()) {
-        return false;
+      boolean isMalaria = gridViewModel.getColumnCode() == ColumnCode.MALARIA;
+      boolean isAPE = gridViewModel.isAPE;
+      if (isAPE) {
+        if (isMalaria && !gridViewModel.isEmpty()) {
+          return false;
+        }
+      } else {
+        if (!gridViewModel.isEmpty()) {
+          return false;
+        }
       }
     }
     return true;

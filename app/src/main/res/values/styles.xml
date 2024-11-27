@@ -800,7 +800,7 @@
     <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_weight">1</item>
-    <item name="android:background">@drawable/border_right_black</item>
+    <item name="android:background">@drawable/border_black_right_left</item>
     <item name="android:gravity">center</item>
     <item name="android:inputType">number</item>
     <item name="android:maxLength">@integer/max_length_rapid_test_no_total</item>
@@ -810,7 +810,7 @@
     <item name="android:layout_width">@dimen/px_0</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_weight">1</item>
-    <item name="android:background">@drawable/border_right_black</item>
+    <item name="android:background">@drawable/border_black_right_left</item>
     <item name="android:gravity">center</item>
     <item name="android:inputType">number</item>
     <item name="android:maxLength">@integer/max_length_rapid_test_total</item>
