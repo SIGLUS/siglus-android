@@ -35,6 +35,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
+import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 import roboguice.inject.InjectView;
 
@@ -64,7 +65,6 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
   RapidTestFormGridViewModel viewModel;
   boolean editable;
   private QuantityChangeListener quantityChangeListener;
-  private static String MALARIA_CODE = "MALARIA";
 
   public RapidTestReportGridViewHolder(View itemView) {
     super(itemView);
@@ -92,7 +92,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
   }
 
   public void setBlank(boolean isAPE) {
-    boolean isMalaria = viewModel.getColumnCode().name().equals(MALARIA_CODE);
+    boolean isMalaria = viewModel.getColumnCode() == ColumnCode.MALARIA;
     if (isAPE && !isMalaria) {
       if (editable) {
         setAllEditTextBlank();
@@ -126,9 +126,9 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
   }
 
   protected void setCellBlankAndDisabled(TextView view) {
-    view.setText("");
     view.setBackground(null);
     view.setEnabled(false);
+    view.setVisibility(View.INVISIBLE);
   }
 
   public void setEditable(Boolean editable) {
