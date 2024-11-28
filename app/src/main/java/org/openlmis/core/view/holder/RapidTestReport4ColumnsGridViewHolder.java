@@ -60,9 +60,13 @@ public class RapidTestReport4ColumnsGridViewHolder extends RapidTestReportGridVi
   @Override
   public void setBlankForPositiveEditText() {
     setCellBlankAndDisabled(etPositiveHiv);
-    viewModel.setPositiveHivValue("0");
+    if (isValueEmpty(viewModel.getPositiveHivValue())) {
+      viewModel.setPositiveHivValue("0");
+    }
     setCellBlankAndDisabled(etPositiveSyphilis);
-    viewModel.setPositiveSyphilisValue("0");
+    if (isValueEmpty(viewModel.getPositiveSyphilisValue())) {
+      viewModel.setPositiveSyphilisValue("0");
+    }
   }
 
   @Override
