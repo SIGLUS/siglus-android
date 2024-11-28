@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
+import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -110,10 +111,14 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
   private void setAllEditTextBlank() {
     setCellBlankAndDisabled(etConsume);
-    viewModel.setConsumptionValue("0");
+    if (isValueEmpty(viewModel.getConsumptionValue())) {
+      viewModel.setConsumptionValue("0");
+    }
     setBlankForPositiveEditText();
     setCellBlankAndDisabled(etUnjustified);
-    viewModel.setUnjustifiedValue("0");
+    if (isValueEmpty(viewModel.getUnjustifiedValue())) {
+      viewModel.setUnjustifiedValue("0");
+    }
   }
 
   public void setBlankForPositiveTextView() {
@@ -122,7 +127,9 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
   public void setBlankForPositiveEditText() {
     setCellBlankAndDisabled(etPositive);
-    viewModel.setPositiveValue("0");
+    if (isValueEmpty(viewModel.getPositiveValue())) {
+      viewModel.setPositiveValue("0");
+    }
   }
 
   protected void setCellBlankAndDisabled(TextView view) {
@@ -248,6 +255,10 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     return LMISApp.getContext().getString(id);
   }
 
+  protected boolean isValueEmpty(String value) {
+    return value.equals(StringUtils.EMPTY);
+  }
+
   public void updateTotal(RapidTestGridColumnCode gridColumnCode) {
     if (!isInTotalRow()) {
       quantityChangeListener.updateTotal(viewModel.getColumnCode(), gridColumnCode);
@@ -302,6 +313,5 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
       }
       return column;
     }
-
   }
 }
