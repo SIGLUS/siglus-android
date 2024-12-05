@@ -100,9 +100,12 @@ public class AddLotDialogFragment extends BaseDialogFragment {
       }
     }
     btnCancel.setOnClickListener(listener);
-    btnComplete.setOnClickListener(listener);
+    btnComplete.setOnClickListener((v) -> {
+      etLotNumber.clearFocus();
+      listener.onClick(v);
+    });
     this.setCancelable(false);
-    setFocusListener();
+    setLotEditTextFocusListener();
   }
 
   @Override
@@ -128,7 +131,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     return true;
   }
 
-  private void setFocusListener() {
+  private void setLotEditTextFocusListener() {
     etLotNumber.setOnFocusChangeListener((view, hasFocus) -> {
       if (!hasFocus) {
         String inputContent = etLotNumber.getText().toString().trim();
