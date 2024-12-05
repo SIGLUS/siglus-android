@@ -22,6 +22,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,8 +100,12 @@ public class AddLotDialogFragment extends BaseDialogFragment {
       }
     }
     btnCancel.setOnClickListener(listener);
-    btnComplete.setOnClickListener(listener);
+    btnComplete.setOnClickListener((v) -> {
+      etLotNumber.clearFocus();
+      listener.onClick(v);
+    });
     this.setCancelable(false);
+    setLotEditTextFocusListener();
   }
 
   @Override
@@ -124,6 +129,33 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     lotNumber = etLotNumber.getText().toString().trim().toUpperCase() + "-"
         + DateUtil.convertDate(expiryDate, DateUtil.DB_DATE_FORMAT, DateUtil.SIMPLE_DATE_FORMAT);
     return true;
+  }
+
+  private void setLotEditTextFocusListener() {
+    etLotNumber.setOnFocusChangeListener((view, hasFocus) -> {
+      if (!hasFocus) {
+        String inputContent = etLotNumber.getText().toString().trim();
+        inputContent = removeConsecutiveHyphens(inputContent);
+        inputContent = removeHyphenAtEnd(inputContent);
+        etLotNumber.setText(inputContent);
+      }
+    });
+  }
+
+  private String removeConsecutiveHyphens(String content) {
+    String modifiedContent = content.trim();
+    if (!TextUtils.isEmpty(modifiedContent)) {
+      modifiedContent = modifiedContent.replaceAll("-{2,}", "-");
+    }
+    return modifiedContent;
+  }
+
+  private String removeHyphenAtEnd(String content) {
+    String modifiedContent = content.trim();
+    if (!TextUtils.isEmpty(modifiedContent) && modifiedContent.endsWith("-")) {
+      modifiedContent = modifiedContent.substring(0, modifiedContent.length() - 1);
+    }
+    return modifiedContent;
   }
 
   private void showConfirmNoLotNumberDialog() {
@@ -157,7 +189,6 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         return UNKNOWN_STRING;
       }
     }
-
   }
 
   private String getString1(int resId, Object... formatArgs) {
@@ -174,7 +205,6 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         return UNKNOWN_STRING;
       }
     }
-
   }
 
   private void clearErrorMessage() {
