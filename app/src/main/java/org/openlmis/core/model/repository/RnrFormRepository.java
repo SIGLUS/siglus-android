@@ -43,6 +43,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -256,13 +257,23 @@ public class RnrFormRepository {
       throw e;
     }
     RnRForm rnRForm = dbUtil
-        .withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq(PROGRAM_ID, program.getId())
-            .and().between(PERIOD_BEGIN, reportTypeForm.getStartTime(), DateUtil.getCurrentDate())
-            .and().eq(STATUS, Status.DRAFT)
-            .or().eq(STATUS, Status.DRAFT_MISSED)
-            .or().eq(STATUS, Status.SUBMITTED)
-            .or().eq(STATUS, Status.SUBMITTED_MISSED)
-            .queryForFirst());
+        .withDao(RnRForm.class, dao -> {
+          QueryBuilder<RnRForm, String> queryBuilder = dao.queryBuilder();
+          Where<RnRForm, String> where = queryBuilder.where();
+
+          Where<RnRForm, String> programCondition = where.eq(PROGRAM_ID, program.getId());
+          Where<RnRForm, String> periodCondition =
+              where.between(PERIOD_BEGIN, reportTypeForm.getStartTime(), DateUtil.getCurrentDate());
+          Where<RnRForm, String> statusCondition = where.or(
+              where.eq(STATUS, Status.DRAFT),
+              where.eq(STATUS, Status.DRAFT_MISSED),
+              where.eq(STATUS, Status.SUBMITTED),
+              where.eq(STATUS, Status.SUBMITTED_MISSED)
+          );
+          where.and(programCondition, periodCondition, statusCondition);
+
+          return queryBuilder.queryForFirst();
+        });
     assignCategoryForRnrItems(rnRForm);
     return rnRForm;
   }
