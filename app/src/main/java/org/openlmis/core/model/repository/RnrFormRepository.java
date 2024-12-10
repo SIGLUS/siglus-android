@@ -43,6 +43,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -204,17 +205,22 @@ public class RnrFormRepository {
 
   public boolean isPeriodUnique(final RnRForm form) {
     try {
-      return null == dbUtil.withDao(RnRForm.class, dao ->
-          dao.queryBuilder()
-              .where().eq(STATUS, Status.AUTHORIZED)
-              .or().eq(STATUS, Status.IN_APPROVAL)
-              .or().eq(STATUS, Status.APPROVED)
-              .or().eq(STATUS, Status.REJECTED)
-              .and().eq(PROGRAM_ID, form.getProgram().getId())
-              .and().eq(PERIOD_BEGIN, form.getPeriodBegin())
-              .and().eq(PERIOD_END, form.getPeriodEnd())
-              .queryForFirst());
+      return null == dbUtil.withDao(RnRForm.class, dao -> {
+        QueryBuilder<RnRForm, String> queryBuilder = dao.queryBuilder();
+        Where<RnRForm, String> where = queryBuilder.where();
 
+        Where<RnRForm, String> programCondition = where.eq(PROGRAM_ID, form.getProgram().getId());
+        Where<RnRForm, String> periodBeginCondition = where.eq(PERIOD_BEGIN, form.getPeriodBegin());
+        Where<RnRForm, String> periodEndCondition = where.eq(PERIOD_END, form.getPeriodEnd());
+        Where<RnRForm, String> statusCondition = where.or(
+            where.eq(STATUS, Status.AUTHORIZED),
+            where.eq(STATUS, Status.IN_APPROVAL),
+            where.eq(STATUS, Status.APPROVED),
+            where.eq(STATUS, Status.REJECTED)
+        );
+        where.and(programCondition, periodBeginCondition, periodEndCondition, statusCondition);
+        return queryBuilder.queryForFirst();
+      });
     } catch (LMISException e) {
       new LMISException(e, "RnrFormRepository.isPeriodUnique").reportToFabric();
     }
@@ -256,13 +262,23 @@ public class RnrFormRepository {
       throw e;
     }
     RnRForm rnRForm = dbUtil
-        .withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq(PROGRAM_ID, program.getId())
-            .and().between(PERIOD_BEGIN, reportTypeForm.getStartTime(), DateUtil.getCurrentDate())
-            .and().eq(STATUS, Status.DRAFT)
-            .or().eq(STATUS, Status.DRAFT_MISSED)
-            .or().eq(STATUS, Status.SUBMITTED)
-            .or().eq(STATUS, Status.SUBMITTED_MISSED)
-            .queryForFirst());
+        .withDao(RnRForm.class, dao -> {
+          QueryBuilder<RnRForm, String> queryBuilder = dao.queryBuilder();
+          Where<RnRForm, String> where = queryBuilder.where();
+
+          Where<RnRForm, String> programCondition = where.eq(PROGRAM_ID, program.getId());
+          Where<RnRForm, String> periodCondition =
+              where.between(PERIOD_BEGIN, reportTypeForm.getStartTime(), DateUtil.getCurrentDate());
+          Where<RnRForm, String> statusCondition = where.or(
+              where.eq(STATUS, Status.DRAFT),
+              where.eq(STATUS, Status.DRAFT_MISSED),
+              where.eq(STATUS, Status.SUBMITTED),
+              where.eq(STATUS, Status.SUBMITTED_MISSED)
+          );
+          where.and(programCondition, periodCondition, statusCondition);
+
+          return queryBuilder.queryForFirst();
+        });
     assignCategoryForRnrItems(rnRForm);
     return rnRForm;
   }
