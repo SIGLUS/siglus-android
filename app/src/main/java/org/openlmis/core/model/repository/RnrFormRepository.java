@@ -205,17 +205,22 @@ public class RnrFormRepository {
 
   public boolean isPeriodUnique(final RnRForm form) {
     try {
-      return null == dbUtil.withDao(RnRForm.class, dao ->
-          dao.queryBuilder()
-              .where().eq(STATUS, Status.AUTHORIZED)
-              .or().eq(STATUS, Status.IN_APPROVAL)
-              .or().eq(STATUS, Status.APPROVED)
-              .or().eq(STATUS, Status.REJECTED)
-              .and().eq(PROGRAM_ID, form.getProgram().getId())
-              .and().eq(PERIOD_BEGIN, form.getPeriodBegin())
-              .and().eq(PERIOD_END, form.getPeriodEnd())
-              .queryForFirst());
+      return null == dbUtil.withDao(RnRForm.class, dao -> {
+        QueryBuilder<RnRForm, String> queryBuilder = dao.queryBuilder();
+        Where<RnRForm, String> where = queryBuilder.where();
 
+        Where<RnRForm, String> programCondition = where.eq(PROGRAM_ID, form.getProgram().getId());
+        Where<RnRForm, String> periodBeginCondition = where.eq(PERIOD_BEGIN, form.getPeriodBegin());
+        Where<RnRForm, String> periodEndCondition = where.eq(PERIOD_END, form.getPeriodEnd());
+        Where<RnRForm, String> statusCondition = where.or(
+            where.eq(STATUS, Status.AUTHORIZED),
+            where.eq(STATUS, Status.IN_APPROVAL),
+            where.eq(STATUS, Status.APPROVED),
+            where.eq(STATUS, Status.REJECTED)
+        );
+        where.and(programCondition, periodBeginCondition, periodEndCondition, statusCondition);
+        return queryBuilder.queryForFirst();
+      });
     } catch (LMISException e) {
       new LMISException(e, "RnrFormRepository.isPeriodUnique").reportToFabric();
     }
