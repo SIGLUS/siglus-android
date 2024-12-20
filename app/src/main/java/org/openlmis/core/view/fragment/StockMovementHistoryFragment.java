@@ -130,10 +130,10 @@ public class StockMovementHistoryFragment extends BaseFragment implements
 
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         if (layoutManager != null
-            && layoutManager.findLastCompletelyVisibleItemPosition() == layoutManager.getItemCount() - 1) {
-          if (!swipeRefreshLayout.isRefreshing()) {
-            loadMoreData();
-          }
+            && layoutManager.findLastCompletelyVisibleItemPosition() == layoutManager.getItemCount() - 1
+            && !swipeRefreshLayout.isRefreshing()
+        ) {
+          loadMoreData();
         }
       }
     });
