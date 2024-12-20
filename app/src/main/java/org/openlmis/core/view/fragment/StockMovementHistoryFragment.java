@@ -26,10 +26,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 import com.google.inject.Inject;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
@@ -43,7 +44,7 @@ import org.openlmis.core.view.widget.StockMovementHeaderView;
 import roboguice.inject.InjectView;
 
 public class StockMovementHistoryFragment extends BaseFragment implements
-    StockMovementHistoryPresenter.StockMovementHistoryView, OnRefreshListener {
+    StockMovementHistoryPresenter.StockMovementHistoryView {
 
   @Inject
   StockMovementHistoryPresenter presenter;
@@ -103,13 +104,13 @@ public class StockMovementHistoryFragment extends BaseFragment implements
     stockMovementAdapter.setPreviousPage(ScreenName.STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN);
     rvStockMovementList.setAdapter(stockMovementAdapter);
     stockMovementAdapter.setNewInstance(presenter.getStockMovementModelList());
-    swipeRefreshLayout.setOnRefreshListener(this);
     if (!SharedPreferenceMgr.getInstance().hasDeletedOldStockMovement()) {
       tvArchivedOldData.setVisibility(View.GONE);
     }
     if (isKit) {
       stockMovementHeaderView.hideLotCodeHeaderView();
     }
+    addRecyclerViewListener();
   }
 
   public void initData() {
@@ -121,8 +122,24 @@ public class StockMovementHistoryFragment extends BaseFragment implements
     });
   }
 
-  @Override
-  public void onRefresh() {
+  private void addRecyclerViewListener() {
+    rvStockMovementList.addOnScrollListener(new OnScrollListener() {
+      @Override
+      public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+        super.onScrolled(recyclerView, dx, dy);
+
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        if (layoutManager != null
+            && layoutManager.findLastCompletelyVisibleItemPosition() == layoutManager.getItemCount() - 1) {
+          if (!swipeRefreshLayout.isRefreshing()) {
+            loadMoreData();
+          }
+        }
+      }
+    });
+  }
+
+  public void loadMoreData() {
     if (!isLoading) {
       loadData();
     }
@@ -153,7 +170,6 @@ public class StockMovementHistoryFragment extends BaseFragment implements
   private void firstLoadingScrollToBottom() {
     addFooterViewIfMoreThanOneScreen();
     rvStockMovementList.post(() -> {
-      rvStockMovementList.scrollToPosition(stockMovementAdapter.getData().size() - 1);
       loaded();
     });
   }
