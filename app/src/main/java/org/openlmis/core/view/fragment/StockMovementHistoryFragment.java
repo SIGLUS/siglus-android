@@ -133,6 +133,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements
             && layoutManager.findLastCompletelyVisibleItemPosition() == layoutManager.getItemCount() - 1
             && !swipeRefreshLayout.isRefreshing()
         ) {
+          swipeRefreshLayout.setRefreshing(true);
           loadMoreData();
         }
       }
