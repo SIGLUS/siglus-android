@@ -20,11 +20,15 @@ package org.openlmis.core.view.fragment;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -60,6 +64,9 @@ public class StockMovementHistoryFragment extends BaseFragment implements
 
   @InjectView(R.id.stock_movement_header)
   StockMovementHeaderView stockMovementHeaderView;
+
+  TextView noNewDataHintTextView;
+  ProgressBar loadingProgressBarView;
 
   private long startIndex = 0;
   private boolean isLoading;
@@ -98,6 +105,8 @@ public class StockMovementHistoryFragment extends BaseFragment implements
   }
 
   private void initUI() {
+    noNewDataHintTextView = generateNoNewDataHintTextView();
+    loadingProgressBarView = generateProgressBarView();
     rvStockMovementList.setLayoutManager(new LinearLayoutManager(requireContext()));
     stockMovementAdapter = new StockMovementAdapter();
     stockMovementAdapter.setKit(isKit);
@@ -133,6 +142,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements
             && layoutManager.findLastCompletelyVisibleItemPosition() == layoutManager.getItemCount() - 1
             && !swipeRefreshLayout.isRefreshing()
         ) {
+          swipeRefreshLayout.setRefreshing(true);
           loadMoreData();
         }
       }
@@ -160,6 +170,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements
         isFirstLoading = false;
       }
     } else {
+      showNoNewDataHintAndHideProgressBar();
       ToastUtil.showInCenter(R.string.hint_has_not_new_data);
       loaded();
     }
@@ -183,14 +194,42 @@ public class StockMovementHistoryFragment extends BaseFragment implements
   }
 
   private void addFooterView() {
-    TextView view = new TextView(getActivity());
-    view.setLayoutParams(new AbsListView.LayoutParams(MATCH_PARENT, 150));
     if (stockMovementAdapter.getFooterLayoutCount() == 0) {
-      stockMovementAdapter.addFooterView(view);
+      stockMovementAdapter.addFooterView(loadingProgressBarView);
+      noNewDataHintTextView.setVisibility(View.GONE);
+      stockMovementAdapter.addFooterView(noNewDataHintTextView);
     }
+  }
+
+  private void showNoNewDataHintAndHideProgressBar() {
+    noNewDataHintTextView.setVisibility(View.VISIBLE);
+    loadingProgressBarView.setVisibility(View.GONE);
   }
 
   private boolean isGreaterThanOneScreen() {
     return rvStockMovementList.getChildCount() < stockMovementAdapter.getData().size();
+  }
+
+  private TextView generateNoNewDataHintTextView() {
+    TextView view = new TextView(getActivity());
+    view.setText(R.string.hint_has_not_new_data);
+    view.setTextColor(Color.BLACK);
+    view.setTextSize(15);
+    view.setPadding(10, 10, 10, 10);
+
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams.MATCH_PARENT,
+        150
+    );
+    params.gravity = Gravity.CENTER_HORIZONTAL;
+    view.setLayoutParams(params);
+    view.setGravity(Gravity.CENTER);
+    return view;
+  }
+
+  private ProgressBar generateProgressBarView() {
+    ProgressBar progressBar = new ProgressBar(getActivity());
+    progressBar.setLayoutParams(new AbsListView.LayoutParams(MATCH_PARENT, 150));
+    return progressBar;
   }
 }
