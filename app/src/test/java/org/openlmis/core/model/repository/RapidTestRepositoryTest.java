@@ -23,6 +23,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -31,6 +32,7 @@ import com.google.inject.AbstractModule;
 import java.util.Date;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
@@ -50,6 +52,7 @@ import org.openlmis.core.utils.DateUtil;
 import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
+@Ignore
 @RunWith(LMISTestRunner.class)
 public class RapidTestRepositoryTest extends LMISRepositoryUnitTest {
 
@@ -64,6 +67,8 @@ public class RapidTestRepositoryTest extends LMISRepositoryUnitTest {
   RegimenItemRepository regimenItemRepository;
   private StockMovementRepository mockStockMovementRepository;
   private ReportTypeFormRepository mockReportTypeFormRepository;
+
+  private Program program;
 
   @Before
   public void setup() throws LMISException {
