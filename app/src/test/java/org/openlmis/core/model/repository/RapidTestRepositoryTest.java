@@ -23,7 +23,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -67,8 +66,6 @@ public class RapidTestRepositoryTest extends LMISRepositoryUnitTest {
   RegimenItemRepository regimenItemRepository;
   private StockMovementRepository mockStockMovementRepository;
   private ReportTypeFormRepository mockReportTypeFormRepository;
-
-  private Program program;
 
   @Before
   public void setup() throws LMISException {
