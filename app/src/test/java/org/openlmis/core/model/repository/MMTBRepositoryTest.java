@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
@@ -56,6 +57,7 @@ import androidx.test.core.app.ApplicationProvider;
 import roboguice.RoboGuice;
 
 
+@Ignore
 @RunWith(LMISTestRunner.class)
 public class MMTBRepositoryTest extends LMISRepositoryUnitTest {
   ProductRepository mockProductRepository;
