@@ -54,26 +54,45 @@ public class RapidTestRepository extends RnrFormRepository {
       List<StockMovementItem> stockMovementItems,
       Date periodBegin
   ) {
-    RnrFormItem rnrFormItem = super.createRnrFormBaseItemByPeriod(
-        stockCard, stockMovementItems, periodBegin
-    );
+    RnrFormItem rnrFormItem = new RnrFormItem();
 
-    FormHelper.StockMovementModifiedItem modifiedItem = formHelper
-            .assignTotalValues(stockMovementItems);
-
-    rnrFormItem.setReceived(modifiedItem.getTotalReceived());
+    if (stockMovementItems.isEmpty()) {
+      this.initMmitRnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
+    } else {
+      FormHelper.StockMovementModifiedItem modifiedItem = formHelper
+              .assignTotalValues(stockMovementItems);
+      rnrFormItem.setReceived(modifiedItem.getTotalReceived());
+      rnrFormItem.setProduct(stockCard.getProduct());
+      rnrFormItem.setInitialAmount(getMmitInitialAmount(stockCard, stockMovementItems));
+    }
 
     Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
     if (earliestLotExpiryDate != null) {
       rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
     }
-
     return rnrFormItem;
+  }
+
+  protected long getMmitInitialAmount(StockCard stockCard,
+                                      List<StockMovementItem> stockMovementItems) {
+    List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.NO, programCode);
+    if (rnRForms.size() == 1) {
+      return stockMovementItems.get(0).calculatePreviousSOH();
+    }
+    Long lastRnrInventory = lastRnrInventory(stockCard.getProduct());
+    return lastRnrInventory != null ? lastRnrInventory
+            : stockMovementItems.get(0).calculatePreviousSOH();
   }
 
   @Override
   protected void updateInitialAmount(RnrFormItem rnrFormItem, Long initialAmount) {
     rnrFormItem.setIsCustomAmount(initialAmount == null);
     rnrFormItem.setInitialAmount(initialAmount);
+  }
+
+  private void initMmitRnrFormItemWithoutMovement(RnrFormItem rnrFormItem, long lastRnrInventory) {
+    rnrFormItem.setReceived(0);
+    rnrFormItem.setCalculatedOrderQuantity(0L);
+    rnrFormItem.setInitialAmount(lastRnrInventory);
   }
 }
