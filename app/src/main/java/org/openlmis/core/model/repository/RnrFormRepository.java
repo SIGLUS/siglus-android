@@ -330,7 +330,10 @@ public class RnrFormRepository {
       RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, filteredStockMovementItems, periodBegin);
       rnrFormItem.setForm(form);
       rnrFormItems.add(rnrFormItem);
-      rnrFormItem.setCategory(stringToCategory.get(rnrFormItem.getProduct().getCode()));
+      if (rnrFormItem.getProduct() == null) {
+        rnrFormItem.setProduct(stockCard.getProduct());
+      }
+      rnrFormItem.setCategory(stringToCategory.get(stockCard.getProduct().getCode()));
     }
     return rnrFormItems;
   }
@@ -550,11 +553,15 @@ public class RnrFormRepository {
       }
 
       if (rnrFormItem.getInitialAmount() == null) {
-        updateInitialAmount(
-            rnrFormItem, getPreviousPeriodLastMovementItemSOH(
-                stockRepository.queryStockCardByProductId(product.getId()),
-                form.getPeriodBegin()
-            ));
+        if (VIA_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+          updateInitialAmount(
+                  rnrFormItem, getPreviousPeriodLastMovementItemSOH(
+                          stockRepository.queryStockCardByProductId(product.getId()),
+                          form.getPeriodBegin()
+                  ));
+        } else {
+          updateInitialAmount(rnrFormItem, lastRnrInventory(product));
+        }
       }
 
       result.add(rnrFormItem);
