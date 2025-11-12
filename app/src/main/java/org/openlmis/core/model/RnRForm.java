@@ -23,6 +23,8 @@ import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
@@ -30,10 +32,17 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import lombok.EqualsAndHashCode;
 import lombok.EqualsAndHashCode.Include;
 import lombok.Getter;
@@ -366,8 +375,55 @@ public class RnRForm extends BaseModel {
     sortRnrItemsListBasedOnProductCode(newlyAddedList);
     rnrFormItems = existingList;
     rnrFormItems.addAll(newlyAddedList);
+
+    if (program != null && "T".equals(program.programCode)) {
+      sortRnrItemsForMmia(rnrFormItems);
+    }
+
     return rnrFormItems;
   }
+
+  private void sortRnrItemsForMmia(List<RnrFormItem> rnrFormItems) {
+    // Define desired order
+    List<String> productOrder = Arrays.asList(
+            "08S18WI", "08S18W", "08S40", "08S18Z", "08S01ZY", "08S30WZ",
+            "08S30ZY", "08S38Z", "08S30Y", "08S29",
+            "08S01ZV", "08S01ZVI", "08S30ZW", "08S39B", "08S01Zw", "08S40Z",
+            "08S23", "08S17"
+    );
+
+    // Build lookup map for fast index lookup
+    Map<String, Integer> orderIndex = new HashMap<String, Integer>();
+    for (int i = 0; i < productOrder.size(); i++) {
+      orderIndex.put(productOrder.get(i), i);
+    }
+
+    // Sort safely using Collections.sort
+    Collections.sort(rnrFormItems, new Comparator<RnrFormItem>() {
+      @Override
+      public int compare(RnrFormItem item1, RnrFormItem item2) {
+        int index1 = getOrderIndex(item1, orderIndex);
+        int index2 = getOrderIndex(item2, orderIndex);
+        return Integer.compare(index1, index2);
+      }
+    });
+  }
+
+  // Helper method for safety and readability
+  private int getOrderIndex(RnrFormItem item, Map<String, Integer> orderIndex) {
+    if (item == null || item.getProduct() == null || item.getProduct().getCode() == null) {
+      return Integer.MAX_VALUE; // nulls go to the end
+    }
+
+    String code = item.getProduct().getCode();
+    if (orderIndex.containsKey(code)) {
+      return orderIndex.get(code);
+    } else {
+      return Integer.MAX_VALUE; // not found → go to end
+    }
+  }
+
+
 
   private void sortRnrItemsListBasedOnProductCode(List<RnrFormItem> rnrFormItems) {
     Collections.sort(rnrFormItems, (r1, r2) -> {
@@ -379,6 +435,10 @@ public class RnRForm extends BaseModel {
         return 0;
       }
     });
+
+    if (program != null && "T".equals(program.programCode)) {
+      sortRnrItemsForMmia(rnrFormItems);
+    }
   }
 
   public RnrFormStatusRequest convertToRequisitionsStatusRequest() {

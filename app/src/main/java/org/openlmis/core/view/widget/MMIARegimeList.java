@@ -32,7 +32,13 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -198,6 +204,70 @@ public class MMIARegimeList extends LinearLayout {
       } else {
         adults.add(item);
       }
+    }
+
+    sortAdults(adults);
+    sortPaediatrics(paediatrics);
+  }
+
+  private void sortAdults(List<RegimenItem> regimenItems) {
+    // Define desired order
+    List<String> regimenOrder = Arrays.asList(
+            "1aLTLD", "1alt1", "1alt2", "2alt3", "2alt1", "2alt2", "A2F",
+            "C7A", "ABC12", "2Op4", "HepB_TDF", "PreP_TDF+3TC"
+    );
+
+    // Build lookup map
+    Map<String, Integer> orderIndex = new HashMap<String, Integer>();
+    for (int i = 0; i < regimenOrder.size(); i++) {
+      orderIndex.put(regimenOrder.get(i), i);
+    }
+
+    // Sort safely
+    Collections.sort(regimenItems, new Comparator<RegimenItem>() {
+      @Override
+      public int compare(RegimenItem a, RegimenItem b) {
+        int indexA = getOrderIndex(a, orderIndex);
+        int indexB = getOrderIndex(b, orderIndex);
+        return Integer.compare(indexA, indexB);
+      }
+    });
+  }
+
+  private void sortPaediatrics(List<RegimenItem> regimenItems) {
+    // Define desired order
+    List<String> regimenOrder = Arrays.asList(
+            "X7BPed", "X7APed", "X6APed", "ABCPedCpts", "A2Fped Cpts",
+            "CE123"
+    );
+
+    // Build lookup map
+    Map<String, Integer> orderIndex = new HashMap<String, Integer>();
+    for (int i = 0; i < regimenOrder.size(); i++) {
+      orderIndex.put(regimenOrder.get(i), i);
+    }
+
+    // Sort safely
+    Collections.sort(regimenItems, new Comparator<RegimenItem>() {
+      @Override
+      public int compare(RegimenItem a, RegimenItem b) {
+        int indexA = getOrderIndex(a, orderIndex);
+        int indexB = getOrderIndex(b, orderIndex);
+        return Integer.compare(indexA, indexB);
+      }
+    });
+  }
+
+  private int getOrderIndex(RegimenItem item, Map<String, Integer> orderIndex) {
+    if (item == null || item.getRegimen() == null || item.getRegimen().getCode() == null) {
+      return Integer.MAX_VALUE; // put nulls at the end
+    }
+
+    String code = item.getRegimen().getCode();
+    if (orderIndex.containsKey(code)) {
+      return orderIndex.get(code);
+    } else {
+      return Integer.MAX_VALUE; // not found → at the end
     }
   }
 
