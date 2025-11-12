@@ -23,8 +23,6 @@ import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
-import android.util.Log;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
@@ -33,7 +31,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
