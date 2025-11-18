@@ -385,7 +385,7 @@ public class RnRForm extends BaseModel {
     List<String> productOrder = Arrays.asList(
             "08S18WI", "08S18W", "08S40", "08S18Z", "08S01ZY", "08S30WZ",
             "08S30ZY", "08S38Z", "08S30Y", "08S29",
-            "08S01ZV", "08S01ZVI", "08S30ZW", "08S39B", "08S01Zw", "08S40Z",
+            "08S01ZV", "08S01ZVI", "08S30ZW", "08S39B", "08S01ZWi", "08S40Z",
             "08S23", "08S17"
     );
 
