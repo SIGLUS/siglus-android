@@ -274,7 +274,7 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   protected Action1<Pod> loadDataOnNextAction = podContent -> loadViewModelByPod(podContent, false);
 
   private void saveStockManagement(Pod pod) throws LMISException {
-    List<StockCard> stockCards = stockRepository.getStockCardsAndLotsOnHandForProgram(pod.getRequisitionProgramCode());
+    List<StockCard> stockCards = stockRepository.getAllStockCardsAndLotsOnHand();
     List<Long> needUpdatedArchived = new ArrayList<>();
     ImmutableMap<Long, StockCard> productIdToStockCard = from(stockCards)
         .uniqueIndex(stockCard -> stockCard.getProduct().getId());
