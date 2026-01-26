@@ -214,7 +214,7 @@ public class MMIARegimeList extends LinearLayout {
     // Define desired order
     List<String> regimenOrder = Arrays.asList(
             "1aLTLD", "1alt1", "1alt2", "2alt3", "2alt1", "2alt2", "A2F",
-            "C7A", "ABC12", "2Op4", "HepB_TDF", "PreP_TDF+3TC"
+            "C7A", "ABC12", "2Op4", "HepB_TDF", "PreP_LEN", "PreP_TDF+3TC"
     );
 
     // Build lookup map

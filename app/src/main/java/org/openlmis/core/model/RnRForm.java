@@ -383,8 +383,8 @@ public class RnRForm extends BaseModel {
   private void sortRnrItemsForMmia(List<RnrFormItem> rnrFormItems) {
     // Define desired order
     List<String> productOrder = Arrays.asList(
-            "08S18WI", "08S18W", "08S40", "08S18Z", "08S01ZY", "08S30WZ",
-            "08S30ZY", "08S38Z", "08S30Y", "08S29",
+            "08S18WI", "08S18W", "08S40", "08S18Z", "08S18ZX", "08S18XZ",
+            "08S01ZY", "08S30WZ", "08S30ZY", "08S38Z", "08S30Y", "08S29",
             "08S01ZV", "08S01ZVI", "08S30ZW", "08S39B", "08S01ZWi", "08S40Z",
             "08S23", "08S17"
     );
