@@ -214,7 +214,7 @@ public class MMIARegimeList extends LinearLayout {
     // Define desired order
     List<String> regimenOrder = Arrays.asList(
             "1aLTLD", "1alt1", "1alt2", "2alt3", "2alt1", "2alt2", "A2F",
-            "C7A", "ABC12", "2Op4", "HepB_TDF", "PreP_LEN", "PreP_TDF+3TC"
+            "C7A", "ABC12", "2Op4", "HepB_TDF", "PreP_TDF+3TC", "PreP_LEN"
     );
 
     // Build lookup map
@@ -237,7 +237,7 @@ public class MMIARegimeList extends LinearLayout {
   private void sortPaediatrics(List<RegimenItem> regimenItems) {
     // Define desired order
     List<String> regimenOrder = Arrays.asList(
-            "X7BPed", "X7APed", "X6APed", "ABCPedCpts", "A2Fped Cpts",
+            "X7BPed", "X6APed", "X7APed", "ABCPedCpts", "A2Fped Cpts",
             "CE123"
     );
 
