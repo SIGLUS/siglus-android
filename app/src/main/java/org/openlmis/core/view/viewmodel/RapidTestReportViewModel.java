@@ -109,6 +109,22 @@ public class RapidTestReportViewModel {
     itemAPEs = new RapidTestFormItemViewModel(totalAPES);
     itemAPEs.setAPEItem();
 
+    MovementReasonManager.MovementReason consultasCategory = new MovementReasonManager.MovementReason(
+            MovementReasonManager.MovementType.ISSUE, "CONSULTAS", "Consultas Externas/Triagem");
+
+    MovementReasonManager.MovementReason saajCategory = new MovementReasonManager.MovementReason(
+            MovementReasonManager.MovementType.ISSUE, "SAAJ", "SAAJ");
+
+    MovementReasonManager.MovementReason cpnCategory = new MovementReasonManager.MovementReason(
+            MovementReasonManager.MovementType.ISSUE, "CPN", "CPN/CPP/CCR/CCS");
+
+    MovementReasonManager.MovementReason otherCategory = new MovementReasonManager.MovementReason(
+            MovementReasonManager.MovementType.ISSUE, "OUTROS", "Outros");
+
+    itemViewModelList.add(new RapidTestFormItemViewModel(consultasCategory));
+    itemViewModelList.add(new RapidTestFormItemViewModel(saajCategory));
+    itemViewModelList.add(new RapidTestFormItemViewModel(cpnCategory));
+    itemViewModelList.add(new RapidTestFormItemViewModel(otherCategory));
     itemViewModelList.add(itemTotal);
     itemViewModelList.add(itemAPEs);
   }
