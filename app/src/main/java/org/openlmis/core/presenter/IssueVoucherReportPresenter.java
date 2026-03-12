@@ -22,6 +22,8 @@ import static org.openlmis.core.manager.MovementReasonManager.REJECTION_LOT_NOT_
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import com.google.inject.Inject;
+import com.j256.ormlite.misc.TransactionManager;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -53,6 +55,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -197,12 +200,13 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   public Observable<Void> getCompleteFormObservable(String receivedBy) {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {
-        // check current time is after latest movement created time
+        // 1. Validation logic
         Date latestMovementCreatedTime = movementRepository.getLatestStockMovementCreatedTime();
         if (latestMovementCreatedTime != null && DateUtil.getCurrentDate().before(latestMovementCreatedTime)) {
           throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
         }
-        // update pod status
+
+        // 2. Setup Pod data
         pod.setDraft(false);
         pod.setReceivedBy(receivedBy);
         pod.setReceivedDate(DateUtil.getCurrentDate());
@@ -211,14 +215,35 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
           pod.setStockManagementReason(reasonCode);
         }
         setPodItems();
-        // `pods` table
-        podRepository.createOrUpdateWithItems(pod);
-        // `stock_cards` related tables
-        saveStockManagement(pod);
-        subscriber.onCompleted();
+
+        // 3. THE UMBRELLA TRANSACTION
+        // Wrap BOTH saves in a single ORMLite transaction
+        TransactionManager.callInTransaction(
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(),
+                () -> {
+                  // If either of these fail, the whole block rolls back automatically
+                  podRepository.createOrUpdateWithItems(pod);
+                  saveStockManagement(pod);
+                  return null;
+                }
+        );
+
+        // 4. Success!
+        if (!subscriber.isUnsubscribed()) {
+          subscriber.onCompleted();
+        }
+
       } catch (LMISException e) {
         new LMISException(e, "Pod.getCompleteFormObservable").reportToFabric();
-        subscriber.onError(e);
+        if (!subscriber.isUnsubscribed()) {
+          subscriber.onError(e);
+        }
+      } catch (Exception e) {
+        // Catch any standard DB/Java exceptions thrown by saveStockManagement
+        new LMISException(e, "Pod.getCompleteFormObservable - Unexpected Error").reportToFabric();
+        if (!subscriber.isUnsubscribed()) {
+          subscriber.onError(e);
+        }
       }
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
