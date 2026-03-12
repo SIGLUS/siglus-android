@@ -219,13 +219,13 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
         // 3. THE UMBRELLA TRANSACTION
         // Wrap BOTH saves in a single ORMLite transaction
         TransactionManager.callInTransaction(
-                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(),
-                () -> {
-                  // If either of these fail, the whole block rolls back automatically
-                  podRepository.createOrUpdateWithItems(pod);
-                  saveStockManagement(pod);
-                  return null;
-                }
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(),
+            () -> {
+              // If either of these fail, the whole block rolls back automatically
+              podRepository.createOrUpdateWithItems(pod);
+              saveStockManagement(pod);
+              return null;
+            }
         );
 
         // 4. Success!
