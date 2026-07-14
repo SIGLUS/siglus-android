@@ -19,7 +19,7 @@
     <item>ISSUE|UNPACK_KIT|Unpack Kit</item>
     <item>ISSUE|APE|APE</item>
 
-    <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Return of expired items to supplier warehouse</item>
+    <item>NEGATIVE_ADJUST|EXPIRED_CORRECTION_NEGATIVE|Expiry date and batch correction </item>
     <item>NEGATIVE_ADJUST|DAMAGED|Damaged in the warehouse</item>
     <item>NEGATIVE_ADJUST|LOANS_DEPOSIT|Loans made from a health facility deposit</item>
     <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Inventory correction in case of understock (Stock on hand is less than stock in stock card)</item>
@@ -27,6 +27,7 @@
     <item>NEGATIVE_ADJUST|RETURN_TO_SUPPLIER|Return within expiration date to supplier warehouse</item>
     <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER_AND_DISCARD|Expired products transfer</item>
 
+    <item>POSITIVE_ADJUST|EXPIRED_CORRECTION_POSITIVE|Expiry date and batch correction</item>
     <item>POSITIVE_ADJUST|CUSTOMER_RETURN|Return from Customers(HF and dependent wards) within the validity period</item>
     <item>POSITIVE_ADJUST|EXPIRED_RETURN_FROM_CUSTOMER|Returns of expired drugs (HF and dependent wards)</item>
     <item>POSITIVE_ADJUST|DONATION|Donations to Deposit</item>
