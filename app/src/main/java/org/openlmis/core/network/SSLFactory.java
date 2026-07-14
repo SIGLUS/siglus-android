@@ -72,7 +72,8 @@ public class SSLFactory {
       X509Certificate cert;
       try {
         cert = (X509Certificate) session.getPeerCertificates()[0];
-        if (cert.getSubjectDN().getName().equals("CN=lmis.cmam.gov.mz")) {
+        String certCN = cert.getSubjectDN().getName();
+        if (certCN.equals("CN=lmis.cmam.gov.mz") || certCN.equals("CN=simam.cmam.gov.mz")) {
           return true;
         }
       } catch (SSLPeerUnverifiedException e) {
