@@ -19,7 +19,7 @@
     <item>ISSUE|UNPACK_KIT|Desembalar Kit</item>
     <item>ISSUE|APE|APE</item>
 
-    <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Devolução de expirados para Depósito fornecedor</item>
+    <item>NEGATIVE_ADJUST|EXPIRED_CORRECTION_NEGATIVE|Correção de prazo de validade / lote </item>
     <item>NEGATIVE_ADJUST|DAMAGED|Danificado no depósito</item>
     <item>NEGATIVE_ADJUST|LOANS_DEPOSIT|Empréstimos (para todos níveis) que dão saída do depósito</item>
     <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Correcção de inventário, no caso do stock inferior (stock é inferior ao existente na ficha de stock)</item>
@@ -27,6 +27,7 @@
     <item>NEGATIVE_ADJUST|RETURN_TO_SUPPLIER|Devolução Dentro do prazo de validade ao Depósito fornecedor</item>
     <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER_AND_DISCARD|Transferência de produtos expirados</item>
 
+    <item>POSITIVE_ADJUST|EXPIRED_CORRECTION_POSITIVE|Correção de prazo de validade / lote</item>
     <item>POSITIVE_ADJUST|CUSTOMER_RETURN|Devolução Dentro do prazo de validade dos clientes (US e Depósitos Beneficiários)</item>
     <item>POSITIVE_ADJUST|EXPIRED_RETURN_FROM_CUSTOMER|Devolução de expirados (US e Depósitos Beneficiários)</item>
     <item>POSITIVE_ADJUST|DONATION|Doação ao Depósito</item>
