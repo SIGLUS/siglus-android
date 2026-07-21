@@ -97,6 +97,8 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   @Getter
   Pod pod;
 
+  private volatile boolean isCompletingForm = false;
+
   public void loadData(long podId) {
     Subscription subscription = getRnrFormObservable(podId)
         .subscribe(loadDataOnNextAction, loadDataOnErrorAction);
@@ -200,6 +202,15 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
   public Observable<Void> getCompleteFormObservable(String receivedBy) {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {
+        // Guard against concurrent execution
+        if (isCompletingForm) {
+          if (!subscriber.isUnsubscribed()) {
+            subscriber.onError(new LMISException("Form is already being completed"));
+          }
+          return;
+        }
+        isCompletingForm = true;
+
         // 1. Validation logic
         Date latestMovementCreatedTime = movementRepository.getLatestStockMovementCreatedTime();
         if (latestMovementCreatedTime != null && DateUtil.getCurrentDate().before(latestMovementCreatedTime)) {
@@ -244,6 +255,8 @@ public class IssueVoucherReportPresenter extends BaseReportPresenter {
         if (!subscriber.isUnsubscribed()) {
           subscriber.onError(e);
         }
+      } finally {
+        isCompletingForm = false;
       }
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
