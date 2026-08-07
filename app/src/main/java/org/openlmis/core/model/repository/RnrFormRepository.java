@@ -825,7 +825,23 @@ public class RnrFormRepository {
 
   private void saveRnRItems(RnRForm form) throws LMISException {
     if (!AL_PROGRAM_CODE.equals(form.getProgram().getProgramCode())) {
+      // Always calculate calculatedOrderQuantity before saving
+      calculateOrderQuantityForAllItems(form.getRnrFormItemListWrapper());
       rnrFormItemRepository.batchCreateOrUpdate(form.getRnrFormItemListWrapper());
+    }
+  }
+
+  private void calculateOrderQuantityForAllItems(List<RnrFormItem> items) {
+    if (items == null) {
+      return;
+    }
+    for (RnrFormItem item : items) {
+      if (item != null) {
+        long totalIssued = item.getIssued() != null ? item.getIssued() : 0L;
+        long inventory = item.getInventory() != null ? item.getInventory() : 0L;
+        long calculatedOrderQuantity = (totalIssued * 2) - inventory;
+        item.setCalculatedOrderQuantity(calculatedOrderQuantity > 0 ? calculatedOrderQuantity : 0L);
+      }
     }
   }
 
