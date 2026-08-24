@@ -130,6 +130,7 @@ import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardSOHStatus;
 import org.openlmis.core.persistence.migrations.UpdateUsageColumnsMap;
 import org.openlmis.core.persistence.migrations.UpdateUsageColumnsMapV2;
+import org.openlmis.core.persistence.migrations.RecalculateOrderQuantityForExistingRnrFormItems;
 
 
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
@@ -244,6 +245,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new UpdateUsageColumnsMapV2());
     MIGRATIONS.add(new AddIsAddedInPodProductLotItems());
     MIGRATIONS.add(new AddStockOnHandColumnToDirtyData());
+    MIGRATIONS.add(new RecalculateOrderQuantityForExistingRnrFormItems());
   }
 
   private LmisSqliteOpenHelper(Context context) {
